@@ -24,7 +24,6 @@ Thumbs.db
 *.mdb.meta
 *.opendb
 *.VC.db
-*.userprefs
 *.csproj
 *.unityproj
 *.sln
@@ -58,7 +57,7 @@ ExportedObj/
 *.unitypackage.meta
 *.app
 
-# Crash reports
+# Crash reports and generated files
 sysinfo.txt
 mono_crash.*
 crashlytics-build.properties
@@ -71,6 +70,12 @@ crash.log
 /[Aa]ssets/Addressables_Temp*
 /[Aa]ssets/AddressableAssetsData/*/*.bin*
 
+# Visual Scripting auto-generated files
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
+/[Aa]ssets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
+
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
@@ -79,3 +84,4 @@ crash.log
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
+

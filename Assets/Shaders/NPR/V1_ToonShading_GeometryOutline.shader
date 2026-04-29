@@ -53,16 +53,18 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
             HLSLPROGRAM
             #pragma vertex vert_outline
             #pragma fragment frag_outline
-            #pragma target 3.0
+            #pragma target 3.5
             #pragma shader_feature_local _USEOUTLINEDEPTHOFFSET_ON
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "OvrVertexFetchBridge.hlsl"
 
             struct appdata_outline
             {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
+                uint vertexID : SV_VertexID;
             };
 
             struct v2f_outline
@@ -83,6 +85,7 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
             v2f_outline vert_outline(appdata_outline v)
             {
                 v2f_outline o;
+                OVR_FETCH_POS_NORM(v.vertex.xyz, v.normal, v.vertexID);
                 VertexPositionInputs positionInputs = GetVertexPositionInputs(v.vertex.xyz);
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(v.normal);
                 float3 posWS = positionInputs.positionWS + normalInputs.normalWS * _OuterOutlineWidth;
@@ -121,19 +124,21 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma target 3.0
+            #pragma target 3.5
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile _ _SHADOWS_SOFT
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "OvrVertexFetchBridge.hlsl"
 
             struct appdata
             {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
+                uint vertexID : SV_VertexID;
             };
 
             struct v2f
@@ -164,6 +169,7 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
             v2f vert(appdata v)
             {
                 v2f o;
+                OVR_FETCH_POS_NORM(v.vertex.xyz, v.normal, v.vertexID);
                 VertexPositionInputs positionInputs = GetVertexPositionInputs(v.vertex.xyz);
                 VertexNormalInputs normalInputs = GetVertexNormalInputs(v.normal);
                 o.pos = positionInputs.positionCS;

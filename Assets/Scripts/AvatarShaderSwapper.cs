@@ -23,14 +23,14 @@ public class AvatarShaderSwapper : MonoBehaviour
 
     private IEnumerator WaitForRenderersAndSwap()
     {
-        // Poll until the avatar has spawned at least one MeshRenderer
-        MeshRenderer[] renderers = null;
+        // Poll until the avatar has spawned at least one Renderer (MeshRenderer or SkinnedMeshRenderer)
+        Renderer[] renderers = null;
         float timeout = 30f;
         float elapsed = 0f;
 
         while (elapsed < timeout)
         {
-            renderers = GetComponentsInChildren<MeshRenderer>(true);
+            renderers = GetComponentsInChildren<Renderer>(true);
             if (renderers.Length > 0) break;
             elapsed += Time.deltaTime;
             yield return null;
@@ -38,17 +38,17 @@ public class AvatarShaderSwapper : MonoBehaviour
 
         if (renderers == null || renderers.Length == 0)
         {
-            Debug.LogWarning($"[AvatarShaderSwapper] No MeshRenderers found on '{gameObject.name}' after {timeout}s.");
+            Debug.LogWarning($"[AvatarShaderSwapper] No renderers found on '{gameObject.name}' after {timeout}s.");
             yield break;
         }
 
         // Extra frame so SDK finishes assigning materials
         yield return null;
 
-        ApplyShaders(GetComponentsInChildren<MeshRenderer>(true));
+        ApplyShaders(GetComponentsInChildren<Renderer>(true));
     }
 
-    private void ApplyShaders(MeshRenderer[] renderers)
+    private void ApplyShaders(Renderer[] renderers)
     {
         int swapped = 0;
         foreach (var rend in renderers)

@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &165585584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _labelText: 2
+  _labelText: NPR 2
   _heightOffset: 2.2
   _textColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &165585585
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _customShader: {fileID: 4800000, guid: a2ed083c404be42f6b79ee7779c57d7f, type: 3}
+  _customShader: {fileID: 4800000, guid: ac2e5c7f0a193458e8f848fd6528ee42, type: 3}
   _toonRamp: {fileID: 0}
   _baseColor: {r: 1, g: 1, b: 1, a: 1}
   _copyBaseTexture: 1
@@ -200,9 +200,9 @@ MonoBehaviour:
   _activeManifestation: 2
   _activeSubMeshes: -1
   _activeSubMeshesIncludeUntyped: 1
-  _inputManager: {fileID: 0}
-  _facePoseBehavior: {fileID: 0}
-  _eyePoseBehavior: {fileID: 0}
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
   _lipSync: {fileID: 0}
   _criticalJointTypes: 
   _useCriticalJointJobs: 0
@@ -260,7 +260,7 @@ Transform:
   m_GameObject: {fileID: 165585583}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 0, z: 2}
+  m_LocalPosition: {x: 1.5, y: 0, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -509,7 +509,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1009295525}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
   m_Name: 
@@ -525,7 +525,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1009295525}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f775fcfeef42d0543abbd1e03dfe74fb, type: 3}
   m_Name: 
@@ -546,9 +546,9 @@ MonoBehaviour:
   _activeManifestation: 2
   _activeSubMeshes: -1
   _activeSubMeshesIncludeUntyped: 1
-  _inputManager: {fileID: 0}
-  _facePoseBehavior: {fileID: 0}
-  _eyePoseBehavior: {fileID: 0}
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
   _lipSync: {fileID: 0}
   _criticalJointTypes: 
   _useCriticalJointJobs: 0
@@ -840,7 +840,6 @@ GameObject:
   - component: {fileID: 1748786885}
   - component: {fileID: 1748786886}
   - component: {fileID: 1748786887}
-  - component: {fileID: 1748786888}
   m_Layer: 0
   m_Name: AvatarEntity1
   m_TagString: Untagged
@@ -891,9 +890,9 @@ MonoBehaviour:
   _activeManifestation: 2
   _activeSubMeshes: -1
   _activeSubMeshesIncludeUntyped: 1
-  _inputManager: {fileID: 0}
-  _facePoseBehavior: {fileID: 0}
-  _eyePoseBehavior: {fileID: 0}
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
   _lipSync: {fileID: 0}
   _criticalJointTypes: 
   _useCriticalJointJobs: 0
@@ -957,22 +956,6 @@ MonoBehaviour:
   _labelText: Default Avatar
   _heightOffset: 2.2
   _textColor: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &1748786888
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1748786883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17a47ef74480449c3893b76da0b6eb06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _nprShader: {fileID: 4800000, guid: a2ed083c404be42f6b79ee7779c57d7f, type: 3}
-  _toonRamp: {fileID: 0}
-  _cloneWorldPosition: {x: -0.8, y: 0, z: 1}
-  _pollTimeout: 30
 --- !u!4 &1896674143 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 487254, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
@@ -1295,6 +1278,39 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
+--- !u!114 &2061853755 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4591504922701833261, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
+  m_PrefabInstance: {fileID: 2061853754}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 488cfafa131933046a924063017e8372, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2061853756 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8756709727841205737, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
+  m_PrefabInstance: {fileID: 2061853754}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e0330898740b1e4ca2071e639e5ecbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2061853757 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5871265475931972310, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
+  m_PrefabInstance: {fileID: 2061853754}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6937544d08e2ba34da6ff4ab90cbfd84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2137580275
 GameObject:
   m_ObjectHideFlags: 0

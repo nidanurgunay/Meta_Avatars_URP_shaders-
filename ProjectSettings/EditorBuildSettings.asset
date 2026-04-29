@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 0
+    path: Assets/Samples/Meta Avatars SDK/40.0.1/Sample Scenes/Scenes/SkinningTypesExample/SkinningTypesExample.unity
+    guid: e8a4b1a65c6d41469d33220eb06f66a1
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 628c188e2b7eb4e509a63f7890ec3811, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: ec7cb64e9592e44c8a66d8bf0b1c5191, type: 2}

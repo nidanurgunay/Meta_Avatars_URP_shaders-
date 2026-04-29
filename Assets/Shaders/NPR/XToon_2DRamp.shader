@@ -103,6 +103,7 @@ Shader "NPR/XToon_2DRamp"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.5
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
@@ -113,6 +114,7 @@ Shader "NPR/XToon_2DRamp"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+            #include "OvrVertexFetchBridge.hlsl"
 
             TEXTURE2D(_BaseMap);       SAMPLER(sampler_BaseMap);
             TEXTURE2D(_ToonRamp);      SAMPLER(sampler_ToonRamp);
@@ -148,6 +150,7 @@ Shader "NPR/XToon_2DRamp"
                 float3 normalOS : NORMAL;
                 float4 tangentOS : TANGENT;
                 float2 uv : TEXCOORD0;
+                uint vertexID : SV_VertexID;
             };
 
             struct Varyings
@@ -166,6 +169,7 @@ Shader "NPR/XToon_2DRamp"
             {
                 Varyings output;
 
+                OVR_FETCH_POS_NORM(input.positionOS.xyz, input.normalOS, input.vertexID);
                 VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
                 VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
 
@@ -318,8 +322,10 @@ Shader "NPR/XToon_2DRamp"
             HLSLPROGRAM
             #pragma vertex vertOutline
             #pragma fragment fragOutline
+            #pragma target 3.5
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "OvrVertexFetchBridge.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _OutlineColor;
@@ -330,6 +336,7 @@ Shader "NPR/XToon_2DRamp"
             {
                 float4 positionOS : POSITION;
                 float3 normalOS : NORMAL;
+                uint vertexID : SV_VertexID;
             };
 
             struct Varyings
@@ -340,6 +347,7 @@ Shader "NPR/XToon_2DRamp"
             Varyings vertOutline(Attributes input)
             {
                 Varyings output;
+                OVR_FETCH_POS_NORM(input.positionOS.xyz, input.normalOS, input.vertexID);
                 float3 posWS = TransformObjectToWorld(input.positionOS.xyz);
                 float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
                 posWS += normalWS * _OutlineWidth;
@@ -370,12 +378,14 @@ Shader "NPR/XToon_2DRamp"
             HLSLPROGRAM
             #pragma vertex ShadowVert
             #pragma fragment ShadowFrag
+            #pragma target 3.5
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
             #pragma shader_feature_local _ALPHA_BLEND
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
+            #include "OvrVertexFetchBridge.hlsl"
 
             float3 _LightDirection;
             float3 _LightPosition;
@@ -396,6 +406,7 @@ Shader "NPR/XToon_2DRamp"
                 #if _ALPHA_BLEND
                 float2 uv : TEXCOORD0;
                 #endif
+                uint vertexID : SV_VertexID;
             };
 
             struct Varyings
@@ -431,6 +442,7 @@ Shader "NPR/XToon_2DRamp"
             Varyings ShadowVert(Attributes input)
             {
                 Varyings output;
+                OVR_FETCH_POS_NORM(input.positionOS.xyz, input.normalOS, input.vertexID);
                 output.positionCS = GetShadowPositionHClip(input);
                 #if _ALPHA_BLEND
                 output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
@@ -464,9 +476,11 @@ Shader "NPR/XToon_2DRamp"
             HLSLPROGRAM
             #pragma vertex DepthVert
             #pragma fragment DepthFrag
+            #pragma target 3.5
             #pragma shader_feature_local _ALPHA_BLEND
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "OvrVertexFetchBridge.hlsl"
 
             #if _ALPHA_BLEND
             TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
@@ -483,6 +497,7 @@ Shader "NPR/XToon_2DRamp"
                 #if _ALPHA_BLEND
                 float2 uv : TEXCOORD0;
                 #endif
+                uint vertexID : SV_VertexID;
             };
 
             struct Varyings
@@ -496,6 +511,7 @@ Shader "NPR/XToon_2DRamp"
             Varyings DepthVert(Attributes input)
             {
                 Varyings output;
+                OVR_FETCH_POS(input.positionOS.xyz, input.vertexID);
                 output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
                 #if _ALPHA_BLEND
                 output.uv = TRANSFORM_TEX(input.uv, _BaseMap);

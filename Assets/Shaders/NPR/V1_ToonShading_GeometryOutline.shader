@@ -218,10 +218,16 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
                 GetDirectionalLight(lightDir, lightColor);
                 float NdotL = saturate(dot(nWS, lightDir));
 
-                float smooth = smoothstep(_ToonThreshold - _ToonSmoothness, _ToonThreshold + _ToonSmoothness, NdotL);
-                float steps = max(1.0, _ToonSteps);
-                float toon = floor(smooth * steps) / steps;
-                toon = lerp(1.0, toon, _ShadowStrength);
+                // Per-step blending: each band boundary gets a smooth transition of
+                // width _ToonSmoothness, so normal jitter near any seam doesn't flip
+                // a whole patch of pixels between steps.
+                float steps   = max(1.0, _ToonSteps);
+                float scaled  = NdotL * steps;
+                float band    = floor(scaled);
+                float frac    = scaled - band;
+                float blend   = smoothstep(1.0 - _ToonSmoothness, 1.0, frac);
+                float toon    = saturate((band + blend) / steps);
+                toon = lerp(1.0 - _ShadowStrength, 1.0, toon);
                 
                 float3 lighting = lightColor * toon + _AmbientColor.rgb;
 

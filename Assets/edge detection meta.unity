@@ -555,11 +555,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enableNPREdges: 1
-  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _innerLineColor:
+    r: 0
+    g: 0
+    b: 0
+    a: 1
   _edgeThreshold: 0.3
   _edgeMax: 2
   _colorEdgeWeight: 0.5
   _innerLineStrength: 1
+  _entity: {fileID: 0}
 --- !u!1001 &223974226
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1541,11 +1546,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enableNPREdges: 1
-  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _innerLineColor:
+    r: 0
+    g: 0
+    b: 0
+    a: 1
   _edgeThreshold: 0.3
   _edgeMax: 2
   _colorEdgeWeight: 0.5
   _innerLineStrength: 1
+  _entity: {fileID: 0}
 --- !u!1 &1011566439
 GameObject:
   m_ObjectHideFlags: 0
@@ -2479,12 +2489,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2620309820311119722, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
-      propertyPath: DefaultShaderConfigurationInitializer
-      value:
+      propertyPath: CelShaderConfigurationInitializer
+      value: 
       objectReference: {fileID: 11400000, guid: 7283bd1f6616a4099914a438ede4b097, type: 2}
     - target: {fileID: 2620309820311119722, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
-      propertyPath: CelShaderConfigurationInitializer
-      value:
+      propertyPath: DefaultShaderConfigurationInitializer
+      value: 
       objectReference: {fileID: 11400000, guid: 7283bd1f6616a4099914a438ede4b097, type: 2}
     - target: {fileID: 3887819867191740197, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
       propertyPath: m_Name

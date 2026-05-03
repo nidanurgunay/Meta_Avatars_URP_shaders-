@@ -8,6 +8,7 @@ public class AvatarLabel : MonoBehaviour
 {
     [SerializeField] private string _labelText = "Avatar";
     [SerializeField] private float _heightOffset = 2.2f;
+    [SerializeField] private float _fontSize = 28f;
     [SerializeField] private Color _textColor = Color.white;
 
     private Transform _labelTransform;
@@ -42,7 +43,7 @@ public class AvatarLabel : MonoBehaviour
 
         var tmp = go.AddComponent<TextMeshProUGUI>();
         tmp.text = _labelText;
-        tmp.fontSize = 36f;
+        tmp.fontSize = _fontSize;
         tmp.color = _textColor;
         tmp.alignment = TextAlignmentOptions.Center;
         tmp.fontStyle = FontStyles.Bold;

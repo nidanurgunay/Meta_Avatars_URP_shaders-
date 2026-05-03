@@ -29,7 +29,7 @@ Shader "Custom/V2_NormalEdgeDetection"
         [Toggle] _UseOutlineDepthOffset ("Use Depth Offset (fix z-fighting)", Float) = 0
         _OutlineDepthBias ("Outline Depth Bias", Range(0, 5)) = 1.0
 
-        [Header(Texture Edge Detection (Sobel) )]
+        [Header(Texture Edge Detection Sobel)]
         [Toggle] _EnableTextureSobel ("Enable Texture Sobel", Float) = 1
         [KeywordEnum(None, Light, Moderate, Aggressive)] _SobelFilterMode ("Sobel Filter Mode", Float) = 2
         _SobelLineColor ("Sobel Line Color", Color) = (0,0,0,1)

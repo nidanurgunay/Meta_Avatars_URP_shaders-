@@ -122,6 +122,297 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &118216609
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 118216613}
+  - component: {fileID: 118216612}
+  - component: {fileID: 118216611}
+  - component: {fileID: 118216610}
+  m_Layer: 0
+  m_Name: AvatarEntity1- NPR - V5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &118216610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 118216609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _labelText: V5 Only Sobel
+  _heightOffset: 2.2
+  _fontSize: 28
+  _textColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &118216611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 118216609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _customShader: {fileID: 4800000, guid: fae64c94d0ff8431ba4aa9a55cbe4563, type: 3}
+  _copyBaseTexture: 1
+  _toonRamp: {fileID: 0}
+  _baseColor: {r: 1, g: 1, b: 1, a: 1}
+  _textureIntensity: 1
+  _toonSteps: 3
+  _toonThreshold: 0.5
+  _toonSmoothness: 0.01
+  _shadowStrength: 0.7
+  _outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  _outlineWidth: 0.003
+  _rimColor: {r: 0.408, g: 0.408, b: 0.408, a: 1}
+  _rimPower: 3
+  _innerLineThresholdSkin: 0.4
+  _innerLineThresholdClothes: 0.1
+  _innerLineMax: 2
+  _seamRangeLimit: 0.6
+  _skinSaturationCutoff: 0.15
+  _innerLineBlur: 0.5
+  _innerLineStrength: 1
+  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _reapplyInterval: 2
+--- !u!114 &118216612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 118216609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f775fcfeef42d0543abbd1e03dfe74fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _creationInfo:
+    features: 1398
+    renderFilters:
+      lodFlags: 31
+      manifestationFlags: 2
+      viewFlags: 3
+      subMeshInclusionFlags: -1
+      quality: 1
+      loadRigZipFromGlb: 1
+      reserved: 0000000000000000000000000000000000000000000000000000000000000000
+      subMeshVertexPreference: 0
+  _validateCache: 1
+  _activeView: 2
+  _activeManifestation: 2
+  _activeSubMeshes: -1
+  _activeSubMeshesIncludeUntyped: 1
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
+  _lipSync: {fileID: 782628376}
+  _criticalJointTypes: 
+  _useCriticalJointJobs: 0
+  _debugDrawing:
+    drawTrackingPose: 0
+    drawBoneNames: 0
+    drawSkelHierarchy: 0
+    drawSkelHierarchyInGame: 0
+    drawSkinTransformsInGame: 0
+    drawCriticalJoints: 0
+    skeletonColor: {r: 1, g: 0, b: 0, a: 1}
+    drawGazePos: 0
+    gazePosColor: {r: 1, g: 0, b: 1, a: 1}
+  OnCreatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSkeletonLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDefaultAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFastLoadAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  PreTeardownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLoadFailedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  MotionSmoothingSettings: 0
+  _hidden: 0
+  useRenderLods: 1
+  _isLocal: 1
+  _loadUserFromCdn: 0
+  _cdnUserID: 0
+  _style2DropdownIndex: 0
+  _deferLoading: 0
+  _assets: []
+  _underscorePostfix: 1
+  _overridePostfix: 
+  _autoCdnRetry: 1
+  _enablePollingForAvatarCreation: 1
+  _changeCheckInterval: 8
+--- !u!4 &118216613
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 118216609}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &123432287
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 123432290}
+  - component: {fileID: 123432289}
+  - component: {fileID: 123432288}
+  m_Layer: 6
+  m_Name: AvatarEntity1- edgedetectPost
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &123432288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123432287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _labelText: Hir Edge
+  _heightOffset: 2.2
+  _fontSize: 28
+  _textColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &123432289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123432287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f775fcfeef42d0543abbd1e03dfe74fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _creationInfo:
+    features: 1398
+    renderFilters:
+      lodFlags: 31
+      manifestationFlags: 2
+      viewFlags: 3
+      subMeshInclusionFlags: -1
+      quality: 1
+      loadRigZipFromGlb: 1
+      reserved: 0000000000000000000000000000000000000000000000000000000000000000
+      subMeshVertexPreference: 0
+  _validateCache: 1
+  _activeView: 2
+  _activeManifestation: 2
+  _activeSubMeshes: -1
+  _activeSubMeshesIncludeUntyped: 1
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
+  _lipSync: {fileID: 782628376}
+  _criticalJointTypes: 
+  _useCriticalJointJobs: 0
+  _debugDrawing:
+    drawTrackingPose: 0
+    drawBoneNames: 0
+    drawSkelHierarchy: 0
+    drawSkelHierarchyInGame: 0
+    drawSkinTransformsInGame: 0
+    drawCriticalJoints: 0
+    skeletonColor: {r: 1, g: 0, b: 0, a: 1}
+    drawGazePos: 0
+    gazePosColor: {r: 1, g: 0, b: 1, a: 1}
+  OnCreatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSkeletonLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDefaultAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFastLoadAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  PreTeardownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLoadFailedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  MotionSmoothingSettings: 0
+  _hidden: 0
+  useRenderLods: 1
+  _isLocal: 1
+  _loadUserFromCdn: 0
+  _cdnUserID: 0
+  _style2DropdownIndex: 0
+  _deferLoading: 0
+  _assets: []
+  _underscorePostfix: 1
+  _overridePostfix: 
+  _autoCdnRetry: 1
+  _enablePollingForAvatarCreation: 1
+  _changeCheckInterval: 8
+--- !u!4 &123432290
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123432287}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &165585583
 GameObject:
   m_ObjectHideFlags: 0
@@ -132,10 +423,10 @@ GameObject:
   m_Component:
   - component: {fileID: 165585587}
   - component: {fileID: 165585586}
-  - component: {fileID: 165585585}
   - component: {fileID: 165585584}
+  - component: {fileID: 165585588}
   m_Layer: 0
-  m_Name: AvatarEntity1- NPR (2)
+  m_Name: AvatarEntity1- NPR - V3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,25 +444,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _labelText: NPR 2
+  _labelText: NPR V3 Sobel
   _heightOffset: 2.2
+  _fontSize: 28
   _textColor: {r: 1, g: 1, b: 1, a: 1}
---- !u!114 &165585585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165585583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _customShader: {fileID: 4800000, guid: ac2e5c7f0a193458e8f848fd6528ee42, type: 3}
-  _toonRamp: {fileID: 0}
-  _baseColor: {r: 1, g: 1, b: 1, a: 1}
-  _copyBaseTexture: 1
 --- !u!114 &165585586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -203,7 +479,7 @@ MonoBehaviour:
   _inputManager: {fileID: 2061853757}
   _facePoseBehavior: {fileID: 2061853756}
   _eyePoseBehavior: {fileID: 2061853755}
-  _lipSync: {fileID: 0}
+  _lipSync: {fileID: 782628376}
   _criticalJointTypes: 
   _useCriticalJointJobs: 0
   _debugDrawing:
@@ -260,12 +536,91 @@ Transform:
   m_GameObject: {fileID: 165585583}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 0, z: 2.5}
+  m_LocalPosition: {x: 2, y: 0, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &165585588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165585583}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53d8467c67f4f4c41ac7589e8c2b89f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableNPREdges: 1
+  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _edgeThreshold: 0.3
+  _edgeMax: 2
+  _colorEdgeWeight: 0.5
+  _innerLineStrength: 1
+--- !u!1001 &223974226
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 437551101866813127, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_Name
+      value: AvatarsSDKUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813127, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 437551101866813144, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 64692b63d8fbcf54b965d7e11f67e96d, type: 3}
 --- !u!1 &311156792
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,6 +838,567 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1001 &782628375
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2430523750807860354, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_Name
+      value: LipSyncInput
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2430523750807860366, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+--- !u!114 &782628376 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2430523750807860367, guid: c019572605bc29e42b3ed5a058599618, type: 3}
+  m_PrefabInstance: {fileID: 782628375}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a509dbf839e0e4044a7affab5b5a3e55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &816566490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 816566494}
+  - component: {fileID: 816566493}
+  - component: {fileID: 816566492}
+  - component: {fileID: 816566491}
+  m_Layer: 0
+  m_Name: AvatarEntity1- NPR - Hierachical
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &816566491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816566490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _labelText: V1 Toon
+  _heightOffset: 2.2
+  _fontSize: 28
+  _textColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &816566492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816566490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _customShader: {fileID: 4800000, guid: a2ed083c404be42f6b79ee7779c57d7f, type: 3}
+  _copyBaseTexture: 1
+  _toonRamp: {fileID: 0}
+  _baseColor: {r: 1, g: 1, b: 1, a: 1}
+  _textureIntensity: 1
+  _toonSteps: 3
+  _toonThreshold: 0.5
+  _toonSmoothness: 0.01
+  _shadowStrength: 0.7
+  _outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  _outlineWidth: 0.003
+  _rimColor: {r: 0.408, g: 0.408, b: 0.408, a: 1}
+  _rimPower: 3
+  _innerLineThresholdSkin: 0.4
+  _innerLineThresholdClothes: 0.1
+  _innerLineMax: 2
+  _seamRangeLimit: 0.6
+  _skinSaturationCutoff: 0.15
+  _innerLineBlur: 0.5
+  _innerLineStrength: 1
+  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _reapplyInterval: 2
+--- !u!114 &816566493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816566490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f775fcfeef42d0543abbd1e03dfe74fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _creationInfo:
+    features: 1398
+    renderFilters:
+      lodFlags: 31
+      manifestationFlags: 2
+      viewFlags: 3
+      subMeshInclusionFlags: -1
+      quality: 1
+      loadRigZipFromGlb: 1
+      reserved: 0000000000000000000000000000000000000000000000000000000000000000
+      subMeshVertexPreference: 0
+  _validateCache: 1
+  _activeView: 2
+  _activeManifestation: 2
+  _activeSubMeshes: -1
+  _activeSubMeshesIncludeUntyped: 1
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
+  _lipSync: {fileID: 782628376}
+  _criticalJointTypes: 
+  _useCriticalJointJobs: 0
+  _debugDrawing:
+    drawTrackingPose: 0
+    drawBoneNames: 0
+    drawSkelHierarchy: 0
+    drawSkelHierarchyInGame: 0
+    drawSkinTransformsInGame: 0
+    drawCriticalJoints: 0
+    skeletonColor: {r: 1, g: 0, b: 0, a: 1}
+    drawGazePos: 0
+    gazePosColor: {r: 1, g: 0, b: 1, a: 1}
+  OnCreatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSkeletonLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDefaultAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFastLoadAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  PreTeardownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLoadFailedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  MotionSmoothingSettings: 0
+  _hidden: 0
+  useRenderLods: 1
+  _isLocal: 1
+  _loadUserFromCdn: 0
+  _cdnUserID: 0
+  _style2DropdownIndex: 0
+  _deferLoading: 0
+  _assets: []
+  _underscorePostfix: 1
+  _overridePostfix: 
+  _autoCdnRetry: 1
+  _enablePollingForAvatarCreation: 1
+  _changeCheckInterval: 8
+--- !u!4 &816566494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816566490}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &844961512
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 844961516}
+  - component: {fileID: 844961515}
+  - component: {fileID: 844961514}
+  - component: {fileID: 844961513}
+  m_Layer: 0
+  m_Name: AvatarEntity1- NPR - V4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &844961513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844961512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _labelText: V4 Gaussian
+  _heightOffset: 2.2
+  _fontSize: 28
+  _textColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &844961514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844961512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _customShader: {fileID: 4800000, guid: 0f2cfdef4bd124a9aa13d186a415d964, type: 3}
+  _copyBaseTexture: 1
+  _toonRamp: {fileID: 0}
+  _baseColor: {r: 1, g: 1, b: 1, a: 1}
+  _textureIntensity: 1
+  _toonSteps: 3
+  _toonThreshold: 0.5
+  _toonSmoothness: 0.01
+  _shadowStrength: 0.7
+  _outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  _outlineWidth: 0.003
+  _rimColor: {r: 0.408, g: 0.408, b: 0.408, a: 1}
+  _rimPower: 3
+  _innerLineThresholdSkin: 0.4
+  _innerLineThresholdClothes: 0.1
+  _innerLineMax: 2
+  _seamRangeLimit: 0.6
+  _skinSaturationCutoff: 0.15
+  _innerLineBlur: 0.5
+  _innerLineStrength: 1
+  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _reapplyInterval: 2
+--- !u!114 &844961515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844961512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f775fcfeef42d0543abbd1e03dfe74fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _creationInfo:
+    features: 1398
+    renderFilters:
+      lodFlags: 31
+      manifestationFlags: 2
+      viewFlags: 3
+      subMeshInclusionFlags: -1
+      quality: 1
+      loadRigZipFromGlb: 1
+      reserved: 0000000000000000000000000000000000000000000000000000000000000000
+      subMeshVertexPreference: 0
+  _validateCache: 1
+  _activeView: 2
+  _activeManifestation: 2
+  _activeSubMeshes: -1
+  _activeSubMeshesIncludeUntyped: 1
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
+  _lipSync: {fileID: 782628376}
+  _criticalJointTypes: 
+  _useCriticalJointJobs: 0
+  _debugDrawing:
+    drawTrackingPose: 0
+    drawBoneNames: 0
+    drawSkelHierarchy: 0
+    drawSkelHierarchyInGame: 0
+    drawSkinTransformsInGame: 0
+    drawCriticalJoints: 0
+    skeletonColor: {r: 1, g: 0, b: 0, a: 1}
+    drawGazePos: 0
+    gazePosColor: {r: 1, g: 0, b: 1, a: 1}
+  OnCreatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSkeletonLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDefaultAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFastLoadAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  PreTeardownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLoadFailedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  MotionSmoothingSettings: 0
+  _hidden: 0
+  useRenderLods: 1
+  _isLocal: 1
+  _loadUserFromCdn: 0
+  _cdnUserID: 0
+  _style2DropdownIndex: 0
+  _deferLoading: 0
+  _assets: []
+  _underscorePostfix: 1
+  _overridePostfix: 
+  _autoCdnRetry: 1
+  _enablePollingForAvatarCreation: 1
+  _changeCheckInterval: 8
+--- !u!4 &844961516
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 844961512}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &935371508
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 935371512}
+  - component: {fileID: 935371511}
+  - component: {fileID: 935371510}
+  - component: {fileID: 935371509}
+  m_Layer: 0
+  m_Name: AvatarEntity1- NPR -Anisotropic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &935371509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935371508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _labelText: V1 Toon
+  _heightOffset: 2.2
+  _fontSize: 28
+  _textColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &935371510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935371508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _customShader: {fileID: 4800000, guid: a2ed083c404be42f6b79ee7779c57d7f, type: 3}
+  _copyBaseTexture: 1
+  _toonRamp: {fileID: 0}
+  _baseColor: {r: 1, g: 1, b: 1, a: 1}
+  _textureIntensity: 1
+  _toonSteps: 3
+  _toonThreshold: 0.5
+  _toonSmoothness: 0.01
+  _shadowStrength: 0.7
+  _outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  _outlineWidth: 0.003
+  _rimColor: {r: 0.408, g: 0.408, b: 0.408, a: 1}
+  _rimPower: 3
+  _innerLineThresholdSkin: 0.4
+  _innerLineThresholdClothes: 0.1
+  _innerLineMax: 2
+  _seamRangeLimit: 0.6
+  _skinSaturationCutoff: 0.15
+  _innerLineBlur: 0.5
+  _innerLineStrength: 1
+  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _reapplyInterval: 2
+--- !u!114 &935371511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935371508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f775fcfeef42d0543abbd1e03dfe74fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _creationInfo:
+    features: 1398
+    renderFilters:
+      lodFlags: 31
+      manifestationFlags: 2
+      viewFlags: 3
+      subMeshInclusionFlags: -1
+      quality: 1
+      loadRigZipFromGlb: 1
+      reserved: 0000000000000000000000000000000000000000000000000000000000000000
+      subMeshVertexPreference: 0
+  _validateCache: 1
+  _activeView: 2
+  _activeManifestation: 2
+  _activeSubMeshes: -1
+  _activeSubMeshesIncludeUntyped: 1
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
+  _lipSync: {fileID: 782628376}
+  _criticalJointTypes: 
+  _useCriticalJointJobs: 0
+  _debugDrawing:
+    drawTrackingPose: 0
+    drawBoneNames: 0
+    drawSkelHierarchy: 0
+    drawSkelHierarchyInGame: 0
+    drawSkinTransformsInGame: 0
+    drawCriticalJoints: 0
+    skeletonColor: {r: 1, g: 0, b: 0, a: 1}
+    drawGazePos: 0
+    gazePosColor: {r: 1, g: 0, b: 1, a: 1}
+  OnCreatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSkeletonLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDefaultAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFastLoadAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  PreTeardownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLoadFailedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  MotionSmoothingSettings: 0
+  _hidden: 0
+  useRenderLods: 1
+  _isLocal: 1
+  _loadUserFromCdn: 0
+  _cdnUserID: 0
+  _style2DropdownIndex: 0
+  _deferLoading: 0
+  _assets: []
+  _underscorePostfix: 1
+  _overridePostfix: 
+  _autoCdnRetry: 1
+  _enablePollingForAvatarCreation: 1
+  _changeCheckInterval: 8
+--- !u!4 &935371512
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 935371508}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1009295525
 GameObject:
   m_ObjectHideFlags: 0
@@ -493,31 +1409,15 @@ GameObject:
   m_Component:
   - component: {fileID: 1009295528}
   - component: {fileID: 1009295527}
-  - component: {fileID: 1009295526}
   - component: {fileID: 1009295529}
+  - component: {fileID: 1009295530}
   m_Layer: 0
-  m_Name: AvatarEntity1- NPR
+  m_Name: AvatarEntity1- NPR - V1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1009295526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1009295525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _customShader: {fileID: 4800000, guid: a2ed083c404be42f6b79ee7779c57d7f, type: 3}
-  _toonRamp: {fileID: 0}
-  _baseColor: {r: 1, g: 1, b: 1, a: 1}
-  _copyBaseTexture: 1
 --- !u!114 &1009295527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -549,7 +1449,7 @@ MonoBehaviour:
   _inputManager: {fileID: 2061853757}
   _facePoseBehavior: {fileID: 2061853756}
   _eyePoseBehavior: {fileID: 2061853755}
-  _lipSync: {fileID: 0}
+  _lipSync: {fileID: 782628376}
   _criticalJointTypes: 
   _useCriticalJointJobs: 0
   _debugDrawing:
@@ -606,7 +1506,7 @@ Transform:
   m_GameObject: {fileID: 1009295525}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.8, y: 0, z: 1}
+  m_LocalPosition: {x: -3, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -624,9 +1524,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _labelText: ' NPRXXX'
+  _labelText: V1 Toon
   _heightOffset: 2.2
+  _fontSize: 28
   _textColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &1009295530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009295525}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53d8467c67f4f4c41ac7589e8c2b89f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableNPREdges: 1
+  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _edgeThreshold: 0.3
+  _edgeMax: 2
+  _colorEdgeWeight: 0.5
+  _innerLineStrength: 1
 --- !u!1 &1011566439
 GameObject:
   m_ObjectHideFlags: 0
@@ -707,7 +1626,7 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!1 &1414998821
+--- !u!1 &1438520854
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -715,24 +1634,156 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1414998822}
+  - component: {fileID: 1438520858}
+  - component: {fileID: 1438520857}
+  - component: {fileID: 1438520856}
+  - component: {fileID: 1438520855}
   m_Layer: 0
-  m_Name: AvatarSpawner
+  m_Name: AvatarEntity1- NPR - V6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1414998822
+  m_IsActive: 0
+--- !u!114 &1438520855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438520854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _labelText: 'V7 '
+  _heightOffset: 2.2
+  _fontSize: 28
+  _textColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &1438520856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438520854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _customShader: {fileID: 4800000, guid: de6e6bc67b7c541b2bc71a05f2ec00f1, type: 3}
+  _copyBaseTexture: 1
+  _toonRamp: {fileID: 0}
+  _baseColor: {r: 1, g: 1, b: 1, a: 1}
+  _textureIntensity: 1
+  _toonSteps: 3
+  _toonThreshold: 0.5
+  _toonSmoothness: 0.01
+  _shadowStrength: 0.7
+  _outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  _outlineWidth: 0.003
+  _rimColor: {r: 0.408, g: 0.408, b: 0.408, a: 1}
+  _rimPower: 3
+  _innerLineThresholdSkin: 0.4
+  _innerLineThresholdClothes: 0.1
+  _innerLineMax: 2
+  _seamRangeLimit: 0.6
+  _skinSaturationCutoff: 0.15
+  _innerLineBlur: 0.5
+  _innerLineStrength: 1
+  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _reapplyInterval: 2
+--- !u!114 &1438520857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1438520854}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f775fcfeef42d0543abbd1e03dfe74fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _creationInfo:
+    features: 1398
+    renderFilters:
+      lodFlags: 31
+      manifestationFlags: 2
+      viewFlags: 3
+      subMeshInclusionFlags: -1
+      quality: 1
+      loadRigZipFromGlb: 1
+      reserved: 0000000000000000000000000000000000000000000000000000000000000000
+      subMeshVertexPreference: 0
+  _validateCache: 1
+  _activeView: 2
+  _activeManifestation: 2
+  _activeSubMeshes: -1
+  _activeSubMeshesIncludeUntyped: 1
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
+  _lipSync: {fileID: 782628376}
+  _criticalJointTypes: 
+  _useCriticalJointJobs: 0
+  _debugDrawing:
+    drawTrackingPose: 0
+    drawBoneNames: 0
+    drawSkelHierarchy: 0
+    drawSkelHierarchyInGame: 0
+    drawSkinTransformsInGame: 0
+    drawCriticalJoints: 0
+    skeletonColor: {r: 1, g: 0, b: 0, a: 1}
+    drawGazePos: 0
+    gazePosColor: {r: 1, g: 0, b: 1, a: 1}
+  OnCreatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSkeletonLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDefaultAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFastLoadAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  PreTeardownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLoadFailedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  MotionSmoothingSettings: 0
+  _hidden: 0
+  useRenderLods: 1
+  _isLocal: 1
+  _loadUserFromCdn: 0
+  _cdnUserID: 0
+  _style2DropdownIndex: 0
+  _deferLoading: 0
+  _assets: []
+  _underscorePostfix: 1
+  _overridePostfix: 
+  _autoCdnRetry: 1
+  _enablePollingForAvatarCreation: 1
+  _changeCheckInterval: 8
+--- !u!4 &1438520858
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1414998821}
+  m_GameObject: {fileID: 1438520854}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 6, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -829,6 +1880,169 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!1 &1685531394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1685531398}
+  - component: {fileID: 1685531397}
+  - component: {fileID: 1685531396}
+  - component: {fileID: 1685531395}
+  m_Layer: 0
+  m_Name: AvatarEntity1- NPR - HalftoneHatching
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1685531395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685531394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _labelText: HalftoneHatching
+  _heightOffset: 2.2
+  _fontSize: 28
+  _textColor: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &1685531396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685531394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbd7d59883c574abea9e4dbcc5e33722, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _customShader: {fileID: 4800000, guid: 452f01b8804f54c8eb77c3425cf4614f, type: 3}
+  _copyBaseTexture: 1
+  _toonRamp: {fileID: 0}
+  _baseColor: {r: 1, g: 1, b: 1, a: 1}
+  _textureIntensity: 1
+  _toonSteps: 3
+  _toonThreshold: 0.5
+  _toonSmoothness: 0.01
+  _shadowStrength: 0.7
+  _outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  _outlineWidth: 0.003
+  _rimColor: {r: 0.408, g: 0.408, b: 0.408, a: 1}
+  _rimPower: 3
+  _innerLineThresholdSkin: 0.4
+  _innerLineThresholdClothes: 0.1
+  _innerLineMax: 2
+  _seamRangeLimit: 0.6
+  _skinSaturationCutoff: 0.15
+  _innerLineBlur: 0.5
+  _innerLineStrength: 1
+  _innerLineColor: {r: 0, g: 0, b: 0, a: 1}
+  _reapplyInterval: 2
+--- !u!114 &1685531397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685531394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f775fcfeef42d0543abbd1e03dfe74fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _creationInfo:
+    features: 1398
+    renderFilters:
+      lodFlags: 31
+      manifestationFlags: 2
+      viewFlags: 3
+      subMeshInclusionFlags: -1
+      quality: 1
+      loadRigZipFromGlb: 1
+      reserved: 0000000000000000000000000000000000000000000000000000000000000000
+      subMeshVertexPreference: 0
+  _validateCache: 1
+  _activeView: 2
+  _activeManifestation: 2
+  _activeSubMeshes: -1
+  _activeSubMeshesIncludeUntyped: 1
+  _inputManager: {fileID: 2061853757}
+  _facePoseBehavior: {fileID: 2061853756}
+  _eyePoseBehavior: {fileID: 2061853755}
+  _lipSync: {fileID: 782628376}
+  _criticalJointTypes: 
+  _useCriticalJointJobs: 0
+  _debugDrawing:
+    drawTrackingPose: 0
+    drawBoneNames: 0
+    drawSkelHierarchy: 0
+    drawSkelHierarchyInGame: 0
+    drawSkinTransformsInGame: 0
+    drawCriticalJoints: 0
+    skeletonColor: {r: 1, g: 0, b: 0, a: 1}
+    drawGazePos: 0
+    gazePosColor: {r: 1, g: 0, b: 1, a: 1}
+  OnCreatedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSkeletonLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnDefaultAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFastLoadAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserAvatarLoadedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  PreTeardownEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  OnLoadFailedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  MotionSmoothingSettings: 0
+  _hidden: 0
+  useRenderLods: 1
+  _isLocal: 1
+  _loadUserFromCdn: 0
+  _cdnUserID: 0
+  _style2DropdownIndex: 0
+  _deferLoading: 0
+  _assets: []
+  _underscorePostfix: 1
+  _overridePostfix: 
+  _autoCdnRetry: 1
+  _enablePollingForAvatarCreation: 1
+  _changeCheckInterval: 8
+--- !u!4 &1685531398
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685531394}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1748786883
 GameObject:
   m_ObjectHideFlags: 0
@@ -856,7 +2070,7 @@ Transform:
   m_GameObject: {fileID: 1748786883}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8, y: 0, z: 1.5}
+  m_LocalPosition: {x: 0, y: 0, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -893,7 +2107,7 @@ MonoBehaviour:
   _inputManager: {fileID: 2061853757}
   _facePoseBehavior: {fileID: 2061853756}
   _eyePoseBehavior: {fileID: 2061853755}
-  _lipSync: {fileID: 0}
+  _lipSync: {fileID: 782628376}
   _criticalJointTypes: 
   _useCriticalJointJobs: 0
   _debugDrawing:
@@ -955,6 +2169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _labelText: Default Avatar
   _heightOffset: 2.2
+  _fontSize: 28
   _textColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &1896674143 stripped
 Transform:
@@ -1139,6 +2354,12 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 681079271}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 100004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1990677196}
+    - targetCorrespondingSourceObject: {fileID: 100004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1990677203}
     - targetCorrespondingSourceObject: {fileID: 100006, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1658397790}
@@ -1154,7 +2375,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 11400010, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
   m_PrefabInstance: {fileID: 1990677192}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1990677195}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: df9f338034892c44ebb62d97894772f1, type: 3}
@@ -1165,6 +2386,29 @@ Camera:
   m_CorrespondingSourceObject: {fileID: 2037080, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
   m_PrefabInstance: {fileID: 1990677192}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1990677195 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
+  m_PrefabInstance: {fileID: 1990677192}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1990677196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990677195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1429a60277f32fc4b872633e35af9db7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 1
+  invertHorizontalMovement: 0
+  invertVerticalMovement: 0
+  rotationSpeed: 60
+  _useKeyboardDebug: 1
+  _clickForKeyboardDebug: 1
 --- !u!114 &1990677198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1209,6 +2453,23 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &1990677203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990677195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef6cfc5bd1524b6fb1ddba433de964f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _swappers:
+  - {fileID: 0}
+  _camera: {fileID: 0}
+  _spawnDistance: 1.5
+  _spawnYOffset: 0
 --- !u!1001 &2061853754
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1217,6 +2478,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2620309820311119722, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
+      propertyPath: DefaultShaderConfigurationInitializer
+      value:
+      objectReference: {fileID: 11400000, guid: 7283bd1f6616a4099914a438ede4b097, type: 2}
+    - target: {fileID: 2620309820311119722, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
+      propertyPath: CelShaderConfigurationInitializer
+      value:
+      objectReference: {fileID: 11400000, guid: 7283bd1f6616a4099914a438ede4b097, type: 2}
     - target: {fileID: 3887819867191740197, guid: 8d8b50752af2ea347aab6ca42fb61c76, type: 3}
       propertyPath: m_Name
       value: AvatarSdkManagerStyle2Meta
@@ -1349,8 +2618,16 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 1898877626}
   - {fileID: 1990677192}
-  - {fileID: 1414998822}
   - {fileID: 1748786885}
+  - {fileID: 123432290}
   - {fileID: 1009295528}
   - {fileID: 165585587}
+  - {fileID: 844961516}
+  - {fileID: 1685531398}
+  - {fileID: 118216613}
+  - {fileID: 1438520858}
+  - {fileID: 935371512}
+  - {fileID: 816566494}
   - {fileID: 2061853754}
+  - {fileID: 782628375}
+  - {fileID: 223974226}

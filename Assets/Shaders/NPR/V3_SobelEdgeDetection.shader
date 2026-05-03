@@ -27,8 +27,14 @@ Shader "Custom/V3_SobelEdgeDetection"
 
         [Toggle] _EnableInnerLines ("Enable Inner Lines", Float) = 1
         _InnerLineColor ("Inner Line Color", Color) = (0,0,0,1)
-        _InnerLineThreshold ("Inner Line Threshold", Range(0.001, 0.5)) = 0.2
-        _InnerLineBlur ("Inner Line Sample Distance", Range(0.0, 10.0)) = 0.5
+        [Space(4)]
+        [Header(Edge Threshold by Surface Type)]
+        _InnerLineThresholdSkin ("Skin Edge Threshold", Range(0.001, 1.0)) = 0.4
+        _InnerLineThresholdClothes ("Clothes Edge Threshold", Range(0.001, 1.0)) = 0.15
+        _InnerLineMax ("Seam Suppression Max", Range(0.1, 8.0)) = 2.0
+        _SeamRangeLimit ("Seam Range Limit", Range(0.0, 1.0)) = 0.6
+        _SkinSaturationCutoff ("Skin Saturation Cutoff", Range(0.0, 0.5)) = 0.25
+        _InnerLineBlur ("Edge Sample Distance", Range(0.0, 10.0)) = 0.5
         _InnerLineStrength ("Inner Line Strength", Range(0, 1)) = 1.0
 
         _RimColor ("Rim Color", Color) = (0.408,0.408,0.408,1)
@@ -139,7 +145,11 @@ Shader "Custom/V3_SobelEdgeDetection"
             float4 _AmbientColor;
             float _EnableInnerLines;
             float4 _InnerLineColor;
-            float _InnerLineThreshold;
+            float _InnerLineThresholdSkin;
+            float _InnerLineThresholdClothes;
+            float _InnerLineMax;
+            float _SeamRangeLimit;
+            float _SkinSaturationCutoff;
             float _InnerLineBlur;
             float _InnerLineStrength;
             float _EnableAlphaTest;
@@ -190,33 +200,57 @@ Shader "Custom/V3_SobelEdgeDetection"
                 Light mainLight = GetMainLight();
                 float NdotL = saturate(dot(nWS, mainLight.direction));
 
-                float smooth = smoothstep(_ToonThreshold - _ToonSmoothness, _ToonThreshold + _ToonSmoothness, NdotL);
-                float toon = floor(smooth * max(1.0, _ToonSteps)) / max(1.0, _ToonSteps);
-                toon = lerp(1.0, toon, _ShadowStrength);
+                float steps  = max(1.0, _ToonSteps);
+                float scaled = NdotL * steps;
+                float band   = floor(scaled);
+                float frac   = scaled - band;
+                float blend  = smoothstep(1.0 - _ToonSmoothness, 1.0, frac);
+                float toon   = saturate((band + blend) / steps);
+                toon = lerp(1.0 - _ShadowStrength, 1.0, toon);
                 
                 float3 lighting = mainLight.color * toon + _AmbientColor.rgb;
                 float rim = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
                 float3 shaded = albedo.rgb * lighting + rim * _RimColor.rgb;
 
-                // SIMPLE SOBEL EDGE DETECTION
+                // SOBEL EDGE DETECTION with skin-aware adaptive threshold
                 if (_EnableInnerLines > 0.5)
                 {
                     float offset = _InnerLineBlur * 0.001;
-                    
-                    float tl = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(-offset, offset)).rgb, float3(0.299, 0.587, 0.114));
-                    float t  = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(0, offset)).rgb, float3(0.299, 0.587, 0.114));
-                    float tr = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(offset, offset)).rgb, float3(0.299, 0.587, 0.114));
-                    float l  = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(-offset, 0)).rgb, float3(0.299, 0.587, 0.114));
-                    float r  = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(offset, 0)).rgb, float3(0.299, 0.587, 0.114));
+
+                    float tl = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(-offset,  offset)).rgb, float3(0.299, 0.587, 0.114));
+                    float t  = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2( 0,       offset)).rgb, float3(0.299, 0.587, 0.114));
+                    float tr = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2( offset,  offset)).rgb, float3(0.299, 0.587, 0.114));
+                    float l  = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(-offset,  0     )).rgb, float3(0.299, 0.587, 0.114));
+                    float r  = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2( offset,  0     )).rgb, float3(0.299, 0.587, 0.114));
                     float bl = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(-offset, -offset)).rgb, float3(0.299, 0.587, 0.114));
-                    float b  = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(0, -offset)).rgb, float3(0.299, 0.587, 0.114));
-                    float br = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2(offset, -offset)).rgb, float3(0.299, 0.587, 0.114));
-                    
+                    float b  = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2( 0,      -offset)).rgb, float3(0.299, 0.587, 0.114));
+                    float br = dot(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv + float2( offset, -offset)).rgb, float3(0.299, 0.587, 0.114));
+
                     float sobelX = (tr + 2.0 * r + br) - (tl + 2.0 * l + bl);
                     float sobelY = (tl + 2.0 * t + tr) - (bl + 2.0 * b + br);
                     float edgeMagnitude = sqrt(sobelX * sobelX + sobelY * sobelY);
-                    
-                    float edge = step(_InnerLineThreshold, edgeMagnitude) * _InnerLineStrength;
+
+                    // UV seam check: if the spread of luminance across all 8 neighbors
+                    // is extreme, some neighbors belong to a different UV island.
+                    // Suppress the edge in that case regardless of magnitude.
+                    float lumaMin = min(tl, min(t, min(tr, min(l, min(r, min(bl, min(b, br)))))));
+                    float lumaMax = max(tl, max(t, max(tr, max(l, max(r, max(bl, max(b, br)))))));
+                    float lumaRange = lumaMax - lumaMin;
+                    float seamMask = step(lumaRange, _SeamRangeLimit); // 1 = safe, 0 = seam
+
+                    // Skin vs clothes classification via HSV saturation of the center pixel.
+                    float maxC = max(texColor.r, max(texColor.g, texColor.b));
+                    float minC = min(texColor.r, min(texColor.g, texColor.b));
+                    float saturation = (maxC > 0.001) ? (maxC - minC) / maxC : 0.0;
+
+                    // skinBlend: 1 = skin (low sat), 0 = clothes (high sat)
+                    float skinBlend = 1.0 - smoothstep(0.0, _SkinSaturationCutoff, saturation);
+                    float adaptiveThreshold = lerp(_InnerLineThresholdClothes, _InnerLineThresholdSkin, skinBlend);
+
+                    // Band-pass: only show edges in [adaptiveThreshold, _InnerLineMax].
+                    // Too-high magnitude = UV seam spike (second line of defense after seamMask).
+                    float inBand = step(adaptiveThreshold, edgeMagnitude) * step(edgeMagnitude, _InnerLineMax);
+                    float edge = inBand * seamMask * _InnerLineStrength;
                     shaded = lerp(shaded, _InnerLineColor.rgb, edge);
                 }
                 

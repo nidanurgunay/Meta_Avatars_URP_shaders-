@@ -2462,14 +2462,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1990677195}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fef6cfc5bd1524b6fb1ddba433de964f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _swappers:
-  - {fileID: 0}
-  _camera: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 2001c071fb2b340d5a1cfd7f3912bdde, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  _anchor: {fileID: 0}
   _spawnDistance: 1.5
   _spawnYOffset: 0
+  _panelWidth: 1.5
+  _initThreshold: 0.05
+  _initMax: 0.5
+  _initColorWeight: 0.5
+  _initLineStrength: 1
 --- !u!1001 &2061853754
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -291,6 +291,26 @@ public class AvatarShaderSwapper : MonoBehaviour
         TrySet(mat, "_InnerLineColor",            _innerLineColor);
     }
 
+    public Color InnerLineColor
+    {
+        get => _innerLineColor;
+        set { _innerLineColor = value; ApplyParameters(); }
+    }
+
+    /// Set a float property on every live swapped material.
+    public void SetMaterialFloat(string prop, float val)
+    {
+        foreach (var mat in _swappedMaterials)
+            if (mat != null && mat.HasProperty(prop)) mat.SetFloat(prop, val);
+    }
+
+    /// Set a color property on every live swapped material.
+    public void SetMaterialColor(string prop, Color val)
+    {
+        foreach (var mat in _swappedMaterials)
+            if (mat != null && mat.HasProperty(prop)) mat.SetColor(prop, val);
+    }
+
     private static void TrySet(Material mat, string prop, Color val)
     {
         if (mat.HasProperty(prop)) mat.SetColor(prop, val);

@@ -126,12 +126,54 @@ Shader "Avatar/MetaNPR"
         //u_brdfLUT ("BRDF LUT Texture", 2D) = "Assets/Oculus/Avatar2/Example/Scenes/BRDF_LUT" {}
 
         [Space]
-        [Header(Inner Screen Space Edges)]
+        [Header(NPR Edge  shared)]
         _InnerLineColor    ("Inner Line Color",   Color)         = (0,0,0,1)
+
+        [Header(NPR Edge  Derivative technique)]
         _EdgeThreshold     ("Edge Threshold",     Range(0, 0.5)) = 0.05
         _EdgeMax           ("Edge Max",           Range(0.05,2)) = 0.5
         _ColorEdgeWeight   ("Color Edge Weight",  Range(0, 1))   = 0.5
         _InnerLineStrength ("Line Strength",      Range(0, 1))   = 1.0
+
+        [Header(NPR Edge  Sobel technique)]
+        _SobelSampleDist    ("Sample Distance",      Range(0, 10))  = 0.5
+        _SobelThreshSkin    ("Thresh Skin",          Range(0, 1))   = 0.4
+        _SobelThreshClothes ("Thresh Clothes",       Range(0, 1))   = 0.15
+        _SobelMax           ("Sobel Max",            Range(0.1, 8)) = 2.0
+        _SobelSeamLimit     ("Seam Limit",           Range(0, 1))   = 0.6
+        _SobelSkinSatCutoff ("Skin Sat Cutoff",      Range(0, 0.5)) = 0.25
+        _SobelStrength      ("Strength",             Range(0, 1))   = 1.0
+
+        [Header(NPR Edge  Normal and Fresnel technique)]
+        _NormalEdgeThreshold  ("Normal Threshold",   Range(0, 1))    = 0.3
+        _NormalEdgeStrength   ("Normal Strength",    Range(0, 1))    = 0.8
+        _NormalEdgeSmoothness ("Normal Smoothness",  Range(0.01, 0.5)) = 0.1
+        _FresnelEdgeThreshold ("Fresnel Threshold",  Range(0, 1))    = 0.3
+        _FresnelEdgeStrength  ("Fresnel Strength",   Range(0, 1))    = 0.5
+
+        [Header(NPR Edge  Gaussian Sobel technique)]
+        _GSobelSampleDist  ("Sample Distance",  Range(0, 10))  = 1.0
+        _GSobelBlurRadius  ("Blur Radius",      Range(0, 5))   = 1.0
+        _GSobelThreshold   ("Threshold",        Range(0, 0.5)) = 0.15
+        _GSobelStrength    ("Strength",         Range(0, 1))   = 1.0
+
+        [Header(NPR Edge  Hierarchical technique)]
+        _HDepthThreshold   ("Depth Threshold",   Range(0.001, 0.2)) = 0.02
+        _HNormalThreshold  ("Normal Threshold",  Range(0.05, 1.0))  = 0.3
+        _HColorThreshold   ("Colour Threshold",  Range(0.01, 0.5))  = 0.1
+        _HDepthWeight      ("Depth Weight",      Range(0, 1))       = 0.8
+        _HNormalWeight     ("Normal Weight",     Range(0, 1))       = 0.8
+        _HColorWeight      ("Colour Weight",     Range(0, 1))       = 0.6
+        _HEdgeWidth        ("Edge Width",        Range(0.5, 10))    = 1.5
+        _HAdaptiveStrength ("Adaptive Strength", Range(0, 1))       = 0.5
+
+        [Header(NPR Effect  Kuwahara technique)]
+        _KuwaharaRadius   ("Kuwahara Radius",   Range(0.5, 8)) = 2.0
+        _KuwaharaStrength ("Kuwahara Strength", Range(0, 1))   = 1.0
+
+        [Header(NPR Inverted Hull Outline)]
+        _OutlineWidth ("Outline Width", Range(0.5, 10)) = 2.0
+        _OutlineColor ("Outline Color",  Color)         = (0,0,0,1)
     }
 
     // Universal Render Pipeline (URP), shader target 5.0
@@ -208,6 +250,35 @@ Shader "Avatar/MetaNPR"
 
             ENDHLSL
         }
+
+        Pass
+        {
+            Name "NPROutline"
+            Tags { "LightMode" = "SRPDefaultUnlit" }
+            Cull Front
+            ZWrite Off
+            ZTest LEqual
+
+            HLSLPROGRAM
+            #pragma editor_sync_compilation
+
+            #pragma vertex Vertex_main_instancing
+            #pragma fragment Fragment_main
+
+            #pragma target 5.0
+            #define OUTLINE_PASS 1
+
+            #pragma shader_feature UNITY_PIPELINE_URP
+            #define UNITY_PIPELINE_URP
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+
+            #include_with_pragmas "app_specific/app_variants.hlsl"
+            #include "app_specific/app_declarations.hlsl"
+            #include_with_pragmas "Style2MetaAvatarCore.hlsl"
+            #include "app_specific/app_functions.hlsl"
+            ENDHLSL
+        }
     }
 
     // Unity Built-in Render Pipeline, shader target 5.0
@@ -256,6 +327,29 @@ Shader "Avatar/MetaNPR"
             #include "app_specific/app_declarations.hlsl"   // replace this with an app_specific declarations file
             #include_with_pragmas "Style2MetaAvatarCore.hlsl"
             #include "app_specific/app_functions.hlsl"   // replace this with an app_specific functions file
+            ENDCG
+        }
+
+        Pass
+        {
+            Name "NPROutline"
+            Cull Front
+            ZWrite Off
+            ZTest LEqual
+
+            CGPROGRAM
+            #pragma editor_sync_compilation
+
+            #pragma vertex Vertex_main_instancing
+            #pragma fragment Fragment_main
+
+            #pragma target 5.0
+            #define OUTLINE_PASS 1
+
+            #include_with_pragmas "app_specific/app_variants.hlsl"
+            #include "app_specific/app_declarations.hlsl"
+            #include_with_pragmas "Style2MetaAvatarCore.hlsl"
+            #include "app_specific/app_functions.hlsl"
             ENDCG
         }
     }
@@ -333,6 +427,35 @@ Shader "Avatar/MetaNPR"
 
             ENDHLSL
         }
+
+        Pass
+        {
+            Name "NPROutline"
+            Tags { "LightMode" = "SRPDefaultUnlit" }
+            Cull Front
+            ZWrite Off
+            ZTest LEqual
+
+            HLSLPROGRAM
+            #pragma editor_sync_compilation
+
+            #pragma vertex Vertex_main_instancing
+            #pragma fragment Fragment_main
+
+            #pragma target 3.5
+            #define OUTLINE_PASS 1
+
+            #pragma shader_feature UNITY_PIPELINE_URP
+            #define UNITY_PIPELINE_URP
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+
+            #include_with_pragmas "app_specific/app_variants.hlsl"
+            #include "app_specific/app_declarations.hlsl"
+            #include_with_pragmas "Style2MetaAvatarCore.hlsl"
+            #include "app_specific/app_functions.hlsl"
+            ENDHLSL
+        }
     }
 
     // Unity Built-in Render Pipeline, shader target 3.5 compatibility mode
@@ -379,6 +502,29 @@ Shader "Avatar/MetaNPR"
             #include "app_specific/app_declarations.hlsl"   // replace this with an app_specific declarations file
             #include_with_pragmas "Style2MetaAvatarCore.hlsl"
             #include "app_specific/app_functions.hlsl"   // replace this with an app_specific functions file
+            ENDCG
+        }
+
+        Pass
+        {
+            Name "NPROutline"
+            Cull Front
+            ZWrite Off
+            ZTest LEqual
+
+            CGPROGRAM
+            #pragma editor_sync_compilation
+
+            #pragma vertex Vertex_main_instancing
+            #pragma fragment Fragment_main
+
+            #pragma target 3.5
+            #define OUTLINE_PASS 1
+
+            #include_with_pragmas "app_specific/app_variants.hlsl"
+            #include "app_specific/app_declarations.hlsl"
+            #include_with_pragmas "Style2MetaAvatarCore.hlsl"
+            #include "app_specific/app_functions.hlsl"
             ENDCG
         }
     }

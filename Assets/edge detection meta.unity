@@ -315,7 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _labelText: Hir Edge
+  _labelText: av
   _heightOffset: 2.2
   _fontSize: 28
   _textColor: {r: 1, g: 1, b: 1, a: 1}
@@ -347,10 +347,10 @@ MonoBehaviour:
   _activeManifestation: 2
   _activeSubMeshes: -1
   _activeSubMeshesIncludeUntyped: 1
-  _inputManager: {fileID: 2061853757}
-  _facePoseBehavior: {fileID: 2061853756}
-  _eyePoseBehavior: {fileID: 2061853755}
-  _lipSync: {fileID: 782628376}
+  _inputManager: {fileID: 0}
+  _facePoseBehavior: {fileID: 0}
+  _eyePoseBehavior: {fileID: 0}
+  _lipSync: {fileID: 0}
   _criticalJointTypes: 
   _useCriticalJointJobs: 0
   _debugDrawing:
@@ -431,7 +431,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &165585584
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1411,7 +1411,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1009295527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2457,10 +2457,6 @@ MonoBehaviour:
   _spawnDistance: 3
   _spawnYOffset: 0.1
   _panelWidth: 0.5
-  _initThreshold: 0.03
-  _initMax: 0.5
-  _initColorWeight: 0.5
-  _initLineStrength: 1
 --- !u!1001 &2061853754
 PrefabInstance:
   m_ObjectHideFlags: 0

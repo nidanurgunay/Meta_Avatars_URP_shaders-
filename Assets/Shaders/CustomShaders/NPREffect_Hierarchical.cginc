@@ -9,7 +9,7 @@
 //   Layer 3  Color        — Roberts Cross on base colour → texture/detail edges
 // Requires ENABLE_NPR_EDGES + EFFECT_HIERARCHICAL keywords.
 
-float4 _InnerLineColor;
+float4 _HEdgeColor;
 float  _HDepthThreshold;     // depth gradient threshold   (0.001–0.2)
 float  _HNormalThreshold;    // normal gradient threshold  (0.05–1.0)
 float  _HColorThreshold;     // colour gradient threshold  (0.01–0.5)
@@ -60,9 +60,11 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
     float edge = max(depthLine  * _HDepthWeight,
                  max(normLine   * _HNormalWeight,
                      colLine    * _HColorWeight));
-    edge = saturate(edge);
+    // Sharpen: tight smoothstep pushes partial values toward 0 or 1
+    // so lines render as clean black rather than a brownish blend.
+    edge = smoothstep(0.20, 0.55, edge);
 
-    color.rgb = lerp(color.rgb, _InnerLineColor.rgb, edge);
+    color.rgb = lerp(color.rgb, _HEdgeColor.rgb, edge);
     return color;
 }
 

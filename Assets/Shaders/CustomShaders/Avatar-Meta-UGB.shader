@@ -166,10 +166,19 @@ Shader "Avatar/MetaNPR"
         _HColorWeight      ("Colour Weight",     Range(0, 1))       = 0.6
         _HEdgeWidth        ("Edge Width",        Range(0.5, 10))    = 1.5
         _HAdaptiveStrength ("Adaptive Strength", Range(0, 1))       = 0.5
+        _HEdgeColor        ("Edge Color",        Color)             = (0,0,0,1)
 
         [Header(NPR Effect  Kuwahara technique)]
         _KuwaharaRadius   ("Kuwahara Radius",   Range(0.5, 8)) = 2.0
         _KuwaharaStrength ("Kuwahara Strength", Range(0, 1))   = 1.0
+
+        [Header(NPR Effect  Kuwahara Sobel technique)]
+        _KSKuwaharaRadius   ("Kuwahara Radius",   Range(0.5, 8))  = 2.0
+        _KSKuwaharaStrength ("Kuwahara Strength", Range(0, 1))    = 0.8
+        _KSSobelSampleDist  ("Sobel Sample Dist", Range(0, 10))   = 1.0
+        _KSBlurRadius       ("Blur Radius",       Range(0, 5))    = 1.0
+        _KSThreshold        ("Edge Threshold",    Range(0, 0.5))  = 0.15
+        _KSSobelStrength    ("Edge Strength",     Range(0, 1))    = 1.0
 
         [Header(NPR Inverted Hull Outline)]
         _OutlineWidth ("Outline Width", Range(0.5, 10)) = 2.0

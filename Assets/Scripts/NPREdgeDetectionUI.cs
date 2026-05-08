@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 /// In-VR panel for live-tuning Avatar/MetaNPR edge-detection parameters.
 /// Techniques: Derivative | Sobel | Normal+Fresnel | Gauss Sobel | Hierarchical | Kuwahara
-/// Controls: B/Y/Tab = toggle | point ray + hold Trigger = drag slider | Grip = step | Trigger on Technique row = next
+/// Controls: B/Y/Tab = toggle | Trigger DOWN = select row / pick technique | Trigger HOLD = drag locked slider | Grip = step cursor row
 public class NPREdgeDetectionUI : MonoBehaviour
 {
     [Header("Panel placement")]
@@ -19,13 +19,13 @@ public class NPREdgeDetectionUI : MonoBehaviour
     private const float CANVAS_W = 1000f;
 
     // ── Technique ─────────────────────────────────────────────────────────────
-    private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5 }
-    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara" };
-    private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA" };
+    private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5, KuwaharaSobel = 6 }
+    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel" };
+    private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA", "EFFECT_KUWAHARA_SOBEL" };
     private Technique _currentTechnique = Technique.Derivative;
 
     // ── Row data ──────────────────────────────────────────────────────────────
-    private enum RowKind { Float, Color, TechSelector, Toggle }
+    private enum RowKind { Float, Color, TechSelector, Toggle, TechOption }
 
     private struct Row
     {
@@ -59,8 +59,11 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
     [System.NonSerialized] private readonly List<Row> _rows = new();
 
-    private int  _cursor     = -1;
-    private int  _hoveredRow = -1;
+
+    private int  _cursor           = -1;
+    private int  _hoveredRow       = -1;
+    private int  _draggingRow      = -1;
+    private bool _techDropdownOpen = false;
     private bool _visible;
 
     private GameObject    _panel;
@@ -150,19 +153,18 @@ public class NPREdgeDetectionUI : MonoBehaviour
                 SetPassEnabled(row.propName, row.currentValue > 0.5f);
         }
         ApplyTechniqueKeywords();
+        UpdateTechniqueLabel();
         Debug.Log("[NPREdgeDetectionUI] PushAll mats=" + _nprMaterials.Count
                   + " technique=" + TechniqueNames[(int)_currentTechnique]);
     }
 
-    // ── Technique switching ───────────────────────────────────────────────────
-    void SwitchTechnique(int delta)
+    // ── Technique selection ───────────────────────────────────────────────────
+    void SelectTechnique(int index)
     {
-        int count = System.Enum.GetValues(typeof(Technique)).Length;
-        _currentTechnique = (Technique)(((int)_currentTechnique + delta + count) % count);
+        _currentTechnique = (Technique)index;
         ApplyTechniqueKeywords();
         ApplyTechniqueVisibility();
         UpdateTechniqueLabel();
-        // Push current values so the new technique gets the right starting values
         foreach (var row in _rows)
             if (row.kind == RowKind.Float && (row.techniqueFilter == -1 || row.techniqueFilter == (int)_currentTechnique))
                 SetShaderFloat(row.propName, row.currentValue);
@@ -184,7 +186,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
         int t = (int)_currentTechnique;
         for (int i = 0; i < _rows.Count; i++)
         {
-            if (_rows[i].techniqueFilter == -1) continue; // always visible
+            if (_rows[i].techniqueFilter == -1) continue;
             if (_rows[i].rowGo != null)
                 _rows[i].rowGo.SetActive(_rows[i].techniqueFilter == t);
         }
@@ -192,15 +194,35 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
     void UpdateTechniqueLabel()
     {
-        // Find the TechSelector row and update its value text
+        string indicator = _techDropdownOpen ? " [-]" : " [+]";
         for (int i = 0; i < _rows.Count; i++)
         {
-            if (_rows[i].kind == RowKind.TechSelector && _rows[i].valueText != null)
+            var r = _rows[i];
+            if (r.kind == RowKind.TechSelector && r.valueText != null)
             {
-                _rows[i].valueText.text = TechniqueNames[(int)_currentTechnique];
-                break;
+                r.valueText.text = TechniqueNames[(int)_currentTechnique] + indicator;
+            }
+            else if (r.kind == RowKind.TechOption)
+            {
+                bool active = r.colorIndex == (int)_currentTechnique;
+                if (r.valueText != null)
+                {
+                    r.valueText.text  = active ? "ACTIVE" : "";
+                    r.valueText.color = active ? new Color(0.4f, 0.9f, 1f) : Color.clear;
+                }
+                if (r.highlight != null)
+                    r.highlight.color = active ? new Color(0.2f, 0.6f, 1f, 0.28f) : Color.clear;
             }
         }
+    }
+
+    void ToggleTechDropdown()
+    {
+        _techDropdownOpen = !_techDropdownOpen;
+        for (int i = 0; i < _rows.Count; i++)
+            if (_rows[i].kind == RowKind.TechOption && _rows[i].rowGo != null)
+                _rows[i].rowGo.SetActive(_techDropdownOpen);
+        UpdateTechniqueLabel();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -241,9 +263,44 @@ public class NPREdgeDetectionUI : MonoBehaviour
     {
         if (_controllerTransform == null) return;
 
-        var ray      = new Ray(_controllerTransform.position, _controllerTransform.forward);
-        int hitCount = Physics.RaycastNonAlloc(ray, _hitBuffer, 5f);
+        var ray = new Ray(_controllerTransform.position, _controllerTransform.forward);
 
+        bool trigHeld = OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger)
+                     || OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger);
+        bool trigDown = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)
+                     || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger);
+        bool trigUp   = OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger)
+                     || OVRInput.GetUp(OVRInput.Button.SecondaryIndexTrigger);
+        bool gripDown = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger)
+                     || OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger);
+        bool gripHeld = OVRInput.Get(OVRInput.Button.PrimaryHandTrigger)
+                     || OVRInput.Get(OVRInput.Button.SecondaryHandTrigger);
+
+        // Release drag lock when trigger is released
+        if (trigUp) _draggingRow = -1;
+
+        // While dragging: project ray onto the locked row's plane only — ignore hover
+        if (trigHeld && _draggingRow >= 0)
+        {
+            DragSliderByRay(_draggingRow, ray);
+            if (_lr != null)
+            {
+                _lr.gameObject.SetActive(true);
+                _lr.SetPosition(0, ray.origin);
+                _lr.SetPosition(1, ray.origin + ray.direction * 3f);
+            }
+            // Grip still steps the cursor row during drag
+            if (_cursor >= 0 && _cursor < _rows.Count && _rows[_cursor].kind == RowKind.Float)
+            {
+                if (gripDown) { AdjustStep(-1f); _decCooldown = FIRST_REPEAT; }
+                else if (gripHeld) { _decCooldown -= Time.deltaTime; if (_decCooldown <= 0f) { _decCooldown = HOLD_REPEAT; AdjustStep(-1f); } }
+                else _decCooldown = 0f;
+            }
+            return;
+        }
+
+        // ── Normal hover detection ────────────────────────────────────────────
+        int hitCount = Physics.RaycastNonAlloc(ray, _hitBuffer, 5f);
         int     newHover    = -1;
         float   closest     = float.MaxValue;
         Vector3 rowHitPoint = Vector3.zero;
@@ -269,56 +326,80 @@ public class NPREdgeDetectionUI : MonoBehaviour
         {
             SetHover(_hoveredRow, false);
             _hoveredRow  = newHover;
-            _cursor      = newHover;
+            // _cursor is NOT auto-updated on hover — only updated on trigger down
             SetHover(_hoveredRow, true);
             _decCooldown = 0f;
         }
 
-        if (_hoveredRow < 0) return;
-
-        bool trigHeld = OVRInput.Get(OVRInput.Button.PrimaryIndexTrigger)
-                     || OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger);
-        bool trigDown = OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger)
-                     || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger);
-        bool decDown  = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger)
-                     || OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger);
-        bool decHeld  = OVRInput.Get(OVRInput.Button.PrimaryHandTrigger)
-                     || OVRInput.Get(OVRInput.Button.SecondaryHandTrigger);
-
-        var row = _rows[_hoveredRow];
-
-        switch (row.kind)
+        // ── Trigger DOWN: select hovered row ─────────────────────────────────
+        if (trigDown && _hoveredRow >= 0)
         {
-            case RowKind.TechSelector:
-                if (trigDown) SwitchTechnique(+1);
-                if (decDown)  SwitchTechnique(-1);
-                break;
+            _cursor = _hoveredRow;
+            var row = _rows[_hoveredRow];
+            switch (row.kind)
+            {
+                case RowKind.TechSelector:
+                    ToggleTechDropdown();
+                    break;
 
-            case RowKind.Float:
-                if (trigHeld) DragSlider(_hoveredRow, rowHitPoint);
-                if (decDown) { AdjustStep(-1f); _decCooldown = FIRST_REPEAT; }
-                else if (decHeld) { _decCooldown -= Time.deltaTime; if (_decCooldown <= 0f) { _decCooldown = HOLD_REPEAT; AdjustStep(-1f); } }
-                else _decCooldown = 0f;
-                break;
+                case RowKind.TechOption:
+                    SelectTechnique(row.colorIndex);
+                    if (_techDropdownOpen) ToggleTechDropdown();
+                    break;
 
-            case RowKind.Color:
-                if (trigDown) AdjustColor(+1);
-                if (decDown)  AdjustColor(-1);
-                break;
+                case RowKind.Float:
+                    _draggingRow = _hoveredRow;
+                    DragSlider(_hoveredRow, rowHitPoint);
+                    break;
 
-            case RowKind.Toggle:
-                if (trigDown || decDown)
+                case RowKind.Color:
+                    AdjustColor(+1);
+                    break;
+
+                case RowKind.Toggle:
                 {
                     var r = _rows[_hoveredRow];
-                    r.currentValue = r.currentValue > 0.5f ? 0f : 1f;
-                    bool on = r.currentValue > 0.5f;
+                    r.currentValue    = r.currentValue > 0.5f ? 0f : 1f;
+                    bool on           = r.currentValue > 0.5f;
                     r.valueText.text  = on ? "ON" : "OFF";
                     r.valueText.color = on ? new Color(0.4f, 0.9f, 1f) : new Color(0.5f, 0.5f, 0.5f);
                     _rows[_hoveredRow] = r;
                     SetPassEnabled(r.propName, on);
+                    break;
                 }
-                break;
+            }
         }
+
+        // ── Grip: step / cycle the cursor row (regardless of hover position) ─
+        if (_cursor >= 0 && _cursor < _rows.Count)
+        {
+            var curRow = _rows[_cursor];
+            if (curRow.kind == RowKind.Float)
+            {
+                if (gripDown) { AdjustStep(-1f); _decCooldown = FIRST_REPEAT; }
+                else if (gripHeld) { _decCooldown -= Time.deltaTime; if (_decCooldown <= 0f) { _decCooldown = HOLD_REPEAT; AdjustStep(-1f); } }
+                else _decCooldown = 0f;
+            }
+            else if (curRow.kind == RowKind.Color)
+            {
+                if (gripDown) AdjustColor(-1);
+            }
+            else if (curRow.kind == RowKind.TechSelector)
+            {
+                if (gripDown) ToggleTechDropdown();
+            }
+        }
+    }
+
+    void DragSliderByRay(int rowIndex, Ray ray)
+    {
+        var row = _rows[rowIndex];
+        if (row.sliderFill == null) return;
+        var bgRt = row.sliderFill.rectTransform.parent as RectTransform;
+        if (bgRt == null) return;
+        float enter;
+        if (!new Plane(bgRt.forward, bgRt.position).Raycast(ray, out enter)) return;
+        DragSlider(rowIndex, ray.GetPoint(enter));
     }
 
     void DragSlider(int rowIndex, Vector3 worldHitPoint)
@@ -408,7 +489,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
         canvas.renderMode = RenderMode.WorldSpace;
 
         _panelRt = _panel.GetComponent<RectTransform>();
-        _panelRt.sizeDelta = new Vector2(CANVAS_W, 1000f);
+        _panelRt.sizeDelta = new Vector2(CANVAS_W, 1300f);
         ApplyPanelScale();
 
         var bg = Go("BG", _panel.transform);
@@ -426,19 +507,19 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
         var t = host.transform;
         Label(t, "NPR EDGE DETECTION",                                      28, new Color(0.4f, 0.9f, 1f));
-        Label(t, "Trigger = drag/next   Grip = step/prev   B/Y = close",    16, new Color(0.5f, 0.5f, 0.5f));
+        Label(t, "Trigger = select/drag   Grip = step selected   B/Y = close", 16, new Color(0.5f, 0.5f, 0.5f));
         Space(t, 6);
 
-        // ── Technique selector (always visible) ──────────────────────────────
+        // ── Technique selector (cycles on trigger/grip) ──────────────────────
         AddTechSelectorRow(t);
         Space(t, 6);
 
         // ── Derivative parameters (technique 0) ──────────────────────────────
         SectionLabel(t, "Derivative Edge");
-        AddFloatRow(t, 0, "Threshold",     "_EdgeThreshold",     0f,    0.5f, 0.005f, 0.05f);
-        AddFloatRow(t, 0, "Edge Max",      "_EdgeMax",           0.05f, 2f,   0.05f,  0.50f);
-        AddFloatRow(t, 0, "Color Weight",  "_ColorEdgeWeight",   0f,    1f,   0.01f,  0.50f);
-        AddFloatRow(t, 0, "Line Strength", "_InnerLineStrength", 0f,    1f,   0.01f,  1.00f);
+        AddFloatRow(t, 0, "Threshold",     "_EdgeThreshold",     0f,    0.5f,  0.005f, 0.05f);
+        AddFloatRow(t, 0, "Edge Max",      "_EdgeMax",           0.05f, 2f,    0.05f,  0.50f);
+        AddFloatRow(t, 0, "Color Weight",  "_ColorEdgeWeight",   0f,    1f,    0.01f,  0.50f);
+        AddFloatRow(t, 0, "Line Strength", "_InnerLineStrength", 0f,    1f,    0.01f,  1.00f);
 
         // ── Sobel parameters (technique 1) ───────────────────────────────────
         SectionLabel(t, "Sobel Edge");
@@ -452,34 +533,44 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
         // ── Normal+Fresnel parameters (technique 2) ──────────────────────────
         SectionLabel(t, "Normal+Fresnel Edge");
-        AddFloatRow(t, 2, "Norm Thresh",    "_NormalEdgeThreshold",  0f,    1f,    0.01f, 0.30f);
-        AddFloatRow(t, 2, "Norm Strength",  "_NormalEdgeStrength",   0f,    1f,    0.01f, 0.80f);
-        AddFloatRow(t, 2, "Norm Smooth",    "_NormalEdgeSmoothness", 0.01f, 0.5f,  0.01f, 0.10f);
-        AddFloatRow(t, 2, "Fresnel Thresh", "_FresnelEdgeThreshold", 0f,    1f,    0.01f, 0.30f);
-        AddFloatRow(t, 2, "Fresnel Str",    "_FresnelEdgeStrength",  0f,    1f,    0.01f, 0.50f);
+        AddFloatRow(t, 2, "Norm Thresh",    "_NormalEdgeThreshold",  0f,    1f,   0.01f, 0.30f);
+        AddFloatRow(t, 2, "Norm Strength",  "_NormalEdgeStrength",   0f,    1f,   0.01f, 0.80f);
+        AddFloatRow(t, 2, "Norm Smooth",    "_NormalEdgeSmoothness", 0.01f, 0.5f, 0.01f, 0.10f);
+        AddFloatRow(t, 2, "Fresnel Thresh", "_FresnelEdgeThreshold", 0f,    1f,   0.01f, 0.30f);
+        AddFloatRow(t, 2, "Fresnel Str",    "_FresnelEdgeStrength",  0f,    1f,   0.01f, 0.50f);
 
         // ── Gaussian Sobel parameters (technique 3) ──────────────────────────
         SectionLabel(t, "Gaussian Sobel Edge");
-        AddFloatRow(t, 3, "Sample Dist",  "_GSobelSampleDist", 0f,    10f,  0.1f,  1.00f);
-        AddFloatRow(t, 3, "Blur Radius",  "_GSobelBlurRadius", 0f,    5f,   0.1f,  1.00f);
-        AddFloatRow(t, 3, "Threshold",    "_GSobelThreshold",  0f,    0.5f, 0.005f,0.15f);
-        AddFloatRow(t, 3, "Strength",     "_GSobelStrength",   0f,    1f,   0.01f, 1.00f);
+        AddFloatRow(t, 3, "Sample Dist",  "_GSobelSampleDist", 0f,    10f,  0.1f,   1.00f);
+        AddFloatRow(t, 3, "Blur Radius",  "_GSobelBlurRadius", 0f,    5f,   0.1f,   1.00f);
+        AddFloatRow(t, 3, "Threshold",    "_GSobelThreshold",  0f,    0.5f, 0.005f, 0.15f);
+        AddFloatRow(t, 3, "Strength",     "_GSobelStrength",   0f,    1f,   0.01f,  1.00f);
 
         // ── Hierarchical parameters (technique 4) ────────────────────────────
         SectionLabel(t, "Hierarchical Edge");
-        AddFloatRow(t, 4, "Depth Thresh",  "_HDepthThreshold",   0.001f,0.2f, 0.005f,0.02f);
-        AddFloatRow(t, 4, "Norm Thresh",   "_HNormalThreshold",  0.05f, 1f,   0.01f, 0.30f);
-        AddFloatRow(t, 4, "Color Thresh",  "_HColorThreshold",   0.01f, 0.5f, 0.01f, 0.10f);
-        AddFloatRow(t, 4, "Depth Weight",  "_HDepthWeight",      0f,    1f,   0.01f, 0.80f);
-        AddFloatRow(t, 4, "Norm Weight",   "_HNormalWeight",     0f,    1f,   0.01f, 0.80f);
-        AddFloatRow(t, 4, "Color Weight",  "_HColorWeight",      0f,    1f,   0.01f, 0.60f);
-        AddFloatRow(t, 4, "Edge Width",    "_HEdgeWidth",        0.5f,  10f,  0.1f,  1.50f);
-        AddFloatRow(t, 4, "Adaptive Str",  "_HAdaptiveStrength", 0f,    1f,   0.01f, 0.50f);
+        AddFloatRow(t, 4, "Depth Thresh",  "_HDepthThreshold",   0.001f, 0.2f, 0.005f, 0.02f);
+        AddFloatRow(t, 4, "Norm Thresh",   "_HNormalThreshold",  0.05f,  1f,   0.01f,  0.30f);
+        AddFloatRow(t, 4, "Color Thresh",  "_HColorThreshold",   0.01f,  0.5f, 0.01f,  0.10f);
+        AddFloatRow(t, 4, "Depth Weight",  "_HDepthWeight",      0f,     1f,   0.01f,  0.80f);
+        AddFloatRow(t, 4, "Norm Weight",   "_HNormalWeight",     0f,     1f,   0.01f,  0.80f);
+        AddFloatRow(t, 4, "Color Weight",  "_HColorWeight",      0f,     1f,   0.01f,  0.60f);
+        AddFloatRow(t, 4, "Edge Width",    "_HEdgeWidth",        0.5f,   10f,  0.1f,   1.50f);
+        AddFloatRow(t, 4, "Adaptive Str",  "_HAdaptiveStrength", 0f,     1f,   0.01f,  0.50f);
+        AddColorRow( t, 4, "Edge Color",   "_HEdgeColor",        0);
 
         // ── Kuwahara parameters (technique 5) ────────────────────────────────
         SectionLabel(t, "Kuwahara Filter");
-        AddFloatRow(t, 5, "Radius",   "_KuwaharaRadius",   0.5f, 8f, 0.1f, 2.0f);
+        AddFloatRow(t, 5, "Radius",   "_KuwaharaRadius",   0.5f, 8f, 0.1f,  2.0f);
         AddFloatRow(t, 5, "Strength", "_KuwaharaStrength", 0f,   1f, 0.01f, 1.0f);
+
+        // ── Kuwahara+Sobel parameters (technique 6) ───────────────────────────
+        SectionLabel(t, "Kuwahara+Sobel");
+        AddFloatRow(t, 6, "Kuw Radius",   "_KSKuwaharaRadius",   0.5f, 8f,   0.1f,   2.0f);
+        AddFloatRow(t, 6, "Kuw Strength", "_KSKuwaharaStrength", 0f,   1f,   0.01f,  0.8f);
+        AddFloatRow(t, 6, "Sample Dist",  "_KSSobelSampleDist",  0f,   10f,  0.1f,   1.0f);
+        AddFloatRow(t, 6, "Blur Radius",  "_KSBlurRadius",       0f,   5f,   0.1f,   1.0f);
+        AddFloatRow(t, 6, "Threshold",    "_KSThreshold",        0f,   0.5f, 0.005f, 0.15f);
+        AddFloatRow(t, 6, "Edge Str",     "_KSSobelStrength",    0f,   1f,   0.01f,  1.0f);
 
         // ── Inverted Hull Outline (always visible) ────────────────────────────
         Space(t, 4);
@@ -497,10 +588,12 @@ public class NPREdgeDetectionUI : MonoBehaviour
     }
 
     // ── Row builders ──────────────────────────────────────────────────────────
+
     void AddTechSelectorRow(Transform parent)
     {
+        // Collapsed header row — trigger opens/closes the dropdown
         var (rowGo, hl, valTxt, curTxt, col, _) = MakeRowShell(parent, "Technique", hasSlider: false);
-        valTxt.text  = TechniqueNames[(int)_currentTechnique];
+        valTxt.text  = TechniqueNames[(int)_currentTechnique] + " [+]";
         valTxt.color = new Color(0.4f, 0.9f, 1f);
         _rows.Add(new Row
         {
@@ -508,6 +601,24 @@ public class NPREdgeDetectionUI : MonoBehaviour
             valueText = valTxt, highlight = hl, cursorText = curTxt,
             collider = col, rowGo = rowGo,
         });
+
+        // One option row per technique — hidden until dropdown is opened
+        for (int i = 0; i < TechniqueNames.Length; i++)
+        {
+            var (oGo, oHl, oVal, oCur, oCol, _) = MakeRowShell(parent, TechniqueNames[i], hasSlider: false);
+            bool active = i == (int)_currentTechnique;
+            oVal.text  = active ? "ACTIVE" : "";
+            oVal.color = active ? new Color(0.4f, 0.9f, 1f) : Color.clear;
+            if (active) oHl.color = new Color(0.2f, 0.6f, 1f, 0.28f);
+            oGo.SetActive(false);
+            _rows.Add(new Row
+            {
+                kind = RowKind.TechOption, label = TechniqueNames[i],
+                colorIndex = i, techniqueFilter = -1,
+                valueText = oVal, highlight = oHl, cursorText = oCur,
+                collider = oCol, rowGo = oGo,
+            });
+        }
     }
 
     void AddFloatRow(Transform parent, int techniqueFilter, string label, string propName,

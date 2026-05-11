@@ -6,7 +6,7 @@
 // MOD END MetaNPR
 
 // MOD START MetaNPR: technique selection (mutually exclusive; default = Derivative)
-#pragma multi_compile __ EFFECT_SOBEL EFFECT_NORMAL_EDGE EFFECT_GAUSS_SOBEL EFFECT_HIERARCHICAL EFFECT_KUWAHARA EFFECT_KUWAHARA_SOBEL
+#pragma multi_compile __ EFFECT_SOBEL EFFECT_NORMAL_EDGE EFFECT_GAUSS_SOBEL EFFECT_HIERARCHICAL EFFECT_KUWAHARA EFFECT_KUWAHARA_SOBEL EFFECT_KUW_GAUSS_HIER
 // MOD END MetaNPR
 
 // MOD START MetaNPR: include the active technique
@@ -23,6 +23,8 @@
     #include "../NPREffect_Kuwahara.cginc"
   #elif defined(EFFECT_KUWAHARA_SOBEL)
     #include "../NPREffect_KuwaharaSobel.cginc"
+  #elif defined(EFFECT_KUW_GAUSS_HIER)
+    #include "../NPREffect_KuwaharaGaussHier.cginc"
   #else
     #include "../AvatarNPREdgeEffect.cginc"
   #endif
@@ -61,7 +63,7 @@ void AppSpecificPostManipulation(avatar_FragmentInput i, inout avatar_FragmentOu
 #endif
 
 #if defined(ENABLE_NPR_EDGES)
-  #if defined(EFFECT_SOBEL) || defined(EFFECT_NORMAL_EDGE) || defined(EFFECT_GAUSS_SOBEL) || defined(EFFECT_HIERARCHICAL) || defined(EFFECT_KUWAHARA) || defined(EFFECT_KUWAHARA_SOBEL)
+  #if defined(EFFECT_SOBEL) || defined(EFFECT_NORMAL_EDGE) || defined(EFFECT_GAUSS_SOBEL) || defined(EFFECT_HIERARCHICAL) || defined(EFFECT_KUWAHARA) || defined(EFFECT_KUWAHARA_SOBEL) || defined(EFFECT_KUW_GAUSS_HIER)
     o.color = ApplyNPREffect(o.color, i.geometry.texcoord_0,
                              i.geometry.normal, i.geometry.worldViewDir);
   #else

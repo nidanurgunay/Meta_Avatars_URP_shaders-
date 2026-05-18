@@ -85,8 +85,9 @@ public class AvatarFreezeController : MonoBehaviour
         if (_inputManager == null || _providerField == null || _snapshotProvider == null)
             if (!TryInit()) return;
 
-        bool toggle = OVRInput.GetDown(OVRInput.Button.One)    // A (right)
-                   || OVRInput.GetDown(OVRInput.Button.Three)  // X (left)
+        // Use explicit controller — Controller.Active fails when activeControllerType is None/wrong side.
+        bool toggle = OVRInput.GetDown(OVRInput.RawButton.A, OVRInput.Controller.RTouch)   // A (right)
+                   || OVRInput.GetDown(OVRInput.RawButton.X, OVRInput.Controller.LTouch)   // X (left)
                    || (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame);
 
         if (toggle) SetFrozen(!_frozen);

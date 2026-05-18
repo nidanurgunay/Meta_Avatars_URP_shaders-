@@ -1,40 +1,49 @@
 #ifndef NPR_EFFECT_KUWAHARA_SOBEL_INCLUDED
 #define NPR_EFFECT_KUWAHARA_SOBEL_INCLUDED
 
-// Combined Kuwahara painterly filter + Gaussian-prefiltered Sobel edge detection.
+// Combined Kuwahara painterly filter + full Gaussian-prefiltered Sobel edge detection.
 // Step 1 — Kuwahara: 9 shared texture samples across 4 overlapping quadrants;
 //           the mean of the lowest-variance quadrant is blended over the lit colour.
-// Step 2 — Gaussian Sobel: each of 8 Sobel positions is pre-blurred with a 9-tap
-//           Gaussian, then gradient magnitude drives edge line compositing.
+// Step 2 — Gaussian Sobel (full pipeline): optional configurable-weight 9-tap Gaussian
+//           pre-blur at each of 8 Sobel positions; threshold band → 4× progressive
+//           smoothstep → power curve → opacity.
 // Requires ENABLE_NPR_EDGES + EFFECT_KUWAHARA_SOBEL keywords.
 
 float4 _InnerLineColor;
-float  _KSKuwaharaRadius;    // Kuwahara UV offset  (0.5-8,  x0.001)
-float  _KSKuwaharaStrength;  // Kuwahara blend      (0-1)
-float  _KSSobelSampleDist;   // Sobel kernel offset (0-10, x0.001)
-float  _KSBlurRadius;        // Gaussian tap offset (0-5,  x0.001)
-float  _KSThreshold;         // Edge threshold      (0-0.5)
-float  _KSSobelStrength;     // Edge line opacity   (0-1)
+float  _KSKuwaharaRadius;    // Kuwahara UV offset            (0.5–8, × 0.001)
+float  _KSKuwaharaStrength;  // Kuwahara blend                (0–1)
+float  _KSEnableGaussBlur;   // 1 = 9-tap Gaussian pre-blur, 0 = point sample
+float  _KSSobelSampleDist;   // Sobel kernel UV offset        (0–10, × 0.001)
+float  _KSBlurRadius;        // Per-sample Gaussian blur radius (0–5, × 0.001)
+float  _KSCenterWeight;      // Gaussian center tap weight    (0.1–0.5)
+float  _KSCardinalWeight;    // Gaussian cardinal tap weight  (0–0.3)
+float  _KSDiagonalWeight;    // Gaussian diagonal tap weight  (0–0.1)
+float  _KSThreshold;         // Sobel threshold base          (0–0.5)
+float  _KSThreshMin;         // Threshold band lower multiplier (0–1)
+float  _KSThreshMax;         // Threshold band upper multiplier (1–5)
+float  _KSTightness;         // 0 = wide/soft → 1 = tight/crisp (4 smoothstep passes)
+float  _KSPowerCurve;        // Post-pass power curve         (0.5–5)
+float  _KSSobelStrength;     // Edge line opacity             (0–1)
 
-float KS_GaussianLuma(float2 center, float blurR)
+float KS_GaussianLuma(float2 center, float blurR, float cW, float cardW, float diagW)
 {
     float3 L = float3(0.299, 0.587, 0.114);
     float  v = 0.0;
-    v += dot(tex2D(u_BaseColorSampler, center).rgb,                                 L) * 0.25;
-    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR,     0)).rgb,         L) * 0.125;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR,     0)).rgb,         L) * 0.125;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(     0,  blurR)).rgb,        L) * 0.125;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(     0, -blurR)).rgb,        L) * 0.125;
-    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR,  blurR)).rgb,        L) * 0.0625;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR,  blurR)).rgb,        L) * 0.0625;
-    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR, -blurR)).rgb,        L) * 0.0625;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR, -blurR)).rgb,        L) * 0.0625;
+    v += dot(tex2D(u_BaseColorSampler, center).rgb,                                L) * cW;
+    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR,     0)).rgb,        L) * cardW;
+    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR,     0)).rgb,        L) * cardW;
+    v += dot(tex2D(u_BaseColorSampler, center + float2(    0,  blurR)).rgb,        L) * cardW;
+    v += dot(tex2D(u_BaseColorSampler, center + float2(    0, -blurR)).rgb,        L) * cardW;
+    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR,  blurR)).rgb,       L) * diagW;
+    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR,  blurR)).rgb,       L) * diagW;
+    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR, -blurR)).rgb,       L) * diagW;
+    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR, -blurR)).rgb,       L) * diagW;
     return v;
 }
 
 float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldViewDir)
 {
-    // ── Kuwahara: 9 shared samples, 4 overlapping 2x2 quadrants ─────────────
+    // ── Kuwahara: 9 shared samples, 4 overlapping 2×2 quadrants ─────────────
     float r = _KSKuwaharaRadius * 0.001;
 
     float4 c00 = tex2D(u_BaseColorSampler, uv + float2(-r, -r));
@@ -68,25 +77,48 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
 
     color.rgb = lerp(color.rgb, best.rgb, _KSKuwaharaStrength);
 
-    // ── Gaussian Sobel: 8 positions each pre-blurred with 9-tap Gaussian ────
+    // ── Gaussian Sobel (full pipeline) ───────────────────────────────────────
     float off  = _KSSobelSampleDist * 0.001;
     float blur = _KSBlurRadius      * 0.001;
 
-    float tl = KS_GaussianLuma(uv + float2(-off,  off), blur);
-    float t  = KS_GaussianLuma(uv + float2(   0,  off), blur);
-    float tr = KS_GaussianLuma(uv + float2( off,  off), blur);
-    float l  = KS_GaussianLuma(uv + float2(-off,    0), blur);
-    float ri = KS_GaussianLuma(uv + float2( off,    0), blur);
-    float bl = KS_GaussianLuma(uv + float2(-off, -off), blur);
-    float b  = KS_GaussianLuma(uv + float2(   0, -off), blur);
-    float br = KS_GaussianLuma(uv + float2( off, -off), blur);
+    float cW, cardW, diagW;
+    if (_KSEnableGaussBlur > 0.5)
+    {
+        float totalW = _KSCenterWeight + 4.0 * _KSCardinalWeight + 4.0 * _KSDiagonalWeight;
+        totalW = max(totalW, 0.0001);
+        cW    = _KSCenterWeight   / totalW;
+        cardW = _KSCardinalWeight / totalW;
+        diagW = _KSDiagonalWeight / totalW;
+    }
+    else { cW = 1.0; cardW = 0.0; diagW = 0.0; }
+
+    float tl = KS_GaussianLuma(uv + float2(-off,  off), blur, cW, cardW, diagW);
+    float t  = KS_GaussianLuma(uv + float2(   0,  off), blur, cW, cardW, diagW);
+    float tr = KS_GaussianLuma(uv + float2( off,  off), blur, cW, cardW, diagW);
+    float l  = KS_GaussianLuma(uv + float2(-off,    0), blur, cW, cardW, diagW);
+    float ri = KS_GaussianLuma(uv + float2( off,    0), blur, cW, cardW, diagW);
+    float bl = KS_GaussianLuma(uv + float2(-off, -off), blur, cW, cardW, diagW);
+    float b  = KS_GaussianLuma(uv + float2(   0, -off), blur, cW, cardW, diagW);
+    float br = KS_GaussianLuma(uv + float2( off, -off), blur, cW, cardW, diagW);
 
     float sobelX  = (tr + 2.0*ri + br) - (tl + 2.0*l + bl);
     float sobelY  = (tl + 2.0*t  + tr) - (bl + 2.0*b + br);
     float edgeMag = sqrt(sobelX*sobelX + sobelY*sobelY);
 
-    float edge = smoothstep(_KSThreshold * 0.5, _KSThreshold * 1.5, edgeMag);
-    edge = smoothstep(0.2, 0.8, edge);
+    float minEdge = _KSThreshold * _KSThreshMin;
+    float maxEdge = _KSThreshold * _KSThreshMax;
+    float edge    = smoothstep(minEdge, maxEdge, edgeMag);
+
+    float hw1 = lerp(0.5, 0.03, _KSTightness);
+    edge = smoothstep(0.5 - hw1, 0.5 + hw1, edge);
+    float hw2 = lerp(0.5, 0.15, _KSTightness);
+    edge = smoothstep(0.5 - hw2, 0.5 + hw2, edge);
+    float hw3 = lerp(0.5, 0.25, _KSTightness);
+    edge = smoothstep(0.5 - hw3, 0.5 + hw3, edge);
+    float hw4 = lerp(0.5, 0.35, _KSTightness);
+    edge = smoothstep(0.5 - hw4, 0.5 + hw4, edge);
+
+    edge = pow(edge, _KSPowerCurve);
     edge *= _KSSobelStrength;
 
     color.rgb = lerp(color.rgb, _InnerLineColor.rgb, edge);

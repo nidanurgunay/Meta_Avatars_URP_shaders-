@@ -1,59 +1,65 @@
 #ifndef NPR_EFFECT_KUWAHARA_GAUSS_HIER_INCLUDED
 #define NPR_EFFECT_KUWAHARA_GAUSS_HIER_INCLUDED
 
-// Triple-layer NPR effect:
+// Two-phase NPR effect:
 //   Phase 1 — Kuwahara painterly filter    → stylises base colour
-//   Phase 2 — Gaussian Sobel (V4 strategy) → texture/colour edge lines
-//   Phase 3 — Hierarchical multi-layer     → depth + normal + colour crease edges
-// Phases 2 & 3 are fused with max-pooling, then composited over the Kuwahara colour.
+//   Phase 2 — Hierarchical multi-layer     → depth + normal + colour crease edges
+//              (colour layer supports optional Gaussian pre-blur)
 // Requires ENABLE_NPR_EDGES + EFFECT_KUW_GAUSS_HIER keywords.
 
 // ── Kuwahara ─────────────────────────────────────────────────────────────────
 float  _KGHKuwaharaRadius;    // UV-space Kuwahara sample offset (0.5–8, × 0.001)
 float  _KGHKuwaharaStrength;  // Kuwahara blend (0–1)
 
-// ── Gaussian Sobel ────────────────────────────────────────────────────────────
-float  _KGHEnableGaussBlur;   // 1 = 9-tap Gaussian pre-blur, 0 = plain point sample
-float  _KGHSampleDist;        // Sobel kernel UV offset (0–10, × 0.001)
-float  _KGHBlurRadius;        // Per-sample Gaussian blur radius (0–5, × 0.001)
-float  _KGHCenterWeight;      // Gaussian center tap weight (0.1–0.5)
+// ── Hierarchical ──────────────────────────────────────────────────────────────
+float  _KGHDepthThreshold;    // Depth gradient threshold    (0.001–0.2)
+float  _KGHNormalThreshold;   // Normal gradient threshold   (0.05–1)
+float  _KGHColorThreshold;    // Color gradient threshold    (0.01–0.5)
+float  _KGHDepthWeight;       // Depth layer blend weight    (0–1)
+float  _KGHNormalWeight;      // Normal layer blend weight   (0–1)
+float  _KGHColorWeight;       // Color layer blend weight    (0–1)
+float  _KGHEdgeWidth;         // Roberts Cross UV offset     (0.5–10, × 0.001)
+float  _KGHAdaptiveStrength;  // Suppress edges in dark areas (0–1)
+float  _KGHHierTightness;     // 0 = soft/wide, 1 = crisp/thin
+float  _KGHHStrength;         // Hierarchical edge opacity   (0–1)
+
+// ── Colour layer optional Gaussian blur ──────────────────────────────────────
+float  _KGHEnableGaussBlur;   // 1 = Gaussian pre-blur on colour samples, 0 = point sample
+float  _KGHBlurRadius;        // Gaussian blur radius        (0–5, × 0.001)
+float  _KGHCenterWeight;      // Gaussian centre tap weight  (0.1–0.5)
 float  _KGHCardinalWeight;    // Gaussian cardinal tap weight (0–0.3)
 float  _KGHDiagonalWeight;    // Gaussian diagonal tap weight (0–0.1)
-float  _KGHGThreshold;        // Sobel threshold base (0–0.5)
-float  _KGHGThreshMin;        // Threshold band lower multiplier (0–1)
-float  _KGHGThreshMax;        // Threshold band upper multiplier (1–5)
-float  _KGHTightness;         // 0=wide/soft → 1=tight/crisp, drives all 4 passes
-float  _KGHGPowerCurve;       // Post-pass power curve (0.5–5)
-float  _KGHGStrength;         // Gaussian Sobel edge opacity (0–1)
-
-// ── Hierarchical ──────────────────────────────────────────────────────────────
-float  _KGHDepthThreshold;    // Depth gradient threshold (0.001–0.2)
-float  _KGHNormalThreshold;   // Normal gradient threshold (0.05–1)
-float  _KGHColorThreshold;    // Color gradient threshold (0.01–0.5)
-float  _KGHDepthWeight;       // Depth layer blend weight (0–1)
-float  _KGHNormalWeight;      // Normal layer blend weight (0–1)
-float  _KGHColorWeight;       // Color layer blend weight (0–1)
-float  _KGHEdgeWidth;         // Roberts Cross UV offset (0.5–10, × 0.001)
-float  _KGHAdaptiveStrength;  // Suppress edges in dark areas (0–1)
-float  _KGHHStrength;         // Hierarchical edge opacity (0–1)
 
 // ── Shared ────────────────────────────────────────────────────────────────────
-float4 _KGHEdgeColor;         // Combined edge colour (default black)
+float4 _KGHEdgeColor;         // Edge colour
 
-// 9-tap Gaussian luminance — weights are pre-normalised at the call site
-float KGH_GaussianLuma(float2 center, float blurR, float cW, float cardW, float diagW)
+// Luminance of one colour sample — point or 9-tap Gaussian pre-blur.
+float KH_ColorSample(float2 uv)
 {
     float3 L = float3(0.299, 0.587, 0.114);
-    float  v = 0.0;
-    v += dot(tex2D(u_BaseColorSampler, center).rgb,                                L) * cW;
-    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR,     0)).rgb,        L) * cardW;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR,     0)).rgb,        L) * cardW;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(    0,  blurR)).rgb,        L) * cardW;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(    0, -blurR)).rgb,        L) * cardW;
-    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR,  blurR)).rgb,       L) * diagW;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR,  blurR)).rgb,       L) * diagW;
-    v += dot(tex2D(u_BaseColorSampler, center + float2( blurR, -blurR)).rgb,       L) * diagW;
-    v += dot(tex2D(u_BaseColorSampler, center + float2(-blurR, -blurR)).rgb,       L) * diagW;
+    float v;
+    if (_KGHEnableGaussBlur > 0.5)
+    {
+        float totalW = _KGHCenterWeight + 4.0 * _KGHCardinalWeight + 4.0 * _KGHDiagonalWeight;
+        totalW = max(totalW, 0.0001);
+        float cW    = _KGHCenterWeight   / totalW;
+        float cardW = _KGHCardinalWeight / totalW;
+        float diagW = _KGHDiagonalWeight / totalW;
+        float br    = _KGHBlurRadius * 0.001;
+        v  = dot(tex2D(u_BaseColorSampler, uv).rgb,                               L) * cW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2( br,  0)).rgb,             L) * cardW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(-br,  0)).rgb,             L) * cardW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(  0, br)).rgb,             L) * cardW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(  0,-br)).rgb,             L) * cardW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2( br, br)).rgb,             L) * diagW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(-br, br)).rgb,             L) * diagW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2( br,-br)).rgb,             L) * diagW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(-br,-br)).rgb,             L) * diagW;
+    }
+    else
+    {
+        v = dot(tex2D(u_BaseColorSampler, uv).rgb, L);
+    }
     return v;
 }
 
@@ -93,51 +99,7 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
 
     color.rgb = lerp(color.rgb, best.rgb, _KGHKuwaharaStrength);
 
-    // ── Phase 2: Gaussian Sobel (V4 strategy) ────────────────────────────────
-    float off  = _KGHSampleDist * 0.001;
-    float blur = _KGHBlurRadius * 0.001;
-
-    float cW, cardW, diagW;
-    if (_KGHEnableGaussBlur > 0.5)
-    {
-        float totalW = _KGHCenterWeight + 4.0 * _KGHCardinalWeight + 4.0 * _KGHDiagonalWeight;
-        totalW = max(totalW, 0.0001);
-        cW    = _KGHCenterWeight   / totalW;
-        cardW = _KGHCardinalWeight / totalW;
-        diagW = _KGHDiagonalWeight / totalW;
-    }
-    else { cW = 1.0; cardW = 0.0; diagW = 0.0; }
-
-    float tl = KGH_GaussianLuma(uv + float2(-off,  off), blur, cW, cardW, diagW);
-    float t  = KGH_GaussianLuma(uv + float2(   0,  off), blur, cW, cardW, diagW);
-    float tr = KGH_GaussianLuma(uv + float2( off,  off), blur, cW, cardW, diagW);
-    float l  = KGH_GaussianLuma(uv + float2(-off,    0), blur, cW, cardW, diagW);
-    float ri = KGH_GaussianLuma(uv + float2( off,    0), blur, cW, cardW, diagW);
-    float bl = KGH_GaussianLuma(uv + float2(-off, -off), blur, cW, cardW, diagW);
-    float b  = KGH_GaussianLuma(uv + float2(   0, -off), blur, cW, cardW, diagW);
-    float br = KGH_GaussianLuma(uv + float2( off, -off), blur, cW, cardW, diagW);
-
-    float sobelX  = (tr + 2*ri + br) - (tl + 2*l + bl);
-    float sobelY  = (tl + 2*t  + tr) - (bl + 2*b + br);
-    float edgeMag = sqrt(sobelX*sobelX + sobelY*sobelY);
-
-    float minEdge = _KGHGThreshold * _KGHGThreshMin;
-    float maxEdge = _KGHGThreshold * _KGHGThreshMax;
-    float gEdge   = smoothstep(minEdge, maxEdge, edgeMag);
-
-    float hw1 = lerp(0.5, 0.03, _KGHTightness);
-    gEdge = smoothstep(0.5 - hw1, 0.5 + hw1, gEdge);
-    float hw2 = lerp(0.5, 0.15, _KGHTightness);
-    gEdge = smoothstep(0.5 - hw2, 0.5 + hw2, gEdge);
-    float hw3 = lerp(0.5, 0.25, _KGHTightness);
-    gEdge = smoothstep(0.5 - hw3, 0.5 + hw3, gEdge);
-    float hw4 = lerp(0.5, 0.35, _KGHTightness);
-    gEdge = smoothstep(0.5 - hw4, 0.5 + hw4, gEdge);
-
-    gEdge = pow(gEdge, _KGHGPowerCurve);
-    gEdge *= _KGHGStrength;
-
-    // ── Phase 3: Hierarchical edge detection ─────────────────────────────────
+    // ── Phase 2: Hierarchical edge detection ─────────────────────────────────
     float depth     = length((float3)worldViewDir);
     float dDepthX   = ddx(depth);
     float dDepthY   = ddy(depth);
@@ -152,11 +114,10 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
                                 _KGHNormalThreshold + 0.02, normGrad);
 
     float hoff    = _KGHEdgeWidth * 0.001;
-    float3 Lc     = float3(0.299, 0.587, 0.114);
-    float lum_tl  = dot(tex2D(u_BaseColorSampler, uv + float2(-hoff,  hoff)).rgb, Lc);
-    float lum_tr  = dot(tex2D(u_BaseColorSampler, uv + float2( hoff,  hoff)).rgb, Lc);
-    float lum_bl  = dot(tex2D(u_BaseColorSampler, uv + float2(-hoff, -hoff)).rgb, Lc);
-    float lum_br  = dot(tex2D(u_BaseColorSampler, uv + float2( hoff, -hoff)).rgb, Lc);
+    float lum_tl  = KH_ColorSample(uv + float2(-hoff,  hoff));
+    float lum_tr  = KH_ColorSample(uv + float2( hoff,  hoff));
+    float lum_bl  = KH_ColorSample(uv + float2(-hoff, -hoff));
+    float lum_br  = KH_ColorSample(uv + float2( hoff, -hoff));
     float colGrad = abs(lum_tl - lum_br) + abs(lum_tr - lum_bl);
     float colLine = smoothstep(_KGHColorThreshold - 0.01,
                                _KGHColorThreshold + 0.01, colGrad);
@@ -170,12 +131,11 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
     float hEdge = max(depthLine * _KGHDepthWeight,
                   max(normLine  * _KGHNormalWeight,
                       colLine   * _KGHColorWeight));
-    hEdge = smoothstep(0.20, 0.55, hEdge);
+    float hierHW = lerp(0.175, 0.025, _KGHHierTightness);
+    hEdge = smoothstep(0.375 - hierHW, 0.375 + hierHW, hEdge);
     hEdge *= _KGHHStrength;
 
-    // ── Fusion: max-pool Gaussian Sobel and Hierarchical, apply to colour ─────
-    float edge = max(gEdge, hEdge);
-    color.rgb  = lerp(color.rgb, _KGHEdgeColor.rgb, edge);
+    color.rgb = lerp(color.rgb, _KGHEdgeColor.rgb, hEdge);
     return color;
 }
 

@@ -6,7 +6,8 @@
 // Three layers fused with weighted max-pooling:
 //   Layer 1  Depth proxy  — ddx/ddy on camera distance  → silhouette edges
 //   Layer 2  Normal       — ddx/ddy on world normal      → surface crease edges
-//   Layer 3  Color        — Roberts Cross on base colour → texture/detail edges
+//   Layer 3  Color        — Roberts Cross or Sobel 3×3 on base colour,
+//                           optionally Gaussian-pre-blurred → texture/detail edges
 // Requires ENABLE_NPR_EDGES + EFFECT_HIERARCHICAL keywords.
 
 float4 _HEdgeColor;
@@ -16,17 +17,51 @@ float  _HColorThreshold;     // colour gradient threshold  (0.01–0.5)
 float  _HDepthWeight;        // depth layer blend weight   (0–1)
 float  _HNormalWeight;       // normal layer blend weight  (0–1)
 float  _HColorWeight;        // colour layer blend weight  (0–1)
-float  _HEdgeWidth;          // Roberts Cross UV offset    (0.5–10, × 0.001)
+float  _HEdgeWidth;          // kernel UV offset           (0.5–10, × 0.001)
 float  _HAdaptiveStrength;   // suppress edges in dark areas (0–1)
+float  _HEnableGaussBlur;    // 1 = Gaussian pre-blur on colour samples, 0 = point sample
+float  _HBlurRadius;         // Gaussian blur radius       (0–5, × 0.001)
+float  _HCenterWeight;       // Gaussian centre tap weight  (0.1–0.5)
+float  _HCardinalWeight;     // Gaussian cardinal tap weight (0–0.3)
+float  _HDiagonalWeight;     // Gaussian diagonal tap weight (0–0.1)
+
+// Luminance of one colour sample — point sample or 9-tap Gaussian,
+// controlled by _HEnableGaussBlur / _HBlurRadius.
+float HColorSample(float2 uv)
+{
+    float3 L = float3(0.299, 0.587, 0.114);
+    float v;
+    if (_HEnableGaussBlur > 0.5)
+    {
+        float totalW = _HCenterWeight + 4.0 * _HCardinalWeight + 4.0 * _HDiagonalWeight;
+        totalW = max(totalW, 0.0001);
+        float cW    = _HCenterWeight   / totalW;
+        float cardW = _HCardinalWeight / totalW;
+        float diagW = _HDiagonalWeight / totalW;
+        float br    = _HBlurRadius * 0.001;
+        v  = dot(tex2D(u_BaseColorSampler, uv).rgb,                               L) * cW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2( br,  0)).rgb,             L) * cardW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(-br,  0)).rgb,             L) * cardW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(  0, br)).rgb,             L) * cardW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(  0,-br)).rgb,             L) * cardW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2( br, br)).rgb,             L) * diagW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(-br, br)).rgb,             L) * diagW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2( br,-br)).rgb,             L) * diagW;
+        v += dot(tex2D(u_BaseColorSampler, uv + float2(-br,-br)).rgb,             L) * diagW;
+    }
+    else
+    {
+        v = dot(tex2D(u_BaseColorSampler, uv).rgb, L);
+    }
+    return v;
+}
 
 float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldViewDir)
 {
     // ── Layer 1: depth proxy ─────────────────────────────────────────────────
-    // worldViewDir is the un-normalised camera→surface vector in world space;
-    // its length equals the camera-to-surface distance.
-    float depth    = length((float3)worldViewDir);
-    float dDepthX  = ddx(depth);
-    float dDepthY  = ddy(depth);
+    float depth     = length((float3)worldViewDir);
+    float dDepthX   = ddx(depth);
+    float dDepthY   = ddy(depth);
     float depthGrad = sqrt(dDepthX*dDepthX + dDepthY*dDepthY);
     float depthLine = smoothstep(_HDepthThreshold - 0.005,
                                  _HDepthThreshold + 0.005, depthGrad);
@@ -38,14 +73,15 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
     float  normLine = smoothstep(_HNormalThreshold - 0.02,
                                  _HNormalThreshold + 0.02, normGrad);
 
-    // ── Layer 3: Roberts Cross on base colour ────────────────────────────────
-    float off = _HEdgeWidth * 0.001;
-    float3 L  = float3(0.299, 0.587, 0.114);
-    float lum_tl = dot(tex2D(u_BaseColorSampler, uv + float2(-off,  off)).rgb, L);
-    float lum_tr = dot(tex2D(u_BaseColorSampler, uv + float2( off,  off)).rgb, L);
-    float lum_bl = dot(tex2D(u_BaseColorSampler, uv + float2(-off, -off)).rgb, L);
-    float lum_br = dot(tex2D(u_BaseColorSampler, uv + float2( off, -off)).rgb, L);
+    // ── Layer 3: colour edge ─────────────────────────────────────────────────
+    // HColorSample handles Gaussian pre-blur (or plain point sample) at each tap.
+    float off     = _HEdgeWidth * 0.001;
+    float lum_tl  = HColorSample(uv + float2(-off,  off));
+    float lum_tr  = HColorSample(uv + float2( off,  off));
+    float lum_bl  = HColorSample(uv + float2(-off, -off));
+    float lum_br  = HColorSample(uv + float2( off, -off));
     float colGrad = abs(lum_tl - lum_br) + abs(lum_tr - lum_bl); // Roberts Cross
+
     float colLine = smoothstep(_HColorThreshold - 0.01,
                                _HColorThreshold + 0.01, colGrad);
 
@@ -54,14 +90,12 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
     float adapt      = lerp(1.0, saturate(brightness * 2.0), _HAdaptiveStrength);
     depthLine *= adapt;
     colLine   *= adapt;
-    normLine  *= lerp(1.0, adapt, 0.5); // normals less sensitive to brightness
+    normLine  *= lerp(1.0, adapt, 0.5);
 
     // ── Weighted max-pooling fusion ───────────────────────────────────────────
     float edge = max(depthLine  * _HDepthWeight,
                  max(normLine   * _HNormalWeight,
                      colLine    * _HColorWeight));
-    // Sharpen: tight smoothstep pushes partial values toward 0 or 1
-    // so lines render as clean black rather than a brownish blend.
     edge = smoothstep(0.20, 0.55, edge);
 
     color.rgb = lerp(color.rgb, _HEdgeColor.rgb, edge);

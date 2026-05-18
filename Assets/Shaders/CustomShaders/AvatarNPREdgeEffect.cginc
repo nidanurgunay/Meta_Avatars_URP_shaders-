@@ -1,19 +1,31 @@
 #ifndef AVATAR_NPR_EDGE_EFFECT_INCLUDED
 #define AVATAR_NPR_EDGE_EFFECT_INCLUDED
 
-// Screen-space derivative inner-edge detection for Meta Avatars.
-// Uses hardware ddx/ddy (atlas-safe: never crosses UV island boundaries).
+// Screen-space derivative inner-edge detection + toon posterization for Meta Avatars.
+// Color and normal channels are fully independent — each has its own threshold, max, and strength.
+// Toon posterization quantizes the already-lit color into discrete luminance bands before
+// drawing edges, giving a cel-shaded appearance without access to raw lighting components.
 // UnityCG.cginc is already included via Style2MetaAvatarCore.hlsl.
 
-// Uniforms (declared here, exposed via shader Properties and OvrAvatarShaderConfiguration)
 float4 _InnerLineColor;
-float  _EdgeThreshold;
-float  _EdgeMax;
-float  _ColorEdgeWeight;
-float  _InnerLineStrength;
+float  _ColorThreshold;
+float  _ColorEdgeMax;
+float  _ColorStrength;
+float  _NormalThreshold;
+float  _NormalEdgeMax;
+float  _NormalStrength;
+float  _ToonBands;    // number of discrete luminance steps (2–8)
+float  _ToonStrength; // blend between original PBR and posterized (0=off, 1=full toon)
 
 float4 ApplyNPREdgeEffect(float4 color, float2 uv)
 {
+    // ── Toon posterization ────────────────────────────────────────────────────
+    float lum    = dot(color.rgb, float3(0.2126, 0.7152, 0.0722));
+    float banded = floor(lum * _ToonBands + 0.5) / _ToonBands;
+    float scale  = lum > 0.001 ? banded / lum : 1.0;
+    color.rgb    = lerp(color.rgb, color.rgb * scale, _ToonStrength);
+
+    // ── Derivative edge detection ─────────────────────────────────────────────
     float3 baseColor = tex2D(u_BaseColorSampler, uv).rgb;
     float2 normalXY  = tex2D(u_NormalSampler,    uv).xy;
 
@@ -25,10 +37,11 @@ float4 ApplyNPREdgeEffect(float4 color, float2 uv)
     float colorEdge  = sqrt(dot(bcDX, bcDX) + dot(bcDY, bcDY));
     float normalEdge = sqrt(dot(nmDX, nmDX) + dot(nmDY, nmDY));
 
-    float edgeMag = _ColorEdgeWeight * colorEdge + (1.0 - _ColorEdgeWeight) * normalEdge;
+    float colorHit  = step(_ColorThreshold,  colorEdge)  * step(colorEdge,  _ColorEdgeMax)  * _ColorStrength;
+    float normalHit = step(_NormalThreshold, normalEdge) * step(normalEdge, _NormalEdgeMax) * _NormalStrength;
 
-    float inBand = step(_EdgeThreshold, edgeMag) * step(edgeMag, _EdgeMax);
-    color.rgb    = lerp(color.rgb, _InnerLineColor.rgb, inBand * _InnerLineStrength);
+    float edge = saturate(colorHit + normalHit);
+    color.rgb  = lerp(color.rgb, _InnerLineColor.rgb, edge);
 
     return color;
 }

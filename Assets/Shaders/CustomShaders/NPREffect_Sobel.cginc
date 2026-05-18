@@ -1,18 +1,15 @@
 #ifndef NPR_EFFECT_SOBEL_INCLUDED
 #define NPR_EFFECT_SOBEL_INCLUDED
 
-// Skin-aware Sobel edge detection applied as a post-process on the Meta Avatar shader.
-// Ported from V3_SobelEdgeDetection.shader.
+// Sobel edge detection applied as a post-process on the Meta Avatar shader.
 // Requires ENABLE_NPR_EDGES + EFFECT_SOBEL keywords.
 
 float4 _InnerLineColor;
-float  _SobelSampleDist;      // UV-space sample offset (0–10, multiplied by 0.001)
-float  _SobelThreshSkin;      // edge threshold for low-saturation (skin) areas
-float  _SobelThreshClothes;   // edge threshold for high-saturation (clothes/hair) areas
-float  _SobelMax;             // magnitudes above this are seam spikes → suppress
-float  _SobelSeamLimit;       // if neighbour luma range > this, pixel is on a UV seam
-float  _SobelSkinSatCutoff;   // saturation < this → classified as skin
-float  _SobelStrength;        // overall edge opacity
+float  _SobelSampleDist;  // UV-space sample offset (0–10, multiplied by 0.001)
+float  _SobelThreshold;   // minimum edge magnitude to draw a line
+float  _SobelMax;         // magnitudes above this are seam spikes → suppress
+float  _SobelSeamLimit;   // if neighbour luma range > this, pixel is on a UV seam
+float  _SobelStrength;    // overall edge opacity
 
 float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldViewDir)
 {
@@ -33,19 +30,11 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
     float edgeMag = sqrt(sobelX*sobelX + sobelY*sobelY);
 
     // Suppress UV-seam spikes: if luma spread across neighbours is extreme, hide edge.
-    float lMin    = min(min(min(tl,t),min(tr,l)), min(min(r,bl),min(b,br)));
-    float lMax    = max(max(max(tl,t),max(tr,l)), max(max(r,bl),max(b,br)));
+    float lMin     = min(min(min(tl,t),min(tr,l)), min(min(r,bl),min(b,br)));
+    float lMax     = max(max(max(tl,t),max(tr,l)), max(max(r,bl),max(b,br)));
     float seamMask = step(lMax - lMin, _SobelSeamLimit);
 
-    // Classify skin vs clothes via HSV saturation of centre pixel.
-    float3 base  = tex2D(u_BaseColorSampler, uv).rgb;
-    float  cMax  = max(base.r, max(base.g, base.b));
-    float  cMin  = min(base.r, min(base.g, base.b));
-    float  sat   = (cMax > 0.001) ? (cMax - cMin) / cMax : 0.0;
-    float  skinBlend = 1.0 - smoothstep(0.0, _SobelSkinSatCutoff, sat);
-    float  thresh    = lerp(_SobelThreshClothes, _SobelThreshSkin, skinBlend);
-
-    float inBand = step(thresh, edgeMag) * step(edgeMag, _SobelMax);
+    float inBand = step(_SobelThreshold, edgeMag) * step(edgeMag, _SobelMax);
     float edge   = inBand * seamMask * _SobelStrength;
 
     color.rgb = lerp(color.rgb, _InnerLineColor.rgb, edge);

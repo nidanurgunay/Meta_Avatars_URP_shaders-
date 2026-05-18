@@ -130,19 +130,21 @@ Shader "Avatar/MetaNPR"
         _InnerLineColor    ("Inner Line Color",   Color)         = (0,0,0,1)
 
         [Header(NPR Edge  Derivative technique)]
-        _EdgeThreshold     ("Edge Threshold",     Range(0, 0.5)) = 0.05
-        _EdgeMax           ("Edge Max",           Range(0.05,2)) = 0.5
-        _ColorEdgeWeight   ("Color Edge Weight",  Range(0, 1))   = 0.5
-        _InnerLineStrength ("Line Strength",      Range(0, 1))   = 1.0
+        _ToonBands       ("Toon Bands",       Range(2, 8))   = 4.0
+        _ToonStrength    ("Toon Strength",    Range(0, 1))   = 0.0
+        _ColorThreshold  ("Color Threshold",  Range(0, 0.5)) = 0.05
+        _ColorEdgeMax    ("Color Edge Max",   Range(0.05, 2)) = 0.5
+        _ColorStrength   ("Color Strength",   Range(0, 1))   = 1.0
+        _NormalThreshold ("Normal Threshold", Range(0, 0.5)) = 0.05
+        _NormalEdgeMax   ("Normal Edge Max",  Range(0.05, 2)) = 0.5
+        _NormalStrength  ("Normal Strength",  Range(0, 1))   = 1.0
 
         [Header(NPR Edge  Sobel technique)]
-        _SobelSampleDist    ("Sample Distance",      Range(0, 10))  = 0.5
-        _SobelThreshSkin    ("Thresh Skin",          Range(0, 1))   = 0.4
-        _SobelThreshClothes ("Thresh Clothes",       Range(0, 1))   = 0.15
-        _SobelMax           ("Sobel Max",            Range(0.1, 8)) = 2.0
-        _SobelSeamLimit     ("Seam Limit",           Range(0, 1))   = 0.6
-        _SobelSkinSatCutoff ("Skin Sat Cutoff",      Range(0, 0.5)) = 0.25
-        _SobelStrength      ("Strength",             Range(0, 1))   = 1.0
+        _SobelSampleDist ("Sample Distance", Range(0, 10))  = 0.5
+        _SobelThreshold  ("Threshold",       Range(0, 1))   = 0.15
+        _SobelMax        ("Sobel Max",       Range(0.1, 8)) = 2.0
+        _SobelSeamLimit  ("Seam Limit",      Range(0, 1))   = 0.6
+        _SobelStrength   ("Strength",        Range(0, 1))   = 1.0
 
         [Header(NPR Edge  Normal and Fresnel technique)]
         _NormalEdgeThreshold  ("Normal Threshold",   Range(0, 1))    = 0.3
@@ -170,6 +172,11 @@ Shader "Avatar/MetaNPR"
         _HDepthThreshold   ("Depth Threshold",   Range(0.001, 0.2)) = 0.02
         _HNormalThreshold  ("Normal Threshold",  Range(0.05, 1.0))  = 0.3
         _HColorThreshold   ("Colour Threshold",  Range(0.01, 0.5))  = 0.1
+        [Toggle] _HEnableGaussBlur ("Gauss Blur", Float)            = 0
+        _HBlurRadius       ("Blur Radius",       Range(0, 5))       = 1.0
+        _HCenterWeight     ("Center Weight",     Range(0.1, 0.5))   = 0.25
+        _HCardinalWeight   ("Cardinal Weight",   Range(0, 0.3))     = 0.125
+        _HDiagonalWeight   ("Diagonal Weight",   Range(0, 0.1))     = 0.0625
         _HDepthWeight      ("Depth Weight",      Range(0, 1))       = 0.8
         _HNormalWeight     ("Normal Weight",     Range(0, 1))       = 0.8
         _HColorWeight      ("Colour Weight",     Range(0, 1))       = 0.6
@@ -182,38 +189,40 @@ Shader "Avatar/MetaNPR"
         _KuwaharaStrength ("Kuwahara Strength", Range(0, 1))   = 1.0
 
         [Header(NPR Effect  Kuwahara Sobel technique)]
-        _KSKuwaharaRadius   ("Kuwahara Radius",   Range(0.5, 8))  = 2.0
-        _KSKuwaharaStrength ("Kuwahara Strength", Range(0, 1))    = 0.8
-        _KSSobelSampleDist  ("Sobel Sample Dist", Range(0, 10))   = 1.0
-        _KSBlurRadius       ("Blur Radius",       Range(0, 5))    = 1.0
-        _KSThreshold        ("Edge Threshold",    Range(0, 0.5))  = 0.15
-        _KSSobelStrength    ("Edge Strength",     Range(0, 1))    = 1.0
+        _KSKuwaharaRadius   ("Kuwahara Radius",    Range(0.5, 8))   = 2.0
+        _KSKuwaharaStrength ("Kuwahara Strength",  Range(0, 1))     = 0.8
+        [Toggle] _KSEnableGaussBlur ("Enable Gaussian Blur", Float) = 1
+        _KSSobelSampleDist  ("Sobel Sample Dist",  Range(0, 10))    = 1.0
+        _KSBlurRadius       ("Blur Radius",        Range(0, 5))     = 1.0
+        _KSCenterWeight     ("Center Weight",      Range(0.1, 0.5)) = 0.25
+        _KSCardinalWeight   ("Cardinal Weight",    Range(0, 0.3))   = 0.125
+        _KSDiagonalWeight   ("Diagonal Weight",    Range(0, 0.1))   = 0.0625
+        _KSThreshold        ("Edge Threshold",     Range(0, 0.5))   = 0.15
+        _KSThreshMin        ("Thresh Min Mult",    Range(0, 1))     = 0.5
+        _KSThreshMax        ("Thresh Max Mult",    Range(1, 5))     = 1.5
+        _KSTightness        ("Tightness",          Range(0, 1))     = 0.2
+        _KSPowerCurve       ("Power Curve",        Range(0.5, 5))   = 1.5
+        _KSSobelStrength    ("Edge Strength",      Range(0, 1))     = 1.0
 
-        [Header(NPR Effect  Kuwahara Gaussian Hierarchical technique)]
-        _KGHKuwaharaRadius    ("Kuwahara Radius",      Range(0.5, 8))   = 2.0
-        [Toggle] _KGHEnableGaussBlur ("Enable Gaussian Blur", Float)    = 1
-        _KGHKuwaharaStrength  ("Kuwahara Strength",    Range(0, 1))     = 0.8
-        _KGHSampleDist        ("Sobel Sample Dist",    Range(0, 10))    = 1.0
-        _KGHBlurRadius        ("Blur Radius",          Range(0, 5))     = 1.0
-        _KGHCenterWeight      ("Center Weight",        Range(0.1, 0.5)) = 0.25
-        _KGHCardinalWeight    ("Cardinal Weight",      Range(0, 0.3))   = 0.125
-        _KGHDiagonalWeight    ("Diagonal Weight",      Range(0, 0.1))   = 0.0625
-        _KGHGThreshold        ("Sobel Threshold",      Range(0, 0.5))   = 0.15
-        _KGHGThreshMin        ("Thresh Min Mult",       Range(0, 1))     = 0.5
-        _KGHGThreshMax        ("Thresh Max Mult",       Range(1, 5))     = 1.5
-        _KGHTightness         ("Tightness",            Range(0, 1))     = 0.2
-        _KGHGPowerCurve       ("Power Curve",          Range(0.5, 5))   = 1.5
-        _KGHGStrength         ("Sobel Edge Strength",  Range(0, 1))     = 1.0
+        [Header(NPR Effect  Kuwahara Hierarchical technique)]
+        _KGHKuwaharaRadius    ("Kuwahara Radius",      Range(0.5, 8))     = 2.0
+        _KGHKuwaharaStrength  ("Kuwahara Strength",    Range(0, 1))       = 0.8
         _KGHDepthThreshold    ("Depth Threshold",      Range(0.001, 0.2)) = 0.02
-        _KGHNormalThreshold   ("Normal Threshold",     Range(0.05, 1))  = 0.3
-        _KGHColorThreshold    ("Color Threshold",      Range(0.01, 0.5))= 0.1
-        _KGHDepthWeight       ("Depth Weight",         Range(0, 1))     = 0.8
-        _KGHNormalWeight      ("Normal Weight",        Range(0, 1))     = 0.8
-        _KGHColorWeight       ("Color Weight",         Range(0, 1))     = 0.6
-        _KGHEdgeWidth         ("Edge Width",           Range(0.5, 10))  = 1.5
-        _KGHAdaptiveStrength  ("Adaptive Strength",    Range(0, 1))     = 0.5
-        _KGHHStrength         ("Hier Edge Strength",   Range(0, 1))     = 1.0
-        _KGHEdgeColor         ("Edge Color",           Color)           = (0,0,0,1)
+        _KGHNormalThreshold   ("Normal Threshold",     Range(0.05, 1))    = 0.3
+        _KGHColorThreshold    ("Color Threshold",      Range(0.01, 0.5))  = 0.1
+        _KGHDepthWeight       ("Depth Weight",         Range(0, 1))       = 0.8
+        _KGHNormalWeight      ("Normal Weight",        Range(0, 1))       = 0.8
+        _KGHColorWeight       ("Color Weight",         Range(0, 1))       = 0.6
+        _KGHEdgeWidth         ("Edge Width",           Range(0.5, 10))    = 1.5
+        _KGHAdaptiveStrength  ("Adaptive Strength",    Range(0, 1))       = 0.5
+        _KGHHierTightness     ("Hier Tightness",       Range(0, 1))       = 0.5
+        _KGHHStrength         ("Hier Edge Strength",   Range(0, 1))       = 1.0
+        [Toggle] _KGHEnableGaussBlur ("Color Blur",    Float)             = 0
+        _KGHBlurRadius        ("Color Blur Radius",    Range(0, 5))       = 1.0
+        _KGHCenterWeight      ("Center Weight",        Range(0.1, 0.5))   = 0.25
+        _KGHCardinalWeight    ("Cardinal Weight",      Range(0, 0.3))     = 0.125
+        _KGHDiagonalWeight    ("Diagonal Weight",      Range(0, 0.1))     = 0.0625
+        _KGHEdgeColor         ("Edge Color",           Color)             = (0,0,0,1)
 
         [Header(NPR Inverted Hull Outline)]
         _OutlineWidth ("Outline Width", Range(0.5, 10)) = 2.0

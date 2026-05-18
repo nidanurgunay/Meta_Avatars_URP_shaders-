@@ -20,12 +20,12 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
     // ── Technique ─────────────────────────────────────────────────────────────
     private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5, KuwaharaSobel = 6, KuwGaussHier = 7 }
-    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel", "Kuw+Gauss+Hier" };
+    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel", "Kuw+Hier" };
     private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA", "EFFECT_KUWAHARA_SOBEL", "EFFECT_KUW_GAUSS_HIER" };
     private Technique _currentTechnique = Technique.Derivative;
 
     // ── Row data ──────────────────────────────────────────────────────────────
-    private enum RowKind { Float, Color, TechSelector, Toggle, TechOption, ShaderToggle }
+    private enum RowKind { Float, Color, TechSelector, Toggle, TechOption, ShaderToggle, CompareDefault }
 
     private struct Row
     {
@@ -63,6 +63,8 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
     [System.NonSerialized] private readonly List<Row> _rows = new();
 
+
+    private bool _compareDefault   = false;
 
     private int  _cursor           = -1;
     private int  _hoveredRow       = -1;
@@ -175,6 +177,15 @@ public class NPREdgeDetectionUI : MonoBehaviour
         ApplyTechniqueKeywords();
         ApplyTechniqueVisibility();
         UpdateTechniqueLabel();
+
+        // Re-apply compare state so the periodic refresh doesn't undo it
+        foreach (var mat in _nprMaterials)
+        {
+            if (mat == null) continue;
+            if (_compareDefault) { mat.DisableKeyword("ENABLE_NPR_EDGES"); mat.SetShaderPassEnabled("NPROutline", false); }
+            else mat.EnableKeyword("ENABLE_NPR_EDGES");
+        }
+
         Debug.Log("[NPREdgeDetectionUI] PushAll mats=" + _nprMaterials.Count
                   + " technique=" + TechniqueNames[(int)_currentTechnique]);
     }
@@ -282,10 +293,12 @@ public class NPREdgeDetectionUI : MonoBehaviour
             if (_materialRefreshTimer >= MATERIAL_REFRESH) { _materialRefreshTimer = 0f; PushAllValues(); }
         }
 
-        bool bBtn = OVRInput.GetDown(OVRInput.Button.Two);
-        bool yBtn = OVRInput.GetDown(OVRInput.Button.Four);
+        // B (right top) = NPR UI   |   Y (left top) = Avatar Switcher (handled in AvatarSwitcher)
+        // Use Controller.RTouch explicitly — Controller.Active fails when activeControllerType
+        // is None or LTouch (same bug that broke Y; A/X/B/Y all need explicit controller).
+        bool bBtn = OVRInput.GetDown(OVRInput.RawButton.B, OVRInput.Controller.RTouch);
         bool tab  = Keyboard.current != null && Keyboard.current.tabKey.wasPressedThisFrame;
-        if (bBtn || yBtn || tab) SetVisible(!_visible);
+        if (bBtn || tab) SetVisible(!_visible);
 
         // Thumbstick scroll — either stick, Y axis
         if (_visible && _scrollRect != null)
@@ -322,10 +335,12 @@ public class NPREdgeDetectionUI : MonoBehaviour
                      || OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger);
         bool trigUp   = OVRInput.GetUp(OVRInput.Button.PrimaryIndexTrigger)
                      || OVRInput.GetUp(OVRInput.Button.SecondaryIndexTrigger);
-        bool gripDown = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger)
-                     || OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger);
-        bool gripHeld = OVRInput.Get(OVRInput.Button.PrimaryHandTrigger)
-                     || OVRInput.Get(OVRInput.Button.SecondaryHandTrigger);
+        bool rightGripDown = OVRInput.GetDown(OVRInput.Button.PrimaryHandTrigger);
+        bool rightGripHeld = OVRInput.Get(OVRInput.Button.PrimaryHandTrigger);
+        bool leftGripDown  = OVRInput.GetDown(OVRInput.Button.SecondaryHandTrigger);
+        bool leftGripHeld  = OVRInput.Get(OVRInput.Button.SecondaryHandTrigger);
+        bool gripDown = rightGripDown || leftGripDown;
+        bool gripHeld = rightGripHeld || leftGripHeld;
 
         // Release drag lock when trigger is released
         if (trigUp) _draggingRow = -1;
@@ -343,8 +358,9 @@ public class NPREdgeDetectionUI : MonoBehaviour
             // Grip still steps the cursor row during drag
             if (_cursor >= 0 && _cursor < _rows.Count && _rows[_cursor].kind == RowKind.Float)
             {
-                if (gripDown) { AdjustStep(-1f); _decCooldown = FIRST_REPEAT; }
-                else if (gripHeld) { _decCooldown -= Time.deltaTime; if (_decCooldown <= 0f) { _decCooldown = HOLD_REPEAT; AdjustStep(-1f); } }
+                float gripDir = rightGripDown || rightGripHeld ? -1f : 1f;
+                if (gripDown) { AdjustStep(gripDir); _decCooldown = FIRST_REPEAT; }
+                else if (gripHeld) { _decCooldown -= Time.deltaTime; if (_decCooldown <= 0f) { _decCooldown = HOLD_REPEAT; AdjustStep(gripDir); } }
                 else _decCooldown = 0f;
             }
             return;
@@ -389,6 +405,10 @@ public class NPREdgeDetectionUI : MonoBehaviour
             var row = _rows[_hoveredRow];
             switch (row.kind)
             {
+                case RowKind.CompareDefault:
+                    ToggleCompareDefault(_hoveredRow);
+                    break;
+
                 case RowKind.TechSelector:
                     ToggleTechDropdown();
                     break;
@@ -440,8 +460,9 @@ public class NPREdgeDetectionUI : MonoBehaviour
             var curRow = _rows[_cursor];
             if (curRow.kind == RowKind.Float)
             {
-                if (gripDown) { AdjustStep(-1f); _decCooldown = FIRST_REPEAT; }
-                else if (gripHeld) { _decCooldown -= Time.deltaTime; if (_decCooldown <= 0f) { _decCooldown = HOLD_REPEAT; AdjustStep(-1f); } }
+                float gripDir = rightGripDown || rightGripHeld ? -1f : 1f;
+                if (gripDown) { AdjustStep(gripDir); _decCooldown = FIRST_REPEAT; }
+                else if (gripHeld) { _decCooldown -= Time.deltaTime; if (_decCooldown <= 0f) { _decCooldown = HOLD_REPEAT; AdjustStep(gripDir); } }
                 else _decCooldown = 0f;
             }
             else if (curRow.kind == RowKind.Color)
@@ -461,8 +482,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
         if (row.sliderFill == null) return;
         var bgRt = row.sliderFill.rectTransform.parent as RectTransform;
         if (bgRt == null) return;
-        float enter;
-        if (!new Plane(bgRt.forward, bgRt.position).Raycast(ray, out enter)) return;
+        if (!new Plane(bgRt.forward, bgRt.position).Raycast(ray, out float enter)) return;
         DragSlider(rowIndex, ray.GetPoint(enter));
     }
 
@@ -528,7 +548,10 @@ public class NPREdgeDetectionUI : MonoBehaviour
         if (v)
         {
             PlacePanel();
-            Canvas.ForceUpdateCanvases();   // force ContentSizeFitter to calculate height immediately
+            // Rebuild only our panel — Canvas.ForceUpdateCanvases() rebuilds ALL canvases and
+            // triggers an IMGUI EndLayoutGroup error inside Meta SDK UI components.
+            if (_panelRt != null)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_panelRt);
             _materialRefreshTimer = MATERIAL_REFRESH;
             PushAllValues();
         }
@@ -611,26 +634,32 @@ public class NPREdgeDetectionUI : MonoBehaviour
         Label(t, "Trigger = select/drag   Grip = step selected   B/Y = close", 16, new Color(0.5f, 0.5f, 0.5f));
         Space(t, 6);
 
+        // ── A/B compare: toggle all NPR effects off to see base avatar ────────
+        AddCompareDefaultRow(t);
+        Space(t, 4);
+
         // ── Technique selector (cycles on trigger/grip) ──────────────────────
         AddTechSelectorRow(t);
         Space(t, 6);
 
         // ── Derivative parameters (technique 0) ──────────────────────────────
         SectionLabel(t, "Derivative Edge", 0);
-        AddFloatRow(t, 0, "Threshold",     "_EdgeThreshold",     0f,    0.5f,  0.005f, 0.05f);
-        AddFloatRow(t, 0, "Edge Max",      "_EdgeMax",           0.05f, 2f,    0.05f,  0.50f);
-        AddFloatRow(t, 0, "Color Weight",  "_ColorEdgeWeight",   0f,    1f,    0.01f,  0.50f);
-        AddFloatRow(t, 0, "Line Strength", "_InnerLineStrength", 0f,    1f,    0.01f,  1.00f);
+        AddFloatRow(t, 0, "Toon Bands",    "_ToonBands",        2f,    8f,    1f,     4f);
+        AddFloatRow(t, 0, "Toon Strength", "_ToonStrength",     0f,    1f,    0.01f,  0f);
+        AddFloatRow(t, 0, "Color Thresh",  "_ColorThreshold",   0f,    0.5f,  0.005f, 0.05f);
+        AddFloatRow(t, 0, "Color Max",     "_ColorEdgeMax",     0.05f, 2f,    0.05f,  0.50f);
+        AddFloatRow(t, 0, "Color Str",     "_ColorStrength",    0f,    1f,    0.01f,  1.00f);
+        AddFloatRow(t, 0, "Normal Thresh", "_NormalThreshold",  0f,    0.5f,  0.005f, 0.05f);
+        AddFloatRow(t, 0, "Normal Max",    "_NormalEdgeMax",    0.05f, 2f,    0.05f,  0.50f);
+        AddFloatRow(t, 0, "Normal Str",    "_NormalStrength",   0f,    1f,    0.01f,  1.00f);
 
         // ── Sobel parameters (technique 1) ───────────────────────────────────
         SectionLabel(t, "Sobel Edge", 1);
-        AddFloatRow(t, 1, "Sample Dist",   "_SobelSampleDist",    0f,    10f,  0.1f,  0.5f);
-        AddFloatRow(t, 1, "Thresh Skin",   "_SobelThreshSkin",    0f,    1f,   0.01f, 0.40f);
-        AddFloatRow(t, 1, "Thresh Cloth",  "_SobelThreshClothes", 0f,    1f,   0.01f, 0.15f);
-        AddFloatRow(t, 1, "Sobel Max",     "_SobelMax",           0.1f,  8f,   0.1f,  2.0f);
-        AddFloatRow(t, 1, "Seam Limit",    "_SobelSeamLimit",     0f,    1f,   0.01f, 0.60f);
-        AddFloatRow(t, 1, "Skin Sat Cut",  "_SobelSkinSatCutoff", 0f,    0.5f, 0.01f, 0.25f);
-        AddFloatRow(t, 1, "Strength",      "_SobelStrength",      0f,    1f,   0.01f, 1.00f);
+        AddFloatRow(t, 1, "Sample Dist",   "_SobelSampleDist", 0f,   10f,  0.1f,  0.5f);
+        AddFloatRow(t, 1, "Threshold",     "_SobelThreshold",  0f,   1f,   0.01f, 0.15f);
+        AddFloatRow(t, 1, "Sobel Max",     "_SobelMax",        0.1f, 8f,   0.1f,  2.0f);
+        AddFloatRow(t, 1, "Seam Limit",    "_SobelSeamLimit",  0f,   1f,   0.01f, 0.60f);
+        AddFloatRow(t, 1, "Strength",      "_SobelStrength",   0f,   1f,   0.01f, 1.00f);
 
         // ── Normal+Fresnel parameters (technique 2) ──────────────────────────
         SectionLabel(t, "Normal+Fresnel Edge", 2);
@@ -661,6 +690,11 @@ public class NPREdgeDetectionUI : MonoBehaviour
         AddFloatRow(t, 4, "Depth Thresh",  "_HDepthThreshold",   0.001f, 0.2f, 0.005f, 0.02f);
         AddFloatRow(t, 4, "Norm Thresh",   "_HNormalThreshold",  0.05f,  1f,   0.01f,  0.30f);
         AddFloatRow(t, 4, "Color Thresh",  "_HColorThreshold",   0.01f,  0.5f, 0.01f,  0.10f);
+        AddShaderToggleRow(t, 4, "Gauss Blur",   "_HEnableGaussBlur",  false);
+        AddFloatRow(t, 4, "Blur Radius",   "_HBlurRadius",       0f,    5f,    0.1f,   1.00f,   "_HEnableGaussBlur");
+        AddFloatRow(t, 4, "Center W",      "_HCenterWeight",     0.1f,  0.5f,  0.005f, 0.25f,   "_HEnableGaussBlur");
+        AddFloatRow(t, 4, "Cardinal W",    "_HCardinalWeight",   0f,    0.3f,  0.005f, 0.125f,  "_HEnableGaussBlur");
+        AddFloatRow(t, 4, "Diagonal W",    "_HDiagonalWeight",   0f,    0.1f,  0.002f, 0.0625f, "_HEnableGaussBlur");
         AddFloatRow(t, 4, "Depth Weight",  "_HDepthWeight",      0f,     1f,   0.01f,  0.80f);
         AddFloatRow(t, 4, "Norm Weight",   "_HNormalWeight",     0f,     1f,   0.01f,  0.80f);
         AddFloatRow(t, 4, "Color Weight",  "_HColorWeight",      0f,     1f,   0.01f,  0.60f);
@@ -675,29 +709,25 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
         // ── Kuwahara+Sobel parameters (technique 6) ───────────────────────────
         SectionLabel(t, "Kuwahara+Sobel", 6);
-        AddFloatRow(t, 6, "Kuw Radius",   "_KSKuwaharaRadius",   0.5f, 8f,   0.1f,   2.0f);
-        AddFloatRow(t, 6, "Kuw Strength", "_KSKuwaharaStrength", 0f,   1f,   0.01f,  0.8f);
-        AddFloatRow(t, 6, "Sample Dist",  "_KSSobelSampleDist",  0f,   10f,  0.1f,   1.0f);
-        AddFloatRow(t, 6, "Blur Radius",  "_KSBlurRadius",       0f,   5f,   0.1f,   1.0f);
-        AddFloatRow(t, 6, "Threshold",    "_KSThreshold",        0f,   0.5f, 0.005f, 0.15f);
-        AddFloatRow(t, 6, "Edge Str",     "_KSSobelStrength",    0f,   1f,   0.01f,  1.0f);
+        AddFloatRow(t, 6, "Kuw Radius",   "_KSKuwaharaRadius",   0.5f, 8f,    0.1f,   2.00f);
+        AddFloatRow(t, 6, "Kuw Strength", "_KSKuwaharaStrength", 0f,   1f,    0.01f,  0.80f);
+        AddShaderToggleRow(t, 6, "Gauss Blur",  "_KSEnableGaussBlur", true);
+        AddFloatRow(t, 6, "Sample Dist",  "_KSSobelSampleDist",  0f,   10f,   0.1f,   1.00f);
+        AddFloatRow(t, 6, "Blur Radius",  "_KSBlurRadius",       0f,   5f,    0.1f,   1.00f,    "_KSEnableGaussBlur");
+        AddFloatRow(t, 6, "Center W",     "_KSCenterWeight",     0.1f, 0.5f,  0.005f, 0.25f,    "_KSEnableGaussBlur");
+        AddFloatRow(t, 6, "Cardinal W",   "_KSCardinalWeight",   0f,   0.3f,  0.005f, 0.125f,   "_KSEnableGaussBlur");
+        AddFloatRow(t, 6, "Diagonal W",   "_KSDiagonalWeight",   0f,   0.1f,  0.002f, 0.0625f,  "_KSEnableGaussBlur");
+        AddFloatRow(t, 6, "Threshold",    "_KSThreshold",        0f,   0.5f,  0.005f, 0.15f);
+        AddFloatRow(t, 6, "Thresh Min",   "_KSThreshMin",        0f,   1f,    0.05f,  0.50f);
+        AddFloatRow(t, 6, "Thresh Max",   "_KSThreshMax",        1f,   5f,    0.1f,   1.50f);
+        AddFloatRow(t, 6, "Tightness",    "_KSTightness",        0f,   1f,    0.05f,  0.20f);
+        AddFloatRow(t, 6, "Power Curve",  "_KSPowerCurve",       0.5f, 5f,    0.1f,   1.50f);
+        AddFloatRow(t, 6, "Edge Str",     "_KSSobelStrength",    0f,   1f,    0.01f,  1.00f);
 
-        // ── Kuwahara+Gauss+Hier parameters (technique 7) ─────────────────────
-        SectionLabel(t, "Kuw+Gauss+Hier", 7);
+        // ── Kuwahara+Hier parameters (technique 7) ───────────────────────────
+        SectionLabel(t, "Kuw+Hier", 7);
         AddFloatRow(t, 7, "Kuw Radius",    "_KGHKuwaharaRadius",   0.5f,  8f,    0.1f,   2.00f);
         AddFloatRow(t, 7, "Kuw Strength",  "_KGHKuwaharaStrength", 0f,    1f,    0.01f,  0.80f);
-        AddShaderToggleRow(t, 7, "Gauss Blur",  "_KGHEnableGaussBlur", true);
-        AddFloatRow(t, 7, "Sample Dist",   "_KGHSampleDist",       0f,    10f,   0.1f,   1.00f);
-        AddFloatRow(t, 7, "Blur Radius",   "_KGHBlurRadius",       0f,    5f,    0.1f,   1.00f,    "_KGHEnableGaussBlur");
-        AddFloatRow(t, 7, "Center W",      "_KGHCenterWeight",     0.1f,  0.5f,  0.005f, 0.25f,    "_KGHEnableGaussBlur");
-        AddFloatRow(t, 7, "Cardinal W",    "_KGHCardinalWeight",   0f,    0.3f,  0.005f, 0.125f,   "_KGHEnableGaussBlur");
-        AddFloatRow(t, 7, "Diagonal W",    "_KGHDiagonalWeight",   0f,    0.1f,  0.002f, 0.0625f,  "_KGHEnableGaussBlur");
-        AddFloatRow(t, 7, "Sobel Thresh",  "_KGHGThreshold",       0f,    0.5f,  0.005f, 0.15f);
-        AddFloatRow(t, 7, "Thresh Min",    "_KGHGThreshMin",       0f,    1f,    0.05f,  0.50f);
-        AddFloatRow(t, 7, "Thresh Max",    "_KGHGThreshMax",       1f,    5f,    0.1f,   1.50f);
-        AddFloatRow(t, 7, "Tightness",     "_KGHTightness",        0f,    1f,    0.05f,  0.20f);
-        AddFloatRow(t, 7, "Power Curve",   "_KGHGPowerCurve",      0.5f,  5f,    0.1f,   1.50f);
-        AddFloatRow(t, 7, "Sobel Str",     "_KGHGStrength",        0f,    1f,    0.01f,  1.00f);
         AddFloatRow(t, 7, "Depth Thresh",  "_KGHDepthThreshold",   0.001f,0.2f,  0.005f, 0.02f);
         AddFloatRow(t, 7, "Norm Thresh",   "_KGHNormalThreshold",  0.05f, 1f,    0.01f,  0.30f);
         AddFloatRow(t, 7, "Color Thresh",  "_KGHColorThreshold",   0.01f, 0.5f,  0.01f,  0.10f);
@@ -706,7 +736,13 @@ public class NPREdgeDetectionUI : MonoBehaviour
         AddFloatRow(t, 7, "Color Weight",  "_KGHColorWeight",      0f,    1f,    0.01f,  0.60f);
         AddFloatRow(t, 7, "Edge Width",    "_KGHEdgeWidth",        0.5f,  10f,   0.1f,   1.50f);
         AddFloatRow(t, 7, "Adaptive Str",  "_KGHAdaptiveStrength", 0f,    1f,    0.01f,  0.50f);
+        AddFloatRow(t, 7, "Hier Tight",    "_KGHHierTightness",    0f,    1f,    0.05f,  0.50f);
         AddFloatRow(t, 7, "Hier Str",      "_KGHHStrength",        0f,    1f,    0.01f,  1.00f);
+        AddShaderToggleRow(t, 7, "Color Blur",   "_KGHEnableGaussBlur", false);
+        AddFloatRow(t, 7, "Blur Radius",   "_KGHBlurRadius",       0f,    5f,    0.1f,   1.00f,    "_KGHEnableGaussBlur");
+        AddFloatRow(t, 7, "Center W",      "_KGHCenterWeight",     0.1f,  0.5f,  0.005f, 0.25f,    "_KGHEnableGaussBlur");
+        AddFloatRow(t, 7, "Cardinal W",    "_KGHCardinalWeight",   0f,    0.3f,  0.005f, 0.125f,   "_KGHEnableGaussBlur");
+        AddFloatRow(t, 7, "Diagonal W",    "_KGHDiagonalWeight",   0f,    0.1f,  0.002f, 0.0625f,  "_KGHEnableGaussBlur");
         AddColorRow( t, 7, "Edge Color",   "_KGHEdgeColor",        0);
 
         // ── Inverted Hull Outline (always visible) ────────────────────────────
@@ -725,6 +761,52 @@ public class NPREdgeDetectionUI : MonoBehaviour
     }
 
     // ── Row builders ──────────────────────────────────────────────────────────
+
+    void AddCompareDefaultRow(Transform parent)
+    {
+        var (rowGo, hl, valTxt, curTxt, col, _) = MakeRowShell(parent, "A/B Compare", hasSlider: false);
+        valTxt.text  = "NPR ON";
+        valTxt.color = new Color(0.4f, 0.9f, 1f);
+        _rows.Add(new Row
+        {
+            kind = RowKind.CompareDefault, label = "A/B Compare", techniqueFilter = -1,
+            currentValue = 1f,
+            valueText = valTxt, highlight = hl, cursorText = curTxt,
+            collider = col, rowGo = rowGo,
+        });
+    }
+
+    void ToggleCompareDefault(int rowIndex)
+    {
+        var r = _rows[rowIndex];
+        bool enterDefault = r.currentValue > 0.5f;
+        r.currentValue = enterDefault ? 0f : 1f;
+        _compareDefault = enterDefault;
+
+        if (enterDefault)
+        {
+            foreach (var mat in _nprMaterials)
+            {
+                if (mat == null) continue;
+                mat.DisableKeyword("ENABLE_NPR_EDGES");
+                mat.SetShaderPassEnabled("NPROutline", false);
+            }
+            r.valueText.text  = "DEFAULT";
+            r.valueText.color = new Color(1f, 0.78f, 0.2f);
+        }
+        else
+        {
+            foreach (var mat in _nprMaterials)
+                if (mat != null) mat.EnableKeyword("ENABLE_NPR_EDGES");
+            ApplyTechniqueKeywords();
+            foreach (var row in _rows)
+                if (row.kind == RowKind.Toggle && row.propName == "NPROutline")
+                    SetPassEnabled("NPROutline", row.currentValue > 0.5f);
+            r.valueText.text  = "NPR ON";
+            r.valueText.color = new Color(0.4f, 0.9f, 1f);
+        }
+        _rows[rowIndex] = r;
+    }
 
     void AddTechSelectorRow(Transform parent)
     {

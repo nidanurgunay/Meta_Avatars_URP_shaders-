@@ -279,6 +279,20 @@ public class SampleAvatarEntity : OvrAvatarEntity
         var assetPath = $"{namePrefix}{preset}{assetPostfix}";
         return LoadAssets(new[] { assetPath }, AssetSource.Zip);
     }
+
+    // Replaces the avatar with a different preset without geometry stacking.
+    // Delegates to the SDK's own ReloadAvatarManually after stopping CDN polling so that
+    // Teardown → CreateEntity → LoadAssets follows the exact SDK-tested code path.
+    public void SwitchPreset(int preset)
+    {
+        if (_isPollingAvatarChanges)  _stopCurrentAvatarChangePoll  = true;
+        if (_isPollingAvatarCreation) _stopCurrentAvatarCreationPoll = true;
+        _loadUserFromCdn = false;
+
+        UnityEngine.Debug.Log($"[SWITCHPRESET] preset={preset} IsCreated={IsCreated} — calling ReloadAvatarManually");
+        ReloadAvatarManually(preset.ToString(), AssetSource.Zip);
+        UnityEngine.Debug.Log($"[SWITCHPRESET] ReloadAvatarManually returned — avatar loading async");
+    }
     #endregion // Loading
 
     #region Retry

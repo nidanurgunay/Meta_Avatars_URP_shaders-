@@ -9,8 +9,8 @@
 #pragma multi_compile __ EFFECT_SOBEL EFFECT_NORMAL_EDGE EFFECT_GAUSS_SOBEL EFFECT_HIERARCHICAL EFFECT_KUWAHARA EFFECT_KUWAHARA_SOBEL EFFECT_KUW_GAUSS_HIER
 // MOD END MetaNPR
 
-// MOD START MetaNPR: include the active technique
-#if defined(ENABLE_NPR_EDGES)
+// MOD START MetaNPR: include the active technique (excluded from outline pass — outline needs no edge code)
+#if defined(ENABLE_NPR_EDGES) && !defined(OUTLINE_PASS)
   #if defined(EFFECT_SOBEL)
     #include "../NPREffect_Sobel.cginc"
   #elif defined(EFFECT_NORMAL_EDGE)
@@ -62,7 +62,7 @@ void AppSpecificPostManipulation(avatar_FragmentInput i, inout avatar_FragmentOu
     return;
 #endif
 
-#if defined(ENABLE_NPR_EDGES)
+#if defined(ENABLE_NPR_EDGES) && !defined(OUTLINE_PASS)
   #if defined(EFFECT_SOBEL) || defined(EFFECT_NORMAL_EDGE) || defined(EFFECT_GAUSS_SOBEL) || defined(EFFECT_HIERARCHICAL) || defined(EFFECT_KUWAHARA) || defined(EFFECT_KUWAHARA_SOBEL) || defined(EFFECT_KUW_GAUSS_HIER)
     o.color = ApplyNPREffect(o.color, i.geometry.texcoord_0,
                              i.geometry.normal, i.geometry.worldViewDir);

@@ -85,3 +85,7 @@ crash.log
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/[Aa]ssets/**/*.meta
 
+
+# Local study notes — not for version control
+UNITY_STUDY_NOTES.md
+UNITY_STUDY_NOTES.pdf

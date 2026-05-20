@@ -19,13 +19,18 @@ public class NPREdgeDetectionUI : MonoBehaviour
     private const float CANVAS_W = 1000f;
 
     // ── Technique ─────────────────────────────────────────────────────────────
-    private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5, KuwaharaSobel = 6, KuwGaussHier = 7 }
-    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel", "Kuw+Hier" };
-    private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA", "EFFECT_KUWAHARA_SOBEL", "EFFECT_KUW_GAUSS_HIER" };
+    private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5, KuwaharaSobel = 6, KuwGaussHier = 7, Toon = 8, ToonSobel = 9, ToonHier = 10, Halftone = 11, Hatching = 12 }
+    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel", "Kuw+Hier", "Toon", "Toon+Sobel", "Toon+Hier", "Halftone", "Hatching" };
+    private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA", "EFFECT_KUWAHARA_SOBEL", "EFFECT_KUW_GAUSS_HIER", "EFFECT_TOON", "EFFECT_TOON_SOBEL", "EFFECT_TOON_HIER", "EFFECT_HALFTONE", "EFFECT_HATCHING" };
     private Technique _currentTechnique = Technique.Derivative;
 
+    // ── Display mode (cycles on the Mode row) ────────────────────────────────
+    // 0 = NPR ON  (ENABLE_NPR_EDGES + current technique)
+    // 1 = DEFAULT (Meta PBR as-is — NPR off, outline off)
+    private int _displayMode = 0;
+
     // ── Row data ──────────────────────────────────────────────────────────────
-    private enum RowKind { Float, Color, TechSelector, Toggle, TechOption, ShaderToggle, CompareDefault }
+    private enum RowKind { Float, Color, TechSelector, TechOption, ShaderToggle, CompareDefault }
 
     private struct Row
     {
@@ -63,8 +68,6 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
     [System.NonSerialized] private readonly List<Row> _rows = new();
 
-
-    private bool _compareDefault   = false;
 
     private int  _cursor           = -1;
     private int  _hoveredRow       = -1;
@@ -151,12 +154,6 @@ public class NPREdgeDetectionUI : MonoBehaviour
         if (!hit) { RefreshNPRMaterials(); foreach (var mat in _nprMaterials) if (mat != null && mat.HasProperty(prop)) mat.SetColor(prop, c); }
     }
 
-    void SetPassEnabled(string passName, bool enabled)
-    {
-        foreach (var mat in _nprMaterials)
-            if (mat != null) mat.SetShaderPassEnabled(passName, enabled);
-    }
-
     void PushAllValues()
     {
         RefreshNPRMaterials();
@@ -169,8 +166,6 @@ public class NPREdgeDetectionUI : MonoBehaviour
                 var (_, c) = ColorPresets[row.colorIndex];
                 SetShaderColor(row.propName, c);
             }
-            else if (row.kind == RowKind.Toggle)
-                SetPassEnabled(row.propName, row.currentValue > 0.5f);
             else if (row.kind == RowKind.ShaderToggle)
                 SetShaderFloat(row.propName, row.currentValue);
         }
@@ -178,13 +173,8 @@ public class NPREdgeDetectionUI : MonoBehaviour
         ApplyTechniqueVisibility();
         UpdateTechniqueLabel();
 
-        // Re-apply compare state so the periodic refresh doesn't undo it
-        foreach (var mat in _nprMaterials)
-        {
-            if (mat == null) continue;
-            if (_compareDefault) { mat.DisableKeyword("ENABLE_NPR_EDGES"); mat.SetShaderPassEnabled("NPROutline", false); }
-            else mat.EnableKeyword("ENABLE_NPR_EDGES");
-        }
+        // Re-apply display mode so the periodic refresh doesn't undo it
+        ApplyDisplayMode();
 
         Debug.Log("[NPREdgeDetectionUI] PushAll mats=" + _nprMaterials.Count
                   + " technique=" + TechniqueNames[(int)_currentTechnique]);
@@ -406,7 +396,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
             switch (row.kind)
             {
                 case RowKind.CompareDefault:
-                    ToggleCompareDefault(_hoveredRow);
+                    CycleDisplayMode(_hoveredRow);
                     break;
 
                 case RowKind.TechSelector:
@@ -426,18 +416,6 @@ public class NPREdgeDetectionUI : MonoBehaviour
                 case RowKind.Color:
                     AdjustColor(+1);
                     break;
-
-                case RowKind.Toggle:
-                {
-                    var r = _rows[_hoveredRow];
-                    r.currentValue    = r.currentValue > 0.5f ? 0f : 1f;
-                    bool on           = r.currentValue > 0.5f;
-                    r.valueText.text  = on ? "ON" : "OFF";
-                    r.valueText.color = on ? new Color(0.4f, 0.9f, 1f) : new Color(0.5f, 0.5f, 0.5f);
-                    _rows[_hoveredRow] = r;
-                    SetPassEnabled(r.propName, on);
-                    break;
-                }
 
                 case RowKind.ShaderToggle:
                 {
@@ -702,53 +680,130 @@ public class NPREdgeDetectionUI : MonoBehaviour
         AddFloatRow(t, 4, "Adaptive Str",  "_HAdaptiveStrength", 0f,     1f,   0.01f,  0.50f);
         AddColorRow( t, 4, "Edge Color",   "_HEdgeColor",        0);
 
-        // ── Kuwahara parameters (technique 5) ────────────────────────────────
+        // ── Kuwahara parameters (technique 5 — anisotropic) ──────────────────
         SectionLabel(t, "Kuwahara Filter", 5);
-        AddFloatRow(t, 5, "Radius",   "_KuwaharaRadius",   0.5f, 8f, 0.1f,  2.0f);
-        AddFloatRow(t, 5, "Strength", "_KuwaharaStrength", 0f,   1f, 0.01f, 1.0f);
+        AddFloatRow(t, 5, "Radius",    "_K2Radius",   0.5f, 8f,    0.1f,   2.0f);
+        AddFloatRow(t, 5, "Strength",  "_K2Strength", 0f,   1f,    0.01f,  1.0f);
+        AddFloatRow(t, 5, "Alpha",     "_K2Alpha",    0.5f, 3f,    0.05f,  1.0f);
+        AddFloatRow(t, 5, "Q Sharp",   "_K2Q",        1f,   16f,   0.5f,   8.0f);
+        AddFloatRow(t, 5, "Tau Floor", "_K2Tau",      0.001f,0.1f, 0.002f, 0.02f);
 
         // ── Kuwahara+Sobel parameters (technique 6) ───────────────────────────
         SectionLabel(t, "Kuwahara+Sobel", 6);
-        AddFloatRow(t, 6, "Kuw Radius",   "_KSKuwaharaRadius",   0.5f, 8f,    0.1f,   2.00f);
-        AddFloatRow(t, 6, "Kuw Strength", "_KSKuwaharaStrength", 0f,   1f,    0.01f,  0.80f);
-        AddShaderToggleRow(t, 6, "Gauss Blur",  "_KSEnableGaussBlur", true);
-        AddFloatRow(t, 6, "Sample Dist",  "_KSSobelSampleDist",  0f,   10f,   0.1f,   1.00f);
-        AddFloatRow(t, 6, "Blur Radius",  "_KSBlurRadius",       0f,   5f,    0.1f,   1.00f,    "_KSEnableGaussBlur");
-        AddFloatRow(t, 6, "Center W",     "_KSCenterWeight",     0.1f, 0.5f,  0.005f, 0.25f,    "_KSEnableGaussBlur");
-        AddFloatRow(t, 6, "Cardinal W",   "_KSCardinalWeight",   0f,   0.3f,  0.005f, 0.125f,   "_KSEnableGaussBlur");
-        AddFloatRow(t, 6, "Diagonal W",   "_KSDiagonalWeight",   0f,   0.1f,  0.002f, 0.0625f,  "_KSEnableGaussBlur");
-        AddFloatRow(t, 6, "Threshold",    "_KSThreshold",        0f,   0.5f,  0.005f, 0.15f);
-        AddFloatRow(t, 6, "Thresh Min",   "_KSThreshMin",        0f,   1f,    0.05f,  0.50f);
-        AddFloatRow(t, 6, "Thresh Max",   "_KSThreshMax",        1f,   5f,    0.1f,   1.50f);
-        AddFloatRow(t, 6, "Tightness",    "_KSTightness",        0f,   1f,    0.05f,  0.20f);
-        AddFloatRow(t, 6, "Power Curve",  "_KSPowerCurve",       0.5f, 5f,    0.1f,   1.50f);
-        AddFloatRow(t, 6, "Edge Str",     "_KSSobelStrength",    0f,   1f,    0.01f,  1.00f);
+        AddFloatRow(t, 6, "Kuw Radius",   "_K2SKuwRadius",   0.5f, 8f,    0.1f,    2.0f);
+        AddFloatRow(t, 6, "Kuw Strength", "_K2SKuwStrength", 0f,   1f,    0.01f,   0.8f);
+        AddFloatRow(t, 6, "Kuw Alpha",    "_K2SKuwAlpha",    0.5f, 3f,    0.05f,   1.0f);
+        AddFloatRow(t, 6, "Kuw Q",        "_K2SKuwQ",        1f,   16f,   0.5f,    8.0f);
+        AddFloatRow(t, 6, "Kuw Tau",      "_K2SKuwTau",      0.001f,0.1f, 0.002f,  0.02f);
+        AddShaderToggleRow(t, 6, "Gauss Blur",  "_K2SEnableGaussBlur", true);
+        AddFloatRow(t, 6, "Sample Dist",  "_K2SSobelSampleDist", 0f,   10f,   0.1f,    1.0f);
+        AddFloatRow(t, 6, "Blur Radius",  "_K2SBlurRadius",      0f,   5f,    0.1f,    1.0f,    "_K2SEnableGaussBlur");
+        AddFloatRow(t, 6, "Center W",     "_K2SCenterWeight",    0.1f, 0.5f,  0.005f,  0.25f,   "_K2SEnableGaussBlur");
+        AddFloatRow(t, 6, "Cardinal W",   "_K2SCardinalWeight",  0f,   0.3f,  0.005f,  0.125f,  "_K2SEnableGaussBlur");
+        AddFloatRow(t, 6, "Diagonal W",   "_K2SDiagonalWeight",  0f,   0.1f,  0.002f,  0.0625f, "_K2SEnableGaussBlur");
+        AddFloatRow(t, 6, "Threshold",    "_K2SThreshold",       0f,   0.5f,  0.005f,  0.15f);
+        AddFloatRow(t, 6, "Thresh Min",   "_K2SThreshMin",       0f,   1f,    0.05f,   0.5f);
+        AddFloatRow(t, 6, "Thresh Max",   "_K2SThreshMax",       1f,   5f,    0.1f,    1.5f);
+        AddFloatRow(t, 6, "Tightness",    "_K2STightness",       0f,   1f,    0.05f,   0.2f);
+        AddFloatRow(t, 6, "Power Curve",  "_K2SPowerCurve",      0.5f, 5f,    0.1f,    1.5f);
+        AddFloatRow(t, 6, "Edge Str",     "_K2SSobelStrength",   0f,   1f,    0.01f,   1.0f);
 
         // ── Kuwahara+Hier parameters (technique 7) ───────────────────────────
         SectionLabel(t, "Kuw+Hier", 7);
-        AddFloatRow(t, 7, "Kuw Radius",    "_KGHKuwaharaRadius",   0.5f,  8f,    0.1f,   2.00f);
-        AddFloatRow(t, 7, "Kuw Strength",  "_KGHKuwaharaStrength", 0f,    1f,    0.01f,  0.80f);
-        AddFloatRow(t, 7, "Depth Thresh",  "_KGHDepthThreshold",   0.001f,0.2f,  0.005f, 0.02f);
-        AddFloatRow(t, 7, "Norm Thresh",   "_KGHNormalThreshold",  0.05f, 1f,    0.01f,  0.30f);
-        AddFloatRow(t, 7, "Color Thresh",  "_KGHColorThreshold",   0.01f, 0.5f,  0.01f,  0.10f);
-        AddFloatRow(t, 7, "Depth Weight",  "_KGHDepthWeight",      0f,    1f,    0.01f,  0.80f);
-        AddFloatRow(t, 7, "Norm Weight",   "_KGHNormalWeight",     0f,    1f,    0.01f,  0.80f);
-        AddFloatRow(t, 7, "Color Weight",  "_KGHColorWeight",      0f,    1f,    0.01f,  0.60f);
-        AddFloatRow(t, 7, "Edge Width",    "_KGHEdgeWidth",        0.5f,  10f,   0.1f,   1.50f);
-        AddFloatRow(t, 7, "Adaptive Str",  "_KGHAdaptiveStrength", 0f,    1f,    0.01f,  0.50f);
-        AddFloatRow(t, 7, "Hier Tight",    "_KGHHierTightness",    0f,    1f,    0.05f,  0.50f);
-        AddFloatRow(t, 7, "Hier Str",      "_KGHHStrength",        0f,    1f,    0.01f,  1.00f);
-        AddShaderToggleRow(t, 7, "Color Blur",   "_KGHEnableGaussBlur", false);
-        AddFloatRow(t, 7, "Blur Radius",   "_KGHBlurRadius",       0f,    5f,    0.1f,   1.00f,    "_KGHEnableGaussBlur");
-        AddFloatRow(t, 7, "Center W",      "_KGHCenterWeight",     0.1f,  0.5f,  0.005f, 0.25f,    "_KGHEnableGaussBlur");
-        AddFloatRow(t, 7, "Cardinal W",    "_KGHCardinalWeight",   0f,    0.3f,  0.005f, 0.125f,   "_KGHEnableGaussBlur");
-        AddFloatRow(t, 7, "Diagonal W",    "_KGHDiagonalWeight",   0f,    0.1f,  0.002f, 0.0625f,  "_KGHEnableGaussBlur");
-        AddColorRow( t, 7, "Edge Color",   "_KGHEdgeColor",        0);
+        AddFloatRow(t, 7, "Kuw Radius",   "_K2HKuwRadius",   0.5f,  8f,    0.1f,    2.0f);
+        AddFloatRow(t, 7, "Kuw Strength", "_K2HKuwStrength", 0f,    1f,    0.01f,   0.8f);
+        AddFloatRow(t, 7, "Kuw Alpha",    "_K2HKuwAlpha",    0.5f,  3f,    0.05f,   1.0f);
+        AddFloatRow(t, 7, "Kuw Q",        "_K2HKuwQ",        1f,    16f,   0.5f,    8.0f);
+        AddFloatRow(t, 7, "Kuw Tau",      "_K2HKuwTau",      0.001f,0.1f,  0.002f,  0.02f);
+        AddFloatRow(t, 7, "Depth Thresh", "_K2HDepthThreshold",  0.001f, 0.2f,  0.005f, 0.02f);
+        AddFloatRow(t, 7, "Norm Thresh",  "_K2HNormalThreshold", 0.05f,  1f,    0.01f,  0.3f);
+        AddFloatRow(t, 7, "Color Thresh", "_K2HColorThreshold",  0.01f,  0.5f,  0.01f,  0.1f);
+        AddFloatRow(t, 7, "Depth Weight", "_K2HDepthWeight",     0f,     1f,    0.01f,  0.8f);
+        AddFloatRow(t, 7, "Norm Weight",  "_K2HNormalWeight",    0f,     1f,    0.01f,  0.8f);
+        AddFloatRow(t, 7, "Color Weight", "_K2HColorWeight",     0f,     1f,    0.01f,  0.6f);
+        AddFloatRow(t, 7, "Edge Width",   "_K2HEdgeWidth",       0.5f,   10f,   0.1f,   1.5f);
+        AddFloatRow(t, 7, "Adaptive Str", "_K2HAdaptiveStrength",0f,     1f,    0.01f,  0.5f);
+        AddFloatRow(t, 7, "Hier Tight",   "_K2HHierTightness",   0f,     1f,    0.05f,  0.5f);
+        AddFloatRow(t, 7, "Hier Str",     "_K2HHStrength",       0f,     1f,    0.01f,  1.0f);
+        AddShaderToggleRow(t, 7, "Color Blur",   "_K2HEnableGaussBlur", false);
+        AddFloatRow(t, 7, "Blur Radius",  "_K2HBlurRadius",      0f,    5f,    0.1f,    1.0f,    "_K2HEnableGaussBlur");
+        AddFloatRow(t, 7, "Center W",     "_K2HCenterWeight",    0.1f,  0.5f,  0.005f,  0.25f,   "_K2HEnableGaussBlur");
+        AddFloatRow(t, 7, "Cardinal W",   "_K2HCardinalWeight",  0f,    0.3f,  0.005f,  0.125f,  "_K2HEnableGaussBlur");
+        AddFloatRow(t, 7, "Diagonal W",   "_K2HDiagonalWeight",  0f,    0.1f,  0.002f,  0.0625f, "_K2HEnableGaussBlur");
+        AddColorRow( t, 7, "Edge Color",  "_K2HEdgeColor",       0);
+
+        // ── Toon parameters (technique 8 — posterise only, no edges) ─────────
+        SectionLabel(t, "Toon / Cel Shader", 8);
+        AddFloatRow(t, 8, "Color Bands",   "_ToonColorBands",        2f, 8f,  1f,    4f);
+        AddFloatRow(t, 8, "Posterize Str", "_ToonPosterizeStrength", 0f, 1f,  0.01f, 0.85f);
+        AddFloatRow(t, 8, "Saturation",    "_ToonSaturation",        0f, 3f,  0.05f, 1.0f);
+
+        // ── Toon+Sobel parameters (technique 9) ──────────────────────────────
+        SectionLabel(t, "Toon+Sobel", 9);
+        AddFloatRow(t, 9, "Color Bands",   "_TSColorBands",        2f,    8f,    1f,      4f);
+        AddFloatRow(t, 9, "Posterize Str", "_TSPosterizeStrength", 0f,    1f,    0.01f,   0.85f);
+        AddFloatRow(t, 9, "Saturation",    "_TSSaturation",        0f,    3f,    0.05f,   1.0f);
+        AddShaderToggleRow(t, 9, "Gauss Blur",  "_TSEnableGaussBlur", true);
+        AddFloatRow(t, 9, "Sample Dist",   "_TSSobelSampleDist",   0f,    10f,   0.1f,    1.0f);
+        AddFloatRow(t, 9, "Blur Radius",   "_TSBlurRadius",        0f,    5f,    0.1f,    1.0f,   "_TSEnableGaussBlur");
+        AddFloatRow(t, 9, "Center W",      "_TSCenterWeight",      0.1f,  0.5f,  0.005f,  0.25f,  "_TSEnableGaussBlur");
+        AddFloatRow(t, 9, "Cardinal W",    "_TSCardinalWeight",    0f,    0.3f,  0.005f,  0.125f, "_TSEnableGaussBlur");
+        AddFloatRow(t, 9, "Diagonal W",    "_TSDiagonalWeight",    0f,    0.1f,  0.002f,  0.0625f,"_TSEnableGaussBlur");
+        AddFloatRow(t, 9, "Threshold",     "_TSThreshold",         0f,    0.5f,  0.005f,  0.15f);
+        AddFloatRow(t, 9, "Thresh Min",    "_TSThreshMin",         0f,    1f,    0.05f,   0.5f);
+        AddFloatRow(t, 9, "Thresh Max",    "_TSThreshMax",         1f,    5f,    0.1f,    1.5f);
+        AddFloatRow(t, 9, "Tightness",     "_TSTightness",         0f,    1f,    0.05f,   0.2f);
+        AddFloatRow(t, 9, "Power Curve",   "_TSPowerCurve",        0.5f,  5f,    0.1f,    1.5f);
+        AddFloatRow(t, 9, "Edge Str",      "_TSSobelStrength",     0f,    1f,    0.01f,   1.0f);
+
+        // ── Toon+Hier parameters (technique 10) ───────────────────────────────
+        SectionLabel(t, "Toon+Hier", 10);
+        AddFloatRow(t, 10, "Color Bands",   "_THColorBands",        2f,     8f,    1f,     4f);
+        AddFloatRow(t, 10, "Posterize Str", "_THPosterizeStrength", 0f,     1f,    0.01f,  0.85f);
+        AddFloatRow(t, 10, "Saturation",    "_THSaturation",        0f,     3f,    0.05f,  1.0f);
+        AddFloatRow(t, 10, "Depth Thresh",  "_THDepthThreshold",    0.001f, 0.2f,  0.005f, 0.02f);
+        AddFloatRow(t, 10, "Norm Thresh",   "_THNormalThreshold",   0.05f,  1f,    0.01f,  0.3f);
+        AddFloatRow(t, 10, "Color Thresh",  "_THColorThreshold",    0.01f,  0.5f,  0.01f,  0.1f);
+        AddFloatRow(t, 10, "Depth Weight",  "_THDepthWeight",       0f,     1f,    0.01f,  0.8f);
+        AddFloatRow(t, 10, "Norm Weight",   "_THNormalWeight",      0f,     1f,    0.01f,  0.8f);
+        AddFloatRow(t, 10, "Color Weight",  "_THColorWeight",       0f,     1f,    0.01f,  0.6f);
+        AddFloatRow(t, 10, "Edge Width",    "_THEdgeWidth",         0.5f,   10f,   0.1f,   1.5f);
+        AddFloatRow(t, 10, "Adaptive Str",  "_THAdaptiveStrength",  0f,     1f,    0.01f,  0.5f);
+        AddFloatRow(t, 10, "Hier Tight",    "_THHierTightness",     0f,     1f,    0.05f,  0.5f);
+        AddFloatRow(t, 10, "Hier Str",      "_THHStrength",         0f,     1f,    0.01f,  1.0f);
+        AddShaderToggleRow(t, 10, "Color Blur",  "_THEnableGaussBlur", false);
+        AddFloatRow(t, 10, "Blur Radius",   "_THBlurRadius",        0f,    5f,    0.1f,    1.0f,    "_THEnableGaussBlur");
+        AddFloatRow(t, 10, "Center W",      "_THCenterWeight",      0.1f,  0.5f,  0.005f,  0.25f,   "_THEnableGaussBlur");
+        AddFloatRow(t, 10, "Cardinal W",    "_THCardinalWeight",    0f,    0.3f,  0.005f,  0.125f,  "_THEnableGaussBlur");
+        AddFloatRow(t, 10, "Diagonal W",    "_THDiagonalWeight",    0f,    0.1f,  0.002f,  0.0625f, "_THEnableGaussBlur");
+        AddColorRow( t, 10, "Edge Color",   "_THEdgeColor",         0);
+
+        // ── Halftone parameters (technique 11) ───────────────────────────────
+        SectionLabel(t, "Halftone", 11);
+        AddFloatRow(t, 11, "Dot Scale",    "_HTScale",            2f,    100f,  1f,     30f);
+        AddFloatRow(t, 11, "Sharpness",    "_HTSharpness",        1f,    50f,   0.5f,   10f);
+        AddFloatRow(t, 11, "Grid Angle",   "_HTAngle",            0f,    90f,   1f,     45f);
+        AddFloatRow(t, 11, "Tone Bias",    "_HTToneBias",        -0.5f,  0.5f,  0.01f,  0f);
+        AddColorRow( t, 11, "Ink Color",   "_HTInkColor",         1);
+        AddColorRow( t, 11, "Paper Color", "_HTPaperColor",       5);
+        AddFloatRow(t, 11, "Tex Influence","_HTTextureInfluence",  0f,    1f,    0.05f,  0.5f);
+        AddFloatRow(t, 11, "Strength",     "_HTStrength",          0f,    1f,    0.01f,  1.0f);
+
+        // ── Hatching parameters (technique 12) ───────────────────────────────
+        SectionLabel(t, "Hatching", 12);
+        AddFloatRow(t, 12, "Hatch Scale",  "_HatScale",           1f,    100f,  1f,     20f);
+        AddFloatRow(t, 12, "Primary Angle","_HatAngle",           0f,    180f,  1f,     45f);
+        AddFloatRow(t, 12, "Cross Angle",  "_HatCrossAngle",      0f,    180f,  1f,     135f);
+        AddFloatRow(t, 12, "Thickness",    "_HatThickness",       0.01f, 0.5f,  0.01f,  0.15f);
+        AddFloatRow(t, 12, "Tone Bias",    "_HatToneBias",       -0.5f,  0.5f,  0.01f,  0f);
+        AddColorRow( t, 12, "Ink Color",   "_HatInkColor",        1);
+        AddColorRow( t, 12, "Paper Color", "_HatPaperColor",      5);
+        AddFloatRow(t, 12, "Tex Influence","_HatTextureInfluence", 0f,    1f,    0.05f,  0.5f);
+        AddFloatRow(t, 12, "Strength",     "_HatStrength",         0f,    1f,    0.01f,  1.0f);
 
         // ── Inverted Hull Outline (always visible) ────────────────────────────
         Space(t, 4);
         SectionLabel(t, "Inverted Hull Outline");
-        AddToggleRow(t, -1, "Outline",       "NPROutline",    false);
         AddFloatRow( t, -1, "Width",         "_OutlineWidth", 0.5f, 10f, 0.1f, 2.0f);
         AddColorRow( t, -1, "Outline Color", "_OutlineColor", 0);
 
@@ -764,7 +819,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
     void AddCompareDefaultRow(Transform parent)
     {
-        var (rowGo, hl, valTxt, curTxt, col, _) = MakeRowShell(parent, "A/B Compare", hasSlider: false);
+        var (rowGo, hl, valTxt, curTxt, col, _) = MakeRowShell(parent, "Mode [cycle]", hasSlider: false);
         valTxt.text  = "NPR ON";
         valTxt.color = new Color(0.4f, 0.9f, 1f);
         _rows.Add(new Row
@@ -776,36 +831,43 @@ public class NPREdgeDetectionUI : MonoBehaviour
         });
     }
 
-    void ToggleCompareDefault(int rowIndex)
+    void CycleDisplayMode(int rowIndex)
     {
-        var r = _rows[rowIndex];
-        bool enterDefault = r.currentValue > 0.5f;
-        r.currentValue = enterDefault ? 0f : 1f;
-        _compareDefault = enterDefault;
+        _displayMode = (_displayMode + 1) % 2;
+        ApplyDisplayMode();
 
-        if (enterDefault)
+        var r = _rows[rowIndex];
+        if (_displayMode == 0)
+        {
+            r.valueText.text  = "NPR ON";
+            r.valueText.color = new Color(0.4f, 0.9f, 1f);
+        }
+        else
+        {
+            r.valueText.text  = "DEFAULT";
+            r.valueText.color = new Color(1f, 0.78f, 0.2f);
+        }
+        _rows[rowIndex] = r;
+    }
+
+    void ApplyDisplayMode()
+    {
+        if (_displayMode == 0) // NPR ON
+        {
+            foreach (var mat in _nprMaterials)
+                if (mat != null) mat.EnableKeyword("ENABLE_NPR_EDGES");
+            ApplyTechniqueKeywords();
+            SetShaderFloat("_OutlineEnabled", 1f);
+        }
+        else // DEFAULT — Meta PBR as-is
         {
             foreach (var mat in _nprMaterials)
             {
                 if (mat == null) continue;
                 mat.DisableKeyword("ENABLE_NPR_EDGES");
-                mat.SetShaderPassEnabled("NPROutline", false);
+                mat.SetFloat("_OutlineEnabled", 0f);
             }
-            r.valueText.text  = "DEFAULT";
-            r.valueText.color = new Color(1f, 0.78f, 0.2f);
         }
-        else
-        {
-            foreach (var mat in _nprMaterials)
-                if (mat != null) mat.EnableKeyword("ENABLE_NPR_EDGES");
-            ApplyTechniqueKeywords();
-            foreach (var row in _rows)
-                if (row.kind == RowKind.Toggle && row.propName == "NPROutline")
-                    SetPassEnabled("NPROutline", row.currentValue > 0.5f);
-            r.valueText.text  = "NPR ON";
-            r.valueText.color = new Color(0.4f, 0.9f, 1f);
-        }
-        _rows[rowIndex] = r;
     }
 
     void AddTechSelectorRow(Transform parent)
@@ -857,19 +919,6 @@ public class NPREdgeDetectionUI : MonoBehaviour
         });
     }
 
-    void AddToggleRow(Transform parent, int techniqueFilter, string label, string passName, bool initial)
-    {
-        var (rowGo, hl, valTxt, curTxt, col, _) = MakeRowShell(parent, label, hasSlider: false);
-        valTxt.text  = initial ? "ON" : "OFF";
-        valTxt.color = initial ? new Color(0.4f, 0.9f, 1f) : new Color(0.5f, 0.5f, 0.5f);
-        _rows.Add(new Row
-        {
-            kind = RowKind.Toggle, label = label, propName = passName,
-            currentValue = initial ? 1f : 0f, techniqueFilter = techniqueFilter,
-            valueText = valTxt, highlight = hl, cursorText = curTxt,
-            collider = col, rowGo = rowGo,
-        });
-    }
 
     void AddShaderToggleRow(Transform parent, int techniqueFilter, string label, string propName, bool initial)
     {

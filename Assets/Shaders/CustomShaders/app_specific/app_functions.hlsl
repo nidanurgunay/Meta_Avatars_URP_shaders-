@@ -6,7 +6,7 @@
 // MOD END MetaNPR
 
 // MOD START MetaNPR: technique selection (mutually exclusive; default = Derivative)
-#pragma multi_compile __ EFFECT_SOBEL EFFECT_NORMAL_EDGE EFFECT_GAUSS_SOBEL EFFECT_HIERARCHICAL EFFECT_KUWAHARA EFFECT_KUWAHARA_SOBEL EFFECT_KUW_GAUSS_HIER
+#pragma multi_compile __ EFFECT_SOBEL EFFECT_NORMAL_EDGE EFFECT_GAUSS_SOBEL EFFECT_HIERARCHICAL EFFECT_KUWAHARA EFFECT_KUWAHARA_SOBEL EFFECT_KUW_GAUSS_HIER EFFECT_TOON EFFECT_TOON_SOBEL EFFECT_TOON_HIER EFFECT_HALFTONE EFFECT_HATCHING
 // MOD END MetaNPR
 
 // MOD START MetaNPR: include the active technique (excluded from outline pass — outline needs no edge code)
@@ -20,17 +20,28 @@
   #elif defined(EFFECT_HIERARCHICAL)
     #include "../NPREffect_Hierarchical.cginc"
   #elif defined(EFFECT_KUWAHARA)
-    #include "../NPREffect_Kuwahara.cginc"
+    #include "../NPREffect_Kuwahara2.cginc"
   #elif defined(EFFECT_KUWAHARA_SOBEL)
-    #include "../NPREffect_KuwaharaSobel.cginc"
+    #include "../NPREffect_Kuwahara2Sobel.cginc"
   #elif defined(EFFECT_KUW_GAUSS_HIER)
-    #include "../NPREffect_KuwaharaGaussHier.cginc"
+    #include "../NPREffect_Kuwahara2GaussHier.cginc"
+  #elif defined(EFFECT_TOON)
+    #include "../NPREffect_Toon.cginc"
+  #elif defined(EFFECT_TOON_SOBEL)
+    #include "../NPREffect_ToonSobel.cginc"
+  #elif defined(EFFECT_TOON_HIER)
+    #include "../NPREffect_ToonGaussHier.cginc"
+  #elif defined(EFFECT_HALFTONE)
+    #include "../NPREffect_Halftone.cginc"
+  #elif defined(EFFECT_HATCHING)
+    #include "../NPREffect_Hatching.cginc"
   #else
     #include "../AvatarNPREdgeEffect.cginc"
   #endif
 #endif
 // MOD END MetaNPR
 
+float  _OutlineEnabled;
 float  _OutlineWidth;
 float4 _OutlineColor;
 
@@ -58,12 +69,13 @@ void AppSpecificPostManipulation(avatar_FragmentInput i, inout avatar_FragmentOu
 
 // Inverted hull outline pass: output outline colour and skip all edge detection
 #if defined(OUTLINE_PASS)
+    if (_OutlineEnabled < 0.5) discard;
     o.color = _OutlineColor;
     return;
 #endif
 
 #if defined(ENABLE_NPR_EDGES) && !defined(OUTLINE_PASS)
-  #if defined(EFFECT_SOBEL) || defined(EFFECT_NORMAL_EDGE) || defined(EFFECT_GAUSS_SOBEL) || defined(EFFECT_HIERARCHICAL) || defined(EFFECT_KUWAHARA) || defined(EFFECT_KUWAHARA_SOBEL) || defined(EFFECT_KUW_GAUSS_HIER)
+  #if defined(EFFECT_SOBEL) || defined(EFFECT_NORMAL_EDGE) || defined(EFFECT_GAUSS_SOBEL) || defined(EFFECT_HIERARCHICAL) || defined(EFFECT_KUWAHARA) || defined(EFFECT_KUWAHARA_SOBEL) || defined(EFFECT_KUW_GAUSS_HIER) || defined(EFFECT_TOON) || defined(EFFECT_TOON_SOBEL) || defined(EFFECT_TOON_HIER) || defined(EFFECT_HALFTONE) || defined(EFFECT_HATCHING)
     o.color = ApplyNPREffect(o.color, i.geometry.texcoord_0,
                              i.geometry.normal, i.geometry.worldViewDir);
   #else

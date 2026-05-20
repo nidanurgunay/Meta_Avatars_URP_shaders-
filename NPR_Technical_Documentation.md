@@ -5,9 +5,9 @@
 
 ## What This Project Is
 
-A VR study application running on Meta Quest 3. Participants stand in front of a Meta Avatar and assess eight different **Non-Photorealistic Rendering (NPR)** styles — cartoon outlines, painterly effects, and edge-detection techniques — directly inside the headset without removing it.
+A VR study application running on Meta Quest 3. Participants stand in front of a Meta Avatar and assess thirteen different **Non-Photorealistic Rendering (NPR)** styles — cartoon outlines, painterly effects, halftone, hatching, and edge-detection techniques — directly inside the headset without removing it.
 
-The app lets a researcher cycle through six different avatar presets (different faces/body types) while a participant adjusts every shader parameter live through a floating UI panel, then compares the NPR look against the base Meta cel-shading with a single button press.
+The app lets a researcher cycle through six different avatar presets (different faces/body types) while a participant adjusts every shader parameter live through a floating UI panel, then cycles through three display modes (NPR ON / DEFAULT / REALISTIC) with a single button press.
 
 ---
 
@@ -23,7 +23,7 @@ On top of this there are two custom scripts:
 |--------|---------------|
 | `AvatarSwitcher.cs` | Cycles avatar presets with the left thumbstick (Y button enters/exits selection mode). Shows a floating HUD. |
 | `NPREdgeDetectionUI.cs` | World-space panel opened with B button. All NPR parameters are tunable here with the right controller. |
-"""
+
 ### Controller layout
 
 | Button | Action |
@@ -49,7 +49,9 @@ Opening the panel (B button) spawns a world-space canvas 2 m in front of the pla
 - **Left grip** — increments the selected float row
 - Rows are organised by technique; irrelevant rows are hidden (e.g. Blur Radius is only visible when Gauss Blur is ON)
 
-At the very top of the panel is an **A/B Compare** button. Pressing it instantly disables all NPR keywords and the outline pass, showing the plain Meta cel-shading. Pressing it again restores the full NPR look. This lets a participant see the exact difference without removing the headset.
+At the very top of the panel is a **Mode [cycle]** button. Each press toggles between two display states:
+1. **NPR ON** — `ENABLE_NPR_EDGES` enabled, outline pass enabled, current technique active
+2. **DEFAULT** — `ENABLE_NPR_EDGES` disabled, outline disabled; Meta's full `STYLE_2_STANDARD` PBR (rim light, SSS, hair)
 
 ---
 
@@ -68,7 +70,8 @@ ENABLE_NPR_EDGES              — master on/off (all effects gated here)
 
 EFFECT_SOBEL | EFFECT_NORMAL_EDGE | EFFECT_GAUSS_SOBEL |
 EFFECT_HIERARCHICAL | EFFECT_KUWAHARA | EFFECT_KUWAHARA_SOBEL |
-EFFECT_KUW_GAUSS_HIER         — mutually exclusive technique
+EFFECT_KUW_GAUSS_HIER | EFFECT_TOON | EFFECT_TOON_SOBEL |
+EFFECT_TOON_HIER              — mutually exclusive technique
 ```
 
 Each combination is a separate compiled shader variant — zero runtime branching cost. The UI toggles these via `Material.EnableKeyword` / `DisableKeyword`.
@@ -202,62 +205,272 @@ An adaptive sensitivity term scales all layers down in dark areas, avoiding over
 ---
 
 ### Technique 6 — Kuwahara
-**File:** `NPREffect_Kuwahara.cginc`
+**File:** `NPREffect_Kuwahara2.cginc` (anisotropic — replaces former isotropic version)
 
-The classic isotropic Kuwahara filter. Not an edge detector — a **painterly stylisation** that replaces each pixel's colour with the mean of its most homogeneous neighbourhood.
+Single-scale anisotropic Kuwahara filter based on Kyprianidis (NPAR 2011 §3.3). The former isotropic 4-quadrant design was removed in favour of this structure-tensor-guided 8-sector elliptical filter which produces visually superior direction-aware brushstrokes with no perceptible difference in Quest 3 performance.
 
-The 3×3 neighbourhood is divided into four overlapping 2×2 quadrants. For each quadrant the mean and variance of the 4 pixels are computed. The quadrant with the **lowest variance** wins; its mean replaces the output colour. The result is blended with the original lit colour by `KuwaharaStrength`.
+**Step 1 — Structure tensor:** Hardware `ddx`/`ddy` of the shaded luminance gives `gx`, `gy`. The 2×2 structure tensor `J = [[E,F],[F,G]]` = `[[gx²,gx·gy],[gx·gy,gy²]]` encodes local gradient structure. Eigenanalysis yields:
+- `φ` — dominant orientation angle (direction of minimum change, i.e. along the feature): `φ = ½ arctan(2F / (E−G)) + π/2`
+- `A` — anisotropy `(λ₁−λ₂)/(λ₁+λ₂)`, range 0–1
 
-> **Note:** Full anisotropic Kuwahara (Kyprianidis 2009) aligns the filter with surface geometry via a structure tensor, producing flow-aware brushstrokes. That requires multiple render passes and cannot be done in a single fragment hook. The isotropic version used here is computationally practical for Quest hardware.
+**Step 2 — Ellipse axes (paper §3.3.1):**
+```
+a = (α + A)/α · r    (major axis, along feature direction)
+b =  α/(α + A) · r   (minor axis, across feature)
+```
+`α` is a user-tunable eccentricity parameter (default 1). A=0 gives a circle; A=1 gives 2:1 elongation.
 
-**Characteristics:** Smooths flat colour regions, sharpens colour boundaries — oil-painting / cel-shading look. Useful as a pre-processing step before edge detection (see Techniques 7 and 8).
+**Step 3 — 8 sectors over the rotated ellipse:** The transform `R_{−φ} · diag(a,b)` maps unit-disc points to UV offsets. For each of 8 sector centre directions (at 0°, 45°, 90°, …, 315° in the unit disc), 3 samples are taken at radii 0.45, 0.75, 1.0, plus the shared centre. Gaussian-inspired weights (0.40, 0.28, 0.20, 0.12) compute the weighted mean `m_i` and std deviation `σ_i` per sector.
+
+**Step 4 — Soft weighted blend (paper §3.3.1 eq.):**
+```
+ω_i = max(τ, σ_i)^{-q}
+result = Σ(ω_i · m_i) / Σ(ω_i)
+```
+`τ` (default 0.02) prevents divide-by-zero in flat regions. `q` (default 8) controls sharpness — high q means only the most homogeneous sector(s) contribute.
+
+> **Note:** The multi-scale pyramid from the 2011 paper (coarse-to-fine across Lanczos3 levels) requires multiple render passes and cannot be implemented in `AppSpecificPostManipulation`.
+
+| UI Slider | What it does |
+|-----------|-------------|
+| Radius | Filter ellipse radius (major axis) |
+| Strength | Blend with original lit colour |
+| Alpha | Eccentricity α — 1 = standard, >1 = more elongated brushstrokes |
+| Q Sharp | Sector weight sharpness — higher = harder region boundaries |
+| Tau Floor | Variance floor τ — prevents instability in uniform flat areas |
+
+**Characteristics:** Brushstrokes follow surface feature directions. Smooth areas with A≈0 behave like an enhanced isotropic Kuwahara. Strong gradients (A≈1) produce elongated strokes aligned with edges. 25 texture samples (1 centre + 8 sectors × 3).
 
 ---
 
 ### Technique 7 — Kuwahara + Sobel
-**File:** `NPREffect_KuwaharaSobel.cginc`
+**File:** `NPREffect_Kuwahara2Sobel.cginc`
 
 Two stages in one pass:
 
-1. **Kuwahara** (same as Technique 6) — stylises the colour, producing flatter regions with cleaner boundaries.
-2. **Gaussian Sobel (full pipeline)** — applied to the **original** base colour texture, not the Kuwahara output. Edge lines are composited over the Kuwahara-stylised colour.
+1. **Kuwahara** (anisotropic, same as Technique 6) — structure-tensor-guided 8-sector painterly stylisation.
+2. **Gaussian Sobel (full pipeline)** — applied to the **original** base colour texture. Edge lines composited over the Kuwahara-stylised colour.
 
-The Gaussian pre-blur is togglable (`Gauss Blur` toggle). When enabled, each of the 8 Sobel sample positions is pre-blurred with a 9-tap Gaussian kernel whose weights are user-configurable: `Center W / Cardinal W / Diagonal W` (normalised at runtime). This matches the full configurable pipeline used in Technique 4 (Gaussian Sobel).
+Optional 9-tap Gaussian pre-blur per Sobel position, threshold band, 4× progressive smoothstep, power curve.
 
-**Line width control:** A threshold band (`Thresh Min` / `Thresh Max` multipliers), four progressive smoothstep passes (`Tightness` — 0 = soft halos, 1 = crisp binary lines), and a power curve give precise control over edge crispness.
-
-**Characteristics:** Painterly flat regions with sharp edge lines. The Kuwahara step reduces noisy interior texture detail that would otherwise produce unwanted inner edges, leaving the Gaussian Sobel to detect only meaningful structural boundaries.
+**Characteristics:** Direction-aware painterly base with sharp Sobel edge lines. The anisotropic Kuwahara step produces more coherent flat regions, reducing false interior edges in the Sobel detector.
 
 ---
 
 ### Technique 8 — Kuwahara + Hierarchical
-**File:** `NPREffect_KuwaharaGaussHier.cginc`
+**File:** `NPREffect_Kuwahara2GaussHier.cginc`
 
-Two phases in one pass:
+Two stages in one pass:
 
-1. **Kuwahara** — stylises base colour (same filter as Technique 6).
-2. **Hierarchical** — depth + normal + Roberts Cross colour layers with adaptive sensitivity, identical logic to Technique 5 standalone.
-
-The colour layer of the Hierarchical pass supports an optional Gaussian pre-blur (`Color Blur` toggle). When enabled, each of the four Roberts Cross sample points is replaced by a 9-tap Gaussian neighbourhood before the cross operator runs. Weights are user-configurable: `Center W / Cardinal W / Diagonal W` (normalised at runtime). This smooths texture noise in the colour layer while preserving structural edges detected by the depth and normal layers.
+1. **Kuwahara** (anisotropic, same as Technique 6) — structure-tensor-guided 8-sector stylisation.
+2. **Hierarchical** — depth + normal + Roberts Cross colour layers with adaptive sensitivity. Optional Gaussian pre-blur on the colour layer (`Color Blur` toggle).
 
 **Line width control:** `Hier Tight` — at 0 the final smoothstep is `smoothstep(0.20, 0.55, edge)` (wide soft halos); at 1 it tightens to `smoothstep(0.35, 0.40, edge)` (crisp thin lines).
 
-**Characteristics:** Painterly Kuwahara base combined with geometry-aware edge detection (silhouettes via depth, creases via normals, texture detail via Roberts Cross colour). Gaussian pre-blur on the colour layer is optional and reduces false edges from high-frequency avatar textures.
+**Characteristics:** Direction-aware painterly base combined with geometry-aware edge detection (silhouettes via depth, creases via normals, texture detail via Roberts Cross colour). The anisotropic Kuwahara step produces more coherent flat regions, reducing false interior edges in the colour layer.
+
+---
+
+### Technique 9 — Toon / Cel Shader
+**File:** `NPREffect_Toon.cginc`
+**Keyword:** `EFFECT_TOON`
+
+Pure posterisation-based cel shading — **no edge detection**. Use the inverted-hull outline pass for silhouette lines, and Technique 10 or 11 for image-space edge lines on top.
+
+**Colour posterisation:**
+```
+posterized = floor(color × bands + 0.5) / bands   // round-to-nearest quantization
+color.rgb  = lerp(original, posterized, PosterizeStrength)
+```
+This gives the stepped flat-colour look of hand-drawn cel animation. Posterization runs **first**, then saturation is scaled independently:
+```
+lum       = dot(color.rgb, float3(0.2126, 0.7152, 0.0722))
+color.rgb = lerp(float3(lum,lum,lum), color.rgb, Saturation)
+```
+Ordering matters: saturating after posterization avoids driving low channels negative (which would cause darkening when clamped to 0). Default saturation is 1.0 (unchanged); values above 1.0 boost cartoon vibrancy.
+
+| UI Slider | What it does |
+|-----------|-------------|
+| Color Bands | Discrete posterization steps (2 = two-tone, 4 = four-tone, 8 = subtle) |
+| Posterize Str | Blend between original PBR and fully posterized colour |
+| Saturation | Colour saturation scale (1 = unchanged, 1.5 = boosted cartoon look) |
+
+**Characteristics:** Zero texture samples. Fast. Combine with the inverted-hull outline for maximum cartoon effect with no extra pass cost. The `AppSpecificPostManipulation` hook receives the final composited PBR colour (raw NdotL is inaccessible), so band quantization works on perceived brightness rather than raw light contribution.
+
+---
+
+### Technique 10 — Toon + Sobel
+**File:** `NPREffect_ToonSobel.cginc`
+**Keyword:** `EFFECT_TOON_SOBEL`
+
+Two phases in one pass:
+
+**Phase 1 — Toon posterisation:** Identical to Technique 9 using `_TS*`-prefixed uniforms (`_TSColorBands`, `_TSPosterizeStrength`, `_TSSaturation`). Posterize first, then saturate.
+
+**Phase 2 — Gaussian Sobel edge detection:** Identical pipeline to the Sobel stage in Technique 7 (Kuwahara + Sobel), applied to the **original** base colour texture:
+- Optional 9-tap Gaussian pre-blur per Sobel sample position (toggle `_TSEnableGaussBlur`)
+- Configurable Gaussian weights: `_TSCenterWeight`, `_TSCardinalWeight`, `_TSDiagonalWeight`
+- 3×3 Sobel gradient computation
+- Threshold band (`_TSThreshold × _TSThreshMin` → `_TSThreshold × _TSThreshMax`)
+- 4× progressive smoothstep passes controlled by a single `_TSTightness` parameter
+- Power curve (`_TSPowerCurve`) for edge opacity falloff
+- Edge colour taken from the shared `_InnerLineColor` uniform
+
+| UI Row | What it does |
+|--------|-------------|
+| Color Bands | Toon posterization steps |
+| Posterize Str | Toon posterization blend |
+| Saturation | Toon saturation scale |
+| Gauss Blur | Toggle 9-tap Gaussian pre-blur on Sobel samples |
+| Sobel Dist | Sobel kernel UV offset |
+| Blur Radius | Per-sample Gaussian radius (visible when Gauss Blur ON) |
+| Center W / Cardinal W / Diagonal W | Gaussian kernel weights (visible when Gauss Blur ON) |
+| Threshold | Sobel edge magnitude threshold |
+| Thresh Min / Max | Threshold band multipliers |
+| Tightness | Edge crispness (0 = wide soft halos, 1 = crisp thin lines) |
+| Power Curve | Post-pass power curve on edge opacity |
+| Sobel Strength | Overall edge opacity |
+
+**Characteristics:** Cel-shaded posterized colour with Sobel edge lines. Up to 72 texture samples for the Sobel stage (8 positions × 9 Gaussian taps). Toon posterization produces large flat regions that the Sobel detector reads cleanly, reducing noisy interior edges compared to running Sobel on the original PBR colour.
+
+---
+
+### Technique 11 — Toon + Hierarchical
+**File:** `NPREffect_ToonGaussHier.cginc`
+**Keyword:** `EFFECT_TOON_HIER`
+
+Two phases in one pass:
+
+**Phase 1 — Toon posterisation:** Identical to Technique 9 using `_TH*`-prefixed uniforms (`_THColorBands`, `_THPosterizeStrength`, `_THSaturation`). Posterize first, then saturate.
+
+**Phase 2 — Hierarchical edge detection:** Identical pipeline to Technique 5 (Hierarchical) and the hierarchical stage in Technique 8 (Kuwahara + Hierarchical):
+
+- **Depth layer:** `ddx/ddy` on `length(worldViewDir)` → silhouette edges
+- **Normal layer:** `ddx/ddy` on world normal → geometric crease edges
+- **Colour layer (Roberts Cross):** diagonal luminance differences `|lum(TL)−lum(BR)| + |lum(TR)−lum(BL)|` using `_TH*`-prefixed Gaussian weights; optional 9-tap Gaussian pre-blur per sample point (`_THEnableGaussBlur`)
+- **Adaptive suppression:** scales all layers down in dark areas by `_THAdaptiveStrength`
+- **Fusion:** `max(depthLayer × DepthWeight, max(normalLayer × NormalWeight, colorLayer × ColorWeight))`
+- **Line width:** `_THHierTightness` controls the final smoothstep band (0 = wide halos, 1 = crisp thin lines)
+- **Edge colour:** `_THEdgeColor` (technique-specific, unlike Toon+Sobel which reuses `_InnerLineColor`)
+
+| UI Row | What it does |
+|--------|-------------|
+| Color Bands | Toon posterization steps |
+| Posterize Str | Toon posterization blend |
+| Saturation | Toon saturation scale |
+| Depth Thresh / Normal Thresh / Color Thresh | Per-layer detection thresholds |
+| Depth W / Normal W / Color W | Per-layer blend weights |
+| Edge Width | Roberts Cross UV offset |
+| Adaptive Str | Dark-area edge suppression strength |
+| Hier Tight | Edge crispness (0 = soft, 1 = crisp) |
+| Hier Strength | Overall hierarchical edge opacity |
+| Color Blur | Toggle 9-tap Gaussian pre-blur on colour samples |
+| Blur Radius / Center W / Cardinal W / Diagonal W | Gaussian kernel params (visible when Color Blur ON) |
+| Edge Color | Ink colour for hierarchical edges |
+
+**Characteristics:** Cel-shaded posterized colour with geometry-aware edge detection (silhouettes, creases, colour detail) and per-layer weight control. Most flexible of the three Toon variants. 4–36 texture samples for the colour layer depending on Gaussian blur state.
+
+---
+
+### Technique 12 — Halftone
+**File:** `NPREffect_Halftone.cginc`
+**Keyword:** `EFFECT_HALFTONE`
+**Source:** Adapted from `Assets/Shaders/NPR/HalftoneHatching.shader` (`HalftonePattern` function).
+
+Circular dot grid in UV space. Tone is derived from the luminance of the incoming PBR colour — darker areas produce larger dots, lighter areas produce smaller dots or none.
+
+```
+rotated  = Rotate2D(uv, HTAngle)
+gridPos  = frac(rotated × HTScale) − 0.5
+dist     = length(gridPos)
+dotRadius = sqrt(max(0, 1 − tone)) × 0.5      // darker → bigger dot
+pattern  = 1 − smoothstep(dotRadius ± 0.5/HTSharpness, dist)
+```
+
+**Colour model (identical to HalftoneHatching source):**
+```
+paperCol     = lerp(HTPaperColor,  PBRcolor,              TextureInfluence)
+inkCol       = lerp(HTInkColor,    PBRcolor × HTInkColor, TextureInfluence)
+patternColor = lerp(paperCol, inkCol, pattern)
+finalColor   = lerp(PBRcolor, patternColor, HTStrength)
+```
+`TextureInfluence = 0` gives a flat ink-on-paper look; `= 1` tints the ink and paper with the original PBR colour, preserving avatar texture detail.
+
+| UI Row | What it does |
+|--------|-------------|
+| Dot Scale | Grid frequency — higher = more, smaller dots |
+| Sharpness | Dot edge softness (1 = very soft, 50 = crisp) |
+| Grid Angle | Rotation of the dot grid (0–90°) |
+| Tone Bias | Shifts tone darker/lighter (-0.5–0.5) |
+| Ink Color | Dot fill colour |
+| Paper Color | Background colour |
+| Tex Influence | Blend between flat and PBR-tinted ink/paper |
+| Strength | Overall blend of halftone over original PBR |
+
+**Characteristics:** Zero extra texture samples (fully procedural). UV-space grid follows the avatar's UV layout rather than screen pixels — patterns appear stable when the head turns. Combine with the inverted-hull outline for a classic comic-print look.
+
+---
+
+### Technique 13 — Hatching
+**File:** `NPREffect_Hatching.cginc`
+**Keyword:** `EFFECT_HATCHING`
+**Source:** Adapted from `Assets/Shaders/NPR/HalftoneHatching.shader` (`HatchingPattern` function, Tonal Art Map approach).
+
+Four line layers that activate progressively as tone darkens, following Praun et al. "Real-Time Hatching" (SIGGRAPH 2001):
+
+```
+t = 1 − tone   (darkness, 0=white, 1=black)
+
+Layer 1 (t > 0.15): primary direction  × smoothstep(0.15, 0.40, t)
+Layer 2 (t > 0.35): cross direction    × smoothstep(0.35, 0.60, t)
+Layer 3 (t > 0.55): dense diagonal     × smoothstep(0.55, 0.80, t)  [thickness × 1.5]
+Layer 4 (t > 0.80): solid fill         = smoothstep(0.80, 1.00, t)
+
+pattern = max across all active layers
+```
+
+Each layer uses a rotated sine-style grid:
+```
+rotated = Rotate2D(uv, angleDeg)
+linePos = frac(rotated.x × HatScale)
+line    = 1 − smoothstep(thickness, thickness+0.02, |linePos − 0.5|)
+```
+
+Same ink/paper colour model as Halftone (above) using `_Hat*` uniforms.
+
+| UI Row | What it does |
+|--------|-------------|
+| Hatch Scale | Line grid frequency |
+| Primary Angle | Direction of Layer 1 lines (0–180°) |
+| Cross Angle | Direction of Layer 2 lines (0–180°) |
+| Thickness | Line width (0.01 = hairline, 0.5 = thick) |
+| Tone Bias | Shifts tone darker/lighter |
+| Ink Color | Line colour |
+| Paper Color | Background between lines |
+| Tex Influence | Blend between flat and PBR-tinted ink/paper |
+| Strength | Overall blend of hatching over original PBR |
+
+**Characteristics:** Zero extra texture samples (fully procedural). Three independent line directions emerge naturally as the avatar's shaded tone darkens. Combine with the inverted-hull outline for a pen-and-ink illustration look.
 
 ---
 
 ## Technique Summary
 
-| # | Technique | Signal source | Stylises colour | Extra samples |
-|---|-----------|--------------|-----------------|---------------|
-| 1 | Derivative | ddx/ddy colour + normal | No | 0 |
-| 2 | Sobel | 3×3 luminance kernel | No | 8 |
-| 3 | Normal + Fresnel | World normal + N·V | No | 0 |
-| 4 | Gaussian Sobel | 9-tap Gaussian × 8 Sobel positions | No | up to 72 |
-| 5 | Hierarchical | Depth + normal + Roberts Cross (+ optional Gaussian) | No | 4–36 |
-| 6 | Kuwahara | Lowest-variance 2×2 quadrant | **Yes** | 9 |
-| 7 | Kuwahara + Sobel | Kuwahara + full Gaussian Sobel pipeline | **Yes** | 9 + up to 72 |
-| 8 | Kuwahara + Hierarchical | Kuwahara + depth/normal/colour layers (+ optional Gaussian colour blur) | **Yes** | 9 + 4–36 |
+| # | Name | File | Signal source | Stylises colour | Extra samples |
+|---|------|------|--------------|-----------------|---------------|
+| 1 | Derivative | `AvatarNPREdgeEffect.cginc` | ddx/ddy colour + normal | No | 0 |
+| 2 | Sobel | `NPREffect_Sobel.cginc` | 3×3 luminance kernel | No | 8 |
+| 3 | Normal + Fresnel | `NPREffect_NormalEdge.cginc` | World normal + N·V | No | 0 |
+| 4 | Gaussian Sobel | `NPREffect_GaussianSobel.cginc` | 9-tap Gaussian × 8 Sobel positions | No | up to 72 |
+| 5 | Hierarchical | `NPREffect_Hierarchical.cginc` | Depth + normal + Roberts Cross (+ optional Gaussian) | No | 4–36 |
+| 6 | Kuwahara | `NPREffect_Kuwahara2.cginc` | Anisotropic 8-sector ellipse (structure tensor φ+A) | **Yes** | 25 |
+| 7 | Kuwahara + Sobel | `NPREffect_Kuwahara2Sobel.cginc` | Kuwahara + full Gaussian Sobel pipeline | **Yes** | 25 + up to 72 |
+| 8 | Kuwahara + Hierarchical | `NPREffect_Kuwahara2GaussHier.cginc` | Kuwahara + depth/normal/colour layers (+ optional Gaussian) | **Yes** | 25 + 4–36 |
+| 9 | Toon / Cel Shader | `NPREffect_Toon.cginc` | Posterize bands + saturation (no edges) | **Yes** | 0 |
+| 10 | Toon + Sobel | `NPREffect_ToonSobel.cginc` | Toon posterize + full Gaussian Sobel pipeline | **Yes** | up to 72 |
+| 11 | Toon + Hierarchical | `NPREffect_ToonGaussHier.cginc` | Toon posterize + depth/normal/colour layers (+ optional Gaussian) | **Yes** | 4–36 |
+| 12 | Halftone | `NPREffect_Halftone.cginc` | Procedural UV-space dot grid, tone from luminance | **Yes** | 0 |
+| 13 | Hatching | `NPREffect_Hatching.cginc` | TAM 4-layer UV-space line grid, tone from luminance | **Yes** | 0 |
 
 ---
 
@@ -266,8 +479,12 @@ The colour layer of the Hierarchical pass supports an optional Gaussian pre-blur
 - **No `Canvas.ForceUpdateCanvases()`** — calling it rebuilds all canvases including internal Meta SDK UI, which triggers an IMGUI `EndLayoutGroup` error. Only the panel's own `RectTransform` is rebuilt with `LayoutRebuilder.ForceRebuildLayoutImmediate`.
 - **Outline pass guard** — technique `.cginc` files are excluded from the `NPROutline` pass via `!defined(OUTLINE_PASS)` in `app_functions.hlsl`. Without this guard, the technique code was compiled into the outline pass even though it was never called, which caused Unity to silently skip the pass when certain technique keywords (e.g. `EFFECT_SOBEL`) were active.
 - **Dependent rows** — rows are shown/hidden dynamically via a `dependsOnProp` field checked in `ResolveAllDependencies()`. Example: Blur Radius is only shown when Gauss Blur is ON.
-- **A/B Compare button** — toggles `ENABLE_NPR_EDGES` keyword off/on across all materials and disables the outline pass, switching between full NPR and base Meta cel-shading.
+- **Mode cycle button** — toggles between two display states on each press:
+  1. **NPR ON** — `ENABLE_NPR_EDGES` enabled, outline pass enabled, current technique active
+  2. **DEFAULT** — `ENABLE_NPR_EDGES` disabled, outline disabled; Meta's full `STYLE_2_STANDARD` PBR (rim light, SSS, hair)
 - **Technique visibility** — only the parameter rows for the currently selected technique are shown; all others are hidden.
+- **Toon darkening fix** — in the Toon family (Techniques 9–11), posterization must run **before** saturation. Applying saturation >1 before posterization can drive low RGB channels negative (clamped to 0 on output), causing the avatar to appear darker. The correct order is: quantize first, then scale saturation on the already-quantized colour.
+- **Halftone/Hatching tone source** — both Techniques 12 and 13 derive "tone" from `luminance(o.color)` (the already-composited PBR colour), not from a separate NdotL computation. This means the pattern responds correctly to all PBR lighting including shadows, SSS, and ambient — without any additional light passes.
 
 ---
 
@@ -276,18 +493,28 @@ The colour layer of the Hierarchical pass supports an optional Gaussian pre-blur
 ```
 Assets/
 ├── Scripts/
-│   ├── AvatarSwitcher.cs          — avatar preset cycling + floating HUD
-│   └── NPREdgeDetectionUI.cs      — in-VR parameter panel
-├── Shaders/CustomShaders/
-│   ├── AvatarNPREdgeEffect.cginc          — Technique 1: Derivative
-│   ├── NPREffect_Sobel.cginc              — Technique 2: Sobel
-│   ├── NPREffect_NormalEdge.cginc         — Technique 3: Normal + Fresnel
-│   ├── NPREffect_GaussianSobel.cginc      — Technique 4: Gaussian Sobel
-│   ├── NPREffect_Hierarchical.cginc       — Technique 5: Hierarchical
-│   ├── NPREffect_Kuwahara.cginc           — Technique 6: Kuwahara
-│   ├── NPREffect_KuwaharaSobel.cginc      — Technique 7: Kuwahara + Sobel
-│   └── NPREffect_KuwaharaGaussHier.cginc  — Technique 8: Kuwahara + Hierarchical
+│   ├── AvatarSwitcher.cs                  — avatar preset cycling + floating HUD
+│   └── NPREdgeDetectionUI.cs              — in-VR parameter panel
+├── Shaders/
+│   ├── NPR/
+│   │   └── HalftoneHatching.shader        — source shader (reference; not used on avatar)
+│   └── CustomShaders/
+│       ├── AvatarNPREdgeEffect.cginc      — Technique 1:  Derivative
+│       ├── NPREffect_Sobel.cginc          — Technique 2:  Sobel
+│       ├── NPREffect_NormalEdge.cginc     — Technique 3:  Normal + Fresnel
+│       ├── NPREffect_GaussianSobel.cginc  — Technique 4:  Gaussian Sobel
+│       ├── NPREffect_Hierarchical.cginc   — Technique 5:  Hierarchical
+│       ├── NPREffect_Kuwahara2.cginc      — Technique 6:  Kuwahara (anisotropic)
+│       ├── NPREffect_Kuwahara2Sobel.cginc — Technique 7:  Kuwahara + Sobel
+│       ├── NPREffect_Kuwahara2GaussHier.cginc — Technique 8: Kuwahara + Hierarchical
+│       ├── NPREffect_Toon.cginc           — Technique 9:  Toon / Cel Shader
+│       ├── NPREffect_ToonSobel.cginc      — Technique 10: Toon + Sobel
+│       ├── NPREffect_ToonGaussHier.cginc  — Technique 11: Toon + Hierarchical
+│       ├── NPREffect_Halftone.cginc       — Technique 12: Halftone
+│       ├── NPREffect_Hatching.cginc       — Technique 13: Hatching
+│       └── app_specific/
+│           └── app_functions.hlsl         — multi_compile keywords + include dispatch + OUTLINE_PASS hook
 └── Samples/Meta Avatars SDK/40.0.1/
     └── Sample Scenes/Scripts/
-        └── SampleAvatarEntity.cs  — SDK sample script (modified: SwitchPreset added)
+        └── SampleAvatarEntity.cs          — SDK sample script (modified: SwitchPreset added)
 ```

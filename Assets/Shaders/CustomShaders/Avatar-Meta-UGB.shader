@@ -185,48 +185,122 @@ Shader "Avatar/MetaNPR"
         _HEdgeColor        ("Edge Color",        Color)             = (0,0,0,1)
 
         [Header(NPR Effect  Kuwahara technique)]
-        _KuwaharaRadius   ("Kuwahara Radius",   Range(0.5, 8)) = 2.0
-        _KuwaharaStrength ("Kuwahara Strength", Range(0, 1))   = 1.0
+        _K2Radius    ("Radius",     Range(0.5, 8))   = 2.0
+        _K2Strength  ("Strength",   Range(0, 1))     = 1.0
+        _K2Alpha     ("Alpha",      Range(0.5, 3))   = 1.0
+        _K2Q         ("Q Sharpness",Range(1, 16))    = 8.0
+        _K2Tau       ("Tau Floor",  Range(0.001, 0.1)) = 0.02
 
         [Header(NPR Effect  Kuwahara Sobel technique)]
-        _KSKuwaharaRadius   ("Kuwahara Radius",    Range(0.5, 8))   = 2.0
-        _KSKuwaharaStrength ("Kuwahara Strength",  Range(0, 1))     = 0.8
-        [Toggle] _KSEnableGaussBlur ("Enable Gaussian Blur", Float) = 1
-        _KSSobelSampleDist  ("Sobel Sample Dist",  Range(0, 10))    = 1.0
-        _KSBlurRadius       ("Blur Radius",        Range(0, 5))     = 1.0
-        _KSCenterWeight     ("Center Weight",      Range(0.1, 0.5)) = 0.25
-        _KSCardinalWeight   ("Cardinal Weight",    Range(0, 0.3))   = 0.125
-        _KSDiagonalWeight   ("Diagonal Weight",    Range(0, 0.1))   = 0.0625
-        _KSThreshold        ("Edge Threshold",     Range(0, 0.5))   = 0.15
-        _KSThreshMin        ("Thresh Min Mult",    Range(0, 1))     = 0.5
-        _KSThreshMax        ("Thresh Max Mult",    Range(1, 5))     = 1.5
-        _KSTightness        ("Tightness",          Range(0, 1))     = 0.2
-        _KSPowerCurve       ("Power Curve",        Range(0.5, 5))   = 1.5
-        _KSSobelStrength    ("Edge Strength",      Range(0, 1))     = 1.0
+        _K2SKuwRadius    ("Kuw Radius",    Range(0.5, 8))     = 2.0
+        _K2SKuwStrength  ("Kuw Strength",  Range(0, 1))       = 0.8
+        _K2SKuwAlpha     ("Kuw Alpha",     Range(0.5, 3))     = 1.0
+        _K2SKuwQ         ("Kuw Q",         Range(1, 16))      = 8.0
+        _K2SKuwTau       ("Kuw Tau",       Range(0.001, 0.1)) = 0.02
+        [Toggle] _K2SEnableGaussBlur ("Enable Gaussian Blur", Float) = 1
+        _K2SSobelSampleDist  ("Sobel Sample Dist", Range(0, 10))    = 1.0
+        _K2SBlurRadius       ("Blur Radius",       Range(0, 5))     = 1.0
+        _K2SCenterWeight     ("Center Weight",      Range(0.1, 0.5)) = 0.25
+        _K2SCardinalWeight   ("Cardinal Weight",    Range(0, 0.3))   = 0.125
+        _K2SDiagonalWeight   ("Diagonal Weight",    Range(0, 0.1))   = 0.0625
+        _K2SThreshold        ("Edge Threshold",     Range(0, 0.5))   = 0.15
+        _K2SThreshMin        ("Thresh Min Mult",    Range(0, 1))     = 0.5
+        _K2SThreshMax        ("Thresh Max Mult",    Range(1, 5))     = 1.5
+        _K2STightness        ("Tightness",          Range(0, 1))     = 0.2
+        _K2SPowerCurve       ("Power Curve",        Range(0.5, 5))   = 1.5
+        _K2SSobelStrength    ("Edge Strength",      Range(0, 1))     = 1.0
 
         [Header(NPR Effect  Kuwahara Hierarchical technique)]
-        _KGHKuwaharaRadius    ("Kuwahara Radius",      Range(0.5, 8))     = 2.0
-        _KGHKuwaharaStrength  ("Kuwahara Strength",    Range(0, 1))       = 0.8
-        _KGHDepthThreshold    ("Depth Threshold",      Range(0.001, 0.2)) = 0.02
-        _KGHNormalThreshold   ("Normal Threshold",     Range(0.05, 1))    = 0.3
-        _KGHColorThreshold    ("Color Threshold",      Range(0.01, 0.5))  = 0.1
-        _KGHDepthWeight       ("Depth Weight",         Range(0, 1))       = 0.8
-        _KGHNormalWeight      ("Normal Weight",        Range(0, 1))       = 0.8
-        _KGHColorWeight       ("Color Weight",         Range(0, 1))       = 0.6
-        _KGHEdgeWidth         ("Edge Width",           Range(0.5, 10))    = 1.5
-        _KGHAdaptiveStrength  ("Adaptive Strength",    Range(0, 1))       = 0.5
-        _KGHHierTightness     ("Hier Tightness",       Range(0, 1))       = 0.5
-        _KGHHStrength         ("Hier Edge Strength",   Range(0, 1))       = 1.0
-        [Toggle] _KGHEnableGaussBlur ("Color Blur",    Float)             = 0
-        _KGHBlurRadius        ("Color Blur Radius",    Range(0, 5))       = 1.0
-        _KGHCenterWeight      ("Center Weight",        Range(0.1, 0.5))   = 0.25
-        _KGHCardinalWeight    ("Cardinal Weight",      Range(0, 0.3))     = 0.125
-        _KGHDiagonalWeight    ("Diagonal Weight",      Range(0, 0.1))     = 0.0625
-        _KGHEdgeColor         ("Edge Color",           Color)             = (0,0,0,1)
+        _K2HKuwRadius    ("Kuw Radius",      Range(0.5, 8))     = 2.0
+        _K2HKuwStrength  ("Kuw Strength",    Range(0, 1))       = 0.8
+        _K2HKuwAlpha     ("Kuw Alpha",       Range(0.5, 3))     = 1.0
+        _K2HKuwQ         ("Kuw Q",           Range(1, 16))      = 8.0
+        _K2HKuwTau       ("Kuw Tau",         Range(0.001, 0.1)) = 0.02
+        _K2HDepthThreshold   ("Depth Threshold",   Range(0.001, 0.2)) = 0.02
+        _K2HNormalThreshold  ("Normal Threshold",  Range(0.05, 1))    = 0.3
+        _K2HColorThreshold   ("Color Threshold",   Range(0.01, 0.5))  = 0.1
+        _K2HDepthWeight      ("Depth Weight",      Range(0, 1))       = 0.8
+        _K2HNormalWeight     ("Normal Weight",      Range(0, 1))       = 0.8
+        _K2HColorWeight      ("Color Weight",       Range(0, 1))       = 0.6
+        _K2HEdgeWidth        ("Edge Width",         Range(0.5, 10))    = 1.5
+        _K2HAdaptiveStrength ("Adaptive Strength",  Range(0, 1))       = 0.5
+        _K2HHierTightness    ("Hier Tightness",     Range(0, 1))       = 0.5
+        _K2HHStrength        ("Hier Edge Strength", Range(0, 1))       = 1.0
+        [Toggle] _K2HEnableGaussBlur ("Color Blur", Float)             = 0
+        _K2HBlurRadius       ("Color Blur Radius",  Range(0, 5))       = 1.0
+        _K2HCenterWeight     ("Center Weight",      Range(0.1, 0.5))   = 0.25
+        _K2HCardinalWeight   ("Cardinal Weight",    Range(0, 0.3))     = 0.125
+        _K2HDiagonalWeight   ("Diagonal Weight",    Range(0, 0.1))     = 0.0625
+        _K2HEdgeColor        ("Edge Color",         Color)             = (0,0,0,1)
+
+        [Header(NPR Effect  Toon Shader)]
+        _ToonColorBands        ("Color Bands",        Range(2, 8))   = 4.0
+        _ToonPosterizeStrength ("Posterize Strength", Range(0, 1))   = 0.85
+        _ToonSaturation        ("Saturation",         Range(0, 3))   = 1.0
+
+        [Header(NPR Effect  Toon Sobel technique)]
+        _TSColorBands        ("Color Bands",        Range(2, 8))       = 4.0
+        _TSPosterizeStrength ("Posterize Strength", Range(0, 1))       = 0.85
+        _TSSaturation        ("Saturation",         Range(0, 3))       = 1.0
+        [Toggle] _TSEnableGaussBlur ("Enable Gaussian Blur", Float)    = 1
+        _TSSobelSampleDist   ("Sobel Sample Dist",  Range(0, 10))      = 1.0
+        _TSBlurRadius        ("Blur Radius",         Range(0, 5))      = 1.0
+        _TSCenterWeight      ("Center Weight",       Range(0.1, 0.5))  = 0.25
+        _TSCardinalWeight    ("Cardinal Weight",     Range(0, 0.3))    = 0.125
+        _TSDiagonalWeight    ("Diagonal Weight",     Range(0, 0.1))    = 0.0625
+        _TSThreshold         ("Edge Threshold",      Range(0, 0.5))    = 0.15
+        _TSThreshMin         ("Thresh Min Mult",     Range(0, 1))      = 0.5
+        _TSThreshMax         ("Thresh Max Mult",     Range(1, 5))      = 1.5
+        _TSTightness         ("Tightness",           Range(0, 1))      = 0.2
+        _TSPowerCurve        ("Power Curve",         Range(0.5, 5))    = 1.5
+        _TSSobelStrength     ("Edge Strength",       Range(0, 1))      = 1.0
+
+        [Header(NPR Effect  Toon Hierarchical technique)]
+        _THColorBands        ("Color Bands",         Range(2, 8))       = 4.0
+        _THPosterizeStrength ("Posterize Strength",  Range(0, 1))       = 0.85
+        _THSaturation        ("Saturation",          Range(0, 3))       = 1.0
+        _THDepthThreshold    ("Depth Threshold",     Range(0.001, 0.2)) = 0.02
+        _THNormalThreshold   ("Normal Threshold",    Range(0.05, 1))    = 0.3
+        _THColorThreshold    ("Color Threshold",     Range(0.01, 0.5))  = 0.1
+        _THDepthWeight       ("Depth Weight",        Range(0, 1))       = 0.8
+        _THNormalWeight      ("Normal Weight",       Range(0, 1))       = 0.8
+        _THColorWeight       ("Color Weight",        Range(0, 1))       = 0.6
+        _THEdgeWidth         ("Edge Width",          Range(0.5, 10))    = 1.5
+        _THAdaptiveStrength  ("Adaptive Strength",   Range(0, 1))       = 0.5
+        _THHierTightness     ("Hier Tightness",      Range(0, 1))       = 0.5
+        _THHStrength         ("Hier Edge Strength",  Range(0, 1))       = 1.0
+        [Toggle] _THEnableGaussBlur ("Color Blur",   Float)             = 0
+        _THBlurRadius        ("Color Blur Radius",   Range(0, 5))       = 1.0
+        _THCenterWeight      ("Center Weight",       Range(0.1, 0.5))   = 0.25
+        _THCardinalWeight    ("Cardinal Weight",     Range(0, 0.3))     = 0.125
+        _THDiagonalWeight    ("Diagonal Weight",     Range(0, 0.1))     = 0.0625
+        _THEdgeColor         ("Edge Color",          Color)             = (0,0,0,1)
+
+        [Header(NPR Effect Halftone technique)]
+        _HTScale             ("Dot Scale",           Range(2, 100))     = 30.0
+        _HTSharpness         ("Dot Sharpness",       Range(1, 50))      = 10.0
+        _HTAngle             ("Grid Angle",          Range(0, 90))      = 45.0
+        _HTToneBias          ("Tone Bias",           Range(-0.5, 0.5))  = 0.0
+        _HTInkColor          ("Ink Color",           Color)             = (0.05, 0.05, 0.1, 1)
+        _HTPaperColor        ("Paper Color",         Color)             = (0.95, 0.93, 0.88, 1)
+        _HTTextureInfluence  ("Texture Influence",   Range(0, 1))       = 0.5
+        _HTStrength          ("Strength",            Range(0, 1))       = 1.0
+
+        [Header(NPR Effect Hatching technique)]
+        _HatScale            ("Hatch Scale",         Range(1, 100))     = 20.0
+        _HatAngle            ("Primary Angle",       Range(0, 180))     = 45.0
+        _HatCrossAngle       ("Cross Angle",         Range(0, 180))     = 135.0
+        _HatThickness        ("Line Thickness",      Range(0.01, 0.5))  = 0.15
+        _HatToneBias         ("Tone Bias",           Range(-0.5, 0.5))  = 0.0
+        _HatInkColor         ("Ink Color",           Color)             = (0.05, 0.05, 0.1, 1)
+        _HatPaperColor       ("Paper Color",         Color)             = (0.95, 0.93, 0.88, 1)
+        _HatTextureInfluence ("Texture Influence",   Range(0, 1))       = 0.5
+        _HatStrength         ("Strength",            Range(0, 1))       = 1.0
 
         [Header(NPR Inverted Hull Outline)]
-        _OutlineWidth ("Outline Width", Range(0.5, 10)) = 2.0
-        _OutlineColor ("Outline Color",  Color)         = (0,0,0,1)
+        _OutlineEnabled ("Outline Enabled", Range(0, 1)) = 1
+        _OutlineWidth   ("Outline Width",   Range(0.5, 10)) = 2.0
+        _OutlineColor   ("Outline Color",   Color)         = (0,0,0,1)
     }
 
     // Universal Render Pipeline (URP), shader target 5.0

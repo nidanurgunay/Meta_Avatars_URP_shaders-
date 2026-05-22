@@ -57,12 +57,6 @@ Shader "NPR/XToon_2DRamp"
         _SpecularSmoothness ("Specular Smoothness", Range(0.001, 0.5)) = 0.02
         _SpecularStrength ("Specular Strength", Range(0.0, 1.0)) = 0.5
 
-        [Header(Rim Light)]
-        _RimColor ("Rim Color", Color) = (1, 1, 1, 1)
-        _RimPower ("Rim Power", Range(0.5, 10.0)) = 3.0
-        _RimThreshold ("Rim Threshold", Range(0, 1)) = 0.1
-        _RimStrength ("Rim Strength", Range(0.0, 1.0)) = 0.3
-
         [Header(Outline)]
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
         _OutlineWidth ("Outline Width", Range(0, 0.05)) = 0.003
@@ -73,6 +67,13 @@ Shader "NPR/XToon_2DRamp"
         [HideInInspector] _SrcBlend ("__src", Float) = 1.0
         [HideInInspector] _DstBlend ("__dst", Float) = 0.0
         [HideInInspector] _ZWrite  ("__zw",  Float) = 1.0
+
+        [Header(Inner Sobel Edges)]
+        [Toggle] _EnableSobel("Enable Sobel Edges", Float) = 0
+        _SobelEdgeColor  ("Edge Color",      Color)          = (0,0,0,1)
+        _SobelThreshold  ("Threshold",       Range(0.001,1)) = 0.15
+        _SobelSampleDist ("Sample Distance", Range(0.1,10))  = 1.0
+        _SobelStrength   ("Strength",        Range(0,1))     = 1.0
 
         [Header(Debug)]
         [KeywordEnum(Off, NdotL, RampUV, Albedo, RampSample)]
@@ -138,10 +139,11 @@ Shader "NPR/XToon_2DRamp"
                 float _ShadowStrength;
                 float _LightingStrength;
                 float _SpecularStrength;
-                float _RimStrength;
-                float4 _RimColor;
-                float _RimPower;
-                float _RimThreshold;
+                float _EnableSobel;
+                float4 _SobelEdgeColor;
+                float _SobelThreshold;
+                float _SobelSampleDist;
+                float _SobelStrength;
             CBUFFER_END
 
             struct Attributes
@@ -273,13 +275,6 @@ Shader "NPR/XToon_2DRamp"
                                             NdotH) * shadow;
                 finalColor = lerp(finalColor, _SpecularColor.rgb, specular * _SpecularStrength);
 
-                // --- Rim Light ---
-                float NdotV = dot(normalWS, viewDir);
-                float rim = 1.0 - saturate(NdotV);
-                rim = smoothstep(_RimThreshold - 0.01, _RimThreshold + 0.01,
-                    rim * pow(saturate(NdotL + 0.5), 0.2));
-                finalColor = lerp(finalColor, _RimColor.rgb, rim * _RimStrength);
-
                 // Blend between pure texture and fully-lit result
                 finalColor = lerp(textureColor, finalColor, _LightingStrength);
 
@@ -298,6 +293,26 @@ Shader "NPR/XToon_2DRamp"
                     // Shows just the ramp sample — should show colors from your ramp texture
                     return float4(rampColor, 1);
                 #endif
+
+                // ── Sobel inner edges on base texture ─────────────────────────
+                if (_EnableSobel > 0.5)
+                {
+                    float off = _SobelSampleDist * 0.001;
+                    float3 lumaCoeff = float3(0.299, 0.587, 0.114);
+                    float tl = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(-off,  off)).rgb, lumaCoeff);
+                    float t  = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(   0,  off)).rgb, lumaCoeff);
+                    float tr = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2( off,  off)).rgb, lumaCoeff);
+                    float l  = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(-off,    0)).rgb, lumaCoeff);
+                    float r  = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2( off,    0)).rgb, lumaCoeff);
+                    float bl = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(-off, -off)).rgb, lumaCoeff);
+                    float b  = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(   0, -off)).rgb, lumaCoeff);
+                    float br = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2( off, -off)).rgb, lumaCoeff);
+                    float sobelX  = (tr + 2.0*r + br) - (tl + 2.0*l + bl);
+                    float sobelY  = (tl + 2.0*t + tr) - (bl + 2.0*b + br);
+                    float edgeMag = sqrt(sobelX*sobelX + sobelY*sobelY);
+                    float edge    = step(_SobelThreshold, edgeMag) * _SobelStrength;
+                    finalColor = lerp(finalColor, _SobelEdgeColor.rgb, edge);
+                }
 
                 #if _ALPHA_BLEND
                     float outAlpha = baseMap.a * _BaseColor.a;

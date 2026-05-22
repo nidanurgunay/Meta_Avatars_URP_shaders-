@@ -488,6 +488,116 @@ Same ink/paper colour model as Halftone (above) using `_Hat*` uniforms.
 
 ---
 
+## Standalone Avaturn Avatar Shaders
+
+These are standalone URP shaders (not integrated into the Meta Avatar SDK pipeline) designed for the Avaturn `.glb` avatar model. They run on separate GameObjects/prefabs in the scene alongside the Meta Avatar, providing additional NPR comparison points.
+
+All standalone shaders share the same three-pass structure:
+1. **OuterOutline** — inverted-hull silhouette (Cull Front), outputs flat `_OuterOutlineColor`
+2. **ForwardLit** — main shading pass with normal map TBN, smooth Lambert, and NPR effects
+3. **DepthNormals** — writes bump-map-perturbed normals into URP's `_CameraNormalsTexture` so post-process edge shaders see normal-map detail
+
+### V3 — Sobel Edge Detection
+**File:** `Assets/Shaders/NPR/V3_SobelEdgeDetection.shader`
+**Shader GUID:** `ac2e5c7f0a193458e8f848fd6528ee42`
+
+Smooth Lambert shading with normal map + 3×3 UV-space Sobel edge detection on texture luminance. Single unified threshold (no per-material skin/clothes separation). Includes DepthNormals pass so post-process shaders that read `_CameraNormalsTexture` receive bump-map detail rather than only vertex normals.
+
+| Property | Description |
+|----------|-------------|
+| `_EdgeThreshold` | Minimum Sobel magnitude to draw an edge |
+| `_EdgeSampleDist` | UV offset multiplier for the 3×3 kernel |
+| `_InnerLineStrength` | Edge opacity |
+| `_EnableInnerLines` | Toggle Sobel detection on/off |
+
+**Materials:** `Assets/Materials/NPR Avaturn Materials/V3 SobelEdgeDetection/`
+
+---
+
+### V4 — Gaussian Pre-filtered Sobel
+**File:** `Assets/Shaders/NPR/V4_GaussianPreFilteredSobel.shader`
+**Shader GUID:** `[assigned by Unity on import]`
+
+V3 extended with a 9-tap Gaussian pre-blur applied to each of the 8 Sobel sample positions before the gradient is computed. Reduces false edges from high-frequency texture noise.
+
+**Materials:** `Assets/Materials/NPR Avaturn Materials/V4 GaussianPreFilteredSobel/`
+
+---
+
+### V8 — Quantized Colour + Dual Sobel (UV-space Normal-map Sobel)
+**File:** `Assets/Shaders/NPR/V8_QuantizedSobel.shader`
+**Shader GUID:** `e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6`
+
+Most abstract standalone shader. Three-stage pipeline:
+
+**Stage 1 — Colour quantization (posterisation):**
+```hlsl
+float3 Quantize(float3 col, float steps) {
+    return floor(col * steps + 0.5) / steps;
+}
+```
+Reduces the albedo to `_QuantizeSteps` discrete colour levels before any edge detection runs. Catches eyebrow, lip, and skin-tone region transitions at colour-region boundaries.
+
+**Stage 2 — Texture Sobel (optional, `_EnableTexSobel`):**
+Standard 3×3 luminance Sobel on the **quantized** albedo. Fires at colour-region boundaries introduced by posterisation.
+
+**Stage 3 — Normal-map Sobel in UV-space (optional, `_EnableNormSobel`):**
+Samples `_BumpMap.xy` at 8 UV offsets and computes a 2-channel Sobel:
+```hlsl
+float2 sobelX = (tr+2.0*r+br) - (tl+2.0*l+bl);
+float2 sobelY = (tl+2.0*t+tr) - (bl+2.0*b+br);
+float edgeMag = sqrt(dot(sobelX,sobelX)+dot(sobelY,sobelY));
+```
+This is **view-independent** — it fires on ridges baked into the normal map (eyebrow arch, lip crease, eyelid fold) regardless of camera angle. No screen-space derivatives.
+
+Both edge signals are max-combined and composited over the quantized shaded colour.
+
+| Property Group | Key Properties |
+|---------------|----------------|
+| Quantization | `_QuantizeSteps` (2–32) |
+| Texture Sobel | `_EnableTexSobel`, `_TexEdgeThreshold`, `_TexEdgeSampleDist`, `_TexEdgeStrength`, `_TexEdgeColor` |
+| Normal Sobel | `_EnableNormSobel`, `_NormEdgeThreshold`, `_NormEdgeSampleDist`, `_NormEdgeStrength`, `_NormEdgeColor` |
+| Outline | `_OuterOutlineWidth`, `_OuterOutlineColor` |
+
+**Materials:** `Assets/Materials/NPR Avaturn Materials/V8 QuantizedSobel/`
+- `V8_body.mat` — body texture, both Sobel channels enabled, outline on
+- `V8_head.mat` — head texture, both Sobel channels enabled, outline on
+- `V8_hair.mat` — hair texture (fileID `7653646275262004549`), both channels enabled
+- `V8_eyelash.mat` — eyelash texture, alpha test enabled, Sobel off, no outline
+- `V8_look.mat` — eye texture, Sobel off, no outline (eyes should read cleanly)
+
+---
+
+### VXT — XToon 2D Ramp with Sobel Edges
+**File:** `Assets/Shaders/NPR/XToon_2DRamp.shader`
+**Shader GUID:** `088c73ef0d8f3442d83eb49d1b22a69f`
+
+Based on Barla, Thollot & Markosian "X-Toon: An Extended Toon Shader" (NPAR 2006). Replaces the traditional 1D NdotL toon ramp with a 2D texture:
+- **U axis** — lighting intensity (NdotL)
+- **V axis** — detail/abstraction level (driven by depth, curvature, or a manual slider)
+
+Also implements Normal Field Abstraction (blend between vertex normals and a smoothed normal map for shape-level abstraction). An inverted-hull outline pass is built-in.
+
+**Sobel inner edges (added):** Optional `_EnableSobel` toggle runs a 3×3 luminance Sobel on the `_BaseMap` texture and composites edge lines over the toon-shaded colour. Uses `_SobelThreshold`, `_SobelSampleDist`, `_SobelStrength`, `_SobelEdgeColor`.
+
+**Important:** XToon uses `_BaseMap` (not `_MainTex`) for its albedo texture. The `_ToonRamp` slot must be filled with a 2D texture — without it the shader falls back to white (flat lit appearance).
+
+| Property Group | Key Properties |
+|---------------|----------------|
+| Base | `_BaseMap`, `_BaseColor` |
+| Toon Ramp | `_ToonRamp`, `_RampSmoothing`, `_LightSensitivity` |
+| Abstraction | `_DetailMode` (Depth/Curvature/Manual), `_DetailBias`, `_DepthNear`, `_DepthFar`, `_ManualDetail` |
+| Normal Abstraction | `_NormalSmoothing`, `_AbstractNormalMap`, `_UseAbstractNormals` |
+| Inner Sobel | `_EnableSobel`, `_SobelEdgeColor`, `_SobelThreshold`, `_SobelSampleDist`, `_SobelStrength` |
+| Outline | `_OutlineWidth`, `_OutlineColor` |
+
+**Materials:** `Assets/Materials/NPR Avaturn Materials/VXT XToon/`
+- `VXT_body.mat` / `VXT_head.mat` / `VXT_hair.mat` — Sobel on, outline on, `_ToonRamp` slot empty (assign a 2D ramp)
+- `VXT_eyelash.mat` — alpha blend enabled (`_SrcBlend=5`, `_DstBlend=10`, `_ZWrite=0`), Sobel off, no outline
+- `VXT_look.mat` — eye texture, Sobel off, no outline
+
+---
+
 ## File Map
 
 ```
@@ -497,7 +607,11 @@ Assets/
 │   └── NPREdgeDetectionUI.cs              — in-VR parameter panel
 ├── Shaders/
 │   ├── NPR/
-│   │   └── HalftoneHatching.shader        — source shader (reference; not used on avatar)
+│   │   ├── HalftoneHatching.shader        — source shader (reference; not used on avatar)
+│   │   ├── V3_SobelEdgeDetection.shader   — Avaturn standalone: Sobel on texture luma
+│   │   ├── V4_GaussianPreFilteredSobel.shader — Avaturn standalone: Gaussian + Sobel
+│   │   ├── V8_QuantizedSobel.shader       — Avaturn standalone: quantize + dual Sobel
+│   │   └── XToon_2DRamp.shader            — Avaturn standalone: XToon 2D ramp + Sobel
 │   └── CustomShaders/
 │       ├── AvatarNPREdgeEffect.cginc      — Technique 1:  Derivative
 │       ├── NPREffect_Sobel.cginc          — Technique 2:  Sobel
@@ -514,6 +628,13 @@ Assets/
 │       ├── NPREffect_Hatching.cginc       — Technique 13: Hatching
 │       └── app_specific/
 │           └── app_functions.hlsl         — multi_compile keywords + include dispatch + OUTLINE_PASS hook
+├── Materials/NPR Avaturn Materials/
+│   ├── V1 ToonShading/                    — V1 original (do not modify)
+│   ├── V2 NormalEdgeDetection/            — V2 normal-edge materials
+│   ├── V3 SobelEdgeDetection/             — V3 Sobel materials (also used by V5–V7 avatars)
+│   ├── V4 GaussianPreFilteredSobel/       — V4 Gaussian-Sobel materials
+│   ├── V8 QuantizedSobel/                 — V8 quantized-colour dual-Sobel materials
+│   └── VXT XToon/                         — XToon 2D-ramp materials (need _ToonRamp assigned)
 └── Samples/Meta Avatars SDK/40.0.1/
     └── Sample Scenes/Scripts/
         └── SampleAvatarEntity.cs          — SDK sample script (modified: SwitchPreset added)

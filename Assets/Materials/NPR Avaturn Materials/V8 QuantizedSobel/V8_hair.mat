@@ -12,14 +12,17 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ENABLEALPHATEST_ON
+  - _ENABLENORMSOBEL_ON
+  - _ENABLETEXSOBEL_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -35,19 +38,20 @@ Material:
     m_Floats:
     - _AlphaCutoff: 0.07
     - _BumpScale: 1
-    - _EnableAlphaTest: 0
+    - _EnableAlphaTest: 1
     - _EnableNormSobel: 1
     - _EnableSkinDiscard: 0
     - _EnableTexSobel: 1
+    - _NormEdgeSoftness: 1.5
     - _NormEdgeStrength: 1
-    - _NormEdgeThreshold: 0.05
-    - _SkinHueMax: 0.12
-    - _SkinHueMin: 0.02
-    - _SkinSatMin: 0.15
+    - _NormEdgeThreshold: 20
     - _OuterOutlineWidth: 0.003
     - _QuantizeSteps: 8
     - _RimPower: 3
     - _ShadowStrength: 0.5
+    - _SkinHueMax: 0.12
+    - _SkinHueMin: 0.02
+    - _SkinSatMin: 0.15
     - _TexEdgeSampleDist: 1
     - _TexEdgeStrength: 1
     - _TexEdgeThreshold: 0.1

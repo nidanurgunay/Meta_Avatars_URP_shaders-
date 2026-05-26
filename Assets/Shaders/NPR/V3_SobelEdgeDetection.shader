@@ -269,5 +269,6 @@ Shader "Custom/V3_SobelEdgeDetection"
             ENDHLSL
         }
     }
+    CustomEditor "AvaturnPresetShaderGUI"
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
 }

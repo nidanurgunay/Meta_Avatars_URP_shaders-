@@ -679,6 +679,10 @@ public class NPREdgeDetectionUI : MonoBehaviour
         AddFloatRow(t, 4, "Edge Width",    "_HEdgeWidth",        0.5f,   10f,  0.1f,   1.50f);
         AddFloatRow(t, 4, "Adaptive Str",  "_HAdaptiveStrength", 0f,     1f,   0.01f,  0.50f);
         AddColorRow( t, 4, "Edge Color",   "_HEdgeColor",        0);
+        AddShaderToggleRow(t, 4, "Skin Discard",  "_HEnableSkinDiscard",  false);
+        AddFloatRow(t, 4, "Skin Hue Min",  "_HSkinHueMin",  0f, 0.2f, 0.005f, 0.02f, "_HEnableSkinDiscard");
+        AddFloatRow(t, 4, "Skin Hue Max",  "_HSkinHueMax",  0f, 0.2f, 0.005f, 0.12f, "_HEnableSkinDiscard");
+        AddFloatRow(t, 4, "Skin Sat Min",  "_HSkinSatMin",  0f, 1f,   0.01f,  0.15f, "_HEnableSkinDiscard");
 
         // ── Kuwahara parameters (technique 5 — anisotropic) ──────────────────
         SectionLabel(t, "Kuwahara Filter", 5);

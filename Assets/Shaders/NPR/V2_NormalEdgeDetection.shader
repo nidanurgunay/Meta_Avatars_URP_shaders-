@@ -406,5 +406,5 @@ Shader "Custom/V2_NormalEdgeDetection"
         }
     }
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
-    CustomEditor "ToonShaderEditor"
+    CustomEditor "AvaturnPresetShaderGUI"
 }

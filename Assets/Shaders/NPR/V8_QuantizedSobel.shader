@@ -53,7 +53,8 @@ Shader "Custom/V8_QuantizedSobel"
         [Header(Normal Edge Detection)]
         [Toggle] _EnableNormSobel ("Enable",          Float)          = 1
         _NormEdgeColor            ("Edge Color",       Color)          = (0,0,0,1)
-        _NormEdgeThreshold        ("Threshold",        Range(0,0.3))   = 0.05
+        _NormEdgeThreshold        ("Threshold",        Range(0,500))   = 20.0
+        _NormEdgeSoftness         ("Softness",         Range(0.1,5))   = 1.5
         _NormEdgeStrength         ("Strength",         Range(0,1))     = 1.0
 
         [Toggle] _EnableAlphaTest("Alpha Test (eyelashes)", Float) = 0
@@ -172,6 +173,7 @@ Shader "Custom/V8_QuantizedSobel"
             float  _EnableNormSobel;
             float4 _NormEdgeColor;
             float  _NormEdgeThreshold;
+            float  _NormEdgeSoftness;
             float  _NormEdgeStrength;
             float  _EnableAlphaTest;
             float  _AlphaCutoff;
@@ -213,10 +215,9 @@ Shader "Custom/V8_QuantizedSobel"
                 if (_EnableAlphaTest > 0.5)
                     clip(texColor.a - _AlphaCutoff);
 
-                // ── Quantize and build base colour ────────────────────────────
-                float3 quantized = Quantize(texColor.rgb, _QuantizeSteps);
-                half3  baseColor = lerp(_Color.rgb, quantized * _Color.rgb, _TextureIntensity);
-                half4  albedo    = half4(baseColor, texColor.a * _Color.a);
+                // ── Raw base colour (unquantized — lighting will be applied first) ──
+                half3  rawBase = lerp(_Color.rgb, texColor.rgb * _Color.rgb, _TextureIntensity);
+                half4  albedo  = half4(rawBase, texColor.a * _Color.a);
 
                 // ── Normal map → world-space normal ───────────────────────────
                 half3 nTS    = UnpackNormalScale(
@@ -225,13 +226,19 @@ Shader "Custom/V8_QuantizedSobel"
                 float3 nWS   = normalize(mul(nTS, TBN));
                 float3 vWS   = normalize(_WorldSpaceCameraPos - IN.posWS);
 
-                // ── Smooth Lambert ────────────────────────────────────────────
+                // ── Smooth Lambert on raw texture ─────────────────────────────
                 Light  mainLight = GetMainLight();
                 float  NdotL     = saturate(dot(nWS, mainLight.direction));
                 float  diffuse   = lerp(1.0 - _ShadowStrength, 1.0, NdotL);
                 float3 lighting  = mainLight.color * diffuse + _AmbientColor.rgb;
                 float  rim       = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
-                float3 shaded    = albedo.rgb * lighting + rim * _RimColor.rgb;
+                float3 litColor  = albedo.rgb * lighting + rim * _RimColor.rgb;
+
+                // ── Quantize AFTER lighting → steps visible in final output ───
+                float3 shaded    = Quantize(litColor, _QuantizeSteps);
+
+                // ── Quantized texture for Sobel edge detection only ───────────
+                float3 quantized = Quantize(texColor.rgb, _QuantizeSteps);
 
                 float3 luma = float3(0.299, 0.587, 0.114);
 
@@ -266,16 +273,22 @@ Shader "Custom/V8_QuantizedSobel"
                     shaded = lerp(shaded, _TexEdgeColor.rgb, edge);
                 }
 
-                // ── Normal edge detection (ddx/ddy on bump-perturbed world normal) ──
-                // Uses the nWS already computed from TBN + BumpMap above.
-                // Screen-space derivatives detect crease/ridge changes in the normal.
-                // Works without a separate texture assignment; responds to BumpScale.
+                // ── Normal edge detection (surface curvature, zoom-independent) ──
+                // Divides normal derivative by position derivative so both scale
+                // equally with zoom — the ratio (curvature) stays constant.
+                // nWS already includes BumpMap contribution via TBN.
                 if (_EnableNormSobel > 0.5)
                 {
-                    float3 dNdx   = ddx(nWS);
-                    float3 dNdy   = ddy(nWS);
-                    float  edgeMag = sqrt(dot(dNdx, dNdx) + dot(dNdy, dNdy));
-                    float  edge    = step(_NormEdgeThreshold, edgeMag) * _NormEdgeStrength;
+                    float3 dNdx    = ddx(nWS);
+                    float3 dNdy    = ddy(nWS);
+                    float3 dPdx    = ddx(IN.posWS);
+                    float3 dPdy    = ddy(IN.posWS);
+                    float  curvX   = length(dNdx) / (length(dPdx) + 1e-5);
+                    float  curvY   = length(dNdy) / (length(dPdy) + 1e-5);
+                    float  edgeMag = sqrt(curvX * curvX + curvY * curvY);
+                    float  edge    = smoothstep(_NormEdgeThreshold,
+                                               _NormEdgeThreshold * _NormEdgeSoftness,
+                                               edgeMag) * _NormEdgeStrength;
                     shaded = lerp(shaded, _NormEdgeColor.rgb, edge);
                 }
 
@@ -328,5 +341,6 @@ Shader "Custom/V8_QuantizedSobel"
             ENDHLSL
         }
     }
+    CustomEditor "AvaturnPresetShaderGUI"
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
 }

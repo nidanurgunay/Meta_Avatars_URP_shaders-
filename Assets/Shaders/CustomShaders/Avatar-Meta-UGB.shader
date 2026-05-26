@@ -182,7 +182,11 @@ Shader "Avatar/MetaNPR"
         _HColorWeight      ("Colour Weight",     Range(0, 1))       = 0.6
         _HEdgeWidth        ("Edge Width",        Range(0.5, 10))    = 1.5
         _HAdaptiveStrength ("Adaptive Strength", Range(0, 1))       = 0.5
-        _HEdgeColor        ("Edge Color",        Color)             = (0,0,0,1)
+        _HEdgeColor              ("Edge Color",        Color)             = (0,0,0,1)
+        [Toggle] _HEnableSkinDiscard ("Skin Colour Discard", Float)       = 0
+        _HSkinHueMin             ("Skin Hue Min",     Range(0, 0.2))      = 0.02
+        _HSkinHueMax             ("Skin Hue Max",     Range(0, 0.2))      = 0.12
+        _HSkinSatMin             ("Skin Sat Min",     Range(0, 1))        = 0.15
 
         [Header(NPR Effect  Kuwahara technique)]
         _K2Radius    ("Radius",     Range(0.5, 8))   = 2.0
@@ -208,7 +212,7 @@ Shader "Avatar/MetaNPR"
         _K2SThreshMax        ("Thresh Max Mult",    Range(1, 5))     = 1.5
         _K2STightness        ("Tightness",          Range(0, 1))     = 0.2
         _K2SPowerCurve       ("Power Curve",        Range(0.5, 5))   = 1.5
-        _K2SSobelStrength    ("Edge Strength",      Range(0, 1))     = 1.0
+        _K2SSobelStrength        ("Edge Strength",    Range(0, 1))       = 1.0
 
         [Header(NPR Effect  Kuwahara Hierarchical technique)]
         _K2HKuwRadius    ("Kuw Radius",      Range(0.5, 8))     = 2.0
@@ -231,7 +235,7 @@ Shader "Avatar/MetaNPR"
         _K2HCenterWeight     ("Center Weight",      Range(0.1, 0.5))   = 0.25
         _K2HCardinalWeight   ("Cardinal Weight",    Range(0, 0.3))     = 0.125
         _K2HDiagonalWeight   ("Diagonal Weight",    Range(0, 0.1))     = 0.0625
-        _K2HEdgeColor        ("Edge Color",         Color)             = (0,0,0,1)
+        _K2HEdgeColor            ("Edge Color",       Color)             = (0,0,0,1)
 
         [Header(NPR Effect  Toon Shader)]
         _ToonColorBands        ("Color Bands",        Range(2, 8))   = 4.0

@@ -24,6 +24,19 @@ float  _HBlurRadius;         // Gaussian blur radius       (0–5, × 0.001)
 float  _HCenterWeight;       // Gaussian centre tap weight  (0.1–0.5)
 float  _HCardinalWeight;     // Gaussian cardinal tap weight (0–0.3)
 float  _HDiagonalWeight;     // Gaussian diagonal tap weight (0–0.1)
+float  _HEnableSkinDiscard;  // 1 = suppress colour edges on skin pixels
+float  _HSkinHueMin;         // skin hue lower bound  (default 0.02)
+float  _HSkinHueMax;         // skin hue upper bound  (default 0.12)
+float  _HSkinSatMin;         // skin saturation minimum (default 0.15)
+
+float3 RGBtoHSV_H(float3 c) {
+    float4 K = float4(0.0, -1.0/3.0, 2.0/3.0, -1.0);
+    float4 p = lerp(float4(c.bg, K.wz), float4(c.gb, K.xy), step(c.b, c.g));
+    float4 q = lerp(float4(p.xyw, c.r), float4(c.r, p.yzx), step(p.x, c.r));
+    float  d = q.x - min(q.w, q.y);
+    float  e = 1.0e-10;
+    return float3(abs(q.z + (q.w - q.y) / (6.0*d + e)), d / (q.x + e), q.x);
+}
 
 // Luminance of one colour sample — point sample or 9-tap Gaussian,
 // controlled by _HEnableGaussBlur / _HBlurRadius.
@@ -84,6 +97,13 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
 
     float colLine = smoothstep(_HColorThreshold - 0.01,
                                _HColorThreshold + 0.01, colGrad);
+
+    if (_HEnableSkinDiscard > 0.5) {
+        float3 ctr = tex2D(u_BaseColorSampler, uv).rgb;
+        float3 hsv = RGBtoHSV_H(ctr);
+        if (hsv.x >= _HSkinHueMin && hsv.x <= _HSkinHueMax && hsv.y >= _HSkinSatMin)
+            colLine = 0.0;
+    }
 
     // ── Adaptive sensitivity: reduce edges in dark areas ─────────────────────
     float brightness = dot(color.rgb, float3(0.2126, 0.7152, 0.0722));

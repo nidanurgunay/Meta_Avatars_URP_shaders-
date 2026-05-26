@@ -40,7 +40,8 @@ Material:
     - _EnableSkinDiscard: 0
     - _EnableTexSobel: 0
     - _NormEdgeStrength: 1
-    - _NormEdgeThreshold: 0.05
+    - _NormEdgeSoftness: 1.5
+    - _NormEdgeThreshold: 20.0
     - _SkinHueMax: 0.12
     - _SkinHueMin: 0.02
     - _SkinSatMin: 0.15

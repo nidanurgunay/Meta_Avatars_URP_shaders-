@@ -547,4 +547,5 @@ Shader "NPR/XToon_2DRamp"
     }
 
     // No CustomEditor 
+    CustomEditor "AvaturnPresetShaderGUI"
 }

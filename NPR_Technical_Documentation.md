@@ -200,6 +200,8 @@ edge = smoothstep(0.20, 0.55, edge)
 
 An adaptive sensitivity term scales all layers down in dark areas, avoiding over-edging in shadows.
 
+**Skin colour discard (optional):** When `_HEnableSkinDiscard` is on, the colour-layer edge `colLine` is zeroed for any pixel whose centre sample falls within the configured skin HSV range (`_HSkinHueMin`–`_HSkinHueMax`, saturation ≥ `_HSkinSatMin`). This suppresses false colour edges on smooth face/neck skin while leaving hair, clothing, and eye edges intact.
+
 **Characteristics:** Only technique that simultaneously detects silhouettes (depth), creases (normal), and texture detail (colour) with independent per-layer weights. The Gaussian pre-blur on the colour layer is the most effective addition for noisy avatar textures.
 
 ---
@@ -488,6 +490,47 @@ Same ink/paper colour model as Halftone (above) using `_Hat*` uniforms.
 
 ---
 
+## Screen-Space Post-Process Renderer Features
+
+Both the **Jade avatar (ShaderExperimental)** scene and the **Avaturn** scene share the same active URP pipeline: `URP_QUEST.asset` → `URP_QUEST_Renderer.asset`. Two screen-space passes are now registered in `URP_QUEST_Renderer.asset` as active `ScriptableRendererFeature`s:
+
+| Feature class | Script | Shader |
+|---|---|---|
+| `KuwaharaFilterFeature` | `Assets/AvatarShaderExperimental/Scripts/Rendering/KuwaharaFilterFeature.cs` | `AnisotropicKuwahara.shader` |
+| `EdgeDetectionFeature` | `Assets/AvatarShaderExperimental/Scripts/Rendering/EdgeDetectionFeature.cs` | `HierarchicalEdgeDetection.shader` |
+
+Both run at `RenderPassEvent.AfterRenderingTransparents` (event 550), with `avatarLayer: 0` (full-screen, no masking). `URP_QUEST.asset` has `m_RequireDepthTexture: 1` and `m_RequireOpaqueTexture: 1` enabled to supply the depth and normal buffers that `EdgeDetectionFeature` samples.
+
+### Kuwahara Filter Feature
+
+3-pass anisotropic Kuwahara (oil-paint abstraction):
+
+| Pass | Name | Action |
+|------|------|--------|
+| 0 | StructureTensor | Sobel on luminance → packs `(gx², gx·gy, gy²)` into RGB |
+| 1 | TensorBlur | Separable Gaussian smooths the tensor field (H then V) |
+| 2 | KuwaharaFilter | Anisotropic sector-weighted mean per pixel |
+| 3 | MaskedComposite | Blends effect over avatar silhouette (only when `avatarLayer ≠ 0`) |
+
+Default settings: `kernelSize=4`, `sectorCount=8`, `sharpness=8`, `hardness=8`, `zeroCrossing=0.58`.
+
+### Edge Detection Feature
+
+Screen-space hierarchical edge detection that combines depth, normal, and colour differentials:
+
+| Property | Default | Effect |
+|----------|---------|--------|
+| `depthThreshold` | 0.5 | World-space depth jump that counts as an edge |
+| `normalThreshold` | 0.4 | Normal-angle delta that counts as an edge |
+| `colorThreshold` | 0.15 | Colour delta that counts as an edge |
+| `depthWeight / normalWeight / colorWeight` | 1 / 1 / 0.5 | Per-layer blend weights |
+| `edgeWidth` | 1 | Sampling offset multiplier |
+| `adaptiveStrength` | 0.5 | How much edges fade on bright areas |
+
+Requests `ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal` so Unity allocates the normals texture automatically.
+
+---
+
 ## Standalone Avaturn Avatar Shaders
 
 These are standalone URP shaders (not integrated into the Meta Avatar SDK pipeline) designed for the Avaturn `.glb` avatar model. They run on separate GameObjects/prefabs in the scene alongside the Meta Avatar, providing additional NPR comparison points.
@@ -521,6 +564,35 @@ Smooth Lambert shading with normal map + 3×3 UV-space Sobel edge detection on t
 V3 extended with a 9-tap Gaussian pre-blur applied to each of the 8 Sobel sample positions before the gradient is computed. Reduces false edges from high-frequency texture noise.
 
 **Materials:** `Assets/Materials/NPR Avaturn Materials/V4 GaussianPreFilteredSobel/`
+
+---
+
+### V5 — Hierarchical Edge Detection with Gaussian Pre-blur
+**File:** `Assets/Shaders/NPR/V5_HierarchicalGaussian.shader`
+**Shader name:** `Custom/Avaturn_V5_HierarchicalGaussian`
+
+Three-layer hierarchical edge detection where the color layer applies a 9-tap Gaussian pre-blur to each Roberts Cross sample before computing the gradient. Same algorithm as the Jade `V5_HierarchicalGaussian.shader` with the additions of a normal map (TBN) in ForwardLit and a DepthNormals pass.
+
+**Layers:**
+1. **Depth** — `ddx/ddy` of camera-distance proxy → smoothstep threshold
+2. **Normal** — `ddx/ddy` of world-space normal (normal-map-perturbed via TBN) → smoothstep threshold
+3. **Color** — 4-tap Roberts Cross on texture luminance; each tap optionally pre-blurred with a configurable 9-tap Gaussian kernel
+
+**Fusion:** `max(depth × depthWeight, normal × normalWeight, color × colorWeight)` with per-pixel adaptive brightness suppression.
+
+**Passes:** OuterOutline (inverted hull) + ForwardLit + DepthNormals
+
+| Key Property | Default | Effect |
+|---|---|---|
+| `_EnableGaussBlur` | 1 (on) | Toggles 9-tap Gaussian preblur on color Roberts Cross samples |
+| `_HBlurRadius` | 0.5 | Gaussian kernel radius (×0.001 UV units) |
+| `_HEdgeWidth` | 1.0 | Roberts Cross sample offset (×0.001 UV units) |
+| `_HDepthThreshold / Weight` | 0.05 / 1.0 | Depth layer threshold and contribution |
+| `_HNormalThreshold / Weight` | 0.3 / 1.0 | Normal layer threshold and contribution |
+| `_HColorThreshold / Weight` | 0.1 / 0.5 | Color layer threshold and contribution |
+| `_HAdaptiveStrength` | 0.5 | Brightness-based suppression of edges on highlights |
+
+**Materials:** `Assets/Materials/NPR Avaturn Materials/V5 HierarchicalGaussian/` *(create folder and materials in Unity)*
 
 ---
 
@@ -568,6 +640,40 @@ Both edge signals are max-combined and composited over the quantized shaded colo
 
 ---
 
+### VHH — Halftone & Hatching
+**File:** `Assets/Shaders/NPR/HalftoneHatching.shader`
+**Shader GUID:** `452f01b8804f54c8eb77c3425cf4614f`
+
+Standalone URP shader that applies either a halftone dot grid, cross-hatching lines, stippling, or a combination — all driven by lighting intensity. Four `shader_feature_local` keyword groups select the active mode at material import time; the float property (`_PatternMode`) stores the selection (0 = Halftone, 1 = Hatching, 2 = Stipple, 3 = Combined).
+
+**Colour model (same as Meta Avatar techniques 12/13):**
+```
+paperCol     = lerp(PaperColor, PBRcolor, TextureInfluence)
+inkCol       = lerp(InkColor,   PBRcolor × InkColor, TextureInfluence)
+patternColor = lerp(paperCol, inkCol, pattern)
+```
+
+Uses `_BaseMap` (not `_MainTex`) for the albedo. Has a built-in inverted-hull outline pass.
+
+| Property | Description |
+|----------|-------------|
+| `_PatternMode` | 0=Halftone, 1=Hatching, 2=Stipple, 3=Combined |
+| `_HalftoneScale` / `_HalftoneSharpness` / `_HalftoneAngle` | Dot grid parameters |
+| `_HatchScale` / `_HatchAngle` / `_HatchThickness` / `_CrossHatchAngle` | Line parameters |
+| `_ToneLevels` / `_ToneBias` | Lighting response (tone quantization steps and bias) |
+| `_InkColor` / `_PaperColor` / `_TextureInfluence` | Colour model |
+| `_OutlineWidth` / `_OutlineColor` | Built-in silhouette outline |
+| `_AlphaCutoff` + `_ALPHATEST_ON` keyword | Alpha test for eyelash material |
+
+**Materials:** `Assets/Materials/NPR Avaturn Materials/VHH HalftoneHatching/`
+- `VHH_body.mat` — body texture, Halftone mode, outline on
+- `VHH_head.mat` — head texture, Halftone mode, outline on
+- `VHH_hair.mat` — hair texture, Halftone mode, outline on
+- `VHH_eyelash.mat` — eyelash texture, `_ALPHATEST_ON` keyword, `_AlphaCutoff: 0.07`, no outline
+- `VHH_look.mat` — eye texture, Halftone mode, no outline
+
+---
+
 ### VXT — XToon 2D Ramp with Sobel Edges
 **File:** `Assets/Shaders/NPR/XToon_2DRamp.shader`
 **Shader GUID:** `088c73ef0d8f3442d83eb49d1b22a69f`
@@ -604,12 +710,32 @@ Also implements Normal Field Abstraction (blend between vertex normals and a smo
 Assets/
 ├── Scripts/
 │   ├── AvatarSwitcher.cs                  — avatar preset cycling + floating HUD
-│   └── NPREdgeDetectionUI.cs              — in-VR parameter panel
+│   ├── NPREdgeDetectionUI.cs              — in-VR parameter panel
+│   ├── PostProcessController.cs           — runtime setter API for KuwaharaFilterFeature + EdgeDetectionFeature (renderer features)
+│   ├── HierarchicalShaderController.cs    — runtime setter API for V5_HierarchicalGaussian material properties via MaterialPropertyBlock
+│   ├── FreeCameraController.cs            — keyboard/mouse free-fly camera (WASD + right-drag, Q/E vertical)
+│   ├── AvaturnLabelManager.cs             — [ExecuteAlways] manager: scans scene for Avaturn roots, spawns floating labels
+│   └── AvaturnLabel.cs                    — per-avatar label with auto-parsed name ("Avaturn (NPR V8)" → "V8")
+├── AvatarShaderExperimental/
+│   ├── Scripts/Rendering/
+│   │   ├── KuwaharaFilterFeature.cs       — screen-space anisotropic Kuwahara URP feature
+│   │   ├── EdgeDetectionFeature.cs        — screen-space hierarchical edge detection URP feature
+│   │   └── AnisotropicKuwaharaFeature.cs  — simpler 3-pass Kuwahara (no masking, no edge step)
+│   ├── Shaders/
+│   │   └── V5_HierarchicalGaussian.shader — Jade standalone: depth+normal+Gauss Roberts Cross
+│   ├── Shaders/Shaders after Project/
+│   │   ├── AnisotropicKuwahara.shader     — 4-pass Kuwahara shader (used by KuwaharaFilterFeature)
+│   │   ├── HierarchicalEdgeDetection.shader — depth+normal+color edge shader (used by EdgeDetectionFeature)
+│   │   ├── SobelEdgeDetection.shader      — Sobel-only edge shader
+│   │   └── AvatarMaskCapture.shader       — renders avatar silhouette mask (Hidden/AvatarMaskCapture)
+├── URP_QUEST_Renderer.asset               — active renderer (all scenes); has Kuwahara + EdgeDetection features
+├── URP_QUEST.asset                        — active URP pipeline; depth+opaque textures enabled
 ├── Shaders/
 │   ├── NPR/
 │   │   ├── HalftoneHatching.shader        — source shader (reference; not used on avatar)
 │   │   ├── V3_SobelEdgeDetection.shader   — Avaturn standalone: Sobel on texture luma
 │   │   ├── V4_GaussianPreFilteredSobel.shader — Avaturn standalone: Gaussian + Sobel
+│   │   ├── V5_HierarchicalGaussian.shader — Avaturn standalone: Hierarchical + Gaussian Roberts Cross
 │   │   ├── V8_QuantizedSobel.shader       — Avaturn standalone: quantize + dual Sobel
 │   │   └── XToon_2DRamp.shader            — Avaturn standalone: XToon 2D ramp + Sobel
 │   └── CustomShaders/
@@ -633,7 +759,14 @@ Assets/
 │   ├── V2 NormalEdgeDetection/            — V2 normal-edge materials
 │   ├── V3 SobelEdgeDetection/             — V3 Sobel materials (also used by V5–V7 avatars)
 │   ├── V4 GaussianPreFilteredSobel/       — V4 Gaussian-Sobel materials
+│   ├── V5 HierarchicalGaussian/           — V5 per-material hierarchical edge; head has skin discard ON
+│   │   ├── V5_body.mat                    — opaque body; all edge layers ON
+│   │   ├── V5_head.mat                    — face; skin discard ON (suppresses nose/cheek false edges)
+│   │   ├── V5_hair.mat                    — alpha-test; edge detection ON
+│   │   ├── V5_eyelash.mat                 — alpha-test; all edge layers OFF, no outline
+│   │   └── V5_look.mat                    — eyes; all edge layers OFF, no outline
 │   ├── V8 QuantizedSobel/                 — V8 quantized-colour dual-Sobel materials
+│   ├── VHH HalftoneHatching/              — Halftone/Hatching standalone materials (HalftoneHatching.shader)
 │   └── VXT XToon/                         — XToon 2D-ramp materials (need _ToonRamp assigned)
 └── Samples/Meta Avatars SDK/40.0.1/
     └── Sample Scenes/Scripts/

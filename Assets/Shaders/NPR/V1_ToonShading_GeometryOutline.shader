@@ -20,7 +20,7 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
         _ShadowStrength ("Shadow Strength", Range(0, 1)) = 0.7
 
         // Outer outline (geometry-based)
-        _OuterOutlineWidth ("Outer Outline Width (world units)", Range(0,0.5)) = 0.005
+        _OuterOutlineWidth ("Outer Outline Width (world units)", Range(0,0.5)) = 0.002
         _OuterOutlineColor ("Outer Outline Color", Color) = (0,0,0,1)
         [Toggle] _UseOutlineDepthOffset ("Use Depth Offset (fix z-fighting)", Float) = 0
         _OutlineDepthBias ("Outline Depth Bias", Range(0, 5)) = 1.0
@@ -244,5 +244,5 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
     }
 
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
-    CustomEditor "ToonShaderEditor"
+    CustomEditor "AvaturnPresetShaderGUI"
 }

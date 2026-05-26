@@ -508,5 +508,5 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
         }
     }
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
-    CustomEditor "ToonV10MaterialEditor"
+    CustomEditor "AvaturnPresetShaderGUI"
 }

@@ -11,15 +11,18 @@ Material:
   m_Shader: {fileID: 4800000, guid: 088c73ef0d8f3442d83eb49d1b22a69f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_ValidKeywords:
+  - _DEBUGMODE_OFF
+  - _DETAILMODE_DEPTH
+  m_InvalidKeywords:
+  - _ENABLESOBEL_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -39,12 +42,13 @@ Material:
     m_Floats:
     - _AlphaBlend: 0
     - _AlphaCutoff: 0.5
-    - _DetailBias: 0.5
-    - _DetailMode: 0
+    - _DebugMode: 0
     - _DepthFar: 50
     - _DepthNear: 5
+    - _DetailBias: 0.5
+    - _DetailMode: 0
     - _DstBlend: 0
-    - _EnableSobel: 0
+    - _EnableSobel: 1
     - _LightSensitivity: 1
     - _LightingStrength: 1
     - _ManualDetail: 0

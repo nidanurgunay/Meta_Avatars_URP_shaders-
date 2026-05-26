@@ -476,6 +476,263 @@ Same ink/paper colour model as Halftone (above) using `_Hat*` uniforms.
 
 ---
 
+## V1 & V2 Cross-Avatar Analysis
+
+This section documents the two thesis-framed technique generations — **V1 (Toon Shading + Inverted Hull Outline)** as the baseline and **V2 (XToon 2D Ramp)** as the advanced technique — and compares their implementation across all three avatar types in the project.
+
+---
+
+### V1 — Toon Shading with Inverted Hull Outline
+
+**Concept:** Classic cel-shading using NdotL quantisation (discrete light bands) combined with an inverted-hull geometry pass for outer silhouette lines. This is the foundation of real-time NPR; virtually every cartoon game uses a variant of it.
+
+#### Mixamo / Jade Avatar
+
+**Shader:** `Assets/AvatarShaderExperimental/Shaders/V1_ToonShading_GeometryOutline.shader`
+**Shader name in Unity:** `Custom/V1_ToonShading_GeometryOutline`
+**Pipeline target:** URP, `#pragma target 3.0`
+**Materials:** `Assets/AvatarShaderExperimental/Materials/CToon V1 Toon only/`
+
+**Outline pass (Pass 0 — inverted hull):**
+- `Cull Front` renders back-faces only; `ZWrite On`, `ZTest Less`
+- Each vertex is displaced along its world-space normal by `_OuterOutlineWidth` (world units)
+- Fragment returns a flat `_OuterOutlineColor`; alpha-test clip applied if `_EnableAlphaTest` is on (eyelash support)
+- Optional `_OutlineDepthBias` pushes clip-space Z toward the camera to prevent z-fighting
+
+**Toon pass (Pass 1 — ForwardLit):**
+```hlsl
+float smooth = smoothstep(Threshold - Smoothness, Threshold + Smoothness, NdotL);
+float toon   = floor(smooth * steps) / steps;
+toon = lerp(1.0, toon, ShadowStrength);
+```
+- Single smooth threshold collapses NdotL into one lit/unlit region; `floor × steps` then quantises into bands
+- Ambient `_AmbientColor` added additively; rim light `pow(1 - N·V, RimPower)` overlaid on top
+
+**Toon quantisation algorithm:** Unified with the Avaturn version — per-step `smoothstep` at every band boundary (see Avaturn section below for the formula). The previous single-threshold `smoothstep → floor` approach was replaced; `_ToonThreshold` property was removed.
+
+**Key difference from Avaturn:** No `OVR_FETCH_POS_NORM` — vertex positions and normals come directly from the mesh, without compute-skinning support. Works fine for standard SkinnedMeshRenderer avatars.
+
+**Thesis demonstration shader:** `Assets/AvatarShaderExperimental/Shaders/V1_InvertedHullOutline.shader` (`Custom/V1_InvertedHullOutline`) — a minimal two-pass shader that strips the toon quantisation entirely and shows only the inverted-hull technique in isolation. Pass 0 (`Cull Front`) displaces back-face vertices along world-space normals and outputs a flat `_OutlineColor`. Pass 1 (`Cull Back`) renders the surface as a flat unlit albedo so the avatar is visible beneath the outline. Use this in the thesis scene to explain the geometric mechanism before introducing toon shading.
+
+---
+
+#### Avaturn Avatar
+
+**Shader:** `Assets/Shaders/NPR/V1_ToonShading_GeometryOutline.shader`
+**Shader name in Unity:** `Custom/V1_ToonShading_GeometryOutline`
+**Pipeline target:** URP, `#pragma target 3.5`
+**Materials:** `Assets/Materials/NPR Avaturn Materials/V1 ToonShading/` (5 materials: body, head, hair, eyelash, look)
+
+**Outline pass:** Identical intent to Mixamo but includes `OVR_FETCH_POS_NORM(v.vertex.xyz, v.normal, v.vertexID)` before computing world positions. This fetch bridge allows the same shader to work with both standard skinning and Meta SDK compute skinning (external vertex buffers). Without it, the Meta SDK's GPU-skinned vertices would not be visible to the outline pass.
+
+**Toon pass — refined quantisation algorithm:**
+```hlsl
+float steps  = max(1.0, _ToonSteps);
+float scaled = NdotL * steps;
+float band   = floor(scaled);
+float frac   = scaled - band;
+float blend  = smoothstep(1.0 - _ToonSmoothness, 1.0, frac);
+float toon   = saturate((band + blend) / steps);
+toon = lerp(1.0 - _ShadowStrength, 1.0, toon);
+```
+- Per-step blending: each individual band boundary gets a narrow smooth transition of width `_ToonSmoothness`, preventing normal jitter near any seam from flipping a whole patch between steps
+- This replaces the Mixamo version's single global threshold with a more robust per-band approach
+
+**Additional passes:** None beyond outline + ForwardLit; depth/normals written by the standard URP mechanism.
+
+---
+
+#### Meta Avatar SDK
+
+**Shader:** `Assets/Shaders/CustomShaders/Avatar-Meta-UGB.shader`
+**Keyword:** `EFFECT_TOON` (activated with `ENABLE_NPR_EDGES`)
+**Technique file:** `Assets/Shaders/CustomShaders/NPREffect_Toon.cginc`
+**Pipeline target:** URP target 5.0 (primary) + 3.5 compatibility fallback + Built-in RP fallback
+
+**Toon (posterisation) implementation:**
+```hlsl
+// NPREffect_Toon.cginc
+float  bands      = max(2.0, _ToonColorBands);
+float3 posterized = floor(color.rgb * bands + 0.5) / bands;
+color.rgb = lerp(color.rgb, posterized, _ToonPosterizeStrength);
+
+float lum  = dot(color.rgb, float3(0.2126, 0.7152, 0.0722));
+color.rgb  = lerp(float3(lum, lum, lum), color.rgb, _ToonSaturation);
+```
+- Operates in `AppSpecificPostManipulation` — receives the **fully composited PBR colour** (NdotL + shadows + SSS + rim light already baked in)
+- Quantisation works on RGB directly (round-to-nearest), which preserves hue and saturation while stepping luminance
+- Saturation runs **after** posterisation to avoid clamping artefacts
+
+**Outline (inverted hull) implementation:**
+- A dedicated `NPROutline` pass (`Cull Front`, `ZWrite Off`, `ZTest LEqual`) reuses the same vertex shader; `#define OUTLINE_PASS 1` routes `AppSpecificVertexPostManipulation` to push each skinned vertex outward along its world normal:
+  ```hlsl
+  float3 worldPos = o.v_WorldPos + normalize(o.v_Normal) * _OutlineWidth * 0.001;
+  ```
+- The outline pass is toggled via `_OutlineEnabled`; discards if `< 0.5`
+
+**Critical architectural difference:** The Meta implementation is a **post-process hook inside the existing PBR pipeline**, not a standalone shader. The toon effect stylises the output of Meta's full STYLE_2_STANDARD renderer (which includes subsurface scattering, anisotropic hair, eye glints, IBL). This means the cel-shaded colour still reflects the physical material quality underneath.
+
+| Property | Mixamo V1 | Avaturn V1 | Meta V1 |
+|----------|-----------|-----------|---------|
+| Quantisation method | Per-step `smoothstep` + `(band + blend) / steps` (unified) | Per-step `smoothstep` + `(band + blend) / steps` | `floor(rgb × bands + 0.5) / bands` |
+| Input to quantiser | Raw NdotL | Raw NdotL | Composited PBR RGB |
+| Rim light | Yes (additive) | Yes (additive) | Via Meta PBR (pre-composited) |
+| Compute-skinning bridge | No | Yes (`OVR_FETCH_POS_NORM`) | Yes (SDK native) |
+| Outline technique | Inverted hull (world-space normal offset) | Inverted hull (world-space normal offset) | Inverted hull (world-space normal offset, separate pass) |
+| Outline toggleable | No (always on if pass enabled) | No (always on if pass enabled) | Yes (`_OutlineEnabled`) |
+| Shadow support | Yes (URP `GetMainLight`) | Yes (URP `GetMainLight` + cascades) | Yes (Meta PBR shadow attenuation) |
+
+---
+
+### V2 — XToon: Extended Toon Shader with 2D Ramp
+
+**Concept:** Barla et al. NPAR 2006. Replaces the 1D NdotL lookup with a **2D texture lookup** whose axes are independently configurable:
+- **U axis** — lighting intensity (NdotL or luminance proxy)
+- **V axis** — abstraction/detail level (depth, curvature, or manual)
+
+This decouples "how lit is this pixel" from "how much stylistic detail should this pixel show", enabling effects like distant objects appearing more simplified and close objects retaining brush-detail — matching how illustrators vary linework by distance or focal importance.
+
+---
+
+#### Mixamo / Jade Avatar
+
+**Shader:** `Assets/AvatarShaderExperimental/Shaders/Shaders after Project/XToon_2DRamp.shader`
+**Shader name in Unity:** `NPR/XToon_2DRamp`
+**Pipeline target:** URP, `#pragma target 3.5`
+**Materials:** `Assets/AvatarShaderExperimental/Materials/Xtoon/` (4 materials: Body, Clothing, Hair, Eyelash)
+
+**Main pass (XToonForward):**
+```hlsl
+// U axis: NdotL with shadow attenuation
+float NdotL = dot(normalWS, lightDir) * shadow;
+float rampU = lerp(0.5, saturate(NdotL * 0.5 + 0.5), _LightSensitivity);
+
+// V axis (selectable via shader_feature keyword)
+// Depth:     saturate((dist - DepthNear) / (DepthFar - DepthNear)) + DetailBias
+// Curvature: 1.0 - saturate((|ddx(N)| + |ddy(N)|) × 10)
+// Manual:    _ManualDetail
+
+float3 rampColor = SAMPLE_TEXTURE2D(_ToonRamp, sampler_ToonRamp, float2(rampU, rampV)).rgb;
+```
+
+**Abstraction compression (same in all three avatar implementations):**
+```hlsl
+float abstractU    = lerp(rampU, 0.5, rampV * 0.6);
+float dynSmoothing = lerp(RampSmoothing, RampSmoothing + 0.35, rampV);
+float shadowMask   = smoothstep(0.5 - dynSmoothing, 0.5 + dynSmoothing, abstractU);
+float3 toonAlbedo  = albedo * rampColor;
+float3 shadowed    = lerp(toonAlbedo * ShadowColor, toonAlbedo, shadowMask);
+```
+As `rampV` rises (more abstraction), both the U range and the ramp smoothing widen — lighting bands dissolve into a single mid-tone, which is the defining visual of XToon abstraction.
+
+**Normal Field Abstraction:** An optional `_AbstractNormalMap` can be assigned; the normals are blended between the original vertex normal and the smoothed abstract normal via `_NormalSmoothing`. When no abstract map is assigned, a positional smoothing approximation is applied:
+```hlsl
+float3 smoothN = normalize(normalWS + NormalSmoothing * (normalize(posWS) - normalWS));
+```
+
+**Specular:** Stylised Blinn-Phong `smoothstep` on NdotH (raw access to light direction is available here).
+
+**Inline Sobel (optional):** `_EnableSobel` runs a 3×3 luminance Sobel on `_BaseMap` in UV space and composites edge lines over the toon result.
+
+**Outline pass (Pass 1 — Outline):** `Cull Front`, `SRPDefaultUnlit`. Vertex displaced by `normalWS * _OutlineWidth` in world space. Outputs flat `_OutlineColor`.
+
+**Difference from Avaturn:** No `OVR_FETCH_POS_NORM` — standard mesh vertex input only.
+
+---
+
+#### Avaturn Avatar
+
+**Shader:** `Assets/Shaders/NPR/XToon_2DRamp.shader`
+**Shader name in Unity:** `NPR/XToon_2DRamp`
+**Pipeline target:** URP, `#pragma target 3.5`
+**Materials:** `Assets/Materials/NPR Avaturn Materials/VXT XToon/` (5 materials: body, head, hair, eyelash, look)
+
+This is the production-quality version of the shader. It is functionally identical to the Mixamo version in all NPR logic but adds:
+
+1. **`OVR_FETCH_POS_NORM`** in both the outline vertex shader and the main vertex shader — ensures compute-skinned positions and normals are used if the Meta SDK external vertex buffer is active.
+2. **Shadow Caster pass (Pass 2):** A self-contained `ShadowCaster` pass with `ApplyShadowBias` — the Mixamo version relies on the FallBack. This avoids the shadow bias artefacts visible on the GLB model when using the generic fallback shadow pass.
+3. **Depth Only pass (Pass 3):** A self-contained `DepthOnly` pass with `ColorMask R`, feeding the URP depth prepass that post-process effects (edge detection, Kuwahara) depend on.
+4. **Alpha blend support (`_ALPHA_BLEND` keyword):** `_SrcBlend`/`_DstBlend`/`_ZWrite` are exposed as hidden material properties and toggled via the `[AlphaBlendToggle]` drawer — used for the eyelash material without needing a separate shader.
+
+**Material notes:**
+- `VXT_eyelash.mat` — `_SrcBlend=5` (SrcAlpha), `_DstBlend=10` (OneMinusSrcAlpha), `_ZWrite=0`, Sobel off, no outline
+- `VXT_body/head/hair` — Sobel on, outline on, `_ToonRamp` slot left empty (must assign a 2D ramp texture in Unity)
+
+---
+
+#### Meta Avatar SDK (newly implemented)
+
+**Shader:** `Assets/Shaders/CustomShaders/Avatar-Meta-UGB.shader`
+**Keyword:** `EFFECT_XTOON` (activated with `ENABLE_NPR_EDGES`)
+**Technique file:** `Assets/Shaders/CustomShaders/NPREffect_XToon.cginc`
+
+**Design constraint:** `AppSpecificPostManipulation` receives the composited PBR colour — raw NdotL and the main light direction are not accessible at this hook point. The XToon adaptation uses:
+- **U axis** — `luminance(o.color)` as the lighting intensity proxy. This is more perceptually complete than raw NdotL because it already includes shadows, subsurface scattering, and rim light from the Meta PBR pipeline.
+- **V axis** — identical options to standalone: depth via `length(worldViewDir)`, curvature via `ddx/ddy(normalWS)`, or manual constant.
+
+**Core implementation:**
+```hlsl
+// U: luminance of composited PBR as lighting proxy
+float lum  = dot(color.rgb, float3(0.2126, 0.7152, 0.0722));
+float rampU = lerp(0.5, saturate(lum), _XToonLightSensitivity);
+
+// V: abstraction level
+float rampV = _XToonComputeDetailAxis(worldViewDir, normalWS);
+
+// 2D ramp sample
+float3 rampColor = SAMPLE_TEXTURE2D(_XToonRamp, sampler_XToonRamp, float2(rampU, rampV)).rgb;
+
+// Abstraction compression (identical formula to standalone versions)
+float abstractU    = lerp(rampU, 0.5, rampV * 0.6);
+float dynSmoothing = lerp(_XToonRampSmoothing, _XToonRampSmoothing + 0.35, rampV);
+float shadowMask   = smoothstep(0.5 - dynSmoothing, 0.5 + dynSmoothing, abstractU);
+float3 toonColor     = color.rgb * rampColor;
+float3 shadowedColor = lerp(toonColor * _XToonShadowColor.rgb, toonColor, shadowMask);
+float3 finalColor    = lerp(color.rgb, shadowedColor, _XToonShadowStrength);
+```
+
+**Specular adaptation:** Because the light direction is not available, the specular is computed as `reflect(-viewDir, normalWS)` — a view-dependent rim-style highlight that is consistent with the toon aesthetic and adds the characteristic cartoon specular dot without requiring light direction access.
+
+**`_XToonLightingStrength`** blends between the original PBR colour and the fully stylised XToon result, allowing a partial blend for comparison purposes.
+
+**Inverted hull outline:** Reuses the existing `NPROutline` pass with `_OutlineEnabled`, `_OutlineWidth`, `_OutlineColor` — identical to all other Meta techniques.
+
+**Shader variants added:**
+- `EFFECT_XTOON` added to the `multi_compile` list in `app_functions.hlsl`
+- Include dispatch and `AppSpecificPostManipulation` condition updated
+
+| Property | Mixamo V2 | Avaturn V2 | Meta V2 |
+|----------|-----------|-----------|---------|
+| U axis source | Raw NdotL × shadow | Raw NdotL × shadow | PBR luminance (post-SSS, post-rim) |
+| U axis access | Direct (vertex → fragment NdotL) | Direct (vertex → fragment NdotL) | Indirect (luminance of composited color) |
+| Light direction in specular | Yes (Blinn-Phong NdotH) | Yes (Blinn-Phong NdotH) | No (reflected view dir, view-dependent) |
+| V axis (depth) | `length(camPos - posWS)` | `length(camPos - posWS)` | `length(worldViewDir)` (magnitude = depth) |
+| V axis (curvature) | `ddx/ddy(normalWS)` | `ddx/ddy(normalWS)` | `ddx/ddy(normalWS)` |
+| Normal Field Abstraction | Yes (optional abstract normal map) | Yes (optional abstract normal map) | No (normals received post-interpolation) |
+| Inline Sobel | Yes (`_EnableSobel` toggle) | Yes (`_EnableSobel` toggle) | No (separate technique keywords available) |
+| Compute-skinning bridge | No | Yes (`OVR_FETCH_POS_NORM`) | Yes (SDK native) |
+| Outline | Inverted hull (world-space) | Inverted hull (world-space) | Inverted hull (NPROutline pass, `_OutlineEnabled`) |
+| Shadow Caster pass | No (fallback) | Yes (self-contained) | Yes (Meta SDK handles shadows) |
+| Alpha blend for eyelash | Via `_ALPHA_BLEND` keyword | Via `_ALPHA_BLEND` keyword | Via Meta SDK material system |
+
+---
+
+### V1 vs V2 — Conceptual Differences
+
+| Dimension | V1: Toon + Inverted Hull | V2: XToon 2D Ramp |
+|-----------|--------------------------|-------------------|
+| **Ramp dimensionality** | 1D (NdotL only) | 2D (NdotL × abstraction) |
+| **Abstraction control** | None — same detail at every distance | Depth / curvature / manual V axis |
+| **Band behaviour** | Fixed number of discrete bands | Bands widen and soften as V increases |
+| **Normal handling** | Vertex normals only | Optional Normal Field Abstraction (abstract normal map) |
+| **Artist control** | Steps, threshold, smoothness, shadow strength | Full 2D ramp texture + per-axis parameters |
+| **Reference** | Standard real-time cel-shading (no specific paper) | Barla, Thollot & Markosian, NPAR 2006 |
+| **Computational cost** | ~1 texture sample (albedo) | 1 ramp texture sample + optional inline Sobel (8 samples) |
+
+The core advancement of V2 over V1 is the separation of *lighting response* (U) from *stylistic abstraction* (V). V1 applies the same level of detail uniformly; V2 can make nearby objects crisp and detailed while distant objects dissolve into broad abstract colour zones — a behaviour grounded in how illustrators vary line weight and detail with focal distance.
+
+---
+
 ## In-VR Assessment UI — Design Notes
 
 - **No `Canvas.ForceUpdateCanvases()`** — calling it rebuilds all canvases including internal Meta SDK UI, which triggers an IMGUI `EndLayoutGroup` error. Only the panel's own `RectTransform` is rebuilt with `LayoutRebuilder.ForceRebuildLayoutImmediate`.
@@ -528,6 +785,36 @@ Screen-space hierarchical edge detection that combines depth, normal, and colour
 | `adaptiveStrength` | 0.5 | How much edges fade on bright areas |
 
 Requests `ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal` so Unity allocates the normals texture automatically.
+
+---
+
+## Avaturn Avatar Animation (Mixamo)
+
+### How it works
+
+Avaturn avatars are loaded from a `.glb` file at runtime by GLTFast. Because the GLB skeleton has no Humanoid Avatar baked in, Mixamo animations (which are **Humanoid** rig type) cannot retarget onto it by default — the Animator silently falls back to Generic mode and the character stands still.
+
+`AvaturnAnimationPrepare.cs` fixes this at runtime:
+
+1. **Finds all skeleton roots** — recursively searches for every Transform whose direct child is `Hips` / `mixamorig:Hips`. Works regardless of nesting depth or how many GLTFast wrapper nodes exist. **Works with both a single avatar and a parent that holds many avatars** — attach it once to a parent to animate all children at once.
+2. **Builds a Humanoid Avatar per skeleton** — calls `AvatarBuilder.BuildHumanAvatar()` with a `HumanDescription` mapping all 55 Humanoid slots to both Avaturn naming variants. The T-pose snapshot is taken from the GLTFast-loaded transforms.
+3. **Wires up the Animator** — walks top-down from the script's GameObject to each skeleton root, reusing the first Animator found (picks up existing prefab-instance Animators with controllers already assigned). Falls back to creating one on the skeleton root if none exists.
+
+No external packages are required (the old BKUnity approach has been removed).
+
+### Animator Controller
+
+`Assets/Animations/Avaturn Animator.controller` — single state: **Breathing Idle** (loops).  
+Animations: `Assets/Animations/Breathing Idle.anim` / `Standing Idle.anim` (extracted from Humanoid FBXs).
+
+### Setup in scene
+
+| GameObject | Component | Setting |
+|---|---|---|
+| `MainAvatar` | `AvaturnAnimationPrepare` | `Animator Controller` → *Avaturn Animator* |
+| `MainAvatar` child 0 | Avaturn `.glb` prefab | (no extra setup needed) |
+
+Press Play — you should see the Breathing Idle animation retargeted onto the avatar.
 
 ---
 
@@ -715,7 +1002,9 @@ Assets/
 │   ├── HierarchicalShaderController.cs    — runtime setter API for V5_HierarchicalGaussian material properties via MaterialPropertyBlock
 │   ├── FreeCameraController.cs            — keyboard/mouse free-fly camera (WASD + right-drag, Q/E vertical)
 │   ├── AvaturnLabelManager.cs             — [ExecuteAlways] manager: scans scene for Avaturn roots, spawns floating labels
-│   └── AvaturnLabel.cs                    — per-avatar label with auto-parsed name ("Avaturn (NPR V8)" → "V8")
+│   ├── AvaturnLabel.cs                    — per-avatar label with auto-parsed name ("Avaturn (NPR V8)" → "V8")
+│   └── AvaturnAnimationPrepare.cs         — attach to the parent of a GLTFast-loaded Avaturn GLB; builds a Humanoid Avatar
+│                                             at runtime via AvatarBuilder.BuildHumanAvatar() so Mixamo clips retarget correctly
 ├── AvatarShaderExperimental/
 │   ├── Scripts/Rendering/
 │   │   ├── KuwaharaFilterFeature.cs       — screen-space anisotropic Kuwahara URP feature

@@ -118,7 +118,7 @@ Material:
     - _Surface: 0
     - _TextureIntensity: 1
     - _ToonSmoothness: 0.01
-    - _ToonSteps: 3
+    - _ToonSteps: 3.15
     - _ToonThreshold: 0.5
     - _UseDebugDefaults: 0
     - _UseOutlineDepthOffset: 0

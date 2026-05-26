@@ -1,0 +1,14 @@
+%% Abstract
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Virtual reality applications increasingly rely on avatar representations to facilitate social presence and user embodiment. However, photorealistic avatar rendering can trigger the uncanny valley effect, where near-realistic human representations evoke discomfort and reduced trust rather than engagement. Non-photorealistic rendering~(NPR) offers a principled alternative, deliberately abstracting avatar appearance while preserving expressiveness and identity.
+
+This thesis presents the design, implementation, and evaluation of a real-time NPR stylisation system for virtual avatars. Eight techniques were developed iteratively: geometry-based inverted hull outlines, screen-space normal edge detection, Sobel edge detection with adaptive skin-to-clothing thresholding, Gaussian pre-filtered Sobel, hierarchical multi-cue edge detection combining depth, normal, and colour discontinuities, isotropic Kuwahara painterly filtering, and two composite techniques combining painterly abstraction with edge rendering. The techniques were implemented and compared across three avatar platforms — a Mixamo humanoid model, the Meta Avatars SDK, and Avaturn — to assess their visual behaviour and robustness under different mesh topologies and rendering pipelines. Avaturn was selected as the primary platform for the user study due to its facial rigging capabilities and higher photorealistic fidelity.
+
+The user study investigates how visual abstraction affects the perceived trustworthiness of an avatar delivering advice. Participants watched short video scenarios in which a speaker — presented either as a real person, a photorealistic Avaturn avatar, or an NPR-stylised avatar — recommended one of two options in a practical decision situation. After each scenario, participants rated how trustworthy they found the speaker's recommendation. The results provide empirical insight into the relationship between avatar abstraction level and social trust, offering practical guidance for avatar design in applications where perceived credibility matters.
+
+\bigskip
+\noindent\textbf{Keywords:} non-photorealistic rendering, virtual reality, avatar abstraction, trust perception, edge detection, Avaturn, uncanny valley, Kuwahara filter.
+
+\newpage

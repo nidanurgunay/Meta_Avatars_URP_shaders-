@@ -301,6 +301,23 @@ Shader "Avatar/MetaNPR"
         _HatTextureInfluence ("Texture Influence",   Range(0, 1))       = 0.5
         _HatStrength         ("Strength",            Range(0, 1))       = 1.0
 
+        [Header(NPR Effect XToon 2D Ramp  V2 technique)]
+        _XToonRamp              ("2D Toon Ramp (U=Light, V=Abstraction)", 2D) = "white" {}
+        _XToonLightSensitivity  ("Light Sensitivity",   Range(0.0, 1.0))  = 1.0
+        _XToonRampSmoothing     ("Ramp Edge Smoothing", Range(0.0, 0.1))  = 0.01
+        _XToonShadowColor       ("Shadow Color",        Color)            = (0.25, 0.25, 0.35, 1)
+        _XToonShadowStrength    ("Shadow Strength",     Range(0.0, 1.0))  = 0.6
+        _XToonDetailMode        ("Detail Mode (0=Depth 1=Curv 2=Manual)", Range(0, 2)) = 0
+        _XToonDetailBias        ("Detail Bias",         Range(0.0, 1.0))  = 0.0
+        _XToonDepthNear         ("Depth Near",          Float)            = 1.0
+        _XToonDepthFar          ("Depth Far",           Float)            = 5.0
+        _XToonManualDetail      ("Manual Detail",       Range(0.0, 1.0))  = 0.0
+        _XToonSpecularColor     ("Specular Color",      Color)            = (1,1,1,1)
+        _XToonSpecularSize      ("Specular Size",       Range(0.0, 1.0))  = 0.03
+        _XToonSpecularSmoothness("Specular Smoothness", Range(0.001, 0.5))= 0.02
+        _XToonSpecularStrength  ("Specular Strength",   Range(0.0, 1.0))  = 0.5
+        _XToonLightingStrength  ("Lighting Strength",   Range(0.0, 1.0))  = 1.0
+
         [Header(NPR Inverted Hull Outline)]
         _OutlineEnabled ("Outline Enabled", Range(0, 1)) = 1
         _OutlineWidth   ("Outline Width",   Range(0.5, 10)) = 2.0

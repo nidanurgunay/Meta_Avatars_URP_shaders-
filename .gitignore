@@ -89,3 +89,25 @@ crash.log
 # Local study notes — not for version control
 UNITY_STUDY_NOTES.md
 UNITY_STUDY_NOTES.pdf
+
+# LaTeX build outputs
+*.acn
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.glo
+*.gls
+*.glg
+*.ilg
+*.ist
+*.loa
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc

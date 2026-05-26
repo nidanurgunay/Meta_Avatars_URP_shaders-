@@ -1,0 +1,188 @@
+%% Master's Thesis — Nidanur Günay
+%% Abstraction Mechanisms for Virtual Avatars
+%% University of Konstanz — Visual Computing
+%% ============================================
+
+\documentclass[
+  12pt,
+  a4paper,
+  twoside,
+  openright,
+  headings=optiontohead,
+]{scrbook}
+
+%% ---- Encoding & Language ----
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+
+%% ---- Typography ----
+% Body: Palatino (warm, readable serif — matches Fink thesis style)
+\usepackage[sc,osf]{mathpazo}
+% Sans-serif: Helvetica scaled to match Palatino x-height (used for headings)
+\usepackage[scaled=0.90]{helvet}
+\usepackage{microtype}
+% Line spacing: ~1.15 — matches Fink thesis (tighter than onehalfspacing)
+\usepackage{setspace}
+\setstretch{1.15}
+
+%% ---- Page Layout ----
+\usepackage[
+  a4paper,
+  inner=3cm,
+  outer=2.5cm,
+  top=2.5cm,
+  bottom=2.5cm,
+  bindingoffset=5mm,
+]{geometry}
+
+%% ---- KOMA heading fonts (sans-serif, matching Fink thesis) ----
+\setkomafont{chapter}{\normalfont\huge\sffamily}
+\setkomafont{section}{\normalfont\large\sffamily}
+\setkomafont{subsection}{\normalfont\normalsize\sffamily\bfseries}
+\setkomafont{subsubsection}{\normalfont\normalsize\sffamily}
+\setkomafont{pagehead}{\normalfont\small\sffamily}
+\setkomafont{pagenumber}{\normalfont\small\sffamily}
+
+%% ---- Header / Footer ----
+\usepackage[automark, headsepline]{scrlayer-scrpage}
+\clearpairofpagestyles
+\ohead{\headmark}
+\ofoot[\pagemark]{\pagemark}
+
+%% ---- Math ----
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+
+%% ---- Graphics & Figures ----
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{wrapfig}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%% ---- Tables ----
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+
+%% ---- Algorithms & Code ----
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codeblue}{rgb}{0.13,0.29,0.53}
+\definecolor{codegreen}{rgb}{0.0,0.5,0.0}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{codeblue}\bfseries,
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  frame=single,
+  rulecolor=\color{gray!30},
+}
+\lstset{style=mystyle}
+
+%% ---- Hyperlinks & PDF Metadata ----
+\usepackage[
+  pdftitle={Abstraction Mechanisms for Virtual Avatars},
+  pdfauthor={Nidanur Günay},
+  pdfsubject={Master's Thesis, University of Konstanz},
+  pdfkeywords={non-photorealistic rendering, VR avatars, abstraction, trust, Meta Avatar SDK},
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue,
+  bookmarks=true,
+  bookmarksopen=true,
+]{hyperref}
+\usepackage{bookmark}
+
+%% ---- Bibliography ----
+\usepackage[
+  backend=biber,
+  style=ieee,
+  sorting=none,
+  maxbibnames=10,
+]{biblatex}
+\addbibresource{references.bib}
+
+%% ---- Acronyms & Glossary ----
+\usepackage[acronym, toc, nonumberlist]{glossaries}
+\makeglossaries
+\input{frontmatter/acronyms}
+
+%% ---- Theorem Environments ----
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+%% ---- Utilities ----
+\usepackage{lipsum}   % placeholder text — remove when writing
+\usepackage{todonotes}
+\usepackage{cleveref}
+
+%% ========================================================
+\begin{document}
+
+%% ---- Front Matter ----
+\KOMAoptions{open=any}
+\frontmatter
+\include{frontmatter/titlepage}
+\include{frontmatter/abstract}
+\include{frontmatter/acknowledgements}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\include{frontmatter/abbreviations}
+\KOMAoptions{open=right}
+
+%% ---- Main Matter ----
+\mainmatter
+\include{chapters/01_introduction}
+\include{chapters/02_related_work}
+\include{chapters/03_background}
+\include{chapters/04_methodology}
+\include{chapters/05_implementation}
+\include{chapters/06_evaluation}
+\include{chapters/07_conclusion}
+
+%% ---- Back Matter ----
+\backmatter
+\printbibliography[heading=bibintoc]
+\appendix
+\include{appendix/appendix_a}
+
+\end{document}

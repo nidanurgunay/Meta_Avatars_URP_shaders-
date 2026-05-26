@@ -7,7 +7,7 @@ using UnityEditor;
 #endif
 
 /// Attach to any GameObject (e.g. Main Camera).
-/// Scans the scene for root GameObjects whose names start with "Avaturn"
+/// Scans the direct children of the "Avatars" GameObject for names starting with "Avaturn"
 /// and spawns a floating world-space label above each one.
 /// Visible in both Scene view and Play mode.
 ///
@@ -82,10 +82,13 @@ public class AvaturnLabelManager : MonoBehaviour
     {
         var scene = SceneManager.GetActiveScene();
         if (!scene.isLoaded) yield break;
-        var roots = scene.GetRootGameObjects();
-        foreach (var go in roots)
-            if (go.name.StartsWith("Avaturn", System.StringComparison.OrdinalIgnoreCase))
-                yield return go.transform;
+
+        var avatarsGO = GameObject.Find("Avatars");
+        if (avatarsGO == null) yield break;
+
+        foreach (Transform child in avatarsGO.transform)
+            if (child.name.StartsWith("Avaturn", System.StringComparison.OrdinalIgnoreCase))
+                yield return child;
     }
 
     private Transform CreateLabel(Transform avatar, Camera cam)

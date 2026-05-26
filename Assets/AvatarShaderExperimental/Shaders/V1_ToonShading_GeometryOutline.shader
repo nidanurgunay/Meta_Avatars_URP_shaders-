@@ -15,7 +15,6 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
 
         // Toon shading
         _ToonSteps ("Shading Steps", Range(1, 10)) = 3
-        _ToonThreshold ("Threshold", Range(0, 1)) = 0.5
         _ToonSmoothness ("Smoothness", Range(0.001, 0.1)) = 0.01
         _ShadowStrength ("Shadow Strength", Range(0, 1)) = 0.7
 
@@ -151,7 +150,6 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
             float4 _OuterOutlineColor;
             float _TextureIntensity;
             float _ToonSteps;
-            float _ToonThreshold;
             float _ToonSmoothness;
             float _ShadowStrength;
             float4 _RimColor;
@@ -187,7 +185,6 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
                 {
                     _TextureIntensity = 1.0;
                     _ToonSteps = 5.0;
-                    _ToonThreshold = 1.0;
                     _ToonSmoothness = 0.03;
                     _ShadowStrength = 0.6;
                     _RimPower = 5.0;
@@ -212,10 +209,13 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
                 GetDirectionalLight(lightDir, lightColor);
                 float NdotL = saturate(dot(nWS, lightDir));
 
-                float smooth = smoothstep(_ToonThreshold - _ToonSmoothness, _ToonThreshold + _ToonSmoothness, NdotL);
-                float steps = max(1.0, _ToonSteps);
-                float toon = floor(smooth * steps) / steps;
-                toon = lerp(1.0, toon, _ShadowStrength);
+                float steps   = max(1.0, _ToonSteps);
+                float scaled  = NdotL * steps;
+                float band    = floor(scaled);
+                float frac    = scaled - band;
+                float blend   = smoothstep(1.0 - _ToonSmoothness, 1.0, frac);
+                float toon    = saturate((band + blend) / steps);
+                toon = lerp(1.0 - _ShadowStrength, 1.0, toon);
                 
                 float3 lighting = lightColor * toon + _AmbientColor.rgb;
 

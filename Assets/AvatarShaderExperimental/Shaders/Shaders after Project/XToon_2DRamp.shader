@@ -18,7 +18,7 @@
 //        The ramp's U axis = light intensity, V axis = detail level.
 // =============================================================================
 
-Shader "NPR/XToon_2DRamp"
+Shader "NPR/XToon_2DRamp_Jade"
 {
     Properties
     {
@@ -42,7 +42,7 @@ Shader "NPR/XToon_2DRamp"
         [Header(Normal Abstraction)]
         _NormalSmoothing ("Normal Smoothing (Shape Abstraction)", Range(0, 1)) = 0.0
         _AbstractNormalMap ("Abstract Normal Map (optional)", 2D) = "bump" {}
-        _UseAbstractNormals ("Use Abstract Normal Map", Float) = 0
+        _UseAbstractNormals ("Use Normal Map (abstraction)", Float) = 1
 
         [Header(Shadow)]
         _ShadowColor ("Shadow Color", Color) = (0.25, 0.25, 0.35, 1)
@@ -58,10 +58,18 @@ Shader "NPR/XToon_2DRamp"
         _SpecularStrength ("Specular Strength", Range(0.0, 1.0)) = 0.5
 
         [Header(Rim Light)]
+        [Toggle] _EnableRimLight ("Enable Rim Light", Float) = 0
         _RimColor ("Rim Color", Color) = (1, 1, 1, 1)
         _RimPower ("Rim Power", Range(0.5, 10.0)) = 3.0
         _RimThreshold ("Rim Threshold", Range(0, 1)) = 0.1
         _RimStrength ("Rim Strength", Range(0.0, 1.0)) = 0.3
+
+        [Header(Inner Sobel Edges)]
+        [Toggle] _EnableSobel("Enable Sobel Edges", Float) = 0
+        _SobelEdgeColor  ("Edge Color",      Color)          = (0,0,0,1)
+        _SobelThreshold  ("Threshold",       Range(0.001,1)) = 0.15
+        _SobelSampleDist ("Sample Distance", Range(0.1,10))  = 1.0
+        _SobelStrength   ("Strength",        Range(0,1))     = 1.0
 
         [Header(Outline)]
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
@@ -103,6 +111,7 @@ Shader "NPR/XToon_2DRamp"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma target 3.5
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile_fragment _ _SHADOWS_SOFT
@@ -136,10 +145,16 @@ Shader "NPR/XToon_2DRamp"
                 float _ShadowStrength;
                 float _LightingStrength;
                 float _SpecularStrength;
-                float _RimStrength;
+                float _EnableRimLight;
                 float4 _RimColor;
                 float _RimPower;
                 float _RimThreshold;
+                float _RimStrength;
+                float _EnableSobel;
+                float4 _SobelEdgeColor;
+                float _SobelThreshold;
+                float _SobelSampleDist;
+                float _SobelStrength;
             CBUFFER_END
 
             struct Attributes
@@ -269,12 +284,15 @@ Shader "NPR/XToon_2DRamp"
                                             NdotH) * shadow;
                 finalColor = lerp(finalColor, _SpecularColor.rgb, specular * _SpecularStrength);
 
-                // --- Rim Light ---
-                float NdotV = dot(normalWS, viewDir);
-                float rim = 1.0 - saturate(NdotV);
-                rim = smoothstep(_RimThreshold - 0.01, _RimThreshold + 0.01,
-                    rim * pow(saturate(NdotL + 0.5), 0.2));
-                finalColor = lerp(finalColor, _RimColor.rgb, rim * _RimStrength);
+                // --- Rim Light (optional) ---
+                if (_EnableRimLight > 0.5)
+                {
+                    float NdotV = dot(normalWS, viewDir);
+                    float rim = 1.0 - saturate(NdotV);
+                    rim = smoothstep(_RimThreshold - 0.01, _RimThreshold + 0.01,
+                        rim * pow(saturate(NdotL + 0.5), 0.2));
+                    finalColor = lerp(finalColor, _RimColor.rgb, rim * _RimStrength);
+                }
 
                 // Blend between pure texture and fully-lit result
                 finalColor = lerp(textureColor, finalColor, _LightingStrength);
@@ -294,6 +312,26 @@ Shader "NPR/XToon_2DRamp"
                     // Shows just the ramp sample — should show colors from your ramp texture
                     return float4(rampColor, 1);
                 #endif
+
+                // ── Sobel inner edges on base texture ─────────────────────────
+                if (_EnableSobel > 0.5)
+                {
+                    float off = _SobelSampleDist * 0.001;
+                    float3 lumaCoeff = float3(0.299, 0.587, 0.114);
+                    float tl = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(-off,  off)).rgb, lumaCoeff);
+                    float t  = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(   0,  off)).rgb, lumaCoeff);
+                    float tr = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2( off,  off)).rgb, lumaCoeff);
+                    float l  = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(-off,    0)).rgb, lumaCoeff);
+                    float r  = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2( off,    0)).rgb, lumaCoeff);
+                    float bl = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(-off, -off)).rgb, lumaCoeff);
+                    float b  = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2(   0, -off)).rgb, lumaCoeff);
+                    float br = dot(SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv + float2( off, -off)).rgb, lumaCoeff);
+                    float sobelX  = (tr + 2.0*r + br) - (tl + 2.0*l + bl);
+                    float sobelY  = (tl + 2.0*t + tr) - (bl + 2.0*b + br);
+                    float edgeMag = sqrt(sobelX*sobelX + sobelY*sobelY);
+                    float edge    = step(_SobelThreshold, edgeMag) * _SobelStrength;
+                    finalColor = lerp(finalColor, _SobelEdgeColor.rgb, edge);
+                }
 
                 #if _ALPHA_BLEND
                     float outAlpha = baseMap.a * _BaseColor.a;
@@ -318,6 +356,7 @@ Shader "NPR/XToon_2DRamp"
             HLSLPROGRAM
             #pragma vertex vertOutline
             #pragma fragment fragOutline
+            #pragma target 3.5
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -370,6 +409,7 @@ Shader "NPR/XToon_2DRamp"
             HLSLPROGRAM
             #pragma vertex ShadowVert
             #pragma fragment ShadowFrag
+            #pragma target 3.5
             #pragma multi_compile_vertex _ _CASTING_PUNCTUAL_LIGHT_SHADOW
             #pragma shader_feature_local _ALPHA_BLEND
 
@@ -464,6 +504,7 @@ Shader "NPR/XToon_2DRamp"
             HLSLPROGRAM
             #pragma vertex DepthVert
             #pragma fragment DepthFrag
+            #pragma target 3.5
             #pragma shader_feature_local _ALPHA_BLEND
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -515,5 +556,5 @@ Shader "NPR/XToon_2DRamp"
         }
     }
 
-    // No CustomEditor 
+    CustomEditor "JadePresetShaderGUI"
 }

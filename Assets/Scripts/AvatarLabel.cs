@@ -39,7 +39,7 @@ public class AvatarLabel : MonoBehaviour
         canvas.worldCamera = cam;
 
         var rt = go.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(300f, 60f); // 3m × 0.6m at 0.01 scale
+        rt.sizeDelta = new Vector2(400f, 80f); // matches AvaturnLabel canvas dimensions
 
         var tmp = go.AddComponent<TextMeshProUGUI>();
         tmp.text = _labelText;

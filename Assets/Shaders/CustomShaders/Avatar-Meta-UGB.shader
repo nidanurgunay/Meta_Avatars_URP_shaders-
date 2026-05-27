@@ -140,6 +140,7 @@ Shader "Avatar/MetaNPR"
         _NormalStrength  ("Normal Strength",  Range(0, 1))   = 1.0
 
         [Header(NPR Edge  Sobel technique)]
+        [Toggle] _EnableSobel ("Enable Sobel", Float) = 1
         _SobelSampleDist ("Sample Distance", Range(0, 10))  = 0.5
         _SobelThreshold  ("Threshold",       Range(0, 1))   = 0.15
         _SobelMax        ("Sobel Max",       Range(0.1, 8)) = 2.0

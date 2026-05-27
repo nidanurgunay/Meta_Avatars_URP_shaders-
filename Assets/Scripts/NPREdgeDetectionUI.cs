@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 /// In-VR panel for live-tuning Avatar/MetaNPR edge-detection parameters.
-/// Techniques: Derivative | Sobel | Normal+Fresnel | Gauss Sobel | Hierarchical | Kuwahara
+/// Techniques: Derivative | Sobel | Normal+Fresnel | Gauss Sobel | Hierarchical | Kuwahara | X-Toon
 /// Controls: B/Y/Tab = toggle | Trigger DOWN = select row / pick technique | Trigger HOLD = drag locked slider | Grip = step cursor row
 public class NPREdgeDetectionUI : MonoBehaviour
 {
@@ -19,9 +19,9 @@ public class NPREdgeDetectionUI : MonoBehaviour
     private const float CANVAS_W = 1000f;
 
     // ── Technique ─────────────────────────────────────────────────────────────
-    private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5, KuwaharaSobel = 6, KuwGaussHier = 7, Toon = 8, ToonSobel = 9, ToonHier = 10, Halftone = 11, Hatching = 12 }
-    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel", "Kuw+Hier", "Toon", "Toon+Sobel", "Toon+Hier", "Halftone", "Hatching" };
-    private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA", "EFFECT_KUWAHARA_SOBEL", "EFFECT_KUW_GAUSS_HIER", "EFFECT_TOON", "EFFECT_TOON_SOBEL", "EFFECT_TOON_HIER", "EFFECT_HALFTONE", "EFFECT_HATCHING" };
+    private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5, KuwaharaSobel = 6, KuwGaussHier = 7, Toon = 8, ToonSobel = 9, ToonHier = 10, Halftone = 11, Hatching = 12, XToon = 13 }
+    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel", "Kuw+Hier", "Toon", "Toon+Sobel", "Toon+Hier", "Halftone", "Hatching", "X-Toon" };
+    private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA", "EFFECT_KUWAHARA_SOBEL", "EFFECT_KUW_GAUSS_HIER", "EFFECT_TOON", "EFFECT_TOON_SOBEL", "EFFECT_TOON_HIER", "EFFECT_HALFTONE", "EFFECT_HATCHING", "EFFECT_XTOON" };
     private Technique _currentTechnique = Technique.Derivative;
 
     // ── Display mode (cycles on the Mode row) ────────────────────────────────
@@ -30,7 +30,9 @@ public class NPREdgeDetectionUI : MonoBehaviour
     private int _displayMode = 0;
 
     // ── Row data ──────────────────────────────────────────────────────────────
-    private enum RowKind { Float, Color, TechSelector, TechOption, ShaderToggle, CompareDefault }
+    private enum RowKind { Float, Color, TechSelector, TechOption, ShaderToggle, CompareDefault, Action }
+    private const int ACTION_SAVE = 0;
+    private const int ACTION_LOAD = 1;
 
     private struct Row
     {
@@ -399,6 +401,11 @@ public class NPREdgeDetectionUI : MonoBehaviour
                     CycleDisplayMode(_hoveredRow);
                     break;
 
+                case RowKind.Action:
+                    if (row.colorIndex == ACTION_SAVE) SavePreset(_hoveredRow);
+                    else                               LoadPreset(_hoveredRow);
+                    break;
+
                 case RowKind.TechSelector:
                     ToggleTechDropdown();
                     break;
@@ -614,6 +621,8 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
         // ── A/B compare: toggle all NPR effects off to see base avatar ────────
         AddCompareDefaultRow(t);
+        AddActionRow(t, "Save Preset", ACTION_SAVE);
+        AddActionRow(t, "Load Preset", ACTION_LOAD);
         Space(t, 4);
 
         // ── Technique selector (cycles on trigger/grip) ──────────────────────
@@ -633,11 +642,12 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
         // ── Sobel parameters (technique 1) ───────────────────────────────────
         SectionLabel(t, "Sobel Edge", 1);
-        AddFloatRow(t, 1, "Sample Dist",   "_SobelSampleDist", 0f,   10f,  0.1f,  0.5f);
-        AddFloatRow(t, 1, "Threshold",     "_SobelThreshold",  0f,   1f,   0.01f, 0.15f);
-        AddFloatRow(t, 1, "Sobel Max",     "_SobelMax",        0.1f, 8f,   0.1f,  2.0f);
-        AddFloatRow(t, 1, "Seam Limit",    "_SobelSeamLimit",  0f,   1f,   0.01f, 0.60f);
-        AddFloatRow(t, 1, "Strength",      "_SobelStrength",   0f,   1f,   0.01f, 1.00f);
+        AddShaderToggleRow(t, 1, "Sobel On",     "_EnableSobel",    true);
+        AddFloatRow(t, 1, "Sample Dist",   "_SobelSampleDist", 0f,   10f,  0.1f,  0.5f,  "_EnableSobel");
+        AddFloatRow(t, 1, "Threshold",     "_SobelThreshold",  0f,   1f,   0.01f, 0.15f, "_EnableSobel");
+        AddFloatRow(t, 1, "Sobel Max",     "_SobelMax",        0.1f, 8f,   0.1f,  2.0f,  "_EnableSobel");
+        AddFloatRow(t, 1, "Seam Limit",    "_SobelSeamLimit",  0f,   1f,   0.01f, 0.60f, "_EnableSobel");
+        AddFloatRow(t, 1, "Strength",      "_SobelStrength",   0f,   1f,   0.01f, 1.00f, "_EnableSobel");
 
         // ── Normal+Fresnel parameters (technique 2) ──────────────────────────
         SectionLabel(t, "Normal+Fresnel Edge", 2);
@@ -805,6 +815,25 @@ public class NPREdgeDetectionUI : MonoBehaviour
         AddFloatRow(t, 12, "Tex Influence","_HatTextureInfluence", 0f,    1f,    0.05f,  0.5f);
         AddFloatRow(t, 12, "Strength",     "_HatStrength",         0f,    1f,    0.01f,  1.0f);
 
+        // ── X-Toon 2D Ramp parameters (technique 13) ─────────────────────────────
+        // Mirrors NPREffect_XToon.cginc / Avatar-Meta-UGB.shader _XToon* properties.
+        // The _XToonRamp texture is set on the material in the Inspector.
+        SectionLabel(t, "X-Toon 2D Ramp", 13);
+        AddFloatRow(t, 13, "Light Sens",   "_XToonLightSensitivity",   0f,     1f,    0.01f,  1.0f);
+        AddFloatRow(t, 13, "Ramp Smooth",  "_XToonRampSmoothing",      0f,     0.1f,  0.005f, 0.01f);
+        AddColorRow( t, 13, "Shadow Col",  "_XToonShadowColor",        1);
+        AddFloatRow(t, 13, "Shadow Str",   "_XToonShadowStrength",     0f,     1f,    0.01f,  0.6f);
+        AddFloatRow(t, 13, "Detail Mode",  "_XToonDetailMode",         0f,     2f,    1f,     0f);
+        AddFloatRow(t, 13, "Detail Bias",  "_XToonDetailBias",         0f,     1f,    0.01f,  0f);
+        AddFloatRow(t, 13, "Depth Near",   "_XToonDepthNear",          0.1f,   10f,   0.1f,   1.0f);
+        AddFloatRow(t, 13, "Depth Far",    "_XToonDepthFar",           1f,     20f,   0.5f,   5.0f);
+        AddFloatRow(t, 13, "Manual Det",   "_XToonManualDetail",       0f,     1f,    0.01f,  0f);
+        AddColorRow( t, 13, "Specular Col","_XToonSpecularColor",      5);
+        AddFloatRow(t, 13, "Spec Size",    "_XToonSpecularSize",       0f,     1f,    0.005f, 0.03f);
+        AddFloatRow(t, 13, "Spec Smooth",  "_XToonSpecularSmoothness", 0.001f, 0.5f,  0.01f,  0.02f);
+        AddFloatRow(t, 13, "Spec Str",     "_XToonSpecularStrength",   0f,     1f,    0.01f,  0.5f);
+        AddFloatRow(t, 13, "Lighting Str", "_XToonLightingStrength",   0f,     1f,    0.01f,  1.0f);
+
         // ── Inverted Hull Outline (always visible) ────────────────────────────
         Space(t, 4);
         SectionLabel(t, "Inverted Hull Outline");
@@ -833,6 +862,84 @@ public class NPREdgeDetectionUI : MonoBehaviour
             valueText = valTxt, highlight = hl, cursorText = curTxt,
             collider = col, rowGo = rowGo,
         });
+    }
+
+    void AddActionRow(Transform parent, string label, int actionId)
+    {
+        var (rowGo, hl, valTxt, curTxt, col, _) = MakeRowShell(parent, label, hasSlider: false);
+        valTxt.text  = "[ click ]";
+        valTxt.color = new Color(0.4f, 0.9f, 1f);
+        _rows.Add(new Row
+        {
+            kind = RowKind.Action, label = label, colorIndex = actionId,
+            techniqueFilter = -1,
+            valueText = valTxt, highlight = hl, cursorText = curTxt,
+            collider = col, rowGo = rowGo,
+        });
+    }
+
+    void SavePreset(int rowIndex)
+    {
+        foreach (var row in _rows)
+        {
+            if (row.kind == RowKind.Float || row.kind == RowKind.ShaderToggle)
+                PlayerPrefs.SetFloat("NPR_" + row.propName, row.currentValue);
+            else if (row.kind == RowKind.Color)
+                PlayerPrefs.SetInt("NPR_ci_" + row.propName, row.colorIndex);
+        }
+        PlayerPrefs.Save();
+        var r = _rows[rowIndex];
+        r.valueText.text  = "✓ Saved";
+        r.valueText.color = new Color(0.3f, 0.9f, 0.3f);
+        _rows[rowIndex] = r;
+        Debug.Log("[NPREdgeDetectionUI] Preset saved to PlayerPrefs.");
+    }
+
+    void LoadPreset(int rowIndex)
+    {
+        for (int i = 0; i < _rows.Count; i++)
+        {
+            var row = _rows[i];
+            if (row.kind == RowKind.Float || row.kind == RowKind.ShaderToggle)
+            {
+                string key = "NPR_" + row.propName;
+                if (!PlayerPrefs.HasKey(key)) continue;
+                float val = PlayerPrefs.GetFloat(key);
+                row.currentValue = val;
+                if (row.kind == RowKind.Float)
+                {
+                    row.valueText.text = val.ToString("F3");
+                    if (row.sliderFill != null)
+                        row.sliderFill.rectTransform.anchorMax =
+                            new Vector2(Mathf.InverseLerp(row.min, row.max, val), 1f);
+                }
+                else
+                {
+                    bool on = val > 0.5f;
+                    row.valueText.text  = on ? "ON" : "OFF";
+                    row.valueText.color = on ? new Color(0.4f, 0.9f, 1f) : new Color(0.5f, 0.5f, 0.5f);
+                }
+                _rows[i] = row;
+                SetShaderFloat(row.propName, val);
+            }
+            else if (row.kind == RowKind.Color)
+            {
+                string key = "NPR_ci_" + row.propName;
+                if (!PlayerPrefs.HasKey(key)) continue;
+                int idx = Mathf.Clamp(PlayerPrefs.GetInt(key), 0, ColorPresets.Length - 1);
+                row.colorIndex = idx;
+                var (cname, c) = ColorPresets[idx];
+                row.valueText.text  = cname;
+                row.valueText.color = (c.r + c.g + c.b < 0.3f) ? new Color(0.7f, 0.7f, 0.7f) : c;
+                _rows[i] = row;
+                SetShaderColor(row.propName, c);
+            }
+        }
+        var r = _rows[rowIndex];
+        r.valueText.text  = "✓ Loaded";
+        r.valueText.color = new Color(0.3f, 0.9f, 0.3f);
+        _rows[rowIndex] = r;
+        Debug.Log("[NPREdgeDetectionUI] Preset loaded from PlayerPrefs.");
     }
 
     void CycleDisplayMode(int rowIndex)

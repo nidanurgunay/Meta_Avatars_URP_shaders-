@@ -9,10 +9,13 @@
 //   V axis — abstraction level  (depth proxy, surface curvature, or manual)
 //
 // Constraint: AppSpecificPostManipulation receives the fully-composited PBR
-// colour; raw NdotL is not accessible. Luminance of that colour is used as
-// the U-axis lighting proxy (it already encodes shadows, SSS, rim light, etc.).
-// The V-axis depth proxy reuses length(worldViewDir), the same scalar used by
-// the Hierarchical technique — no extra inputs required.
+// colour; raw NdotL is not accessible at this hook point. Luminance of that
+// colour is used as the U-axis lighting proxy (it already encodes shadows,
+// SSS, rim light, etc.).
+//
+// Specular: _MainLightPosition.xyz is a URP global uniform set every frame;
+// it is accessible here even though per-vertex NdotL is not. This gives us a
+// proper light direction for Blinn-Phong (NdotH), matching Jade and Avaturn.
 
 TEXTURE2D(_XToonRamp);
 SAMPLER(sampler_XToonRamp);
@@ -86,16 +89,15 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
     float3 shadowedColor = lerp(toonColor * _XToonShadowColor.rgb, toonColor, shadowMask);
     float3 finalColor    = lerp(color.rgb, shadowedColor, _XToonShadowStrength);
 
-    // --- Stylised specular (Blinn-Phong dot, applied on top of ramp) ---
-    // Reconstruct a plausible half-direction from the main light direction proxy.
-    // Because AppSpecificPostManipulation has no light direction, we use the
-    // view direction reflected around the normal as a self-consistent specular.
-    // This produces a view-dependent highlight consistent with the toon aesthetic.
-    float3 reflDir  = reflect(-viewDir, normalWS);
-    float RdotV     = saturate(dot(reflDir, viewDir));
+    // --- Stylised specular (Blinn-Phong, same formula as Jade and Avaturn) ---
+    // _MainLightPosition.xyz is the URP directional light direction (world-space,
+    // normalised). This uniform is set per-frame by URP and is accessible here.
+    float3 lightDir = normalize(_MainLightPosition.xyz);
+    float3 halfDir  = normalize(lightDir + viewDir);
+    float NdotH     = dot(normalWS, halfDir);
     float specular  = smoothstep(1.0 - _XToonSpecularSize - _XToonSpecularSmoothness,
                                  1.0 - _XToonSpecularSize + _XToonSpecularSmoothness,
-                                 RdotV);
+                                 NdotH);
     finalColor = lerp(finalColor, _XToonSpecularColor.rgb, specular * _XToonSpecularStrength);
 
     // --- Blend between original PBR and fully stylised result ---

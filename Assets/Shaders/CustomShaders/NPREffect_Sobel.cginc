@@ -4,6 +4,7 @@
 // Sobel edge detection applied as a post-process on the Meta Avatar shader.
 // Requires ENABLE_NPR_EDGES + EFFECT_SOBEL keywords.
 
+float  _EnableSobel;      // runtime toggle (1 = on, 0 = off)
 float4 _InnerLineColor;
 float  _SobelSampleDist;  // UV-space sample offset (0–10, multiplied by 0.001)
 float  _SobelThreshold;   // minimum edge magnitude to draw a line
@@ -13,6 +14,8 @@ float  _SobelStrength;    // overall edge opacity
 
 float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldViewDir)
 {
+    if (_EnableSobel < 0.5) return color;
+
     float  offset = _SobelSampleDist * 0.001;
     float3 L      = float3(0.299, 0.587, 0.114);
 

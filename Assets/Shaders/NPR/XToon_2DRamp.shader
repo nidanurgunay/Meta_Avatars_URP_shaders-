@@ -42,7 +42,7 @@ Shader "NPR/XToon_2DRamp"
         [Header(Normal Abstraction)]
         _NormalSmoothing ("Normal Smoothing (Shape Abstraction)", Range(0, 1)) = 0.0
         _AbstractNormalMap ("Abstract Normal Map (optional)", 2D) = "bump" {}
-        _UseAbstractNormals ("Use Abstract Normal Map", Float) = 0
+        _UseAbstractNormals ("Use Normal Map (abstraction)", Float) = 1
 
         [Header(Shadow)]
         _ShadowColor ("Shadow Color", Color) = (0.25, 0.25, 0.35, 1)
@@ -57,6 +57,20 @@ Shader "NPR/XToon_2DRamp"
         _SpecularSmoothness ("Specular Smoothness", Range(0.001, 0.5)) = 0.02
         _SpecularStrength ("Specular Strength", Range(0.0, 1.0)) = 0.5
 
+        [Header(Rim Light)]
+        [Toggle] _EnableRimLight ("Enable Rim Light", Float) = 0
+        _RimColor ("Rim Color", Color) = (1, 1, 1, 1)
+        _RimPower ("Rim Power", Range(0.5, 10.0)) = 3.0
+        _RimThreshold ("Rim Threshold", Range(0, 1)) = 0.1
+        _RimStrength ("Rim Strength", Range(0.0, 1.0)) = 0.3
+
+        [Header(Inner Sobel Edges)]
+        [Toggle] _EnableSobel("Enable Sobel Edges", Float) = 0
+        _SobelEdgeColor  ("Edge Color",      Color)          = (0,0,0,1)
+        _SobelThreshold  ("Threshold",       Range(0.001,1)) = 0.15
+        _SobelSampleDist ("Sample Distance", Range(0.1,10))  = 1.0
+        _SobelStrength   ("Strength",        Range(0,1))     = 1.0
+
         [Header(Outline)]
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
         _OutlineWidth ("Outline Width", Range(0, 0.05)) = 0.003
@@ -67,13 +81,6 @@ Shader "NPR/XToon_2DRamp"
         [HideInInspector] _SrcBlend ("__src", Float) = 1.0
         [HideInInspector] _DstBlend ("__dst", Float) = 0.0
         [HideInInspector] _ZWrite  ("__zw",  Float) = 1.0
-
-        [Header(Inner Sobel Edges)]
-        [Toggle] _EnableSobel("Enable Sobel Edges", Float) = 0
-        _SobelEdgeColor  ("Edge Color",      Color)          = (0,0,0,1)
-        _SobelThreshold  ("Threshold",       Range(0.001,1)) = 0.15
-        _SobelSampleDist ("Sample Distance", Range(0.1,10))  = 1.0
-        _SobelStrength   ("Strength",        Range(0,1))     = 1.0
 
         [Header(Debug)]
         [KeywordEnum(Off, NdotL, RampUV, Albedo, RampSample)]
@@ -115,10 +122,9 @@ Shader "NPR/XToon_2DRamp"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
-            #include "OvrVertexFetchBridge.hlsl"
 
-            TEXTURE2D(_BaseMap);       SAMPLER(sampler_BaseMap);
-            TEXTURE2D(_ToonRamp);      SAMPLER(sampler_ToonRamp);
+            TEXTURE2D(_BaseMap);           SAMPLER(sampler_BaseMap);
+            TEXTURE2D(_ToonRamp);          SAMPLER(sampler_ToonRamp);
             TEXTURE2D(_AbstractNormalMap); SAMPLER(sampler_AbstractNormalMap);
 
             CBUFFER_START(UnityPerMaterial)
@@ -139,6 +145,11 @@ Shader "NPR/XToon_2DRamp"
                 float _ShadowStrength;
                 float _LightingStrength;
                 float _SpecularStrength;
+                float _EnableRimLight;
+                float4 _RimColor;
+                float _RimPower;
+                float _RimThreshold;
+                float _RimStrength;
                 float _EnableSobel;
                 float4 _SobelEdgeColor;
                 float _SobelThreshold;
@@ -152,7 +163,6 @@ Shader "NPR/XToon_2DRamp"
                 float3 normalOS : NORMAL;
                 float4 tangentOS : TANGENT;
                 float2 uv : TEXCOORD0;
-                uint vertexID : SV_VertexID;
             };
 
             struct Varyings
@@ -171,7 +181,6 @@ Shader "NPR/XToon_2DRamp"
             {
                 Varyings output;
 
-                OVR_FETCH_POS_NORM(input.positionOS.xyz, input.normalOS, input.vertexID);
                 VertexPositionInputs vertexInput = GetVertexPositionInputs(input.positionOS.xyz);
                 VertexNormalInputs normalInput = GetVertexNormalInputs(input.normalOS, input.tangentOS);
 
@@ -275,22 +284,28 @@ Shader "NPR/XToon_2DRamp"
                                             NdotH) * shadow;
                 finalColor = lerp(finalColor, _SpecularColor.rgb, specular * _SpecularStrength);
 
+                // --- Rim Light (optional) ---
+                if (_EnableRimLight > 0.5)
+                {
+                    float NdotV = dot(normalWS, viewDir);
+                    float rim = 1.0 - saturate(NdotV);
+                    rim = smoothstep(_RimThreshold - 0.01, _RimThreshold + 0.01,
+                        rim * pow(saturate(NdotL + 0.5), 0.2));
+                    finalColor = lerp(finalColor, _RimColor.rgb, rim * _RimStrength);
+                }
+
                 // Blend between pure texture and fully-lit result
                 finalColor = lerp(textureColor, finalColor, _LightingStrength);
 
                 // --- Debug Output ---
                 #if defined(_DEBUGMODE_NDOTL)
-                    // Shows NdotL as grayscale — should NOT be all white
                     float debugNdotL = saturate(NdotL * 0.5 + 0.5);
                     return float4(debugNdotL, debugNdotL, debugNdotL, 1);
                 #elif defined(_DEBUGMODE_RAMPUV)
-                    // Shows rampU (red) and rampV (green) — lets you see what UV is being sampled
                     return float4(rampU, rampV, 0, 1);
                 #elif defined(_DEBUGMODE_ALBEDO)
-                    // Shows just the base texture color — should show your diffuse
                     return float4(albedo, 1);
                 #elif defined(_DEBUGMODE_RAMPSAMPLE)
-                    // Shows just the ramp sample — should show colors from your ramp texture
                     return float4(rampColor, 1);
                 #endif
 
@@ -340,7 +355,6 @@ Shader "NPR/XToon_2DRamp"
             #pragma target 3.5
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "OvrVertexFetchBridge.hlsl"
 
             CBUFFER_START(UnityPerMaterial)
                 float4 _OutlineColor;
@@ -351,7 +365,6 @@ Shader "NPR/XToon_2DRamp"
             {
                 float4 positionOS : POSITION;
                 float3 normalOS : NORMAL;
-                uint vertexID : SV_VertexID;
             };
 
             struct Varyings
@@ -362,7 +375,6 @@ Shader "NPR/XToon_2DRamp"
             Varyings vertOutline(Attributes input)
             {
                 Varyings output;
-                OVR_FETCH_POS_NORM(input.positionOS.xyz, input.normalOS, input.vertexID);
                 float3 posWS = TransformObjectToWorld(input.positionOS.xyz);
                 float3 normalWS = TransformObjectToWorldNormal(input.normalOS);
                 posWS += normalWS * _OutlineWidth;
@@ -400,7 +412,6 @@ Shader "NPR/XToon_2DRamp"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
-            #include "OvrVertexFetchBridge.hlsl"
 
             float3 _LightDirection;
             float3 _LightPosition;
@@ -421,7 +432,6 @@ Shader "NPR/XToon_2DRamp"
                 #if _ALPHA_BLEND
                 float2 uv : TEXCOORD0;
                 #endif
-                uint vertexID : SV_VertexID;
             };
 
             struct Varyings
@@ -457,7 +467,6 @@ Shader "NPR/XToon_2DRamp"
             Varyings ShadowVert(Attributes input)
             {
                 Varyings output;
-                OVR_FETCH_POS_NORM(input.positionOS.xyz, input.normalOS, input.vertexID);
                 output.positionCS = GetShadowPositionHClip(input);
                 #if _ALPHA_BLEND
                 output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
@@ -495,7 +504,6 @@ Shader "NPR/XToon_2DRamp"
             #pragma shader_feature_local _ALPHA_BLEND
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "OvrVertexFetchBridge.hlsl"
 
             #if _ALPHA_BLEND
             TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
@@ -512,7 +520,6 @@ Shader "NPR/XToon_2DRamp"
                 #if _ALPHA_BLEND
                 float2 uv : TEXCOORD0;
                 #endif
-                uint vertexID : SV_VertexID;
             };
 
             struct Varyings
@@ -526,7 +533,6 @@ Shader "NPR/XToon_2DRamp"
             Varyings DepthVert(Attributes input)
             {
                 Varyings output;
-                OVR_FETCH_POS(input.positionOS.xyz, input.vertexID);
                 output.positionCS = TransformObjectToHClip(input.positionOS.xyz);
                 #if _ALPHA_BLEND
                 output.uv = TRANSFORM_TEX(input.uv, _BaseMap);
@@ -546,6 +552,5 @@ Shader "NPR/XToon_2DRamp"
         }
     }
 
-    // No CustomEditor 
     CustomEditor "AvaturnPresetShaderGUI"
 }

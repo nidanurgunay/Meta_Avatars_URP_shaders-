@@ -7,17 +7,27 @@ using UnityEditor;
 #endif
 
 /// Attach to any GameObject (e.g. Main Camera).
-/// Scans the direct children of the "Avatars" GameObject for names starting with "Avaturn"
-/// and spawns a floating world-space label above each one.
+/// Scans the direct children of <see cref="_containerName"/> for names starting with
+/// <see cref="_avatarPrefix"/> and spawns a floating world-space label above each one.
 /// Visible in both Scene view and Play mode.
+///
+/// Default values work for the Avaturn scene ("Avatars" / "Avaturn").
+/// For the Jade scene set _containerName = "NPR Jade" and _avatarPrefix = "Jade".
 ///
 /// Parsing rules (same as AvaturnLabel):
 ///   "Avaturn (NPR V8 Custom)" -> "V8 Custom"
 ///   "Avaturn (NPR  VXT)"      -> "VXT"
-///   "Avaturn"                 -> "Default"
+///   "Avaturn"                 -> full name fallback
+///   "Jade (Original)"         -> full name fallback
 [ExecuteAlways]
 public class AvaturnLabelManager : MonoBehaviour
 {
+    [Tooltip("Name of the scene GameObject whose direct children are the avatar roots.")]
+    [SerializeField] private string _containerName = "Avatars";
+
+    [Tooltip("Only children whose names START with this prefix receive a label. Leave empty to label all children.")]
+    [SerializeField] private string _avatarPrefix  = "Avaturn";
+
     [SerializeField] private float _heightOffset = 2.2f;
     [SerializeField] private float _fontSize     = 28f;
     [SerializeField] private Color _textColor    = Color.white;
@@ -78,22 +88,28 @@ public class AvaturnLabelManager : MonoBehaviour
         _pairs.Clear();
     }
 
-    private static IEnumerable<Transform> AvaturnRoots()
+    private IEnumerable<Transform> AvaturnRoots()
     {
         var scene = SceneManager.GetActiveScene();
         if (!scene.isLoaded) yield break;
 
-        var avatarsGO = GameObject.Find("Avatars");
+        var avatarsGO = GameObject.Find(_containerName);
         if (avatarsGO == null) yield break;
 
+        bool filterByPrefix = !string.IsNullOrEmpty(_avatarPrefix);
         foreach (Transform child in avatarsGO.transform)
-            if (child.name.StartsWith("Avaturn", System.StringComparison.OrdinalIgnoreCase))
+        {
+            if (!filterByPrefix || child.name.StartsWith(_avatarPrefix, System.StringComparison.OrdinalIgnoreCase))
                 yield return child;
+        }
     }
 
     private Transform CreateLabel(Transform avatar, Camera cam)
     {
-        string text = AvaturnLabel.ParseLabel(avatar.name);
+        string parsed = AvaturnLabel.ParseLabel(avatar.name);
+        // "Default" means no NPR marker found — fall back to the full GameObject name so
+        // Jade avatars ("Jade (Original)", "Jade (SG2)", …) still get meaningful labels.
+        string text = parsed == "Default" ? avatar.name : parsed;
 
         var go = new GameObject("AvaturnLabel_" + text);
         go.hideFlags = HideFlags.DontSave; // don't serialize into the scene file

@@ -124,6 +124,8 @@ Gy = (tl + 2t + tr) − (bl + 2b + br)
 edgeMag = √(Gx² + Gy²)
 ```
 
+**Runtime toggle:** `_EnableSobel` (Float, default 1). Set to 0 to bypass all Sobel work without changing the shader keyword. The VR panel exposes this as a **Sobel On** toggle row; all dependent parameter rows are hidden when the toggle is OFF.
+
 **Single threshold:** A single `_SobelThreshold` controls the minimum edge magnitude. Edges below the threshold are ignored; edges above (up to `_SobelMax`) are drawn. Raising the threshold suppresses weak/noisy edges; lowering it reveals fine detail.
 
 **Seam suppression:** If luminance range across all 8 neighbours exceeds `SeamLimit`, the pixel is on a UV seam and the edge is suppressed.
@@ -625,7 +627,7 @@ float3 shadowed    = lerp(toonAlbedo * ShadowColor, toonAlbedo, shadowMask);
 ```
 As `rampV` rises (more abstraction), both the U range and the ramp smoothing widen — lighting bands dissolve into a single mid-tone, which is the defining visual of XToon abstraction.
 
-**Normal Field Abstraction:** An optional `_AbstractNormalMap` can be assigned; the normals are blended between the original vertex normal and the smoothed abstract normal via `_NormalSmoothing`. When no abstract map is assigned, a positional smoothing approximation is applied:
+**Normal Field Abstraction:** `_UseAbstractNormals` (Float, default **1** — on by default). When enabled, a `_AbstractNormalMap` is sampled, transformed from tangent space via TBN, and lerped with the vertex normal using `_NormalSmoothing`. When the slot is empty the "bump" default texture produces (0,0,1) tangent-normal which is identity — effectively the same as the vertex normal, so enabling the toggle with no texture assigned has no visible cost. When the toggle is OFF, a positional smoothing approximation is applied instead:
 ```hlsl
 float3 smoothN = normalize(normalWS + NormalSmoothing * (normalize(posWS) - normalWS));
 ```
@@ -647,12 +649,13 @@ float3 smoothN = normalize(normalWS + NormalSmoothing * (normalize(posWS) - norm
 **Pipeline target:** URP, `#pragma target 3.5`
 **Materials:** `Assets/Materials/NPR Avaturn Materials/VXT XToon/` (5 materials: body, head, hair, eyelash, look)
 
-This is the production-quality version of the shader. It is functionally identical to the Mixamo version in all NPR logic but adds:
+This is the production-quality version of the shader. It is functionally identical to the Mixamo/Jade version in all NPR logic. The Avaturn avatar is a `.glb` loaded via GLTFast and uses a standard `SkinnedMeshRenderer` — the same skinning path as the Jade FBX. There is no Meta SDK compute-skinning external vertex buffer, so `OVR_FETCH_POS_NORM` was never needed. The shader is now identical to Jade in vertex fetch, property order, and CBUFFER layout.
 
-1. **`OVR_FETCH_POS_NORM`** in both the outline vertex shader and the main vertex shader — ensures compute-skinned positions and normals are used if the Meta SDK external vertex buffer is active.
-2. **Shadow Caster pass (Pass 2):** A self-contained `ShadowCaster` pass with `ApplyShadowBias` — the Mixamo version relies on the FallBack. This avoids the shadow bias artefacts visible on the GLB model when using the generic fallback shadow pass.
-3. **Depth Only pass (Pass 3):** A self-contained `DepthOnly` pass with `ColorMask R`, feeding the URP depth prepass that post-process effects (edge detection, Kuwahara) depend on.
-4. **Alpha blend support (`_ALPHA_BLEND` keyword):** `_SrcBlend`/`_DstBlend`/`_ZWrite` are exposed as hidden material properties and toggled via the `[AlphaBlendToggle]` drawer — used for the eyelash material without needing a separate shader.
+Avaturn's extra passes over Jade:
+
+1. **Shadow Caster pass (Pass 2):** A self-contained `ShadowCaster` pass with `ApplyShadowBias` — the Jade/Mixamo version relies on the FallBack. Avoids shadow bias artefacts on the GLB model.
+2. **Depth Only pass (Pass 3):** A self-contained `DepthOnly` pass with `ColorMask R`, feeding the URP depth prepass that post-process effects depend on.
+3. **Alpha blend support (`_ALPHA_BLEND` keyword):** `_SrcBlend`/`_DstBlend`/`_ZWrite` exposed as hidden properties — used for the eyelash material without needing a separate shader.
 
 **Material notes:**
 - `VXT_eyelash.mat` — `_SrcBlend=5` (SrcAlpha), `_DstBlend=10` (OneMinusSrcAlpha), `_ZWrite=0`, Sobel off, no outline
@@ -691,7 +694,7 @@ float3 shadowedColor = lerp(toonColor * _XToonShadowColor.rgb, toonColor, shadow
 float3 finalColor    = lerp(color.rgb, shadowedColor, _XToonShadowStrength);
 ```
 
-**Specular adaptation:** Because the light direction is not available, the specular is computed as `reflect(-viewDir, normalWS)` — a view-dependent rim-style highlight that is consistent with the toon aesthetic and adds the characteristic cartoon specular dot without requiring light direction access.
+**Specular:** Uses Blinn-Phong (`NdotH`) identical to Jade and Avaturn. `_MainLightPosition.xyz` is a URP per-frame global uniform that is accessible inside `AppSpecificPostManipulation` even though per-vertex NdotL is not — this gives proper light-direction-dependent specular rather than the view-dependent Fresnel approximation that was used previously.
 
 **`_XToonLightingStrength`** blends between the original PBR colour and the fully stylised XToon result, allowing a partial blend for comparison purposes.
 
@@ -705,12 +708,13 @@ float3 finalColor    = lerp(color.rgb, shadowedColor, _XToonShadowStrength);
 |----------|-----------|-----------|---------|
 | U axis source | Raw NdotL × shadow | Raw NdotL × shadow | PBR luminance (post-SSS, post-rim) |
 | U axis access | Direct (vertex → fragment NdotL) | Direct (vertex → fragment NdotL) | Indirect (luminance of composited color) |
-| Light direction in specular | Yes (Blinn-Phong NdotH) | Yes (Blinn-Phong NdotH) | No (reflected view dir, view-dependent) |
+| Light direction in specular | Yes (Blinn-Phong NdotH) | Yes (Blinn-Phong NdotH) | Yes (Blinn-Phong NdotH via `_MainLightPosition.xyz`) |
 | V axis (depth) | `length(camPos - posWS)` | `length(camPos - posWS)` | `length(worldViewDir)` (magnitude = depth) |
 | V axis (curvature) | `ddx/ddy(normalWS)` | `ddx/ddy(normalWS)` | `ddx/ddy(normalWS)` |
-| Normal Field Abstraction | Yes (optional abstract normal map) | Yes (optional abstract normal map) | No (normals received post-interpolation) |
-| Inline Sobel | Yes (`_EnableSobel` toggle) | Yes (`_EnableSobel` toggle) | No (separate technique keywords available) |
-| Compute-skinning bridge | No | Yes (`OVR_FETCH_POS_NORM`) | Yes (SDK native) |
+| Normal Field Abstraction | Yes (`_UseAbstractNormals`, default **1**) | Yes (`_UseAbstractNormals`, default **1**) | No (normals received post-interpolation) |
+| Rim Light | Yes (`_EnableRimLight` toggle) | Yes (`_EnableRimLight` toggle) | Via Meta PBR `ENABLE_RIM_LIGHT_ON` keyword |
+| Inline Sobel | Yes (`_EnableSobel` toggle) | Yes (`_EnableSobel` toggle) | `_EnableSobel` runtime toggle in `NPREffect_Sobel.cginc` |
+| Compute-skinning bridge | No (SkinnedMeshRenderer) | No (GLTFast SkinnedMeshRenderer, same as Jade) | Yes (SDK native) |
 | Outline | Inverted hull (world-space) | Inverted hull (world-space) | Inverted hull (NPROutline pass, `_OutlineEnabled`) |
 | Shadow Caster pass | No (fallback) | Yes (self-contained) | Yes (Meta SDK handles shadows) |
 | Alpha blend for eyelash | Via `_ALPHA_BLEND` keyword | Via `_ALPHA_BLEND` keyword | Via Meta SDK material system |
@@ -741,6 +745,7 @@ The core advancement of V2 over V1 is the separation of *lighting response* (U) 
 - **Mode cycle button** — toggles between two display states on each press:
   1. **NPR ON** — `ENABLE_NPR_EDGES` enabled, outline pass enabled, current technique active
   2. **DEFAULT** — `ENABLE_NPR_EDGES` disabled, outline disabled; Meta's full `STYLE_2_STANDARD` PBR (rim light, SSS, hair)
+- **Save / Load Preset buttons** — two clickable rows at the top of the panel (below Mode). **Save Preset** writes every float, ShaderToggle, and Color row value to `PlayerPrefs` (keys `NPR_{propName}` / `NPR_ci_{propName}`). **Load Preset** restores those values, updates slider visuals, and calls `SetShaderFloat`/`SetShaderColor` on all NPR materials. Button text changes to **✓ Saved** or **✓ Loaded** on activation so the researcher can confirm success without removing the headset.
 - **Technique visibility** — only the parameter rows for the currently selected technique are shown; all others are hidden.
 - **Toon darkening fix** — in the Toon family (Techniques 9–11), posterization must run **before** saturation. Applying saturation >1 before posterization can drive low RGB channels negative (clamped to 0 on output), causing the avatar to appear darker. The correct order is: quantize first, then scale saturation on the already-quantized colour.
 - **Halftone/Hatching tone source** — both Techniques 12 and 13 derive "tone" from `luminance(o.color)` (the already-composited PBR colour), not from a separate NdotL computation. This means the pattern responds correctly to all PBR lighting including shadows, SSS, and ambient — without any additional light passes.
@@ -1043,6 +1048,12 @@ Assets/
 │       ├── NPREffect_Hatching.cginc       — Technique 13: Hatching
 │       └── app_specific/
 │           └── app_functions.hlsl         — multi_compile keywords + include dispatch + OUTLINE_PASS hook
+├── Editor/
+│   ├── AvaturnPresetShaderGUI.cs              — ShaderGUI for Avaturn shaders: Save/Apply/Diff slot presets (Head/Body/Hair/Eyelash/Look)
+│   ├── AvaturnSlotPresets.cs                  — ScriptableObject storing per-shader per-slot float+color presets
+│   ├── AvaturnSlotPresets.asset               — Avaturn preset data (commit to source control)
+│   ├── JadePresetShaderGUI.cs                 — ShaderGUI for Jade XToon shader: same preset workflow, slots A–E
+│   └── JadePresets.asset                      — Jade preset data (auto-created on first Save)
 ├── Materials/NPR Avaturn Materials/
 │   ├── V1 ToonShading/                    — V1 original (do not modify)
 │   ├── V2 NormalEdgeDetection/            — V2 normal-edge materials

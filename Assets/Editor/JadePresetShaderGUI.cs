@@ -2,17 +2,19 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-/// ShaderGUI for the Jade (MixamoJade) NPR shaders.
-/// Provides the same Save / Apply / Diff preset workflow as AvaturnPresetShaderGUI,
-/// but with Jade-appropriate slot names (Preset A–E) and a separate asset file.
+// ShaderGUI for Jade / XToon NPR shaders.
+// Presets are saved to Assets/Editor/ShaderPresets.csv — commit it to keep your values.
+// For XToon shaders (those with _DetailMode) the panel shows Depth / Curvature / Manual
+// quick-select buttons; all other shaders get a free-text preset name.
 public class JadePresetShaderGUI : ShaderGUI
 {
-    static readonly string[] SlotNames = { "Preset A", "Preset B", "Preset C", "Preset D", "Preset E" };
-    const string PresetAssetPath = "Assets/Editor/JadePresets.asset";
+    static readonly string[] SlotNames  = { "Head", "Body", "Hair", "Eyelash", "Look", "Shoe" };
+    static readonly string[] XToonNames = { "Depth", "Curvature", "Manual" };
 
-    static readonly Dictionary<string, int>  s_SelectedSlot  = new Dictionary<string, int>();
-    static readonly Dictionary<string, bool> s_PresetFoldout = new Dictionary<string, bool>();
-    static readonly Dictionary<string, bool> s_DiffFoldout   = new Dictionary<string, bool>();
+    static readonly Dictionary<string, int>    s_SelectedSlot  = new Dictionary<string, int>();
+    static readonly Dictionary<string, bool>   s_PresetFoldout = new Dictionary<string, bool>();
+    static readonly Dictionary<string, bool>   s_DiffFoldout   = new Dictionary<string, bool>();
+    static readonly Dictionary<string, string> s_PresetName    = new Dictionary<string, string>();
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
     {
@@ -22,9 +24,11 @@ public class JadePresetShaderGUI : ShaderGUI
 
         if (!s_PresetFoldout.ContainsKey(matKey)) s_PresetFoldout[matKey] = true;
         if (!s_DiffFoldout.ContainsKey(matKey))   s_DiffFoldout[matKey]   = false;
-        if (!s_SelectedSlot.ContainsKey(matKey))  s_SelectedSlot[matKey]  = 0;
+        if (!s_SelectedSlot.ContainsKey(matKey))  s_SelectedSlot[matKey]  = DetectSlot(material.name);
+        if (!s_PresetName.ContainsKey(matKey))     s_PresetName[matKey]    = "";
 
         DrawPresetPanel(materialEditor, props, material, matKey);
+        DrawDebugDefaultsToggle(materialEditor, props);
 
         EditorGUILayout.Space(6);
         base.OnGUI(materialEditor, props);
@@ -34,78 +38,146 @@ public class JadePresetShaderGUI : ShaderGUI
                          Material material, string matKey)
     {
         s_PresetFoldout[matKey] = EditorGUILayout.BeginFoldoutHeaderGroup(
-            s_PresetFoldout[matKey], "Jade Presets");
+            s_PresetFoldout[matKey], "Jade Slot Presets");
 
         if (s_PresetFoldout[matKey])
         {
             EditorGUI.indentLevel++;
 
+            // ── Slot selector ────────────────────────────────────────────────
             EditorGUILayout.LabelField("Slot", EditorStyles.boldLabel);
             int newSlot = GUILayout.SelectionGrid(
-                s_SelectedSlot[matKey], SlotNames, 5, EditorStyles.miniButton);
+                s_SelectedSlot[matKey], SlotNames, 3, EditorStyles.miniButton);
             if (newSlot != s_SelectedSlot[matKey])
                 s_SelectedSlot[matKey] = newSlot;
 
             string slotName   = SlotNames[s_SelectedSlot[matKey]];
             string shaderName = material.shader.name;
-            var    presets    = LoadOrCreatePresetAsset();
-            var    preset     = presets?.Get(shaderName, slotName);
+            bool   isXToon    = FindProperty("_DetailMode", props, false) != null;
+
+            EditorGUILayout.Space(6);
+
+            // ── XToon quick-select ───────────────────────────────────────────
+            if (isXToon)
+            {
+                EditorGUILayout.LabelField("Quick Select (XToon)", EditorStyles.boldLabel);
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    foreach (string qn in XToonNames)
+                    {
+                        bool active = s_PresetName[matKey] == qn;
+                        if (GUILayout.Button(qn, active
+                                ? EditorStyles.miniButtonMid
+                                : EditorStyles.miniButton))
+                            s_PresetName[matKey] = qn;
+                    }
+                }
+                EditorGUILayout.Space(4);
+            }
+
+            // ── Existing presets dropdown ────────────────────────────────────
+            List<string> existing = ShaderPresetStore.GetPresetNames(shaderName, slotName);
+            if (existing.Count > 0)
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    int curIdx = existing.IndexOf(s_PresetName[matKey]);
+                    EditorGUI.BeginChangeCheck();
+                    int newIdx = EditorGUILayout.Popup(
+                        "Saved", curIdx < 0 ? 0 : curIdx, existing.ToArray());
+                    if (EditorGUI.EndChangeCheck())
+                        s_PresetName[matKey] = existing[newIdx];
+
+                    if (GUILayout.Button("↺", GUILayout.Width(26)))
+                        ShaderPresetStore.Reload();
+                }
+            }
+
+            // ── Name text field ──────────────────────────────────────────────
+            s_PresetName[matKey] = EditorGUILayout.TextField("Name", s_PresetName[matKey]);
+            string presetName = s_PresetName[matKey].Trim();
+            bool   hasPreset  = presetName.Length > 0 &&
+                                ShaderPresetStore.HasPreset(shaderName, slotName, presetName);
 
             EditorGUILayout.Space(4);
 
-            if (preset == null || (preset.floats.Count == 0 && preset.colors.Count == 0))
+            // ── Status + diff ────────────────────────────────────────────────
+            if (hasPreset)
             {
-                EditorGUILayout.HelpBox(
-                    $"No values saved in \"{slotName}\" yet.\n" +
-                    "Tune the material and press  Save as ... Preset.",
-                    MessageType.Info);
-            }
-            else
-            {
-                bool matches   = MatchesPreset(props, preset);
+                ShaderPresetStore.LoadPreset(shaderName, slotName, presetName,
+                    out List<(string n, float v)> floats,
+                    out List<(string n, Color v)> colors);
+
+                bool matches   = MatchesPreset(props, floats, colors);
                 var  headStyle = new GUIStyle(EditorStyles.label) { fontStyle = FontStyle.Bold };
                 headStyle.normal.textColor = matches
                     ? new Color(0.2f, 0.7f, 0.2f)
                     : new Color(0.75f, 0.45f, 0f);
                 EditorGUILayout.LabelField(
-                    matches ? $"✓  Matches {slotName}"
-                            : $"○  Differs from {slotName}",
+                    matches ? $"✓  Matches \"{presetName}\""
+                            : $"○  Differs from \"{presetName}\"",
                     headStyle);
 
                 s_DiffFoldout[matKey] = EditorGUILayout.Foldout(
-                    s_DiffFoldout[matKey], "Show property diff", true);
+                    s_DiffFoldout[matKey], "Property diff", true);
                 if (s_DiffFoldout[matKey])
                 {
                     EditorGUI.indentLevel++;
-                    DrawDiff(props, preset);
+                    DrawDiff(props, floats, colors);
                     EditorGUI.indentLevel--;
                 }
+            }
+            else if (presetName.Length > 0)
+            {
+                EditorGUILayout.HelpBox(
+                    $"No preset \"{presetName}\" saved yet.\nTune the material and press Save.",
+                    MessageType.Info);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox(
+                    "Enter a name, pick one from Saved, or use a Quick Select button.",
+                    MessageType.Info);
             }
 
             EditorGUILayout.Space(4);
 
-            using (new EditorGUILayout.HorizontalScope())
+            // ── Action buttons ───────────────────────────────────────────────
+            using (new EditorGUI.DisabledScope(presetName.Length == 0))
             {
-                using (new EditorGUI.DisabledScope(preset == null ||
-                    (preset.floats.Count == 0 && preset.colors.Count == 0)))
+                using (new EditorGUILayout.HorizontalScope())
                 {
-                    if (GUILayout.Button($"Apply  {slotName}", GUILayout.Height(26)))
+                    using (new EditorGUI.DisabledScope(!hasPreset))
                     {
-                        Undo.RecordObject(material, $"Apply {slotName}");
-                        ApplyPreset(props, preset);
-                        EditorUtility.SetDirty(material);
-                        materialEditor.Repaint();
+                        if (GUILayout.Button("Apply", GUILayout.Height(26)))
+                        {
+                            Undo.RecordObject(material, $"Apply Preset {presetName}");
+                            ShaderPresetStore.LoadPreset(shaderName, slotName, presetName,
+                                out List<(string n, float v)> floats,
+                                out List<(string n, Color v)> colors);
+                            ApplyPreset(props, floats, colors);
+                            EditorUtility.SetDirty(material);
+                            materialEditor.Repaint();
+                        }
                     }
-                }
 
-                if (GUILayout.Button($"Save as  {slotName}", GUILayout.Height(26)))
-                {
-                    if (presets != null)
+                    if (GUILayout.Button("Save", GUILayout.Height(26)))
                     {
-                        Undo.RecordObject(presets, $"Save {slotName}");
-                        SavePreset(presets, shaderName, slotName, props);
-                        EditorUtility.SetDirty(presets);
-                        AssetDatabase.SaveAssets();
+                        ShaderPresetStore.SavePreset(shaderName, slotName, presetName, props);
+                        Debug.Log($"[ShaderPresets] Saved \"{presetName}\" → {shaderName} / {slotName}");
+                    }
+
+                    using (new EditorGUI.DisabledScope(!hasPreset))
+                    {
+                        if (GUILayout.Button("Delete", GUILayout.Height(26)))
+                        {
+                            if (EditorUtility.DisplayDialog("Delete Preset",
+                                $"Delete \"{presetName}\" for {slotName}?", "Delete", "Cancel"))
+                            {
+                                ShaderPresetStore.DeletePreset(shaderName, slotName, presetName);
+                                s_PresetName[matKey] = "";
+                            }
+                        }
                     }
                 }
             }
@@ -116,76 +188,78 @@ public class JadePresetShaderGUI : ShaderGUI
         EditorGUILayout.EndFoldoutHeaderGroup();
     }
 
-    static void SavePreset(AvaturnSlotPresets store, string shaderName,
-                           string slotName, MaterialProperty[] props)
+    static void DrawDebugDefaultsToggle(MaterialEditor materialEditor, MaterialProperty[] props)
     {
-        var slot = store.GetOrCreate(shaderName, slotName);
-        slot.floats.Clear();
-        slot.colors.Clear();
+        var toggleProp = FindProperty("_UseDebugDefaults", props, false);
+        if (toggleProp == null) return;
 
-        foreach (var p in props)
+        EditorGUILayout.Space(4);
+        EditorGUI.BeginChangeCheck();
+        bool current  = toggleProp.floatValue > 0.5f;
+        bool newValue = EditorGUILayout.Toggle("Use Debug Defaults", current);
+        if (EditorGUI.EndChangeCheck())
         {
-            if ((p.flags & MaterialProperty.PropFlags.HideInInspector) != 0) continue;
-            if (p.type == MaterialProperty.PropType.Float ||
-                p.type == MaterialProperty.PropType.Range)
-                slot.floats.Add(new AvaturnSlotPresets.FloatProp { name = p.name, value = p.floatValue });
-            else if (p.type == MaterialProperty.PropType.Color)
-                slot.colors.Add(new AvaturnSlotPresets.ColorProp { name = p.name, value = p.colorValue });
+            toggleProp.floatValue = newValue ? 1f : 0f;
+            if (newValue && !current) materialEditor.Repaint();
         }
     }
 
-    static void ApplyPreset(MaterialProperty[] props, AvaturnSlotPresets.SlotPreset preset)
+    static void ApplyPreset(MaterialProperty[] props,
+        List<(string n, float v)> floats, List<(string n, Color v)> colors)
     {
-        foreach (var fp in preset.floats)
-        { var p = FindProperty(fp.name, props, false); if (p != null) p.floatValue = fp.value; }
-        foreach (var cp in preset.colors)
-        { var p = FindProperty(cp.name, props, false); if (p != null) p.colorValue = cp.value; }
+        foreach (var (n, v) in floats)
+        { var p = FindProperty(n, props, false); if (p != null) p.floatValue = v; }
+        foreach (var (n, v) in colors)
+        { var p = FindProperty(n, props, false); if (p != null) p.colorValue = v; }
     }
 
-    static bool MatchesPreset(MaterialProperty[] props, AvaturnSlotPresets.SlotPreset preset)
+    static bool MatchesPreset(MaterialProperty[] props,
+        List<(string n, float v)> floats, List<(string n, Color v)> colors)
     {
-        foreach (var fp in preset.floats)
-        { var p = FindProperty(fp.name, props, false); if (p != null && !Mathf.Approximately(p.floatValue, fp.value)) return false; }
-        foreach (var cp in preset.colors)
-        { var p = FindProperty(cp.name, props, false); if (p != null && p.colorValue != cp.value) return false; }
+        foreach (var (n, v) in floats)
+        { var p = FindProperty(n, props, false); if (p != null && !Mathf.Approximately(p.floatValue, v)) return false; }
+        foreach (var (n, v) in colors)
+        { var p = FindProperty(n, props, false); if (p != null && p.colorValue != v) return false; }
         return true;
     }
 
-    static void DrawDiff(MaterialProperty[] props, AvaturnSlotPresets.SlotPreset preset)
+    static void DrawDiff(MaterialProperty[] props,
+        List<(string n, float v)> floats, List<(string n, Color v)> colors)
     {
-        foreach (var fp in preset.floats)
+        foreach (var (n, v) in floats)
         {
-            var p = FindProperty(fp.name, props, false);
+            var p = FindProperty(n, props, false);
             if (p == null) continue;
-            bool match = Mathf.Approximately(p.floatValue, fp.value);
+            bool match = Mathf.Approximately(p.floatValue, v);
             var  style = new GUIStyle(EditorStyles.miniLabel);
             style.normal.textColor = match ? new Color(0.3f, 0.6f, 0.3f) : new Color(0.8f, 0.35f, 0.1f);
-            EditorGUILayout.LabelField(fp.name,
-                match ? $"{p.floatValue:G4}  ✓" : $"{p.floatValue:G4}  →  {fp.value:G4}", style);
+            EditorGUILayout.LabelField(n,
+                match ? $"{p.floatValue:G4}  ✓" : $"{p.floatValue:G4}  →  {v:G4}", style);
         }
-        foreach (var cp in preset.colors)
+        foreach (var (n, v) in colors)
         {
-            var p = FindProperty(cp.name, props, false);
+            var p = FindProperty(n, props, false);
             if (p == null) continue;
-            bool match = p.colorValue == cp.value;
+            bool match = p.colorValue == v;
             var  style = new GUIStyle(EditorStyles.miniLabel);
             style.normal.textColor = match ? new Color(0.3f, 0.6f, 0.3f) : new Color(0.8f, 0.35f, 0.1f);
-            EditorGUILayout.LabelField(cp.name,
-                match ? $"{ColorStr(p.colorValue)}  ✓" : $"{ColorStr(p.colorValue)}  →  {ColorStr(cp.value)}", style);
+            EditorGUILayout.LabelField(n,
+                match ? $"{ColorStr(p.colorValue)}  ✓"
+                      : $"{ColorStr(p.colorValue)}  →  {ColorStr(v)}", style);
         }
+    }
+
+    static int DetectSlot(string materialName)
+    {
+        string lower = materialName.ToLowerInvariant();
+        if (lower.Contains("head"))                               return 0;
+        if (lower.Contains("body"))                               return 1;
+        if (lower.Contains("hair"))                               return 2;
+        if (lower.Contains("eyelash"))                            return 3;
+        if (lower.Contains("look") || lower.Contains("clothing")) return 4;
+        if (lower.Contains("shoe") || lower.Contains("sneaker"))  return 5;
+        return 0;
     }
 
     static string ColorStr(Color c) => $"({c.r:F2}, {c.g:F2}, {c.b:F2})";
-
-    static AvaturnSlotPresets LoadOrCreatePresetAsset()
-    {
-        var asset = AssetDatabase.LoadAssetAtPath<AvaturnSlotPresets>(PresetAssetPath);
-        if (asset != null) return asset;
-
-        asset = ScriptableObject.CreateInstance<AvaturnSlotPresets>();
-        System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(PresetAssetPath));
-        AssetDatabase.CreateAsset(asset, PresetAssetPath);
-        AssetDatabase.SaveAssets();
-        return asset;
-    }
 }

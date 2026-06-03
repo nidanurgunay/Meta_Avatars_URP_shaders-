@@ -15,7 +15,22 @@ The app lets a researcher cycle through six different avatar presets (different 
 
 ### Scene structure
 
-The scene contains one `SampleAvatarEntity` (Meta SDK component) which loads and renders the participant's Meta Avatar. An `OvrAvatarManager` handles the SDK lifecycle. The camera is attached to the Quest headset via the standard OVR rig.
+The scene (`Assets/Scenes/metavatars.unity`) contains one `SampleAvatarEntity` (Meta SDK component) which loads and renders the participant's Meta Avatar. An `OvrAvatarManager` handles the SDK lifecycle. The camera is attached to the Quest headset via the standard OVR rig.
+
+#### Environment
+
+The scene uses the same room geometry as the **Avaturn** and **MixamoJade** scenes for visual consistency across thesis screenshots:
+
+| Object | Transform | Material |
+|--------|-----------|----------|
+| **Room** (parent) | pos (0,0,0), scale (1,1,1) | — |
+| **Floor** | scale (2,2,2) | `M_YFFlM_05` — wooden floor (GUID `c74fd1bcdfc3dc548aa878748c2c73e3`) |
+| **Plane (1)** — back wall | pos (0,5,−10), rot (90°,0°,0°), scale (2,0.1,1) | `blueWalll` (GUID `f0fb2b67659d745d9bc72e1912950535`) |
+| **Plane (2)** — front wall | pos (0,5,10), rot (90°,180°,0°), scale (2,1,1) | `brick_03` (GUID `80571da6ac21c664a810bb99daf9585f`) |
+| **Plane (3)** — left wall | pos (−10,5,0), rot (90°,90°,0°), scale (2,1,1) | `blueWalll` |
+| **Plane (4)** — right wall | pos (10,5,0), rot (90°,270°,0°), scale (2,1,1) | `brick_03` |
+
+The room is 20 × 20 m (walls at ±10 in X and Z) with 10 m height. The Meta Avatar (`AvatarEntity1`) stands at position (0, 0, 1.5) — centre of the room, slightly in front of the player.
 
 On top of this there are two custom scripts:
 
@@ -80,7 +95,19 @@ When `ENABLE_NPR_EDGES` is on but no technique keyword is set, the default **Der
 
 ### Inverted-hull outline (always available, separate toggle)
 
-A second render pass (`OUTLINE_PASS`) draws the avatar again with reversed face culling. Each vertex is displaced outward along its world-space normal by `_OutlineWidth × 0.001` units. The pass outputs a flat `_OutlineColor` with no lighting — clean silhouette, no interaction with the edge techniques.
+A second render pass (`OUTLINE_PASS`) draws the avatar again with reversed face culling. Each vertex is displaced outward along its world-space normal by `_OutlineWidth` world units. The pass outputs a flat `_OutlineColor` with no lighting — clean silhouette, no interaction with the edge techniques.
+
+The outline pass runs inside the existing `Avatar/MetaNPR` shader via the `AppSpecificVertexPostManipulation` / `AppSpecificPostManipulation` hooks in `app_functions.hlsl`. No separate material is needed.
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `_OutlineEnabled` | 1 | `[Toggle]` — 0 = off (outline fragments discarded), 1 = on |
+| `_OutlineWidth` | 0.003 | Extrusion in world units (same scale as Avaturn/Jade outline shaders) |
+| `_OutlineColor` | (0,0,0,1) | Flat outline colour |
+
+All three properties are exposed in the **Inverted Hull Outline** section of the NPR panel (B button), which is **always visible regardless of technique**. The outline can be layered on top of any NPR technique (Sobel + outline, Toon + outline, XToon + outline, etc.). Switching to DEFAULT mode forces the outline off; switching back to NPR ON restores the toggle's last state. Selecting the **Inverted Hull** technique forces the outline ON (it is the sole visual in that mode) and updates the toggle to reflect this.
+
+**Note on alpha test:** Avaturn and Jade avatars use explicit alpha-test cutout on their outline pass to handle transparent hair and eyelash sprites (`_EnableAlphaTest` / `_AlphaCutoff` on the `V1_InvertedHullOutline` shader). The Meta Avatar SDK manages hair and eyelash transparency internally — the SDK shader clips these fragments before the outline pass runs, so no equivalent alpha-test property is needed on the Meta avatar outline.
 
 ---
 
@@ -379,7 +406,7 @@ Two phases in one pass:
 ### Technique 12 — Halftone
 **File:** `NPREffect_Halftone.cginc`
 **Keyword:** `EFFECT_HALFTONE`
-**Source:** Adapted from `Assets/Shaders/NPR/HalftoneHatching.shader` (`HalftonePattern` function).
+**Source:** Adapted from `Assets/Shaders/AvaturnNPRShaders/HalftoneHatching.shader` (`HalftonePattern` function).
 
 Circular dot grid in UV space. Tone is derived from the luminance of the incoming PBR colour — darker areas produce larger dots, lighter areas produce smaller dots or none.
 
@@ -418,7 +445,7 @@ finalColor   = lerp(PBRcolor, patternColor, HTStrength)
 ### Technique 13 — Hatching
 **File:** `NPREffect_Hatching.cginc`
 **Keyword:** `EFFECT_HATCHING`
-**Source:** Adapted from `Assets/Shaders/NPR/HalftoneHatching.shader` (`HatchingPattern` function, Tonal Art Map approach).
+**Source:** Adapted from `Assets/Shaders/AvaturnNPRShaders/HalftoneHatching.shader` (`HatchingPattern` function, Tonal Art Map approach).
 
 Four line layers that activate progressively as tone darkens, following Praun et al. "Real-Time Hatching" (SIGGRAPH 2001):
 
@@ -490,7 +517,7 @@ This section documents the two thesis-framed technique generations — **V1 (Too
 
 #### Mixamo / Jade Avatar
 
-**Shader:** `Assets/AvatarShaderExperimental/Shaders/V1_ToonShading_GeometryOutline.shader`
+**Shader:** `Assets/Shaders/JadeNPRShaders/V1_ToonShading_GeometryOutline.shader`
 **Shader name in Unity:** `Custom/V1_ToonShading_GeometryOutline`
 **Pipeline target:** URP, `#pragma target 3.0`
 **Materials:** `Assets/AvatarShaderExperimental/Materials/CToon V1 Toon only/`
@@ -514,13 +541,32 @@ toon = lerp(1.0, toon, ShadowStrength);
 
 **Key difference from Avaturn:** No `OVR_FETCH_POS_NORM` — vertex positions and normals come directly from the mesh, without compute-skinning support. Works fine for standard SkinnedMeshRenderer avatars.
 
-**Thesis demonstration shader:** `Assets/AvatarShaderExperimental/Shaders/V1_InvertedHullOutline.shader` (`Custom/V1_InvertedHullOutline`) — a minimal two-pass shader that strips the toon quantisation entirely and shows only the inverted-hull technique in isolation. Pass 0 (`Cull Front`) displaces back-face vertices along world-space normals and outputs a flat `_OutlineColor`. Pass 1 (`Cull Back`) renders the surface as a flat unlit albedo so the avatar is visible beneath the outline. Use this in the thesis scene to explain the geometric mechanism before introducing toon shading.
+**VHull / JadeHull materials — standalone comparison shader:**
+`Assets/Shaders/CommonNPRShaders/V1_InvertedHullOutline.shader` (`Custom/V1_InvertedHullOutline`) is a shared two-pass shader used for both the Avaturn (VHull_*) and Jade (JadeHull_*) inverted-hull comparison materials. Unlike the toon shader above, it renders the surface with **full URP PBR** (`UniversalFragmentPBR`) so the avatar looks identical to its default appearance but with an added outline. Use it in the thesis scene as a side-by-side comparison: same avatar, same lighting, outline added, everything else unchanged.
+
+**Two-pass structure:**
+- **Pass 0 (Outline)** — `Cull Front`; displaces back-face vertices along world-space normals by `_OutlineWidth`; outputs flat `_OutlineColor`
+- **Pass 1 (ForwardLit)** — `Cull Back`; full PBR via `UniversalFragmentPBR` with albedo (`_MainTex`), normal map (`_BumpMap`), metallic-roughness (`_MetallicGlossMap`), and occlusion (`_OcclusionMap`)
+
+**Channel convention (GLTFast/glTF format, not URP Lit):**
+```hlsl
+half4 ms         = SAMPLE_TEXTURE2D(_MetallicGlossMap, ...);
+half  metallic   = ms.b * _Metallic;           // B = metallic  (GLTFast)
+half  smoothness = (1.0h - ms.g) * _Smoothness; // G = roughness → inverted
+```
+The `_Metallic` and `_Smoothness` properties act as **strength multipliers** (0 = ignore map, 1 = full map value), not raw values. The `VHullTextureAssigner` tool sets them to 1 when a map is present.
+
+**Texture assignment tool:** `Tools > Assign All Textures to VHull Materials` (runs `Assets/Editor/VHullTextureAssigner.cs`). Assigns albedo, normal, metallic-roughness, and occlusion from the Avaturn GLB sub-assets to all six VHull materials in one click.
+
+**Normal map import:** After running the tool, select each normal map sub-asset in the Project window (image_2, image_8, image_12, image_18, image_25 inside `Assets/Avatars/Avaturn.glb`) → Inspector → **Texture Type → Normal Map → Apply**. Without this, `UnpackNormalScale` reads incorrect data and clothing creases remain invisible.
+
+**SRP Batcher requirement:** Both passes must declare an identical `CBUFFER_START(UnityPerMaterial)` block including all properties used by either pass. The outline pass includes `_BumpScale`, `_Metallic`, `_Smoothness`, `_OcclusionStrength` even though it doesn't use them — this is required for SRP Batcher compatibility.
 
 ---
 
 #### Avaturn Avatar
 
-**Shader:** `Assets/Shaders/NPR/V1_ToonShading_GeometryOutline.shader`
+**Shader:** `Assets/Shaders/AvaturnNPRShaders/V1_ToonShading_GeometryOutline.shader`
 **Shader name in Unity:** `Custom/V1_ToonShading_GeometryOutline`
 **Pipeline target:** URP, `#pragma target 3.5`
 **Materials:** `Assets/Materials/NPR Avaturn Materials/V1 ToonShading/` (5 materials: body, head, hair, eyelash, look)
@@ -546,9 +592,9 @@ toon = lerp(1.0 - _ShadowStrength, 1.0, toon);
 
 #### Meta Avatar SDK
 
-**Shader:** `Assets/Shaders/CustomShaders/Avatar-Meta-UGB.shader`
+**Shader:** `Assets/Shaders/MetaAvatarShaders/Avatar-Meta-UGB.shader`
 **Keyword:** `EFFECT_TOON` (activated with `ENABLE_NPR_EDGES`)
-**Technique file:** `Assets/Shaders/CustomShaders/NPREffect_Toon.cginc`
+**Technique file:** `Assets/Shaders/MetaAvatarShaders/NPREffect_Toon.cginc`
 **Pipeline target:** URP target 5.0 (primary) + 3.5 compatibility fallback + Built-in RP fallback
 
 **Toon (posterisation) implementation:**
@@ -598,8 +644,8 @@ This decouples "how lit is this pixel" from "how much stylistic detail should th
 
 #### Mixamo / Jade Avatar
 
-**Shader:** `Assets/AvatarShaderExperimental/Shaders/Shaders after Project/XToon_2DRamp.shader`
-**Shader name in Unity:** `NPR/XToon_2DRamp`
+**Shader:** `Assets/Shaders/JadeNPRShaders/XToon_2DRamp.shader`
+**Shader name in Unity:** `NPR/XToon_2DRamp_Jade`
 **Pipeline target:** URP, `#pragma target 3.5`
 **Materials:** `Assets/AvatarShaderExperimental/Materials/Xtoon/` (4 materials: Body, Clothing, Hair, Eyelash)
 
@@ -644,7 +690,7 @@ float3 smoothN = normalize(normalWS + NormalSmoothing * (normalize(posWS) - norm
 
 #### Avaturn Avatar
 
-**Shader:** `Assets/Shaders/NPR/XToon_2DRamp.shader`
+**Shader:** `Assets/Shaders/AvaturnNPRShaders/XToon_2DRamp.shader`
 **Shader name in Unity:** `NPR/XToon_2DRamp`
 **Pipeline target:** URP, `#pragma target 3.5`
 **Materials:** `Assets/Materials/NPR Avaturn Materials/VXT XToon/` (5 materials: body, head, hair, eyelash, look)
@@ -665,38 +711,42 @@ Avaturn's extra passes over Jade:
 
 #### Meta Avatar SDK (newly implemented)
 
-**Shader:** `Assets/Shaders/CustomShaders/Avatar-Meta-UGB.shader`
+**Shader:** `Assets/Shaders/MetaAvatarShaders/Avatar-Meta-UGB.shader`
 **Keyword:** `EFFECT_XTOON` (activated with `ENABLE_NPR_EDGES`)
-**Technique file:** `Assets/Shaders/CustomShaders/NPREffect_XToon.cginc`
+**Technique file:** `Assets/Shaders/MetaAvatarShaders/NPREffect_XToon.cginc`
 
-**Design constraint:** `AppSpecificPostManipulation` receives the composited PBR colour — raw NdotL and the main light direction are not accessible at this hook point. The XToon adaptation uses:
-- **U axis** — `luminance(o.color)` as the lighting intensity proxy. This is more perceptually complete than raw NdotL because it already includes shadows, subsurface scattering, and rim light from the Meta PBR pipeline.
-- **V axis** — identical options to standalone: depth via `length(worldViewDir)`, curvature via `ddx/ddy(normalWS)`, or manual constant.
+**Implementation:** `AppSpecificPostManipulation` receives `i.geometry.positionInWorldSpace` and the world normal, allowing the Meta XToon to match Jade/Avaturn exactly:
+- **U axis** — shadow-attenuated `NdotL` (same as Jade/Avaturn). `GetMainLight(shadowCoord)` is called with `TransformWorldToShadowCoord(positionWS)` to fetch both the light direction and shadow attenuation. `NdotL *= shadow`, then `rampU = lerp(0.5, saturate(NdotL * 0.5 + 0.5), _XToonLightSensitivity)`.
+- **V axis** — real world-space depth via `length(_WorldSpaceCameraPos - positionWS)`, identical formula to Jade/Avaturn.
+- **Normal smoothing** — geometric path: `normalWS = lerp(normalWS, smoothed, _XToonNormalSmoothing * 0.5)`.
+- **LightingStrength blend** — `lerp(textureColor, finalColor, _XToonLightingStrength)` where `textureColor` is the shadow-tinted toon result (not the raw PBR input), matching Jade/Avaturn.
 
 **Core implementation:**
 ```hlsl
-// U: luminance of composited PBR as lighting proxy
-float lum  = dot(color.rgb, float3(0.2126, 0.7152, 0.0722));
-float rampU = lerp(0.5, saturate(lum), _XToonLightSensitivity);
+// U: shadow-attenuated NdotL (matches Jade/Avaturn)
+float NdotL = dot(normalWS, lightDir) * shadow;
+float rampU = lerp(0.5, saturate(NdotL * 0.5 + 0.5), _XToonLightSensitivity);
 
-// V: abstraction level
-float rampV = _XToonComputeDetailAxis(worldViewDir, normalWS);
+// V: abstraction level (real world-space depth)
+float rampV = _XToonComputeDetailAxis(positionWS, normalWS);
 
 // 2D ramp sample
-float3 rampColor = SAMPLE_TEXTURE2D(_XToonRamp, sampler_XToonRamp, float2(rampU, rampV)).rgb;
+float3 rampColor = tex2D(_XToonRamp, float2(rampU, rampV)).rgb;
 
-// Abstraction compression (identical formula to standalone versions)
+// Abstraction compression (identical formula to Jade/Avaturn)
 float abstractU    = lerp(rampU, 0.5, rampV * 0.6);
 float dynSmoothing = lerp(_XToonRampSmoothing, _XToonRampSmoothing + 0.35, rampV);
 float shadowMask   = smoothstep(0.5 - dynSmoothing, 0.5 + dynSmoothing, abstractU);
 float3 toonColor     = color.rgb * rampColor;
 float3 shadowedColor = lerp(toonColor * _XToonShadowColor.rgb, toonColor, shadowMask);
-float3 finalColor    = lerp(color.rgb, shadowedColor, _XToonShadowStrength);
+float3 textureColor  = lerp(color.rgb, shadowedColor, _XToonShadowStrength);  // toon base
+// ... specular, rim → finalColor
+finalColor = lerp(textureColor, finalColor, _XToonLightingStrength);
 ```
 
-**Specular:** Uses Blinn-Phong (`NdotH`) identical to Jade and Avaturn. `_MainLightPosition.xyz` is a URP per-frame global uniform that is accessible inside `AppSpecificPostManipulation` even though per-vertex NdotL is not — this gives proper light-direction-dependent specular rather than the view-dependent Fresnel approximation that was used previously.
+**Specular:** Shadow-attenuated Blinn-Phong (`NdotH × shadow`), identical to Jade/Avaturn. `_MainLightPosition.xyz` is a URP per-frame global; `NPREffect_XToon.cginc` remaps it to `_WorldSpaceLightPos0` via `#ifndef UNITY_PIPELINE_URP` for the legacy CG subshader.
 
-**`_XToonLightingStrength`** blends between the original PBR colour and the fully stylised XToon result, allowing a partial blend for comparison purposes.
+**`_XToonLightingStrength`** blends between `textureColor` (toon base with shadow tinting) and the fully stylised result (with specular, rim). Setting to 0 shows the shadow-tinted toon without specular/rim; setting to 1 shows the full effect.
 
 **Inverted hull outline:** Reuses the existing `NPROutline` pass with `_OutlineEnabled`, `_OutlineWidth`, `_OutlineColor` — identical to all other Meta techniques.
 
@@ -706,14 +756,14 @@ float3 finalColor    = lerp(color.rgb, shadowedColor, _XToonShadowStrength);
 
 | Property | Mixamo V2 | Avaturn V2 | Meta V2 |
 |----------|-----------|-----------|---------|
-| U axis source | Raw NdotL × shadow | Raw NdotL × shadow | PBR luminance (post-SSS, post-rim) |
-| U axis access | Direct (vertex → fragment NdotL) | Direct (vertex → fragment NdotL) | Indirect (luminance of composited color) |
-| Light direction in specular | Yes (Blinn-Phong NdotH) | Yes (Blinn-Phong NdotH) | Yes (Blinn-Phong NdotH via `_MainLightPosition.xyz`) |
-| V axis (depth) | `length(camPos - posWS)` | `length(camPos - posWS)` | `length(worldViewDir)` (magnitude = depth) |
+| U axis source | Raw NdotL × shadow | Raw NdotL × shadow | Raw NdotL × shadow (matches Jade/Avaturn) |
+| U axis access | Direct (vertex → fragment NdotL) | Direct (vertex → fragment NdotL) | `GetMainLight(shadowCoord)` in fragment; `positionWS` passed as 5th arg to `ApplyNPREffect` |
+| Light direction in specular | Yes (Blinn-Phong NdotH) | Yes (Blinn-Phong NdotH) | Yes (Blinn-Phong NdotH × shadow; `_MainLightPosition.xyz`, remapped to `_WorldSpaceLightPos0` for legacy CG) |
+| V axis (depth) | `length(camPos - posWS)` | `length(camPos - posWS)` | `length(_WorldSpaceCameraPos - positionWS)` (identical formula) |
 | V axis (curvature) | `ddx/ddy(normalWS)` | `ddx/ddy(normalWS)` | `ddx/ddy(normalWS)` |
 | Normal Field Abstraction | Yes (`_UseAbstractNormals`, default **1**) | Yes (`_UseAbstractNormals`, default **1**) | No (normals received post-interpolation) |
-| Rim Light | Yes (`_EnableRimLight` toggle) | Yes (`_EnableRimLight` toggle) | Via Meta PBR `ENABLE_RIM_LIGHT_ON` keyword |
-| Inline Sobel | Yes (`_EnableSobel` toggle) | Yes (`_EnableSobel` toggle) | `_EnableSobel` runtime toggle in `NPREffect_Sobel.cginc` |
+| Rim Light | Yes (`_EnableRimLight` toggle) | Yes (`_EnableRimLight` toggle) | Yes (`_XToonEnableRim` ShaderToggle; child rows hidden when OFF) |
+| Inline Sobel | Yes (`_EnableSobel` toggle) | Yes (`_EnableSobel` toggle) | Yes (`_XToonEnableSobel` ShaderToggle in `NPREffect_XToon.cginc`; child rows hidden when OFF) |
 | Compute-skinning bridge | No (SkinnedMeshRenderer) | No (GLTFast SkinnedMeshRenderer, same as Jade) | Yes (SDK native) |
 | Outline | Inverted hull (world-space) | Inverted hull (world-space) | Inverted hull (NPROutline pass, `_OutlineEnabled`) |
 | Shadow Caster pass | No (fallback) | Yes (self-contained) | Yes (Meta SDK handles shadows) |
@@ -758,8 +808,8 @@ Both the **Jade avatar (ShaderExperimental)** scene and the **Avaturn** scene sh
 
 | Feature class | Script | Shader |
 |---|---|---|
-| `KuwaharaFilterFeature` | `Assets/AvatarShaderExperimental/Scripts/Rendering/KuwaharaFilterFeature.cs` | `AnisotropicKuwahara.shader` |
-| `EdgeDetectionFeature` | `Assets/AvatarShaderExperimental/Scripts/Rendering/EdgeDetectionFeature.cs` | `HierarchicalEdgeDetection.shader` |
+| `KuwaharaFilterFeature` | `Assets/AvatarShaderExperimental/Scripts/Rendering/KuwaharaFilterFeature.cs` | `Assets/Shaders/JadeNPRShaders/AnisotropicKuwahara.shader` |
+| `EdgeDetectionFeature` | `Assets/AvatarShaderExperimental/Scripts/Rendering/EdgeDetectionFeature.cs` | `Assets/Shaders/JadeNPRShaders/HierarchicalEdgeDetection.shader` |
 
 Both run at `RenderPassEvent.AfterRenderingTransparents` (event 550), with `avatarLayer: 0` (full-screen, no masking). `URP_QUEST.asset` has `m_RequireDepthTexture: 1` and `m_RequireOpaqueTexture: 1` enabled to supply the depth and normal buffers that `EdgeDetectionFeature` samples.
 
@@ -827,40 +877,68 @@ Press Play — you should see the Breathing Idle animation retargeted onto the a
 
 These are standalone URP shaders (not integrated into the Meta Avatar SDK pipeline) designed for the Avaturn `.glb` avatar model. They run on separate GameObjects/prefabs in the scene alongside the Meta Avatar, providing additional NPR comparison points.
 
-All standalone shaders share the same three-pass structure:
+All standalone Avaturn shaders share the same three-pass structure:
 1. **OuterOutline** — inverted-hull silhouette (Cull Front), outputs flat `_OuterOutlineColor`
-2. **ForwardLit** — main shading pass with normal map TBN, smooth Lambert, and NPR effects
+2. **ForwardLit** — main shading pass with normal map TBN (where applicable), toon shading, and NPR edge effects
 3. **DepthNormals** — writes bump-map-perturbed normals into URP's `_CameraNormalsTexture` so post-process edge shaders see normal-map detail
 
+V3 and V4 are structurally identical in their Unity shader parts: same Properties headers and naming, same v2f struct (`viewDirWS` interpolated), same HLSL uniform declarations, same debug-override pattern (local variable copies), and same master toggles (`_EnableRim`, `_EnableOuterOutline`, `_DebugView`). The only intentional difference is the edge-detection algorithm — V3 uses a simple `step()`-based Sobel; V4 adds Gaussian pre-blur, a progressive smoothstep pipeline, normal edges, and Fresnel edges.
+
+**Base shading (V2–V5):** All shaders from V2 onward replaced the V1 stepped-NdotL toon base with a **XToon 2D ramp** — the same ramp approach used by the dedicated XToon shader (VXT) and the Meta `EFFECT_XTOON` cginc. The stepped-toon properties (`_ToonSteps`, `_ToonThreshold`, `_ToonSmoothness`, `_EnableToonShading`) have been removed. V2–V5 now expose: `_ToonRamp` (2D), `_LightSensitivity`, `_RampSmoothing`, `_ShadowColor`, `_ShadowStrength`, `_DetailMode` (Depth/Curvature/Manual keyword enum), `_DetailBias`, `_DepthNear`, `_DepthFar`, `_ManualDetail`. The `#pragma shader_feature_local _DETAILMODE_DEPTH _DETAILMODE_CURVATURE _DETAILMODE_MANUAL` is added to each ForwardLit pass.
+
 ### V3 — Sobel Edge Detection
-**File:** `Assets/Shaders/NPR/V3_SobelEdgeDetection.shader`
+**Avaturn file:** `Assets/Shaders/AvaturnNPRShaders/V3_SobelEdgeDetection.shader`
+**Jade file:** `Assets/Shaders/JadeNPRShaders/V3_SobelEdgeDetection.shader`
 **Shader GUID:** `ac2e5c7f0a193458e8f848fd6528ee42`
 
-Smooth Lambert shading with normal map + 3×3 UV-space Sobel edge detection on texture luminance. Single unified threshold (no per-material skin/clothes separation). Includes DepthNormals pass so post-process shaders that read `_CameraNormalsTexture` receive bump-map detail rather than only vertex normals.
+Toon shading (stepped NdotL, toggleable via `_EnableToonShading`) with simple 3×3 UV-space Sobel edge detection using a single `step()` threshold — no Gaussian pre-blur. V3 is the baseline for comparing blur's noise-suppression benefit against V4.
+
+**Avaturn-specific additions (not present in Jade):** Normal map (`_BumpMap` / `_BumpScale`) decoded via TBN matrix; DepthNormals pass writes bump-perturbed normals to `_CameraNormalsTexture` for screen-space post-process edge shaders.
+
+**Structural alignment with V4:** Both V3 and V4 now share identical Properties headers, struct layout (`viewDirWS` in v2f), HLSL uniform declarations, debug override pattern (local variable copies), and toggle checks (`_EnableToonShading`, `_EnableRim`, `_EnableOuterOutline`, `_DebugView`). The only intentional difference is the edge-detection algorithm.
 
 | Property | Description |
 |----------|-------------|
-| `_EdgeThreshold` | Minimum Sobel magnitude to draw an edge |
-| `_EdgeSampleDist` | UV offset multiplier for the 3×3 kernel |
+| `_InnerLineThreshold` | Minimum Sobel magnitude to draw an edge |
+| `_InnerLineBlur` | UV offset multiplier for the 3×3 kernel |
 | `_InnerLineStrength` | Edge opacity |
 | `_EnableInnerLines` | Toggle Sobel detection on/off |
+| `_EnableToonShading` | Switch between stepped toon (on) and flat diffuse (off) |
+| `_EnableRim` | Toggle rim lighting |
+| `_EnableOuterOutline` | Toggle inverted-hull outline |
+| `_DebugView` | 0=Final, 1=RawSobel (enum, mirrors V4) |
+| `_BumpMap` / `_BumpScale` | Normal map (Avaturn only) |
 
 **Materials:** `Assets/Materials/NPR Avaturn Materials/V3 SobelEdgeDetection/`
 
 ---
 
 ### V4 — Gaussian Pre-filtered Sobel
-**File:** `Assets/Shaders/NPR/V4_GaussianPreFilteredSobel.shader`
+**Avaturn file:** `Assets/Shaders/AvaturnNPRShaders/V4_GaussianPreFilteredSobel.shader`
+**Jade file:** `Assets/Shaders/JadeNPRShaders/V4_GaussianPreFilteredSobel.shader`
 **Shader GUID:** `[assigned by Unity on import]`
 
-V3 extended with a 9-tap Gaussian pre-blur applied to each of the 8 Sobel sample positions before the gradient is computed. Reduces false edges from high-frequency texture noise.
+V3 extended with a 9-tap Gaussian pre-blur applied to each of the 8 Sobel sample positions before the gradient is computed. Reduces false edges from high-frequency texture noise. Also supports screen-space normal edge detection (`_EnableNormalEdges`, via `ddx`/`ddy` of world normals) and Fresnel silhouette edge (`_EnableFresnelEdge`).
+
+**Structural alignment with V3:** V4 now includes `_BumpMap` / `_BumpScale` normal map support and a DepthNormals pass (both added to match V3 Avaturn). The normal edge detection in V4 (`ddx`/`ddy` of `nWS`) now benefits from bump-map detail because `nWS` is decoded through the TBN matrix before the derivatives are computed.
+
+| Property | Description |
+|----------|-------------|
+| `_BumpMap` / `_BumpScale` | Normal map, decoded via TBN (added to match V3) |
+| `_EnableTextureSobel` | Toggle Gaussian Sobel pipeline |
+| `_EnableNormalEdges` | Toggle screen-space normal edge (`ddx`/`ddy` of `nWS`) |
+| `_EnableFresnelEdge` | Toggle Fresnel silhouette edge |
+| `_EnableGaussianBlur` | Toggle 9-tap Gaussian pre-blur on each Sobel sample |
+| `_BlurRadiusMultiplier` | Gaussian blur radius relative to `_InnerLineBlur` |
+| `_InnerLineThreshold` / `_InnerLineBlur` / `_InnerLineStrength` | Sobel parameters (same names as V3) |
 
 **Materials:** `Assets/Materials/NPR Avaturn Materials/V4 GaussianPreFilteredSobel/`
 
 ---
 
 ### V5 — Hierarchical Edge Detection with Gaussian Pre-blur
-**File:** `Assets/Shaders/NPR/V5_HierarchicalGaussian.shader`
+**Avaturn file:** `Assets/Shaders/AvaturnNPRShaders/V5_HierarchicalGaussian.shader`
+**Jade file:** `Assets/Shaders/JadeNPRShaders/V5_HierarchicalGaussian.shader`
 **Shader name:** `Custom/Avaturn_V5_HierarchicalGaussian`
 
 Three-layer hierarchical edge detection where the color layer applies a 9-tap Gaussian pre-blur to each Roberts Cross sample before computing the gradient. Same algorithm as the Jade `V5_HierarchicalGaussian.shader` with the additions of a normal map (TBN) in ForwardLit and a DepthNormals pass.
@@ -889,7 +967,7 @@ Three-layer hierarchical edge detection where the color layer applies a 9-tap Ga
 ---
 
 ### V8 — Quantized Colour + Dual Sobel (UV-space Normal-map Sobel)
-**File:** `Assets/Shaders/NPR/V8_QuantizedSobel.shader`
+**File:** `Assets/Shaders/AvaturnNPRShaders/V8_QuantizedSobel.shader` (Avaturn only)
 **Shader GUID:** `e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6`
 
 Most abstract standalone shader. Three-stage pipeline:
@@ -933,7 +1011,7 @@ Both edge signals are max-combined and composited over the quantized shaded colo
 ---
 
 ### VHH — Halftone & Hatching
-**File:** `Assets/Shaders/NPR/HalftoneHatching.shader`
+**File:** `Assets/Shaders/AvaturnNPRShaders/HalftoneHatching.shader`
 **Shader GUID:** `452f01b8804f54c8eb77c3425cf4614f`
 
 Standalone URP shader that applies either a halftone dot grid, cross-hatching lines, stippling, or a combination — all driven by lighting intensity. Four `shader_feature_local` keyword groups select the active mode at material import time; the float property (`_PatternMode`) stores the selection (0 = Halftone, 1 = Hatching, 2 = Stipple, 3 = Combined).
@@ -967,7 +1045,8 @@ Uses `_BaseMap` (not `_MainTex`) for the albedo. Has a built-in inverted-hull ou
 ---
 
 ### VXT — XToon 2D Ramp with Sobel Edges
-**File:** `Assets/Shaders/NPR/XToon_2DRamp.shader`
+**Avaturn file:** `Assets/Shaders/AvaturnNPRShaders/XToon_2DRamp.shader`
+**Jade file:** `Assets/Shaders/JadeNPRShaders/XToon_2DRamp.shader` (shader name: `NPR/XToon_2DRamp_Jade`)
 **Shader GUID:** `088c73ef0d8f3442d83eb49d1b22a69f`
 
 Based on Barla, Thollot & Markosian "X-Toon: An Extended Toon Shader" (NPAR 2006). Replaces the traditional 1D NdotL toon ramp with a 2D texture:
@@ -1015,24 +1094,36 @@ Assets/
 │   │   ├── KuwaharaFilterFeature.cs       — screen-space anisotropic Kuwahara URP feature
 │   │   ├── EdgeDetectionFeature.cs        — screen-space hierarchical edge detection URP feature
 │   │   └── AnisotropicKuwaharaFeature.cs  — simpler 3-pass Kuwahara (no masking, no edge step)
-│   ├── Shaders/
-│   │   └── V5_HierarchicalGaussian.shader — Jade standalone: depth+normal+Gauss Roberts Cross
-│   ├── Shaders/Shaders after Project/
-│   │   ├── AnisotropicKuwahara.shader     — 4-pass Kuwahara shader (used by KuwaharaFilterFeature)
-│   │   ├── HierarchicalEdgeDetection.shader — depth+normal+color edge shader (used by EdgeDetectionFeature)
-│   │   ├── SobelEdgeDetection.shader      — Sobel-only edge shader
-│   │   └── AvatarMaskCapture.shader       — renders avatar silhouette mask (Hidden/AvatarMaskCapture)
+│   ├── Materials/V1 InvertedHull/         — JadeHull materials using Custom/V1_InvertedHullOutline (same shader as VHull)
+│   │   └── JadeHull_body.mat / JadeHull_eyelash.mat / JadeHull_hair.mat / JadeHull_head.mat / JadeHull_look.mat
 ├── URP_QUEST_Renderer.asset               — active renderer (all scenes); has Kuwahara + EdgeDetection features
 ├── URP_QUEST.asset                        — active URP pipeline; depth+opaque textures enabled
 ├── Shaders/
-│   ├── NPR/
-│   │   ├── HalftoneHatching.shader        — source shader (reference; not used on avatar)
+│   ├── CommonNPRShaders/                  — shaders shared between Jade and Avaturn avatars
+│   │   ├── V1_InvertedHullOutline.shader  — two-pass: outline (Cull Front) + full URP PBR (Cull Back)
+│   │   ├── HalftoneHatching.shader        — halftone + hatching standalone
+│   │   └── AvatarMaskCapture.shader       — avatar silhouette mask
+│   ├── JadeNPRShaders/
+│   │   ├── V1_ToonShading_GeometryOutline.shader — Jade standalone: toon + inverted hull outline
+│   │   ├── V2_NormalEdgeDetection.shader  — Jade standalone: normal + Fresnel edges
+│   │   ├── V3_SobelEdgeDetection.shader   — Jade standalone: Sobel on texture luma
+│   │   ├── V4_GaussianPreFilteredSobel.shader — Jade standalone: Gaussian + Sobel
+│   │   ├── V5_HierarchicalGaussian.shader — Jade standalone: depth+normal+Gauss Roberts Cross
+│   │   ├── XToon_2DRamp.shader            — Jade standalone: XToon 2D ramp (NPR/XToon_2DRamp_Jade)
+│   │   ├── AnisotropicKuwahara.shader     — 4-pass Kuwahara (used by KuwaharaFilterFeature)
+│   │   ├── HierarchicalEdgeDetection.shader — depth+normal+color edge (used by EdgeDetectionFeature)
+│   │   └── SobelEdgeDetection.shader      — Sobel-only edge shader
+│   ├── AvaturnNPRShaders/
+│   │   ├── V1_ToonShading_GeometryOutline.shader — Avaturn standalone: toon + inverted hull outline
+│   │   ├── V2_NormalEdgeDetection.shader  — Avaturn standalone: normal + Fresnel edges
 │   │   ├── V3_SobelEdgeDetection.shader   — Avaturn standalone: Sobel on texture luma
 │   │   ├── V4_GaussianPreFilteredSobel.shader — Avaturn standalone: Gaussian + Sobel
 │   │   ├── V5_HierarchicalGaussian.shader — Avaturn standalone: Hierarchical + Gaussian Roberts Cross
 │   │   ├── V8_QuantizedSobel.shader       — Avaturn standalone: quantize + dual Sobel
-│   │   └── XToon_2DRamp.shader            — Avaturn standalone: XToon 2D ramp + Sobel
-│   └── CustomShaders/
+│   │   ├── XToon_2DRamp.shader            — Avaturn standalone: XToon 2D ramp + Sobel
+│   │   └── AnisotropicKuwahara.shader     — Kuwahara shader (Avaturn copy)
+│   └── MetaAvatarShaders/
+│       ├── Avatar-Meta-UGB.shader         — Meta Avatar NPR shader (Shader "Avatar/MetaNPR")
 │       ├── AvatarNPREdgeEffect.cginc      — Technique 1:  Derivative
 │       ├── NPREffect_Sobel.cginc          — Technique 2:  Sobel
 │       ├── NPREffect_NormalEdge.cginc     — Technique 3:  Normal + Fresnel
@@ -1046,15 +1137,21 @@ Assets/
 │       ├── NPREffect_ToonGaussHier.cginc  — Technique 11: Toon + Hierarchical
 │       ├── NPREffect_Halftone.cginc       — Technique 12: Halftone
 │       ├── NPREffect_Hatching.cginc       — Technique 13: Hatching
+│       ├── NPREffect_XToon.cginc          — Technique 14: XToon 2D Ramp (Meta; sampler2D, legacy CG compatible)
 │       └── app_specific/
 │           └── app_functions.hlsl         — multi_compile keywords + include dispatch + OUTLINE_PASS hook
 ├── Editor/
 │   ├── AvaturnPresetShaderGUI.cs              — ShaderGUI for Avaturn shaders: Save/Apply/Diff slot presets (Head/Body/Hair/Eyelash/Look)
 │   ├── AvaturnSlotPresets.cs                  — ScriptableObject storing per-shader per-slot float+color presets
-│   ├── AvaturnSlotPresets.asset               — Avaturn preset data (commit to source control)
+│   ├── AvaturnSlotPresets.asset               — Avaturn preset data; includes V1_InvertedHullOutline section
 │   ├── JadePresetShaderGUI.cs                 — ShaderGUI for Jade XToon shader: same preset workflow, slots A–E
-│   └── JadePresets.asset                      — Jade preset data (auto-created on first Save)
+│   ├── JadePresets.asset                      — Jade preset data; includes V1_InvertedHullOutline section
+│   ├── InvertedHullPresetShaderGUI.cs         — ShaderGUI for Custom/V1_InvertedHullOutline; routes to JadePresets or AvaturnSlotPresets by material path
+│   └── VHullTextureAssigner.cs                — One-shot tool (Tools menu): assigns all 4 PBR maps from Avaturn.glb to VHull_* materials
 ├── Materials/NPR Avaturn Materials/
+│   ├── V1 InvertedHull/                   — VHull materials using Custom/V1_InvertedHullOutline
+│   │   ├── VHull_body.mat / VHull_head.mat / VHull_hair.mat / VHull_eyelash.mat / VHull_look.mat / VHull_shoe.mat
+│   │   └── (run VHullTextureAssigner to assign PBR textures from Avaturn.glb)
 │   ├── V1 ToonShading/                    — V1 original (do not modify)
 │   ├── V2 NormalEdgeDetection/            — V2 normal-edge materials
 │   ├── V3 SobelEdgeDetection/             — V3 Sobel materials (also used by V5–V7 avatars)

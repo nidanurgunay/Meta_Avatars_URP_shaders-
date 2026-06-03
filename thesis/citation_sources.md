@@ -319,4 +319,31 @@ This document tracks every citation added to `references.bib` that was not sourc
 
 ---
 
+## Added in Session: V2 X-Toon Blinn-Phong Citation (2026-05-27)
+
+### `blinn1977`
+- **Full title:** Models of Light Reflection for Computer Synthesized Pictures
+- **Author:** James F. Blinn
+- **Venue:** Proceedings of the 4th Annual Conference on Computer Graphics and Interactive Techniques (SIGGRAPH 1977)
+- **Pages:** 192–198
+- **DOI:** 10.1145/965141.563893
+- **Verify at:** https://doi.org/10.1145/965141.563893
+- **Source:** Standard foundational reference — no physical PDF in thesis folder; DOI confirmed on ACM DL
+- **Used in:**
+  1. `04_methodology.tex` §V2 X-Toon — paragraph on specular: "...computed using the Blinn-Phong model~\cite{blinn1977}."
+  2. `05_implementation.tex` §V2 X-Toon — Listing caption: "Stylised specular (Blinn-Phong~\cite{blinn1977}) — Mixamo and Avaturn."
+
+```bibtex
+@inproceedings{blinn1977,
+  author    = {Blinn, James F.},
+  title     = {Models of Light Reflection for Computer Synthesized Pictures},
+  booktitle = {Proceedings of the 4th Annual Conference on Computer Graphics and Interactive Techniques (SIGGRAPH)},
+  year      = {1977},
+  pages     = {192--198},
+  doi       = {10.1145/965141.563893},
+}
+```
+
+---
+
 > **Instructions:** Before submission, open each DOI link, confirm title and authors match what is in `references.bib`, and tick it off. For entries without a DOI, check the ResearchGate or ACM DL link listed above.

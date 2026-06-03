@@ -102,13 +102,13 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _OuterOutlineWidth: 0.002
-    - _OutlineDepthBias: 1
+    - _OuterOutlineWidth: 0.005
+    - _OutlineDepthBias: 4
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RimPower: 3
-    - _ShadowStrength: 0.7
+    - _RimPower: 4
+    - _ShadowStrength: 0.5
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -116,8 +116,8 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TextureIntensity: 1
-    - _ToonSmoothness: 0.01
-    - _ToonSteps: 3
+    - _ToonSmoothness: 0.05
+    - _ToonSteps: 4
     - _ToonThreshold: 0.5
     - _UseDebugDefaults: 0
     - _UseOutlineDepthOffset: 0

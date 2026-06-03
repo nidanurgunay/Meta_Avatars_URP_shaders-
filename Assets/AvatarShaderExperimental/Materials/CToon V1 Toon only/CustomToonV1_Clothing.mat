@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: 7986563aaa55c4976ba81b44c8a9c64a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _USEOUTLINEDEPTHOFFSET_ON
   m_InvalidKeywords:
   - _ENABLEINNERLINES_ON
   - _USETEXTUREEDGES_ON
@@ -40,8 +41,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaCutoff: 0.07
     - _DebugInnerLines: 0
     - _DebugRawEdges: 0
+    - _EnableAlphaTest: 0
     - _EnableInnerLines: 1
     - _InnerLineBlur: 0.5
     - _InnerLineSmooth: 5
@@ -49,19 +52,22 @@ Material:
     - _InnerLineThreshold: 0.193
     - _InnerLineWidth: 2.16
     - _LineMapStrength: 1
-    - _OuterOutlineWidth: 0.011
+    - _OuterOutlineWidth: 0.005
+    - _OutlineDepthBias: 4
     - _OutlineWidth: 0.005
-    - _RimPower: 2.94
-    - _ShadowStrength: 0.263
+    - _RimPower: 4
+    - _ShadowStrength: 0.5
     - _ShowTextureOnly: 0
     - _SpecPower: 16
     - _SpecThreshold: 0.9
     - _TextureEdgeSmooth: 0.0366
     - _TextureEdgeThreshold: 0.05
     - _TextureIntensity: 1
-    - _ToonSmoothness: 0.037
-    - _ToonSteps: 10
+    - _ToonSmoothness: 0.05
+    - _ToonSteps: 4
     - _ToonThreshold: 1
+    - _UseDebugDefaults: 0
+    - _UseOutlineDepthOffset: 1
     - _UseRamp: 0
     - _UseTextureEdges: 1
     m_Colors:
@@ -70,10 +76,9 @@ Material:
     - _InnerLineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OuterOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimColor: {r: 0.40799996, g: 0.40799996, b: 0.40799996, a: 1}
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!114 &1269347749357950877
 MonoBehaviour:
   m_ObjectHideFlags: 11

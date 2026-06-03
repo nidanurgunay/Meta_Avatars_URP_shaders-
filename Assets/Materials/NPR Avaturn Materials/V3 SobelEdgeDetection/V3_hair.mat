@@ -97,8 +97,8 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EdgeSampleDist: 1
-    - _EdgeThreshold: 0.15
+    - _InnerLineBlur: 1
+    - _InnerLineThreshold: 0.15
     - _EnableAlphaTest: 1
     - _EnableInnerLines: 1
     - _EnvironmentReflections: 1

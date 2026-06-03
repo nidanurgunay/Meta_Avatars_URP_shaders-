@@ -57,14 +57,14 @@ Material:
     - _OutlineDepthBias: 4
     - _OutlineWidth: 0.005
     - _RimPower: 4
-    - _ShadowStrength: 0.6
+    - _ShadowStrength: 0.5
     - _ShowTextureOnly: 0
     - _SpecPower: 16
     - _SpecThreshold: 0.9
     - _TextureEdgeSmooth: 0.0366
     - _TextureEdgeThreshold: 0.05
     - _TextureIntensity: 1
-    - _ToonSmoothness: 0.03
+    - _ToonSmoothness: 0.05
     - _ToonSteps: 4
     - _ToonThreshold: 0.4
     - _UseDebugDefaults: 0

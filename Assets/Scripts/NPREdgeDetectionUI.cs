@@ -19,9 +19,9 @@ public class NPREdgeDetectionUI : MonoBehaviour
     private const float CANVAS_W = 1000f;
 
     // ── Technique ─────────────────────────────────────────────────────────────
-    private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5, KuwaharaSobel = 6, KuwGaussHier = 7, Toon = 8, ToonSobel = 9, ToonHier = 10, Halftone = 11, Hatching = 12, XToon = 13 }
-    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel", "Kuw+Hier", "Toon", "Toon+Sobel", "Toon+Hier", "Halftone", "Hatching", "X-Toon" };
-    private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA", "EFFECT_KUWAHARA_SOBEL", "EFFECT_KUW_GAUSS_HIER", "EFFECT_TOON", "EFFECT_TOON_SOBEL", "EFFECT_TOON_HIER", "EFFECT_HALFTONE", "EFFECT_HATCHING", "EFFECT_XTOON" };
+    private enum Technique { Derivative = 0, Sobel = 1, NormalEdge = 2, GaussSobel = 3, Hierarchical = 4, Kuwahara = 5, KuwaharaSobel = 6, KuwGaussHier = 7, Toon = 8, ToonSobel = 9, ToonHier = 10, Halftone = 11, Hatching = 12, XToon = 13, InvertedHull = 14 }
+    private static readonly string[] TechniqueNames    = { "Derivative", "Sobel", "Normal+Fresnel", "Gauss Sobel", "Hierarchical", "Kuwahara", "Kuwahara+Sobel", "Kuw+Hier", "Toon", "Toon+Sobel", "Toon+Hier", "Halftone", "Hatching", "X-Toon", "Inverted Hull" };
+    private static readonly string[] TechniqueKeywords = { "", "EFFECT_SOBEL", "EFFECT_NORMAL_EDGE", "EFFECT_GAUSS_SOBEL", "EFFECT_HIERARCHICAL", "EFFECT_KUWAHARA", "EFFECT_KUWAHARA_SOBEL", "EFFECT_KUW_GAUSS_HIER", "EFFECT_TOON", "EFFECT_TOON_SOBEL", "EFFECT_TOON_HIER", "EFFECT_HALFTONE", "EFFECT_HATCHING", "EFFECT_XTOON", "" };
     private Technique _currentTechnique = Technique.Derivative;
 
     // ── Display mode (cycles on the Mode row) ────────────────────────────────
@@ -30,7 +30,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
     private int _displayMode = 0;
 
     // ── Row data ──────────────────────────────────────────────────────────────
-    private enum RowKind { Float, Color, TechSelector, TechOption, ShaderToggle, CompareDefault, Action }
+    private enum RowKind { Float, Color, TechSelector, TechOption, ShaderToggle, CompareDefault, Action, KeywordCycle }
     private const int ACTION_SAVE = 0;
     private const int ACTION_LOAD = 1;
 
@@ -41,9 +41,11 @@ public class NPREdgeDetectionUI : MonoBehaviour
         public string      propName;
         public float       currentValue;
         public float       min, max, step;
-        public int         colorIndex;
-        public int         techniqueFilter; // -1 = always visible, 0/1/2 = per technique
-        public string      dependsOnProp;   // if set, hidden when the named ShaderToggle is OFF
+        public int         colorIndex;       // also used as cycleIndex for KeywordCycle
+        public int         techniqueFilter;  // -1 = always visible, 0/1/2 = per technique
+        public string      dependsOnProp;    // if set, hidden when the named ShaderToggle is OFF
+        public string[]    cycleLabels;      // KeywordCycle: display names for each option
+        public string[]    cycleKeywords;    // KeywordCycle: shader keyword per option
         public Text        valueText;
         public Image       highlight;
         public Text        cursorText;
@@ -170,6 +172,8 @@ public class NPREdgeDetectionUI : MonoBehaviour
             }
             else if (row.kind == RowKind.ShaderToggle)
                 SetShaderFloat(row.propName, row.currentValue);
+            else if (row.kind == RowKind.KeywordCycle)
+                ApplyKeywordCycle(row);
         }
         ApplyTechniqueKeywords();
         ApplyTechniqueVisibility();
@@ -196,12 +200,39 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
     void ApplyTechniqueKeywords()
     {
+        bool isInvertedHull = _currentTechnique == Technique.InvertedHull;
         foreach (var mat in _nprMaterials)
         {
             if (mat == null) continue;
             foreach (var kw in TechniqueKeywords) if (kw.Length > 0) mat.DisableKeyword(kw);
             string active = TechniqueKeywords[(int)_currentTechnique];
             if (active.Length > 0) mat.EnableKeyword(active);
+            // Inverted Hull: no screen-space edges, outline forced ON
+            if (isInvertedHull)
+            {
+                mat.DisableKeyword("ENABLE_NPR_EDGES");
+                mat.SetFloat("_OutlineEnabled", 1f);
+            }
+            // Other techniques: _OutlineEnabled controlled by the toggle row — don't override it
+        }
+        // Sync toggle UI when InvertedHull forces outline on
+        if (isInvertedHull)
+            SetOutlineToggleUI(1f);
+    }
+
+    void SetOutlineToggleUI(float value)
+    {
+        for (int i = 0; i < _rows.Count; i++)
+        {
+            var row = _rows[i];
+            if (row.kind == RowKind.ShaderToggle && row.propName == "_OutlineEnabled")
+            {
+                row.currentValue = value;
+                bool on = value > 0.5f;
+                if (row.valueText != null) { row.valueText.text = on ? "ON" : "OFF"; row.valueText.color = on ? new Color(0.4f, 0.9f, 1f) : new Color(0.5f, 0.5f, 0.5f); }
+                _rows[i] = row;
+                break;
+            }
         }
     }
 
@@ -424,6 +455,10 @@ public class NPREdgeDetectionUI : MonoBehaviour
                     AdjustColor(+1);
                     break;
 
+                case RowKind.KeywordCycle:
+                    CycleKeyword(_hoveredRow, +1);
+                    break;
+
                 case RowKind.ShaderToggle:
                 {
                     var r = _rows[_hoveredRow];
@@ -453,6 +488,10 @@ public class NPREdgeDetectionUI : MonoBehaviour
             else if (curRow.kind == RowKind.Color)
             {
                 if (gripDown) AdjustColor(-1);
+            }
+            else if (curRow.kind == RowKind.KeywordCycle)
+            {
+                if (gripDown) CycleKeyword(_cursor, -1);
             }
             else if (curRow.kind == RowKind.TechSelector)
             {
@@ -628,6 +667,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
         // ── Technique selector (cycles on trigger/grip) ──────────────────────
         AddTechSelectorRow(t);
         Space(t, 6);
+
 
         // ── Derivative parameters (technique 0) ──────────────────────────────
         SectionLabel(t, "Derivative Edge", 0);
@@ -823,22 +863,36 @@ public class NPREdgeDetectionUI : MonoBehaviour
         AddFloatRow(t, 13, "Ramp Smooth",  "_XToonRampSmoothing",      0f,     0.1f,  0.005f, 0.01f);
         AddColorRow( t, 13, "Shadow Col",  "_XToonShadowColor",        1);
         AddFloatRow(t, 13, "Shadow Str",   "_XToonShadowStrength",     0f,     1f,    0.01f,  0.6f);
-        AddFloatRow(t, 13, "Detail Mode",  "_XToonDetailMode",         0f,     2f,    1f,     0f);
-        AddFloatRow(t, 13, "Detail Bias",  "_XToonDetailBias",         0f,     1f,    0.01f,  0f);
-        AddFloatRow(t, 13, "Depth Near",   "_XToonDepthNear",          0.1f,   10f,   0.1f,   1.0f);
-        AddFloatRow(t, 13, "Depth Far",    "_XToonDepthFar",           1f,     20f,   0.5f,   5.0f);
+        AddKeywordCycleRow(t, 13, "Detail Mode",
+            new[] { "Depth", "Curvature", "Manual" },
+            new[] { "_DETAILMODE_DEPTH", "_DETAILMODE_CURVATURE", "_DETAILMODE_MANUAL" });
+        AddFloatRow(t, 13, "Detail Bias",  "_XToonDetailBias",         0f,     1f,    0.01f,  0.5f);
+        AddFloatRow(t, 13, "Depth Near",   "_XToonDepthNear",          0.1f,   20f,   0.5f,   5.0f);
+        AddFloatRow(t, 13, "Depth Far",    "_XToonDepthFar",           1f,     100f,  1f,     50.0f);
         AddFloatRow(t, 13, "Manual Det",   "_XToonManualDetail",       0f,     1f,    0.01f,  0f);
         AddColorRow( t, 13, "Specular Col","_XToonSpecularColor",      5);
         AddFloatRow(t, 13, "Spec Size",    "_XToonSpecularSize",       0f,     1f,    0.005f, 0.03f);
         AddFloatRow(t, 13, "Spec Smooth",  "_XToonSpecularSmoothness", 0.001f, 0.5f,  0.01f,  0.02f);
         AddFloatRow(t, 13, "Spec Str",     "_XToonSpecularStrength",   0f,     1f,    0.01f,  0.5f);
         AddFloatRow(t, 13, "Lighting Str", "_XToonLightingStrength",   0f,     1f,    0.01f,  1.0f);
+        AddShaderToggleRow(t, 13, "Enable Rim",   "_XToonEnableRim",    false);
+        AddColorRow( t, 13, "Rim Color",   "_XToonRimColor",           5,      "_XToonEnableRim");
+        AddFloatRow(t, 13, "Rim Power",    "_XToonRimPower",           0.5f,   10f,   0.1f,   3.0f,  "_XToonEnableRim");
+        AddFloatRow(t, 13, "Rim Thresh",   "_XToonRimThreshold",       0f,     1f,    0.01f,  0.1f,  "_XToonEnableRim");
+        AddFloatRow(t, 13, "Rim Str",      "_XToonRimStrength",        0f,     1f,    0.01f,  0.3f,  "_XToonEnableRim");
+        AddFloatRow(t, 13, "Norm Smooth",  "_XToonNormalSmoothing",    0f,     1f,    0.01f,  0f);
+        AddShaderToggleRow(t, 13, "Sobel On",     "_XToonEnableSobel",  false);
+        AddColorRow( t, 13, "Sobel Color", "_XToonSobelEdgeColor",     0,      "_XToonEnableSobel");
+        AddFloatRow(t, 13, "Sobel Thresh", "_XToonSobelThreshold",     0.001f, 1f,    0.01f,  0.15f, "_XToonEnableSobel");
+        AddFloatRow(t, 13, "Sobel Dist",   "_XToonSobelSampleDist",    0.1f,   10f,   0.1f,   1.0f,  "_XToonEnableSobel");
+        AddFloatRow(t, 13, "Sobel Str",    "_XToonSobelStrength",      0f,     1f,    0.01f,  1.0f,  "_XToonEnableSobel");
 
-        // ── Inverted Hull Outline (always visible) ────────────────────────────
+        // ── Inverted Hull Outline (always visible — optional on every technique) ─
         Space(t, 4);
         SectionLabel(t, "Inverted Hull Outline");
-        AddFloatRow( t, -1, "Width",         "_OutlineWidth", 0.5f, 10f, 0.1f, 2.0f);
-        AddColorRow( t, -1, "Outline Color", "_OutlineColor", 0);
+        AddShaderToggleRow(t, -1, "Enable Outline", "_OutlineEnabled", false);
+        AddFloatRow(t, -1, "Width",         "_OutlineWidth",  0f, 0.05f, 0.001f, 0.003f);
+        AddColorRow(t, -1, "Outline Color", "_OutlineColor",  0);
 
         // ── Color (always visible) ────────────────────────────────────────────
         Space(t, 4);
@@ -886,6 +940,8 @@ public class NPREdgeDetectionUI : MonoBehaviour
                 PlayerPrefs.SetFloat("NPR_" + row.propName, row.currentValue);
             else if (row.kind == RowKind.Color)
                 PlayerPrefs.SetInt("NPR_ci_" + row.propName, row.colorIndex);
+            else if (row.kind == RowKind.KeywordCycle)
+                PlayerPrefs.SetInt("NPR_kc_" + row.label, row.colorIndex);
         }
         PlayerPrefs.Save();
         var r = _rows[rowIndex];
@@ -932,7 +988,17 @@ public class NPREdgeDetectionUI : MonoBehaviour
                 row.valueText.text  = cname;
                 row.valueText.color = (c.r + c.g + c.b < 0.3f) ? new Color(0.7f, 0.7f, 0.7f) : c;
                 _rows[i] = row;
-                SetShaderColor(row.propName, c);
+            }
+            else if (row.kind == RowKind.KeywordCycle)
+            {
+                string key = "NPR_kc_" + row.label;
+                if (!PlayerPrefs.HasKey(key)) continue;
+                int idx = Mathf.Clamp(PlayerPrefs.GetInt(key), 0, row.cycleLabels.Length - 1);
+                row.colorIndex = idx;
+                row.valueText.text  = row.cycleLabels[idx];
+                row.valueText.color = new Color(0.4f, 0.9f, 1f);
+                _rows[i] = row;
+                ApplyKeywordCycle(row);
             }
         }
         var r = _rows[rowIndex];
@@ -967,8 +1033,12 @@ public class NPREdgeDetectionUI : MonoBehaviour
         {
             foreach (var mat in _nprMaterials)
                 if (mat != null) mat.EnableKeyword("ENABLE_NPR_EDGES");
+            // ApplyTechniqueKeywords handles InvertedHull + per-technique keyword
             ApplyTechniqueKeywords();
-            SetShaderFloat("_OutlineEnabled", 1f);
+            // For non-InvertedHull, restore the outline toggle's saved state
+            // (DEFAULT mode sets _OutlineEnabled=0 on shader; we need to push it back)
+            if (_currentTechnique != Technique.InvertedHull)
+                SetShaderFloat("_OutlineEnabled", GetRowValue("_OutlineEnabled", 0f));
         }
         else // DEFAULT — Meta PBR as-is
         {
@@ -979,6 +1049,13 @@ public class NPREdgeDetectionUI : MonoBehaviour
                 mat.SetFloat("_OutlineEnabled", 0f);
             }
         }
+    }
+
+    float GetRowValue(string propName, float fallback)
+    {
+        foreach (var row in _rows)
+            if (row.propName == propName) return row.currentValue;
+        return fallback;
     }
 
     void AddTechSelectorRow(Transform parent)
@@ -1043,6 +1120,44 @@ public class NPREdgeDetectionUI : MonoBehaviour
             valueText = valTxt, highlight = hl, cursorText = curTxt,
             collider = col, rowGo = rowGo,
         });
+    }
+
+    void AddKeywordCycleRow(Transform parent, int techniqueFilter, string label,
+                            string[] cycleLabels, string[] cycleKeywords, int initialIndex = 0)
+    {
+        var (rowGo, hl, valTxt, curTxt, col, _) = MakeRowShell(parent, label, hasSlider: false);
+        valTxt.text  = cycleLabels[initialIndex];
+        valTxt.color = new Color(0.4f, 0.9f, 1f);
+        _rows.Add(new Row
+        {
+            kind = RowKind.KeywordCycle, label = label,
+            cycleLabels = cycleLabels, cycleKeywords = cycleKeywords,
+            colorIndex = initialIndex, techniqueFilter = techniqueFilter,
+            valueText = valTxt, highlight = hl, cursorText = curTxt, collider = col, rowGo = rowGo,
+        });
+    }
+
+    void ApplyKeywordCycle(Row row)
+    {
+        foreach (var mat in _nprMaterials)
+        {
+            if (mat == null) continue;
+            for (int k = 0; k < row.cycleKeywords.Length; k++)
+                if (row.cycleKeywords[k].Length > 0) mat.DisableKeyword(row.cycleKeywords[k]);
+            string kw = row.cycleKeywords[row.colorIndex];
+            if (kw.Length > 0) mat.EnableKeyword(kw);
+        }
+    }
+
+    void CycleKeyword(int rowIndex, int direction)
+    {
+        var row = _rows[rowIndex];
+        if (row.kind != RowKind.KeywordCycle) return;
+        row.colorIndex = (int)Mathf.Repeat(row.colorIndex + direction, row.cycleLabels.Length);
+        row.valueText.text  = row.cycleLabels[row.colorIndex];
+        row.valueText.color = new Color(0.4f, 0.9f, 1f);
+        _rows[rowIndex] = row;
+        ApplyKeywordCycle(row);
     }
 
     void AddColorRow(Transform parent, int techniqueFilter, string label, string propName, int startIndex, string dependsOn = "")

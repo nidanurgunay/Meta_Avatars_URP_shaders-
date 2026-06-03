@@ -16,17 +16,17 @@
 ## File Locations
 | What | Path |
 |---|---|
-| Thesis LaTeX root | `/Users/nidanurgunay/Desktop/Uni/Thesis/` |
-| main.tex | `/Users/nidanurgunay/Desktop/Uni/Thesis/main.tex` |
-| Chapters | `/Users/nidanurgunay/Desktop/Uni/Thesis/chapters/` |
-| Frontmatter | `/Users/nidanurgunay/Desktop/Uni/Thesis/frontmatter/` |
-| Figures | `/Users/nidanurgunay/Desktop/Uni/Thesis/figures/` |
-| References | `/Users/nidanurgunay/Desktop/Uni/Thesis/references.bib` |
+| Thesis LaTeX root | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/` |
+| main.tex | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/main.tex` |
+| Chapters | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/chapters/` |
+| Frontmatter | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/frontmatter/` |
+| Figures | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/figures/` |
+| References | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/references.bib` |
 | Unity project (main) | `/Users/nidanurgunay/ThesisMetaAvatar/` |
 | Unity project (experimental) | `/Users/nidanurgunay/Avatar_Shader_Experiemntal/` |
-| Konstanz logo | `/Users/nidanurgunay/Desktop/Uni/Thesis/UniKonstanz_Logo_Minimum_sRGB.jpg` |
-| Daniel Fink thesis (style ref) | `/Users/nidanurgunay/Desktop/Uni/Thesis/Daniel_Fink_Master_Thesis.pdf` |
-| Project report (content ref) | `/Users/nidanurgunay/Desktop/Uni/Thesis/NidanurGunay_Project_Report.pdf` |
+| Konstanz logo | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/UniKonstanz_Logo_Minimum_sRGB.jpg` |
+| Daniel Fink thesis (style ref) | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/Daniel_Fink_Master_Thesis.pdf` |
+| Project report (content ref) | `/Users/nidanurgunay/ThesisMetaAvatar/thesis/NidanurGunay_Project_Report.pdf` |
 
 ---
 

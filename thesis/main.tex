@@ -4,11 +4,12 @@
 %% ============================================
 
 \documentclass[
-  12pt,
+  11pt,
   a4paper,
   twoside,
-  openright,
+  openany,
   headings=optiontohead,
+  parskip=half,
 ]{scrbook}
 
 %% ---- Encoding & Language ----
@@ -18,14 +19,15 @@
 \usepackage{csquotes}
 
 %% ---- Typography ----
-% Body: Palatino (warm, readable serif — matches Fink thesis style)
-\usepackage[sc,osf]{mathpazo}
-% Sans-serif: Helvetica scaled to match Palatino x-height (used for headings)
-\usepackage[scaled=0.90]{helvet}
-\usepackage{microtype}
-% Line spacing: ~1.15 — matches Fink thesis (tighter than onehalfspacing)
+% Body: Palatino serif (mathpazo); headings: Helvetica (\sffamily via helvet)
+\usepackage{mathpazo}                % Palatino for body + math
+\usepackage[scaled=0.90]{helvet}     % Helvetica for \sffamily headings
 \usepackage{setspace}
 \setstretch{1.15}
+\usepackage{microtype}
+
+%% ---- Paragraph style handled by parskip=half in \documentclass ----
+\raggedbottom   % prevent vertical stretch on short pages (avoids big inter-paragraph gaps)
 
 %% ---- Page Layout ----
 \usepackage[
@@ -40,10 +42,19 @@
 %% ---- KOMA heading fonts (sans-serif, matching Fink thesis) ----
 \setkomafont{chapter}{\normalfont\huge\sffamily}
 \setkomafont{section}{\normalfont\large\sffamily}
-\setkomafont{subsection}{\normalfont\normalsize\sffamily\bfseries}
-\setkomafont{subsubsection}{\normalfont\normalsize\sffamily}
+\setkomafont{subsection}{\normalfont\normalsize\sffamily}
+\setkomafont{subsubsection}{\normalfont\normalsize\sffamily\itshape}
 \setkomafont{pagehead}{\normalfont\small\sffamily}
 \setkomafont{pagenumber}{\normalfont\small\sffamily}
+
+%% ---- Heading spacing (tighter, matching Fink thesis) ----
+% Reduce the large default drop above/below chapter titles
+\renewcommand*{\chapterheadstartvskip}{\vspace*{20pt}}
+\renewcommand*{\chapterheadendvskip}{\vspace{8pt}}
+% Tighten space before/after section-level headings
+\RedeclareSectionCommand[beforeskip=0.75\baselineskip, afterskip=0.4\baselineskip]{section}
+\RedeclareSectionCommand[beforeskip=0.6\baselineskip,  afterskip=0.4\baselineskip]{subsection}
+\RedeclareSectionCommand[beforeskip=0.5\baselineskip,  afterskip=0.25\baselineskip]{subsubsection}
 
 %% ---- Header / Footer ----
 \usepackage[automark, headsepline]{scrlayer-scrpage}
@@ -60,6 +71,7 @@
 \graphicspath{{figures/}}
 \usepackage{float}
 \usepackage{subcaption}
+\captionsetup{labelfont=bf, font=small, labelsep=colon, format=hang}
 \usepackage{wrapfig}
 \usepackage{tikz}
 \usepackage{pgfplots}
@@ -167,7 +179,7 @@
 \listoffigures
 \listoftables
 \include{frontmatter/abbreviations}
-\KOMAoptions{open=right}
+\KOMAoptions{open=any}
 
 %% ---- Main Matter ----
 \mainmatter

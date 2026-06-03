@@ -41,7 +41,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46853fd63f44668a55e432a1113a2cd, type: 3}
   m_Name: EdgeDetectionFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     renderPassEvent: 550
     edgeShader: {fileID: 4800000, guid: cbbd79783d4a74d49bc2c349a189e00c, type: 3}
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a37147cf30146778e0fd9258a1018a, type: 3}
   m_Name: KuwaharaFilterFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     renderPassEvent: 550
     kuwaharaShader: {fileID: 4800000, guid: b2466d13b2c9f4b5c80fbef454266920, type: 3}

@@ -164,9 +164,9 @@ edgeMag = √(Gx² + Gy²)
 ### Technique 3 — Normal + Fresnel
 **File:** `NPREffect_NormalEdge.cginc`
 
-Two signals, both from the interpolated world-space normal — zero extra texture samples:
+Two signals derived from the world-space normal — one extra texture sample when the normal map is enabled:
 
-**Normal discontinuity:** `ddx/ddy` on the world normal detects geometric creases and silhouettes.
+**Normal discontinuity:** `ddx/ddy` on the world-space normal detects geometric creases and silhouettes. On Jody (Mixamo) and Avaturn, the normal is first decoded from the PBR normal map via TBN (`_BumpMap` / `_BumpScale` / `_UseNormalMap` toggle) before the derivatives are computed, giving the edge detector access to baked surface microdetail. Falls back to the interpolated geometry normal when the toggle is off.
 
 ```
 normEdge = smoothstep(Threshold ± Smoothness, |∇worldNormal|) × NormStrength
@@ -179,7 +179,7 @@ fresnel = 1 − saturate(N·V)
 fresnelEdge = smoothstep(band around FresnelThreshold) × FresnelStrength
 ```
 
-**Characteristics:** Geometry-driven — completely insensitive to texture content. Clean contour lines on smooth surfaces. Cannot detect texture or colour-based detail edges.
+**Characteristics:** Responds to both geometry curvature and normal-map-encoded surface detail when `_UseNormalMap` is enabled; falls back to geometry-only when disabled. Clean contour lines on smooth surfaces. Cannot detect colour-based detail edges.
 
 ---
 
@@ -505,9 +505,9 @@ Same ink/paper colour model as Halftone (above) using `_Hat*` uniforms.
 
 ---
 
-## V1 & V2 Cross-Avatar Analysis
+## V1 & V1.2 Cross-Avatar Analysis
 
-This section documents the two thesis-framed technique generations — **V1 (Toon Shading + Inverted Hull Outline)** as the baseline and **V2 (XToon 2D Ramp)** as the advanced technique — and compares their implementation across all three avatar types in the project.
+This section documents the two thesis-framed technique generations — **V1 (Toon Shading + Inverted Hull Outline)** as the baseline and **V1.2 (XToon 2D Ramp)** as the advanced technique — and compares their implementation across all three avatar types in the project.
 
 ---
 
@@ -535,7 +535,7 @@ float toon   = floor(smooth * steps) / steps;
 toon = lerp(1.0, toon, ShadowStrength);
 ```
 - Single smooth threshold collapses NdotL into one lit/unlit region; `floor × steps` then quantises into bands
-- Ambient `_AmbientColor` added additively; rim light `pow(1 - N·V, RimPower)` overlaid on top
+- Ambient `_AmbientColor` added additively; rim light `pow(1 - N·V, _RimPower) * _RimColor` overlaid on top; controlled by `_EnableRim` toggle (default ON)
 
 **Toon quantisation algorithm:** Unified with the Avaturn version — per-step `smoothstep` at every band boundary (see Avaturn section below for the formula). The previous single-threshold `smoothstep → floor` approach was replaced; `_ToonThreshold` property was removed.
 
@@ -624,7 +624,7 @@ color.rgb  = lerp(float3(lum, lum, lum), color.rgb, _ToonSaturation);
 |----------|-----------|-----------|---------|
 | Quantisation method | Per-step `smoothstep` + `(band + blend) / steps` (unified) | Per-step `smoothstep` + `(band + blend) / steps` | `floor(rgb × bands + 0.5) / bands` |
 | Input to quantiser | Raw NdotL | Raw NdotL | Composited PBR RGB |
-| Rim light | Yes (additive) | Yes (additive) | Via Meta PBR (pre-composited) |
+| Rim light | Yes (`_EnableRim` toggle, default ON, additive) | Yes (`_EnableRim` toggle, default ON, additive) | Via Meta PBR (pre-composited) |
 | Compute-skinning bridge | No | Yes (`OVR_FETCH_POS_NORM`) | Yes (SDK native) |
 | Outline technique | Inverted hull (world-space normal offset) | Inverted hull (world-space normal offset) | Inverted hull (world-space normal offset, separate pass) |
 | Outline toggleable | No (always on if pass enabled) | No (always on if pass enabled) | Yes (`_OutlineEnabled`) |
@@ -632,7 +632,7 @@ color.rgb  = lerp(float3(lum, lum, lum), color.rgb, _ToonSaturation);
 
 ---
 
-### V2 — XToon: Extended Toon Shader with 2D Ramp
+### V1.2 — XToon: Extended Toon Shader with 2D Ramp
 
 **Concept:** Barla et al. NPAR 2006. Replaces the 1D NdotL lookup with a **2D texture lookup** whose axes are independently configurable:
 - **U axis** — lighting intensity (NdotL or luminance proxy)
@@ -754,7 +754,7 @@ finalColor = lerp(textureColor, finalColor, _XToonLightingStrength);
 - `EFFECT_XTOON` added to the `multi_compile` list in `app_functions.hlsl`
 - Include dispatch and `AppSpecificPostManipulation` condition updated
 
-| Property | Mixamo V2 | Avaturn V2 | Meta V2 |
+| Property | Mixamo V1.2 | Avaturn V1.2 | Meta V1.2 |
 |----------|-----------|-----------|---------|
 | U axis source | Raw NdotL × shadow | Raw NdotL × shadow | Raw NdotL × shadow (matches Jade/Avaturn) |
 | U axis access | Direct (vertex → fragment NdotL) | Direct (vertex → fragment NdotL) | `GetMainLight(shadowCoord)` in fragment; `positionWS` passed as 5th arg to `ApplyNPREffect` |
@@ -771,9 +771,9 @@ finalColor = lerp(textureColor, finalColor, _XToonLightingStrength);
 
 ---
 
-### V1 vs V2 — Conceptual Differences
+### V1 vs V1.2 — Conceptual Differences
 
-| Dimension | V1: Toon + Inverted Hull | V2: XToon 2D Ramp |
+| Dimension | V1: Toon + Inverted Hull | V1.2: XToon 2D Ramp |
 |-----------|--------------------------|-------------------|
 | **Ramp dimensionality** | 1D (NdotL only) | 2D (NdotL × abstraction) |
 | **Abstraction control** | None — same detail at every distance | Depth / curvature / manual V axis |
@@ -783,7 +783,7 @@ finalColor = lerp(textureColor, finalColor, _XToonLightingStrength);
 | **Reference** | Standard real-time cel-shading (no specific paper) | Barla, Thollot & Markosian, NPAR 2006 |
 | **Computational cost** | ~1 texture sample (albedo) | 1 ramp texture sample + optional inline Sobel (8 samples) |
 
-The core advancement of V2 over V1 is the separation of *lighting response* (U) from *stylistic abstraction* (V). V1 applies the same level of detail uniformly; V2 can make nearby objects crisp and detailed while distant objects dissolve into broad abstract colour zones — a behaviour grounded in how illustrators vary line weight and detail with focal distance.
+The core advancement of V1.2 over V1 is the separation of *lighting response* (U) from *stylistic abstraction* (V). V1 applies the same level of detail uniformly; V1.2 can make nearby objects crisp and detailed while distant objects dissolve into broad abstract colour zones — a behaviour grounded in how illustrators vary line weight and detail with focal distance.
 
 ---
 
@@ -884,7 +884,7 @@ All standalone Avaturn shaders share the same three-pass structure:
 
 V3 and V4 are structurally identical in their Unity shader parts: same Properties headers and naming, same v2f struct (`viewDirWS` interpolated), same HLSL uniform declarations, same debug-override pattern (local variable copies), and same master toggles (`_EnableRim`, `_EnableOuterOutline`, `_DebugView`). The only intentional difference is the edge-detection algorithm — V3 uses a simple `step()`-based Sobel; V4 adds Gaussian pre-blur, a progressive smoothstep pipeline, normal edges, and Fresnel edges.
 
-**Base shading (V2–V5):** All shaders from V2 onward replaced the V1 stepped-NdotL toon base with a **XToon 2D ramp** — the same ramp approach used by the dedicated XToon shader (VXT) and the Meta `EFFECT_XTOON` cginc. The stepped-toon properties (`_ToonSteps`, `_ToonThreshold`, `_ToonSmoothness`, `_EnableToonShading`) have been removed. V2–V5 now expose: `_ToonRamp` (2D), `_LightSensitivity`, `_RampSmoothing`, `_ShadowColor`, `_ShadowStrength`, `_DetailMode` (Depth/Curvature/Manual keyword enum), `_DetailBias`, `_DepthNear`, `_DepthFar`, `_ManualDetail`. The `#pragma shader_feature_local _DETAILMODE_DEPTH _DETAILMODE_CURVATURE _DETAILMODE_MANUAL` is added to each ForwardLit pass.
+**Base shading (V1.2–V4):** All shaders from V1.2 onward replaced the V1 stepped-NdotL toon base with a **XToon 2D ramp** — the same ramp approach used by the dedicated XToon shader (VXT) and the Meta `EFFECT_XTOON` cginc. The stepped-toon properties (`_ToonSteps`, `_ToonThreshold`, `_ToonSmoothness`, `_EnableToonShading`) have been removed. V2–V5 now expose: `_ToonRamp` (2D), `_LightSensitivity`, `_RampSmoothing`, `_ShadowColor`, `_ShadowStrength`, `_DetailMode` (Depth/Curvature/Manual keyword enum), `_DetailBias`, `_DepthNear`, `_DepthFar`, `_ManualDetail`. The `#pragma shader_feature_local _DETAILMODE_DEPTH _DETAILMODE_CURVATURE _DETAILMODE_MANUAL` is added to each ForwardLit pass.
 
 ### V3 — Sobel Edge Detection
 **Avaturn file:** `Assets/Shaders/AvaturnNPRShaders/V3_SobelEdgeDetection.shader`
@@ -961,6 +961,11 @@ Three-layer hierarchical edge detection where the color layer applies a 9-tap Ga
 | `_HNormalThreshold / Weight` | 0.3 / 1.0 | Normal layer threshold and contribution |
 | `_HColorThreshold / Weight` | 0.1 / 0.5 | Color layer threshold and contribution |
 | `_HAdaptiveStrength` | 0.5 | Brightness-based suppression of edges on highlights |
+| `_EnableRim` | 1 (on) | Toggle rim lighting (default ON) |
+| `_RimColor` | (0.408,0.408,0.408,1) | Rim tint colour |
+| `_RimPower` | 3.0 | Rim falloff exponent |
+
+**Rim lighting:** Both Jody and Avaturn V5 compute `pow(1 - saturate(N·V), _RimPower) * _RimColor`, added to `shaded` after ambient and before edge overlay. Controlled by `_EnableRim` toggle (default ON). Jody V5 was missing rim lighting prior to this session; it has now been added to match Avaturn V5.
 
 **Materials:** `Assets/Materials/NPR Avaturn Materials/V5 HierarchicalGaussian/` *(create folder and materials in Unity)*
 
@@ -1075,6 +1080,82 @@ Also implements Normal Field Abstraction (blend between vertex normals and a smo
 
 ---
 
+## Screenshot Scene (Thesis Figure Capture)
+
+Two scripts work together to take thesis screenshots inside Unity Editor Play mode — no Quest headset or build required for the Avaturn and Jade scenes. For Meta SDK avatars the same scripts work: the SDK falls back to a preset avatar from StreamingAssets when no OVR runtime is available.
+
+### ShaderSwapper.cs
+
+Manages a list of named **shader variants** (material sets) and applies them to an avatar's renderers on demand.
+
+**Manual mode (Avaturn / Jade FBX scenes):**
+- Populate `Renderer Slots` by dragging `SkinnedMeshRenderer` components from the avatar.
+- For each `ShaderVariant`, fill `Materials[]` in the same order as the slots.
+- Leave `Avatar Entity` empty.
+
+**Meta SDK mode (metavatars.unity screenshot scene):**
+- Drag the `SampleAvatarEntity` (`AvatarEntity1`) into `Avatar Entity`.
+- Leave `Renderer Slots` empty.
+- For each `ShaderVariant`, fill `Rules[]` instead of `Materials[]`:
+  - `Keyword` = partial name matched against the renderer's `gameObject.name` (e.g. `"body"`, `"hair"`, `"eyelash"`, `"look"`). Case-insensitive.
+  - Blank keyword = catch-all for any renderer not claimed by a prior rule.
+- `ShaderSwapper` subscribes to `OnDefaultAvatarLoadedEvent` + `OnUserAvatarLoadedEvent` in `Start()` and applies materials automatically when the avatar finishes loading.
+
+**Keyboard:** Left/Right arrow keys cycle variants without taking a screenshot.
+
+### ScreenshotController.cs
+
+| Key | Action |
+|-----|--------|
+| F11 | Single screenshot, current variant |
+| F12 | Advance to next variant, then screenshot |
+| Ctrl+F12 | Auto-batch: captures every variant in sequence with `batchDelay` seconds between shots |
+
+Output path: `<ProjectRoot>/Screenshots/` in the Editor; `Application.persistentDataPath/Screenshots/` in a build (use ADB `adb pull /sdcard/Android/data/<package>/files/Screenshots/` on Quest).
+
+### CameraCoordinateOverlay.cs
+
+On-screen readout of the active camera's transform, placed in the **top-right corner** of the Game View. Intended for setting up reproducible screenshot viewpoints across thesis figures.
+
+| Key | Action |
+|-----|--------|
+| F9 | Toggle overlay on / off |
+
+Displayed values (updated every frame):
+
+| Row | Source |
+|-----|--------|
+| Pos X / Y / Z | `Camera.transform.position` |
+| Rot X / Y / Z | `Camera.transform.eulerAngles` |
+| Dist *(optional)* | `Vector3.Distance(camera, distanceTarget)` |
+
+**Setup:** attach `CameraCoordinateOverlay` to the Main Camera (or any active scene object that has a `Camera` component). Optionally drag the avatar root into the **Distance Target** slot to display distance from lens to avatar.
+
+The overlay is drawn via IMGUI (`OnGUI`) which is **not** captured by `ScreenshotController`'s `RenderTexture` pipeline — so it is visible on screen during setup but never appears in saved PNGs. Toggle off with **F9** before taking any screenshots that must be completely clean.
+
+File naming: `{AvatarName}_{VariantName}_{yyyy-MM-dd_HHmmss}.png`
+
+**Super Sampling** (`superSampling = 2`): renders at 2× the Game View resolution before encoding, giving thesis-quality PNGs at any window size.
+
+### Recommended variant list for Meta SDK scene
+
+| Variant Name | Rules (keyword → material) |
+|---|---|
+| `V1_Toon` | body→V1_body, head→V1_head, hair→V1_hair, look→V1_look, eyelash→V1_eyelash, (blank)→V1_body |
+| `V2_NormalEdge` | body→V2_body, … |
+| `V3_Sobel` | body→V3_body, … |
+| `V4_GaussSobel` | body→V4_body, … |
+| `V5_Hierarchical` | body→V5_body, head→V5_head (skin discard ON), … |
+| `V6_NormalMap` | body→V6_body, … |
+| `V7_Crease` | body→V7_body, … |
+| `V8_QuantizedSobel` | body→V8_body, … |
+| `VXT_XToon_Depth` | body→VXT_body (depth mode), … |
+| `VXT_XToon_Curvature` | body→VXT_body (curvature mode), … |
+
+Duplicate `VXT_body.mat` and set `_DetailMode` to the appropriate value before dragging into the variant rule, so each XToon mode is a separate preset.
+
+---
+
 ## File Map
 
 ```
@@ -1087,8 +1168,20 @@ Assets/
 │   ├── FreeCameraController.cs            — keyboard/mouse free-fly camera (WASD + right-drag, Q/E vertical)
 │   ├── AvaturnLabelManager.cs             — [ExecuteAlways] manager: scans scene for Avaturn roots, spawns floating labels
 │   ├── AvaturnLabel.cs                    — per-avatar label with auto-parsed name ("Avaturn (NPR V8)" → "V8")
-│   └── AvaturnAnimationPrepare.cs         — attach to the parent of a GLTFast-loaded Avaturn GLB; builds a Humanoid Avatar
-│                                             at runtime via AvatarBuilder.BuildHumanAvatar() so Mixamo clips retarget correctly
+│   ├── AvaturnAnimationPrepare.cs         — attach to the parent of a GLTFast-loaded Avaturn GLB; builds a Humanoid Avatar
+│   │                                         at runtime via AvatarBuilder.BuildHumanAvatar() so Mixamo clips retarget correctly
+│   ├── ShaderSwapper.cs                   — applies named shader variant sets to an avatar's renderers
+│   │                                         MANUAL MODE: drag SkinnedMeshRenderers into slots; Materials[] ordered by slot
+│   │                                         META SDK MODE: assign OvrAvatarEntity; renderers auto-discovered after load;
+│   │                                         each variant uses MaterialRule[] (keyword → material, blank = catch-all)
+│   │                                         Arrow keys cycle variants; API: NextVariant/PrevVariant/SetVariant/ResetToFirst
+│   ├── ScreenshotController.cs            — screenshot capture for thesis figures (no Quest headset required in Editor)
+│   │                                         F11 = single shot; F12 = next variant + shot; Ctrl+F12 = auto-batch all variants
+│   │                                         Saves to <ProjectRoot>/Screenshots/ (Editor) or persistentDataPath (build)
+│   │                                         File naming: {AvatarName}_{VariantName}_{timestamp}.png
+│   └── CameraCoordinateOverlay.cs         — IMGUI overlay: shows camera Pos X/Y/Z and Rot X/Y/Z in top-right corner
+│                                             F9 = toggle; optional DistanceTarget shows lens-to-avatar distance
+│                                             NOT captured by ScreenshotController (IMGUI bypasses RenderTexture pipeline)
 ├── AvatarShaderExperimental/
 │   ├── Scripts/Rendering/
 │   │   ├── KuwaharaFilterFeature.cs       — screen-space anisotropic Kuwahara URP feature
@@ -1105,7 +1198,7 @@ Assets/
 │   │   └── AvatarMaskCapture.shader       — avatar silhouette mask
 │   ├── JadeNPRShaders/
 │   │   ├── V1_ToonShading_GeometryOutline.shader — Jade standalone: toon + inverted hull outline
-│   │   ├── V2_NormalEdgeDetection.shader  — Jade standalone: normal + Fresnel edges
+│   │   ├── V2_NormalEdgeDetection.shader  — Jade standalone: TBN-decoded normal map + Fresnel edges
 │   │   ├── V3_SobelEdgeDetection.shader   — Jade standalone: Sobel on texture luma
 │   │   ├── V4_GaussianPreFilteredSobel.shader — Jade standalone: Gaussian + Sobel
 │   │   ├── V5_HierarchicalGaussian.shader — Jade standalone: depth+normal+Gauss Roberts Cross
@@ -1115,7 +1208,7 @@ Assets/
 │   │   └── SobelEdgeDetection.shader      — Sobel-only edge shader
 │   ├── AvaturnNPRShaders/
 │   │   ├── V1_ToonShading_GeometryOutline.shader — Avaturn standalone: toon + inverted hull outline
-│   │   ├── V2_NormalEdgeDetection.shader  — Avaturn standalone: normal + Fresnel edges
+│   │   ├── V2_NormalEdgeDetection.shader  — Avaturn standalone: TBN-decoded normal map + Fresnel edges
 │   │   ├── V3_SobelEdgeDetection.shader   — Avaturn standalone: Sobel on texture luma
 │   │   ├── V4_GaussianPreFilteredSobel.shader — Avaturn standalone: Gaussian + Sobel
 │   │   ├── V5_HierarchicalGaussian.shader — Avaturn standalone: Hierarchical + Gaussian Roberts Cross
@@ -1141,12 +1234,12 @@ Assets/
 │       └── app_specific/
 │           └── app_functions.hlsl         — multi_compile keywords + include dispatch + OUTLINE_PASS hook
 ├── Editor/
-│   ├── AvaturnPresetShaderGUI.cs              — ShaderGUI for Avaturn shaders: Save/Apply/Diff slot presets (Head/Body/Hair/Eyelash/Look)
-│   ├── AvaturnSlotPresets.cs                  — ScriptableObject storing per-shader per-slot float+color presets
-│   ├── AvaturnSlotPresets.asset               — Avaturn preset data; includes V1_InvertedHullOutline section
-│   ├── JadePresetShaderGUI.cs                 — ShaderGUI for Jade XToon shader: same preset workflow, slots A–E
-│   ├── JadePresets.asset                      — Jade preset data; includes V1_InvertedHullOutline section
-│   ├── InvertedHullPresetShaderGUI.cs         — ShaderGUI for Custom/V1_InvertedHullOutline; routes to JadePresets or AvaturnSlotPresets by material path
+│   ├── ShaderPresetStore.cs                   — static CSV store: read/write named presets to Assets/Editor/ShaderPresets.csv
+│   │                                             API: SavePreset / LoadPreset / GetPresetNames / HasPreset / DeletePreset / Reload
+│   ├── ShaderPresets.csv                      — persistent preset data (multiple named presets per shader/slot combination)
+│   ├── AvaturnPresetShaderGUI.cs              — ShaderGUI for Avaturn shaders: CSV-backed Save/Apply/Delete presets + XToon quick-select buttons
+│   ├── JadePresetShaderGUI.cs                 — ShaderGUI for Jade XToon shader: same CSV workflow; XToon quick buttons (Depth/Curvature/Manual)
+│   ├── InvertedHullPresetShaderGUI.cs         — ShaderGUI for Custom/V1_InvertedHullOutline; routes to Jade or Avaturn preset GUI by path
 │   └── VHullTextureAssigner.cs                — One-shot tool (Tools menu): assigns all 4 PBR maps from Avaturn.glb to VHull_* materials
 ├── Materials/NPR Avaturn Materials/
 │   ├── V1 InvertedHull/                   — VHull materials using Custom/V1_InvertedHullOutline

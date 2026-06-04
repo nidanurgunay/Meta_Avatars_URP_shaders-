@@ -25,8 +25,9 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
         _OutlineDepthBias ("Outline Depth Bias", Range(0, 5)) = 1.0
 
         // Rim
+        [Toggle] _EnableRim ("Enable Rim Lighting", Float) = 1
         _RimColor ("Rim Color", Color) = (0.408,0.408,0.408,1)
-        _RimPower ("Rim Power", Range(0.1, 8.0)) = 3.0
+        _RimPower ("Rim Power", Range(0.5, 10.0)) = 3.0
 
         // Ambient
         _AmbientColor ("Ambient Color", Color) = (0.35,0.35,0.35,1)
@@ -159,6 +160,7 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
             float _ShadowStrength;
             float4 _RimColor;
             float _RimPower;
+            float _EnableRim;
             float4 _AmbientColor;
             float _UseDebugDefaults;
             float _EnableAlphaTest;
@@ -225,11 +227,12 @@ Shader "Custom/V1_ToonShading_GeometryOutline"
                 
                 float3 lighting = lightColor * toon + _AmbientColor.rgb;
 
-                float rim = 1.0 - saturate(dot(vWS, nWS));
-                rim = pow(rim, _RimPower);
-                float3 rimLighting = rim * _RimColor.rgb;
-
-                float3 shaded = albedo.rgb * lighting + rimLighting;
+                float3 shaded = albedo.rgb * lighting;
+                if (_EnableRim > 0.5)
+                {
+                    float rim = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
+                    shaded += rim * _RimColor.rgb;
+                }
                 
                 return half4(shaded, albedo.a);
             }

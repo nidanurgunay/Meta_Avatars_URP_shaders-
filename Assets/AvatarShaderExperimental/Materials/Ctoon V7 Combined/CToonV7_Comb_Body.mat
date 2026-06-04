@@ -18,6 +18,9 @@ Material:
   m_InvalidKeywords:
   - _ENABLEINNERLINES_ON
   - _ENABLENORMALEDGES_ON
+  - _ENABLEOUTEROUTLINE_ON
+  - _ENABLERIM_ON
+  - _USENORMALMAP_ON
   - _USETEXTUREEDGES_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -30,6 +33,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 8c8eedd0915724818be4399b70dba86a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _LineMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -43,24 +50,26 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonRamp:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 0115dac2e9f414d18b5ef82ea5bb4d4e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaCutoff: 0.07
+    - _AlphaCutoff: 0.1
+    - _BumpScale: 1
     - _CullMode: 2
     - _DebugInnerLines: 0
     - _DebugRawEdges: 0
     - _DepthFar: 50
     - _DepthNear: 5
-    - _DetailBias: 0.5
+    - _DetailBias: 0
     - _DetailMode: 0
     - _EnableAlphaTest: 0
     - _EnableFresnelEdge: 0
     - _EnableInnerLines: 1
     - _EnableNormalEdges: 1
-    - _EnableOuterOutline: 0
+    - _EnableOuterOutline: 1
+    - _EnableRim: 1
     - _EnableTextureSobel: 0
     - _FresnelEdgeStrength: 0.545
     - _FresnelEdgeThreshold: 0.089
@@ -71,16 +80,16 @@ Material:
     - _InnerLineWidth: 2.16
     - _LightSensitivity: 0.8
     - _LineMapStrength: 1
-    - _ManualDetail: 0.5
-    - _NormalEdgeSmoothness: 0.01
+    - _ManualDetail: 0
+    - _NormalEdgeSmoothness: 0.1
     - _NormalEdgeStrength: 1
-    - _NormalEdgeThreshold: 0.739
+    - _NormalEdgeThreshold: 0.1
     - _OuterOutlineWidth: 0.005
-    - _OutlineDepthBias: 4
+    - _OutlineDepthBias: 1
     - _OutlineWidth: 0.005
     - _RampSmoothing: 0.05
-    - _RimPower: 4
-    - _ShadowStrength: 0.6
+    - _RimPower: 3
+    - _ShadowStrength: 0.5
     - _ShowTextureOnly: 0
     - _SobelFilterMode: 0
     - _SobelSampleDistance: 0.5
@@ -95,6 +104,7 @@ Material:
     - _ToonSteps: 4
     - _ToonThreshold: 0.4
     - _UseDebugDefaults: 0
+    - _UseNormalMap: 1
     - _UseOutlineDepthOffset: 1
     - _UseRamp: 0
     - _UseTextureEdges: 1

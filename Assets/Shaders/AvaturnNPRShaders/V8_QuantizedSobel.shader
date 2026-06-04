@@ -1,15 +1,13 @@
-// V8: Color Quantization + Texture Sobel + Normal-Map Sobel
+// V8: Color Quantization + Texture Sobel + Normal-Map Sobel + XToon 2D Ramp
 //
 // Abstraction pipeline:
-//   1. Quantize albedo to N discrete colour steps (posterisation)
-//   2. Sobel on the quantized luma  → edges at colour-region boundaries
-//      (catches eyebrow / lip / skin-colour transitions)
-//      Optional skin-colour discard: if center pixel is in skin hue/sat range, skip edge
-//   3. Sobel on world-space normal (ddx/ddy on bump-perturbed nWS) → crease/ridge edges
-//      Works without a separate normal map texture assignment; uses the TBN-computed nWS
-//   4. Both edge signals combined into a single dark line
+//   1. XToon 2D ramp shading (same as VXT / V3-V5) — depth/curvature/manual V-axis
+//   2. Quantize lit colour to N discrete steps (posterisation)
+//   3. Sobel on the quantized luma  → edges at colour-region boundaries
+//   4. Sobel on world-space normal (ddx/ddy on bump-perturbed nWS) → crease/ridge edges
+//   5. Both edge signals combined into a single dark line
 //
-// Lighting: smooth Lambert + normal-map perturbed normal (no toon stepping)
+// Lighting: XToon 2D ramp (NdotL × detail axis) — matches V3-V5 and VXT
 // Outline:  inverted-hull geometry pass
 // DepthNormals: feeds bump-map detail into URP's _CameraNormalsTexture
 
@@ -25,13 +23,24 @@ Shader "Custom/V8_QuantizedSobel"
         _BumpMap  ("Normal Map",      2D)         = "bump" {}
         _BumpScale("Normal Intensity",Range(0,2)) = 1.0
 
+        [Header(XToon 2D Ramp Shading)]
+        _ToonRamp        ("2D Toon Ramp",      2D)           = "white" {}
+        _LightSensitivity("Light Sensitivity", Range(0,1))   = 0.8
+        _RampSmoothing   ("Ramp Smoothing",    Range(0,0.5)) = 0.05
+        _ShadowColor     ("Shadow Color",      Color)        = (0.3,0.3,0.45,1)
+        _ShadowStrength  ("Shadow Strength",   Range(0,1))   = 0.7
+        [KeywordEnum(Depth, Curvature, Manual)] _DetailMode ("Detail Mode", Float) = 0
+        _DetailBias      ("Detail Bias",  Range(0,1))  = 0.5
+        _DepthNear       ("Depth Near",   Range(0,20)) = 5.0
+        _DepthFar        ("Depth Far",    Range(1,100)) = 50.0
+        _ManualDetail    ("Manual Detail",Range(0,1))  = 0.5
+
         [Header(Color Quantization)]
         _QuantizeSteps("Colour Steps", Range(2,32)) = 8.0
 
-        _ShadowStrength("Shadow Strength", Range(0,1))    = 0.5
-        _AmbientColor  ("Ambient Color",   Color)         = (0.35,0.35,0.35,1)
-        _RimColor      ("Rim Color",       Color)         = (0.408,0.408,0.408,1)
-        _RimPower      ("Rim Power",       Range(0.5,10)) = 3.0
+        [Toggle] _EnableRim ("Enable Rim Lighting", Float) = 1
+        _RimColor ("Rim Color", Color)         = (0.408,0.408,0.408,1)
+        _RimPower ("Rim Power", Range(0.5,10)) = 3.0
 
         [Header(Outer Outline)]
         _OuterOutlineWidth("Outline Width", Range(0,0.05)) = 0.003
@@ -127,6 +136,7 @@ Shader "Custom/V8_QuantizedSobel"
             #pragma target   3.5
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma multi_compile _ _SHADOWS_SOFT
+            #pragma shader_feature_local _DETAILMODE_DEPTH _DETAILMODE_CURVATURE _DETAILMODE_MANUAL
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
@@ -142,25 +152,34 @@ Shader "Custom/V8_QuantizedSobel"
             };
             struct Vary
             {
-                float4 pos   : SV_POSITION;
-                float2 uv    : TEXCOORD0;
-                float3 posWS : TEXCOORD1;
-                float3 nWS   : TEXCOORD2;
-                float3 tWS   : TEXCOORD3;
-                float3 bWS   : TEXCOORD4;
+                float4 pos        : SV_POSITION;
+                float2 uv         : TEXCOORD0;
+                float3 posWS      : TEXCOORD1;
+                float3 nWS        : TEXCOORD2;
+                float3 tWS        : TEXCOORD3;
+                float3 bWS        : TEXCOORD4;
+                float4 shadowCoord: TEXCOORD5;
             };
 
-            TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
-            TEXTURE2D(_BumpMap); SAMPLER(sampler_BumpMap);
+            TEXTURE2D(_MainTex);  SAMPLER(sampler_MainTex);
+            TEXTURE2D(_BumpMap);  SAMPLER(sampler_BumpMap);
+            TEXTURE2D(_ToonRamp); SAMPLER(sampler_ToonRamp);
             float4 _MainTex_ST;
             float4 _Color;
             float  _TextureIntensity;
             float  _BumpScale;
-            float  _QuantizeSteps;
+            float  _LightSensitivity;
+            float  _RampSmoothing;
+            float4 _ShadowColor;
             float  _ShadowStrength;
+            float  _DetailBias;
+            float  _DepthNear;
+            float  _DepthFar;
+            float  _ManualDetail;
+            float  _QuantizeSteps;
             float4 _RimColor;
             float  _RimPower;
-            float4 _AmbientColor;
+            float  _EnableRim;
             float  _EnableTexSobel;
             float4 _TexEdgeColor;
             float  _TexEdgeThreshold;
@@ -200,12 +219,13 @@ Shader "Custom/V8_QuantizedSobel"
                 OVR_FETCH_POS_NORM(v.vertex.xyz, v.normal, v.vertexID);
                 VertexPositionInputs pi = GetVertexPositionInputs(v.vertex.xyz);
                 VertexNormalInputs   ni = GetVertexNormalInputs(v.normal, v.tangent);
-                o.pos   = pi.positionCS;
-                o.uv    = TRANSFORM_TEX(v.uv, _MainTex);
-                o.posWS = pi.positionWS;
-                o.nWS   = ni.normalWS;
-                o.tWS   = ni.tangentWS;
-                o.bWS   = ni.bitangentWS;
+                o.pos         = pi.positionCS;
+                o.uv          = TRANSFORM_TEX(v.uv, _MainTex);
+                o.posWS       = pi.positionWS;
+                o.nWS         = ni.normalWS;
+                o.tWS         = ni.tangentWS;
+                o.bWS         = ni.bitangentWS;
+                o.shadowCoord = GetShadowCoord(pi);
                 return o;
             }
 
@@ -228,15 +248,39 @@ Shader "Custom/V8_QuantizedSobel"
                 float3 nWS   = normalize(mul(nTS, TBN));
                 float3 vWS   = normalize(_WorldSpaceCameraPos - IN.posWS);
 
-                // ── Smooth Lambert on raw texture ─────────────────────────────
-                Light  mainLight = GetMainLight();
-                float  NdotL     = saturate(dot(nWS, mainLight.direction));
-                float  diffuse   = lerp(1.0 - _ShadowStrength, 1.0, NdotL);
-                float3 lighting  = mainLight.color * diffuse + _AmbientColor.rgb;
-                float  rim       = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
-                float3 litColor  = albedo.rgb * lighting + rim * _RimColor.rgb;
+                // ── XToon 2D ramp shading ─────────────────────────────────────
+                Light  mainLight = GetMainLight(IN.shadowCoord);
+                float  NdotL     = dot(nWS, mainLight.direction) * mainLight.shadowAttenuation;
+                float  rampU     = lerp(0.5, saturate(NdotL * 0.5 + 0.5), _LightSensitivity);
 
-                // ── Quantize AFTER lighting → steps visible in final output ───
+                float rampV;
+                #if defined(_DETAILMODE_CURVATURE)
+                    float3 dNdx     = ddx(nWS);
+                    float3 dNdy     = ddy(nWS);
+                    float  curv     = length(dNdx) + length(dNdy);
+                    rampV = saturate((1.0 - saturate(curv * 10.0)) * (1.0 - _DetailBias) + _DetailBias);
+                #elif defined(_DETAILMODE_MANUAL)
+                    rampV = saturate(_ManualDetail);
+                #else // DEPTH (default)
+                    float  depth    = length(_WorldSpaceCameraPos - IN.posWS);
+                    rampV = saturate(saturate((depth - _DepthNear) / max(0.001, _DepthFar - _DepthNear)) + _DetailBias);
+                #endif
+
+                float3 rampColor    = SAMPLE_TEXTURE2D(_ToonRamp, sampler_ToonRamp, float2(rampU, rampV)).rgb;
+                float3 toonBase     = albedo.rgb * rampColor.rgb;
+                float  abstractU    = lerp(rampU, 0.5, rampV * 0.6);
+                float  dynSmooth    = lerp(_RampSmoothing, _RampSmoothing + 0.35, rampV);
+                float  shadowMask   = smoothstep(0.5 - dynSmooth, 0.5 + dynSmooth, abstractU);
+                float3 shadowedBase = lerp(toonBase * _ShadowColor.rgb, toonBase, shadowMask);
+                float3 litColor     = lerp(albedo.rgb, shadowedBase, _ShadowStrength);
+
+                if (_EnableRim > 0.5)
+                {
+                    float rim = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
+                    litColor += rim * _RimColor.rgb;
+                }
+
+                // ── Quantize AFTER XToon shading → steps visible in final output
                 float3 shaded    = Quantize(litColor, _QuantizeSteps);
 
                 // ── Quantized texture for Sobel edge detection only ───────────

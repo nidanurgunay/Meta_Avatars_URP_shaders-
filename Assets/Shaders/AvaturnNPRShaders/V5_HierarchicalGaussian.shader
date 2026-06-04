@@ -30,6 +30,7 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
         _DepthFar    ("Depth Far",   Range(1,100)) = 50.0
         _ManualDetail("Manual Detail", Range(0,1)) = 0.5
         _AmbientColor   ("Ambient Color",   Color)        = (0.35,0.35,0.35,1)
+        [Toggle] _EnableRim ("Enable Rim Lighting", Float) = 1
         _RimColor       ("Rim Color",       Color)        = (0.408,0.408,0.408,1)
         _RimPower       ("Rim Power",       Range(0.5,10))= 3.0
 
@@ -104,7 +105,7 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
                 float4 _Color, _AmbientColor, _RimColor, _HEdgeColor, _OuterOutlineColor;
-                float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower;
+                float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower, _EnableRim;
                 float  _OuterOutlineWidth;
                 float  _EnableAlphaTest, _AlphaCutoff;
                 float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight;
@@ -185,7 +186,7 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
                 float4 _Color, _AmbientColor, _RimColor, _HEdgeColor, _OuterOutlineColor;
-                float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower;
+                float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower, _EnableRim;
                 float  _OuterOutlineWidth;
                 float  _EnableAlphaTest, _AlphaCutoff;
                 float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight;
@@ -285,8 +286,11 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
                 float3 shadowedBase = lerp(toonBase * _ShadowColor.rgb, toonBase, shadowMask);
                 float3 shaded = lerp(albedo.rgb, shadowedBase, _ShadowStrength);
                 shaded += _AmbientColor.rgb * albedo.rgb;
-                float rim = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
-                shaded += rim * _RimColor.rgb;
+                if (_EnableRim > 0.5)
+                {
+                    float rim = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
+                    shaded += rim * _RimColor.rgb;
+                }
 
                 // ── Layer 1: Depth proxy (camera distance gradient) ───────────
                 float depthLine = 0.0;
@@ -379,7 +383,7 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
             CBUFFER_START(UnityPerMaterial)
                 float4 _MainTex_ST;
                 float4 _Color, _AmbientColor, _RimColor, _HEdgeColor, _OuterOutlineColor;
-                float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower;
+                float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower, _EnableRim;
                 float  _OuterOutlineWidth;
                 float  _EnableAlphaTest, _AlphaCutoff;
                 float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight;

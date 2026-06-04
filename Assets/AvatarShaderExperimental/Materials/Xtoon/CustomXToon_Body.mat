@@ -13,7 +13,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _DEBUGMODE_OFF
-  - _DETAILMODE_DEPTH
+  - _DETAILMODE_MANUAL
   m_InvalidKeywords:
   - _ENABLEINNERLINES_ON
   - _RIMBLEND_REPLACE
@@ -67,7 +67,7 @@ Material:
     - _DepthFar: 50
     - _DepthNear: 5
     - _DetailBias: 0
-    - _DetailMode: 0
+    - _DetailMode: 2
     - _DstBlend: 0
     - _EnableAlphaTest: 0
     - _EnableInnerLines: 1

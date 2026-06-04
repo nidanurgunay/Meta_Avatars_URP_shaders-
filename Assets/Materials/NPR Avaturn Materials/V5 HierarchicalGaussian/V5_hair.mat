@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: 5e2d1161c12f7451b9668c718d55f4b4, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _DETAILMODE_DEPTH
   m_InvalidKeywords:
   - _ENABLEALPHATEST_ON
   - _ENABLEDEPTHEDGE_ON
@@ -35,10 +36,18 @@ Material:
         m_Texture: {fileID: 7653646275262004549, guid: 15c5fb6e7e2814c17bb255ca3db0141e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ToonRamp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.07
     - _BumpScale: 1
+    - _DepthFar: 50
+    - _DepthNear: 5
+    - _DetailBias: 0.5
+    - _DetailMode: 0
     - _EnableAlphaTest: 1
     - _EnableColorEdge: 0
     - _EnableDepthEdge: 1
@@ -61,7 +70,10 @@ Material:
     - _HSkinHueMax: 0.12
     - _HSkinHueMin: 0.02
     - _HSkinSatMin: 0.15
+    - _LightSensitivity: 0.8
+    - _ManualDetail: 0.5
     - _OuterOutlineWidth: 0.002
+    - _RampSmoothing: 0.05
     - _RimPower: 3
     - _ShadowStrength: 0.5
     - _TextureIntensity: 1
@@ -71,4 +83,5 @@ Material:
     - _HEdgeColor: {r: 0, g: 0, b: 0, a: 1}
     - _OuterOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 0.408, g: 0.408, b: 0.408, a: 1}
+    - _ShadowColor: {r: 0.29999998, g: 0.29999998, b: 0.45, a: 1}
   m_BuildTextureStacks: []

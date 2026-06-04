@@ -18,7 +18,7 @@
 //        The ramp's U axis = light intensity, V axis = detail level.
 // =============================================================================
 
-Shader "NPR/XToon_2DRamp"
+Shader "NPR/XToon_2DRamp_Avaturn"
 {
     Properties
     {
@@ -124,8 +124,8 @@ Shader "NPR/XToon_2DRamp"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
             #include "../CommonNPRShaders/OvrVertexFetchBridge.hlsl"
 
-            TEXTURE2D(_BaseMap);           SAMPLER(sampler_BaseMap);
-            TEXTURE2D(_ToonRamp);          SAMPLER(sampler_ToonRamp);
+            TEXTURE2D(_BaseMap);       SAMPLER(sampler_BaseMap);
+            TEXTURE2D(_ToonRamp);      SAMPLER(sampler_ToonRamp);
             TEXTURE2D(_AbstractNormalMap); SAMPLER(sampler_AbstractNormalMap);
 
             CBUFFER_START(UnityPerMaterial)
@@ -302,13 +302,17 @@ Shader "NPR/XToon_2DRamp"
 
                 // --- Debug Output ---
                 #if defined(_DEBUGMODE_NDOTL)
+                    // Shows NdotL as grayscale — should NOT be all white
                     float debugNdotL = saturate(NdotL * 0.5 + 0.5);
                     return float4(debugNdotL, debugNdotL, debugNdotL, 1);
                 #elif defined(_DEBUGMODE_RAMPUV)
+                    // Shows rampU (red) and rampV (green) — lets you see what UV is being sampled
                     return float4(rampU, rampV, 0, 1);
                 #elif defined(_DEBUGMODE_ALBEDO)
+                    // Shows just the base texture color — should show your diffuse
                     return float4(albedo, 1);
                 #elif defined(_DEBUGMODE_RAMPSAMPLE)
+                    // Shows just the ramp sample — should show colors from your ramp texture
                     return float4(rampColor, 1);
                 #endif
 

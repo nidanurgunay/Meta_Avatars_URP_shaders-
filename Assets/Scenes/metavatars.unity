@@ -990,8 +990,8 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8a90eceb0c634ea1b6715465d8de4e5, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   _labelText: Default Avatar
   _heightOffset: 2.2
   _fontSize: 28
@@ -1191,6 +1191,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1990677206}
+    - targetCorrespondingSourceObject: {fileID: 100004, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1990677207}
     - targetCorrespondingSourceObject: {fileID: 100006, guid: 126d619cf4daa52469682f85c1378b4a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1658397790}
@@ -1328,6 +1331,22 @@ MonoBehaviour:
   presetIndices: 000000000100000002000000030000000400000005000000
   _hudDistance: 1.2
   _hudYOffset: -0.15
+--- !u!114 &1990677207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990677195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27c6fe0afe0e943da9e7e91a42633709, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showOnStart: 1
+  distanceTarget: {fileID: 0}
+  fontSize: 15
+  panelWidth: 260
 --- !u!1001 &2061853754
 PrefabInstance:
   m_ObjectHideFlags: 0

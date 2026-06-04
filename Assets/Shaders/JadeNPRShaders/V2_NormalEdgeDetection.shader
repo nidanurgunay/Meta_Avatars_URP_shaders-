@@ -16,6 +16,11 @@ Shader "Custom/V2_NormalEdgeDetection"
         _MainTex ("Texture", 2D) = "white" {}
         _TextureIntensity ("Texture Intensity", Range(0, 1)) = 1.0
 
+        [Header(Normal Map)]
+        _BumpMap ("Normal Map", 2D) = "bump" {}
+        _BumpScale ("Normal Map Strength", Range(0, 2)) = 1.0
+        [Toggle] _UseNormalMap ("Use Normal Map for Edge Detection", Float) = 1
+
         [Header(XToon 2D Ramp Shading)]
         _ToonRamp ("2D Toon Ramp", 2D) = "white" {}
         _LightSensitivity ("Light Sensitivity", Range(0,1)) = 0.8
@@ -58,8 +63,9 @@ Shader "Custom/V2_NormalEdgeDetection"
         _EdgeColor ("Combined Edge Color", Color) = (0,0,0,1)
 
         [Header(Rim Lighting)]
+        [Toggle] _EnableRim ("Enable Rim Lighting", Float) = 1
         _RimColor ("Rim Color", Color) = (0.408,0.408,0.408,1)
-        _RimPower ("Rim Power", Range(0.1, 8.0)) = 3.0
+        _RimPower ("Rim Power", Range(0.5, 10.0)) = 3.0
         _AmbientColor ("Ambient Color", Color) = (0.35,0.35,0.35,1)
 
         [Header(Transparency)]
@@ -161,6 +167,7 @@ Shader "Custom/V2_NormalEdgeDetection"
             {
                 float4 vertex : POSITION;
                 float3 normal : NORMAL;
+                float4 tangent : TANGENT;
                 float2 uv : TEXCOORD0;
             };
 
@@ -171,18 +178,22 @@ Shader "Custom/V2_NormalEdgeDetection"
                 float3 posWS : TEXCOORD1;
                 float3 nWS : TEXCOORD2;
                 float3 viewDirWS : TEXCOORD3;
+                float3 tangentWS : TEXCOORD4;
+                float3 bitangentWS : TEXCOORD5;
             };
 
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
             TEXTURE2D(_ToonRamp); SAMPLER(sampler_ToonRamp);
+            TEXTURE2D(_BumpMap); SAMPLER(sampler_BumpMap);
             float4 _MainTex_ST, _Color, _RimColor, _AmbientColor, _EdgeColor, _SobelLineColor, _OuterOutlineColor, _ShadowColor;
             float _TextureIntensity, _ShadowStrength;
             float _LightSensitivity, _RampSmoothing, _DetailBias, _DepthNear, _DepthFar, _ManualDetail;
-            float _RimPower, _EnableOuterOutline;
+            float _RimPower, _EnableOuterOutline, _EnableRim;
             float _EnableTextureSobel, _SobelFilterMode, _SobelThreshold, _SobelSampleDistance, _SobelStrength;
             float _EnableNormalEdges, _NormalEdgeThreshold, _NormalEdgeStrength, _NormalEdgeSmoothness;
             float _EnableFresnelEdge, _FresnelEdgeThreshold, _FresnelEdgeStrength;
             float _UseDebugDefaults, _EnableAlphaTest, _AlphaCutoff;
+            float _UseNormalMap, _BumpScale;
 
             // 9-tap Gaussian blur sampling
             float SampleLuminanceBlurred(float2 uv, float blurRadius)
@@ -213,11 +224,13 @@ Shader "Custom/V2_NormalEdgeDetection"
             {
                 v2f o;
                 VertexPositionInputs posInputs = GetVertexPositionInputs(v.vertex.xyz);
-                VertexNormalInputs normInputs = GetVertexNormalInputs(v.normal);
+                VertexNormalInputs normInputs = GetVertexNormalInputs(v.normal, v.tangent);
                 o.pos = posInputs.positionCS;
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 o.posWS = posInputs.positionWS;
                 o.nWS = normInputs.normalWS;
+                o.tangentWS = normInputs.tangentWS;
+                o.bitangentWS = normInputs.bitangentWS;
                 o.viewDirWS = GetWorldSpaceViewDir(posInputs.positionWS);
                 return o;
             }
@@ -243,7 +256,21 @@ Shader "Custom/V2_NormalEdgeDetection"
                 half3 baseColor = lerp(_Color.rgb, texColor.rgb * _Color.rgb, _TextureIntensity);
                 half4 albedo = half4(baseColor, texColor.a * _Color.a);
 
-                float3 nWS = normalize(IN.nWS);
+                float3 geomNWS = normalize(IN.nWS);
+                float3 nWS = geomNWS;
+
+                // Decode PBR normal map and transform to world space for richer edge detection
+                if (_UseNormalMap > 0.5)
+                {
+                    float3 normalTS = UnpackNormalScale(
+                        SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, IN.uv), _BumpScale);
+                    float3x3 TBN = float3x3(
+                        normalize(IN.tangentWS),
+                        normalize(IN.bitangentWS),
+                        geomNWS);
+                    nWS = normalize(mul(normalTS, TBN));
+                }
+
                 float3 vWS = normalize(IN.viewDirWS);
 
                 float totalEdgeStrength = 0.0;
@@ -410,8 +437,11 @@ Shader "Custom/V2_NormalEdgeDetection"
                 float3 shadowedBase = lerp(toonBase * _ShadowColor.rgb, toonBase, shadowMask);
                 float3 shaded = lerp(albedo.rgb, shadowedBase, _ShadowStrength);
                 shaded += _AmbientColor.rgb * albedo.rgb;
-                float rim = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
-                shaded += rim * _RimColor.rgb;
+                if (_EnableRim > 0.5)
+                {
+                    float rim = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
+                    shaded += rim * _RimColor.rgb;
+                }
 
                 // Apply combined edges
                 shaded = lerp(shaded, _EdgeColor.rgb, totalEdgeStrength);

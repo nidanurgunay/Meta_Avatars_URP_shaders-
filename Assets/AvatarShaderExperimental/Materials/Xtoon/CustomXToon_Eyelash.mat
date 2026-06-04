@@ -27,7 +27,7 @@ Material:
   m_ValidKeywords:
   - _ALPHA_BLEND
   - _DEBUGMODE_OFF
-  - _DETAILMODE_DEPTH
+  - _DETAILMODE_MANUAL
   m_InvalidKeywords:
   - _ALPHATEST_ON
   - _ENABLEALPHATEST_ON
@@ -131,7 +131,7 @@ Material:
     - _DepthNear: 5
     - _DetailAlbedoMapScale: 1
     - _DetailBias: 0
-    - _DetailMode: 0
+    - _DetailMode: 2
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
     - _DstBlendAlpha: 0

@@ -22,11 +22,11 @@ Material:
   - _ENABLEPASS2_ON
   - _ENABLEPASS3_ON
   - _ENABLEPASS4_ON
-  - _ENABLEPOWERCURVE_ON
   - _ENABLERIM_ON
   - _ENABLETEXTURESOBEL_ON
   - _ENABLETHRESHOLD_ON
   - _ENABLETOONSHADING_ON
+  - _USEAGGRESSIVEFILTERING_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -42,7 +42,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: -6536712854279271303, guid: 15c5fb6e7e2814c17bb255ca3db0141e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -82,7 +82,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonRamp:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 0115dac2e9f414d18b5ef82ea5bb4d4e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -100,11 +100,11 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
-    - _AlphaCutoff: 0.07
+    - _AlphaCutoff: 0.1
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BlurRadiusMultiplier: 0.8
+    - _BlurRadiusMultiplier: 10
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -114,7 +114,7 @@ Material:
     - _DepthFar: 50
     - _DepthNear: 5
     - _DetailAlbedoMapScale: 1
-    - _DetailBias: 0.5
+    - _DetailBias: 0
     - _DetailMode: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -129,53 +129,53 @@ Material:
     - _EnablePass2: 1
     - _EnablePass3: 1
     - _EnablePass4: 1
-    - _EnablePowerCurve: 1
+    - _EnablePowerCurve: 0
     - _EnableRim: 1
     - _EnableTextureSobel: 1
     - _EnableThreshold: 1
     - _EnableToonShading: 1
     - _EnvironmentReflections: 1
-    - _FresnelEdgeStrength: 0.3
+    - _FresnelEdgeStrength: 0
     - _FresnelEdgeThreshold: 0.3
-    - _GaussianCardinalWeight: 0.125
-    - _GaussianCenterWeight: 0.25
-    - _GaussianDiagonalWeight: 0.0625
+    - _GaussianCardinalWeight: 0.5
+    - _GaussianCenterWeight: 0.5
+    - _GaussianDiagonalWeight: 0.25
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _InnerLineBlur: 0.5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.085
+    - _InnerLineThreshold: 0.05
     - _LightSensitivity: 0.8
     - _ManualDetail: 0.5
     - _Metallic: 0
-    - _NormalEdgeSmoothness: 0.1
-    - _NormalEdgeStrength: 0.5
-    - _NormalEdgeThreshold: 0.5
+    - _NormalEdgeSmoothness: 0.01
+    - _NormalEdgeStrength: 0
+    - _NormalEdgeThreshold: 0
     - _OcclusionStrength: 1
     - _OuterOutlineWidth: 0.005
     - _OutlineDepthBias: 1
     - _Parallax: 0.005
-    - _PowerCurve: 1.5
+    - _PowerCurve: 0.5
     - _QueueOffset: 0
     - _RampSmoothing: 0.05
     - _ReceiveShadows: 1
-    - _RimPower: 3
-    - _ShadowStrength: 0.7
+    - _RimPower: 4
+    - _ShadowStrength: 0.5
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
-    - _SmoothstepTightness: 0.2
+    - _SmoothstepTightness: 0.5
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TextureIntensity: 1
-    - _ThresholdMaxMultiplier: 2
-    - _ThresholdMinMultiplier: 0.2
+    - _ThresholdMaxMultiplier: 1.9
+    - _ThresholdMinMultiplier: 0
     - _ToonSmoothness: 0.01
     - _ToonSteps: 3
     - _ToonThreshold: 0.5
-    - _UseAggressiveFiltering: 0
+    - _UseAggressiveFiltering: 1
     - _UseDebugDefaults: 0
     - _UseLightFiltering: 0
     - _UseModerateFiltering: 0
@@ -183,7 +183,7 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _AmbientColor: {r: 0.34999996, g: 0.34999996, b: 0.34999996, a: 1}
+    - _AmbientColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EdgeColor: {r: 0, g: 0, b: 0, a: 1}

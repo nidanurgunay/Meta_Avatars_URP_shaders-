@@ -142,7 +142,7 @@ Shader "Avatar/MetaNPR"
         [Header(NPR Edge  Sobel technique)]
         [Toggle] _EnableSobel ("Enable Sobel", Float) = 1
         _SobelSampleDist ("Sample Distance", Range(0, 10))  = 0.5
-        _SobelThreshold  ("Threshold",       Range(0, 1))   = 0.15
+        _SobelThreshold  ("Threshold",       Range(0, 1))   = 0.2
         _SobelMax        ("Sobel Max",       Range(0.1, 8)) = 2.0
         _SobelSeamLimit  ("Seam Limit",      Range(0, 1))   = 0.6
         _SobelStrength   ("Strength",        Range(0, 1))   = 1.0
@@ -156,14 +156,14 @@ Shader "Avatar/MetaNPR"
 
         [Header(NPR Edge  Gaussian Sobel technique)]
         [Toggle] _GSobelEnableGaussBlur ("Enable Gaussian Blur", Float) = 1
-        _GSobelSampleDist     ("Sample Distance",   Range(0, 10))    = 1.0
-        _GSobelBlurRadius     ("Blur Radius",       Range(0, 5))     = 1.0
+        _GSobelSampleDist     ("Sample Distance",   Range(0, 10))    = 0.5
+        _GSobelBlurRadius     ("Blur Radius",       Range(0, 5))     = 0.4
         _GSobelCenterWeight   ("Center Weight",     Range(0.1, 0.5)) = 0.25
         _GSobelCardinalWeight ("Cardinal Weight",   Range(0, 0.3))   = 0.125
         _GSobelDiagonalWeight ("Diagonal Weight",   Range(0, 0.1))   = 0.0625
-        _GSobelThreshold      ("Threshold",         Range(0, 0.5))   = 0.15
-        _GSobelThreshMin      ("Threshold Min Mult",Range(0, 1))     = 0.5
-        _GSobelThreshMax      ("Threshold Max Mult",Range(1, 5))     = 1.5
+        _GSobelThreshold      ("Threshold",         Range(0, 0.5))   = 0.2
+        _GSobelThreshMin      ("Threshold Min Mult",Range(0, 1))     = 0.2
+        _GSobelThreshMax      ("Threshold Max Mult",Range(1, 5))     = 2.0
         _GSobelTightness      ("Tightness",         Range(0, 1))     = 0.2
         _GSobelPowerCurve     ("Power Curve",       Range(0.5, 5))   = 1.5
         _GSobelStrength       ("Strength",          Range(0, 1))     = 1.0

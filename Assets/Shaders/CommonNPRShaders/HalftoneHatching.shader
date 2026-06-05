@@ -196,11 +196,12 @@ Shader "NPR/HalftoneHatching"
                 float dist = length(gridPos);
 
                 // Dot radius scales with darkness (darker = bigger dots)
-                float dotRadius = sqrt(1.0 - tone) * 0.5;
+                float dotRadius = sqrt(max(0.0, 1.0 - tone)) * 0.5;
 
                 // Smooth edge
-                float pattern = 1.0 - smoothstep(dotRadius - 0.5 / _HalftoneSharpness,
-                                                  dotRadius + 0.5 / _HalftoneSharpness, dist);
+                float sharpInv = 0.5 / max(_HalftoneSharpness, 0.001);
+                float pattern = 1.0 - smoothstep(dotRadius - sharpInv,
+                                                  dotRadius + sharpInv, dist);
                 return pattern;
             }
 

@@ -882,20 +882,20 @@ All standalone Avaturn shaders share the same three-pass structure:
 2. **ForwardLit** — main shading pass with normal map TBN (where applicable), toon shading, and NPR edge effects
 3. **DepthNormals** — writes bump-map-perturbed normals into URP's `_CameraNormalsTexture` so post-process edge shaders see normal-map detail
 
-V3 and V4 are structurally identical in their Unity shader parts: same Properties headers and naming, same v2f struct (`viewDirWS` interpolated), same HLSL uniform declarations, same debug-override pattern (local variable copies), and same master toggles (`_EnableRim`, `_EnableOuterOutline`, `_DebugView`). The only intentional difference is the edge-detection algorithm — V3 uses a simple `step()`-based Sobel; V4 adds Gaussian pre-blur, a progressive smoothstep pipeline, normal edges, and Fresnel edges.
+V3 and V3.2 are structurally identical in their Unity shader parts: same Properties headers and naming, same v2f struct (`viewDirWS` interpolated), same HLSL uniform declarations, same debug-override pattern (local variable copies), and same master toggles (`_EnableRim`, `_EnableOuterOutline`, `_DebugView`). The only intentional difference is the edge-detection algorithm — V3 uses a simple `step()`-based Sobel; V3.2 adds Gaussian pre-blur, a progressive smoothstep pipeline, normal edges, and Fresnel edges.
 
-**Base shading (V1.2–V4):** All shaders from V1.2 onward replaced the V1 stepped-NdotL toon base with a **XToon 2D ramp** — the same ramp approach used by the dedicated XToon shader (VXT) and the Meta `EFFECT_XTOON` cginc. The stepped-toon properties (`_ToonSteps`, `_ToonThreshold`, `_ToonSmoothness`, `_EnableToonShading`) have been removed. V2–V5 now expose: `_ToonRamp` (2D), `_LightSensitivity`, `_RampSmoothing`, `_ShadowColor`, `_ShadowStrength`, `_DetailMode` (Depth/Curvature/Manual keyword enum), `_DetailBias`, `_DepthNear`, `_DepthFar`, `_ManualDetail`. The `#pragma shader_feature_local _DETAILMODE_DEPTH _DETAILMODE_CURVATURE _DETAILMODE_MANUAL` is added to each ForwardLit pass.
+**Base shading (V1.2–V3.2):** All shaders from V1.2 onward replaced the V1 stepped-NdotL toon base with a **XToon 2D ramp** — the same ramp approach used by the dedicated XToon shader (VXT) and the Meta `EFFECT_XTOON` cginc. The stepped-toon properties (`_ToonSteps`, `_ToonThreshold`, `_ToonSmoothness`, `_EnableToonShading`) have been removed. V2–V5 now expose: `_ToonRamp` (2D), `_LightSensitivity`, `_RampSmoothing`, `_ShadowColor`, `_ShadowStrength`, `_DetailMode` (Depth/Curvature/Manual keyword enum), `_DetailBias`, `_DepthNear`, `_DepthFar`, `_ManualDetail`. The `#pragma shader_feature_local _DETAILMODE_DEPTH _DETAILMODE_CURVATURE _DETAILMODE_MANUAL` is added to each ForwardLit pass.
 
 ### V3 — Sobel Edge Detection
 **Avaturn file:** `Assets/Shaders/AvaturnNPRShaders/V3_SobelEdgeDetection.shader`
 **Jade file:** `Assets/Shaders/JadeNPRShaders/V3_SobelEdgeDetection.shader`
 **Shader GUID:** `ac2e5c7f0a193458e8f848fd6528ee42`
 
-Toon shading (stepped NdotL, toggleable via `_EnableToonShading`) with simple 3×3 UV-space Sobel edge detection using a single `step()` threshold — no Gaussian pre-blur. V3 is the baseline for comparing blur's noise-suppression benefit against V4.
+Toon shading (stepped NdotL, toggleable via `_EnableToonShading`) with simple 3×3 UV-space Sobel edge detection using a single `step()` threshold — no Gaussian pre-blur. V3 is the baseline for comparing blur's noise-suppression benefit against V3.2.
 
 **Avaturn-specific additions (not present in Jade):** Normal map (`_BumpMap` / `_BumpScale`) decoded via TBN matrix; DepthNormals pass writes bump-perturbed normals to `_CameraNormalsTexture` for screen-space post-process edge shaders.
 
-**Structural alignment with V4:** Both V3 and V4 now share identical Properties headers, struct layout (`viewDirWS` in v2f), HLSL uniform declarations, debug override pattern (local variable copies), and toggle checks (`_EnableToonShading`, `_EnableRim`, `_EnableOuterOutline`, `_DebugView`). The only intentional difference is the edge-detection algorithm.
+**Structural alignment with V3.2:** Both V3 and V3.2 now share identical Properties headers, struct layout (`viewDirWS` in v2f), HLSL uniform declarations, debug override pattern (local variable copies), and toggle checks (`_EnableToonShading`, `_EnableRim`, `_EnableOuterOutline`, `_DebugView`). The only intentional difference is the edge-detection algorithm.
 
 | Property | Description |
 |----------|-------------|
@@ -906,21 +906,21 @@ Toon shading (stepped NdotL, toggleable via `_EnableToonShading`) with simple 3�
 | `_EnableToonShading` | Switch between stepped toon (on) and flat diffuse (off) |
 | `_EnableRim` | Toggle rim lighting |
 | `_EnableOuterOutline` | Toggle inverted-hull outline |
-| `_DebugView` | 0=Final, 1=RawSobel (enum, mirrors V4) |
+| `_DebugView` | 0=Final, 1=RawSobel (enum, mirrors V3.2) |
 | `_BumpMap` / `_BumpScale` | Normal map (Avaturn only) |
 
 **Materials:** `Assets/Materials/NPR Avaturn Materials/V3 SobelEdgeDetection/`
 
 ---
 
-### V4 — Gaussian Pre-filtered Sobel
+### V3.2 — Gaussian Pre-filtered Sobel
 **Avaturn file:** `Assets/Shaders/AvaturnNPRShaders/V4_GaussianPreFilteredSobel.shader`
 **Jade file:** `Assets/Shaders/JadeNPRShaders/V4_GaussianPreFilteredSobel.shader`
 **Shader GUID:** `[assigned by Unity on import]`
 
 V3 extended with a 9-tap Gaussian pre-blur applied to each of the 8 Sobel sample positions before the gradient is computed. Reduces false edges from high-frequency texture noise. Also supports screen-space normal edge detection (`_EnableNormalEdges`, via `ddx`/`ddy` of world normals) and Fresnel silhouette edge (`_EnableFresnelEdge`).
 
-**Structural alignment with V3:** V4 now includes `_BumpMap` / `_BumpScale` normal map support and a DepthNormals pass (both added to match V3 Avaturn). The normal edge detection in V4 (`ddx`/`ddy` of `nWS`) now benefits from bump-map detail because `nWS` is decoded through the TBN matrix before the derivatives are computed.
+**Structural alignment with V3:** V3.2 now includes `_BumpMap` / `_BumpScale` normal map support and a DepthNormals pass (both added to match V3 Avaturn). The normal edge detection in V3.2 (`ddx`/`ddy` of `nWS`) now benefits from bump-map detail because `nWS` is decoded through the TBN matrix before the derivatives are computed.
 
 | Property | Description |
 |----------|-------------|
@@ -932,7 +932,7 @@ V3 extended with a 9-tap Gaussian pre-blur applied to each of the 8 Sobel sample
 | `_BlurRadiusMultiplier` | Gaussian blur radius relative to `_InnerLineBlur` |
 | `_InnerLineThreshold` / `_InnerLineBlur` / `_InnerLineStrength` | Sobel parameters (same names as V3) |
 
-**Materials:** `Assets/Materials/NPR Avaturn Materials/V4 GaussianPreFilteredSobel/`
+**Materials:** `Assets/Materials/NPR Avaturn Materials/V3.2 GaussianPreFilteredSobel/`
 
 ---
 
@@ -1015,18 +1015,80 @@ Both edge signals are max-combined and composited over the quantized shaded colo
 
 ---
 
-### VHH — Halftone & Hatching
-**File:** `Assets/Shaders/AvaturnNPRShaders/HalftoneHatching.shader`
+### VHH / V4 — Halftone & Hatching
+**Thesis version:** V4 — Halftone Screening and Cross-Hatching
+**Shared file:** `Assets/Shaders/CommonNPRShaders/HalftoneHatching.shader` (used by both Jody/Mixamo and Avaturn)
 **Shader GUID:** `452f01b8804f54c8eb77c3425cf4614f`
+**Meta SDK hooks:** `NPREffect_Halftone.cginc` (Technique 12) + `NPREffect_Hatching.cginc` (Technique 13)
 
 Standalone URP shader that applies either a halftone dot grid, cross-hatching lines, stippling, or a combination — all driven by lighting intensity. Four `shader_feature_local` keyword groups select the active mode at material import time; the float property (`_PatternMode`) stores the selection (0 = Halftone, 1 = Hatching, 2 = Stipple, 3 = Combined).
 
-**Colour model (same as Meta Avatar techniques 12/13):**
+#### Safety guard update (applied 2026-06-05)
+
+`HalftonePattern` in `HalftoneHatching.shader` was updated to match the guards already present in `NPREffect_Halftone.cginc`:
+
+```hlsl
+// Before
+float dotRadius = sqrt(1.0 - tone) * 0.5;
+float pattern = 1.0 - smoothstep(dotRadius - 0.5 / _HalftoneSharpness,
+                                  dotRadius + 0.5 / _HalftoneSharpness, dist);
+
+// After
+float dotRadius = sqrt(max(0.0, 1.0 - tone)) * 0.5;
+float sharpInv = 0.5 / max(_HalftoneSharpness, 0.001);
+float pattern = 1.0 - smoothstep(dotRadius - sharpInv,
+                                  dotRadius + sharpInv, dist);
+```
+
+`max(0.0, ...)` prevents NaN from `sqrt` when tone overshoots 1.0 (possible with high `_ToneBias`). `max(..., 0.001)` prevents divide-by-zero when `_HalftoneSharpness` is set to 0 in the Inspector.
+
+#### Core algorithms
+
+**Halftone dot grid:**
+```hlsl
+rotated  = Rotate2D(uv, _HalftoneAngle)
+gridPos  = frac(rotated × _HalftoneScale) - 0.5
+dist     = length(gridPos)
+dotRadius = sqrt(max(0.0, 1.0 - tone)) × 0.5   // darker → bigger dot (photomechanical model)
+pattern  = 1 - smoothstep(dotRadius ± sharpInv, dist)
+```
+
+**TAM 4-layer hatching (Praun et al. 2001 approximation):**
+```hlsl
+t = 1.0 - tone   // darkness
+
+Layer 1 (t > 0.15): primary lines  × smoothstep(0.15, 0.40, t)
+Layer 2 (t > 0.35): cross lines    × smoothstep(0.35, 0.60, t)
+Layer 3 (t > 0.55): dense diagonal × smoothstep(0.55, 0.80, t)  [thickness × 1.5]
+Layer 4 (t > 0.80): solid fill     = smoothstep(0.80, 1.00, t)
+pattern = max across active layers
+```
+
+**Colour model (identical across all three avatar platforms):**
 ```
 paperCol     = lerp(PaperColor, PBRcolor, TextureInfluence)
 inkCol       = lerp(InkColor,   PBRcolor × InkColor, TextureInfluence)
 patternColor = lerp(paperCol, inkCol, pattern)
+finalColor   = lerp(PBRcolor, patternColor, Strength)
 ```
+
+#### Cross-avatar platform comparison
+
+| Dimension | Jody (Mixamo) | Avaturn | Meta Avatar SDK |
+|-----------|--------------|---------|-----------------|
+| Shader file | `CommonNPRShaders/HalftoneHatching.shader` | `CommonNPRShaders/HalftoneHatching.shader` | `NPREffect_Halftone.cginc` + `NPREffect_Hatching.cginc` |
+| Tone derivation | `NdotL × shadow + _ToneBias` | `NdotL × shadow + _ToneBias` | `luminance(PBR_composite) + _HTToneBias` |
+| Coordinate modes | ScreenSpace / ObjectSpace (UV) / WorldSpace | ScreenSpace / ObjectSpace (UV) / WorldSpace | UV-space only |
+| OVR skinning bridge | No (standard SkinnedMeshRenderer) | No (GLTFast SkinnedMeshRenderer) | SDK-native |
+| Normal map decode | `rgb × 2.0 - 1.0` (GLTFast; incorrect for Jody FBX if `_NORMALMAP` enabled) | `rgb × 2.0 - 1.0` (GLTFast, correct) | N/A (hook receives post-PBR colour) |
+| Property prefix | `_Halftone*` / `_Hatch*` | `_Halftone*` / `_Hatch*` | `_HT*` (halftone) / `_Hat*` (hatching) |
+| Outline pass | Built-in inverted hull | Built-in inverted hull | Shared `NPROutline` pass (`_OutlineEnabled`) |
+
+**Tone source note:** The Meta SDK hook runs inside `AppSpecificPostManipulation` after all PBR lighting (NdotL, shadows, SSS, ambient, rim) has been composited. Raw NdotL is no longer accessible, so luminance of the composite colour is used instead. The standalone shaders compute NdotL directly in the ForwardLit pass and multiply by URP shadow attenuation. Both approaches capture the same perceptual darkness signal, but the Meta version includes PBR complexity (SSS, rim, ambient) that the standalone NdotL-based version does not.
+
+**Normal map decode note:** `HalftoneHatching.shader` decodes the bump map as `sample.rgb * 2.0 - 1.0` (raw RGB, GLTFast/glTF convention). This is correct for the Avaturn GLB loaded via GLTFast. Jody (Mixamo) is an FBX imported through Unity's standard importer, which expects `UnpackNormalScale()`. If `_NORMALMAP` is enabled on Jody materials using this shared shader, normals will decode incorrectly and produce a grey artifact. In practice the halftone/hatching effect is nearly tone-only so the artefact is subtle, but the limitation is noted.
+
+#### Properties
 
 Uses `_BaseMap` (not `_MainTex`) for the albedo. Has a built-in inverted-hull outline pass.
 
@@ -1248,7 +1310,7 @@ Assets/
 │   ├── V1 ToonShading/                    — V1 original (do not modify)
 │   ├── V2 NormalEdgeDetection/            — V2 normal-edge materials
 │   ├── V3 SobelEdgeDetection/             — V3 Sobel materials (also used by V5–V7 avatars)
-│   ├── V4 GaussianPreFilteredSobel/       — V4 Gaussian-Sobel materials
+│   ├── V3.2 GaussianPreFilteredSobel/       — V3.2 Gaussian-Sobel materials
 │   ├── V5 HierarchicalGaussian/           — V5 per-material hierarchical edge; head has skin discard ON
 │   │   ├── V5_body.mat                    — opaque body; all edge layers ON
 │   │   ├── V5_head.mat                    — face; skin discard ON (suppresses nose/cheek false edges)

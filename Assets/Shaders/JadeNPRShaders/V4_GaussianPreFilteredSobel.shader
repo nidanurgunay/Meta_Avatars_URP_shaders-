@@ -13,8 +13,13 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
 
         [Header(Base)]
         _Color ("Main Color", Color) = (1,1,1,1)
-        _MainTex ("Texture", 2D) = "white" {}
+        _MainTex ("Albedo Texture", 2D) = "white" {}
         _TextureIntensity ("Texture Intensity", Range(0, 1)) = 1.0
+
+        [Header(Normal Map)]
+        [Normal]
+        _BumpMap ("Normal Map", 2D) = "bump" {}
+        _BumpScale ("Normal Intensity", Range(0,2)) = 1.0
 
         [Header(XToon 2D Ramp Shading)]
         _ToonRamp ("2D Toon Ramp", 2D) = "white" {}
@@ -114,6 +119,7 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
             HLSLPROGRAM
             #pragma vertex vert_outline
             #pragma fragment frag_outline
+            #pragma target 3.5
             #pragma shader_feature_local _USEOUTLINEDEPTHOFFSET_ON
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
@@ -165,7 +171,7 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma target 3.0
+            #pragma target 3.5
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE
             #pragma shader_feature_local _EDGEBLENDMODE_MAX _EDGEBLENDMODE_ADD _EDGEBLENDMODE_MULTIPLY
             #pragma shader_feature_local _DETAILMODE_DEPTH _DETAILMODE_CURVATURE _DETAILMODE_MANUAL
@@ -175,23 +181,28 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
 
             struct appdata
             {
-                float4 vertex : POSITION;
-                float3 normal : NORMAL;
-                float2 uv : TEXCOORD0;
+                float4 vertex  : POSITION;
+                float3 normal  : NORMAL;
+                float4 tangent : TANGENT;
+                float2 uv      : TEXCOORD0;
             };
 
             struct v2f
             {
-                float4 pos : SV_POSITION;
-                float2 uv : TEXCOORD0;
-                float3 posWS : TEXCOORD1;
-                float3 nWS : TEXCOORD2;
+                float4 pos       : SV_POSITION;
+                float2 uv        : TEXCOORD0;
+                float3 posWS     : TEXCOORD1;
+                float3 nWS       : TEXCOORD2;
                 float3 viewDirWS : TEXCOORD3;
+                float3 tWS       : TEXCOORD4;
+                float3 bWS       : TEXCOORD5;
             };
 
             TEXTURE2D(_MainTex); SAMPLER(sampler_MainTex);
+            TEXTURE2D(_BumpMap); SAMPLER(sampler_BumpMap);
             TEXTURE2D(_ToonRamp); SAMPLER(sampler_ToonRamp);
             float4 _MainTex_ST, _Color, _RimColor, _AmbientColor, _InnerLineColor, _OuterOutlineColor, _EdgeColor, _ShadowColor;
+            float _BumpScale;
             float _TextureIntensity, _ShadowStrength;
             float _LightSensitivity, _RampSmoothing, _DetailBias, _DepthNear, _DepthFar, _ManualDetail;
             float _RimPower, _InnerLineThreshold, _InnerLineBlur, _InnerLineStrength;
@@ -249,13 +260,15 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
             v2f vert(appdata v)
             {
                 v2f o;
-                VertexPositionInputs posInputs = GetVertexPositionInputs(v.vertex.xyz);
-                VertexNormalInputs normInputs = GetVertexNormalInputs(v.normal);
-                o.pos = posInputs.positionCS;
-                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-                o.posWS = posInputs.positionWS;
-                o.nWS = normInputs.normalWS;
-                o.viewDirWS = GetWorldSpaceViewDir(posInputs.positionWS);
+                VertexPositionInputs pi = GetVertexPositionInputs(v.vertex.xyz);
+                VertexNormalInputs   ni = GetVertexNormalInputs(v.normal, v.tangent);
+                o.pos       = pi.positionCS;
+                o.uv        = TRANSFORM_TEX(v.uv, _MainTex);
+                o.posWS     = pi.positionWS;
+                o.nWS       = ni.normalWS;
+                o.viewDirWS = GetWorldSpaceViewDir(pi.positionWS);
+                o.tWS       = ni.tangentWS;
+                o.bWS       = ni.bitangentWS;
                 return o;
             }
 
@@ -283,7 +296,11 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
                 half3 baseColor = lerp(_Color.rgb, texColor.rgb * _Color.rgb, textureIntensity);
                 half4 albedo = half4(baseColor, texColor.a * _Color.a);
 
-                float3 nWS = normalize(IN.nWS);
+                // Normal map → world-space normal (Unity FBX standard decode)
+                half3 normalTS = UnpackNormalScale(SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, IN.uv), _BumpScale);
+                float3x3 TBN   = float3x3(normalize(IN.tWS), normalize(IN.bWS), normalize(IN.nWS));
+                float3 nWS     = normalize(mul(normalTS, TBN));
+
                 float3 vWS = normalize(IN.viewDirWS);
 
                 // Debug view mode
@@ -510,6 +527,67 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
                 shaded = lerp(shaded, edgeColor, float3(combinedEdge, combinedEdge, combinedEdge));
 
                 return half4(shaded, albedo.a);
+            }
+            ENDHLSL
+        }
+
+        // ── DepthNormals — writes normal-map-perturbed normals to URP's
+        //    _CameraNormalsTexture so screen-space post-process edge shaders see bump detail.
+        Pass
+        {
+            Name "DepthNormals"
+            Tags { "LightMode" = "DepthNormals" }
+            ZWrite On
+            Cull Back
+
+            HLSLPROGRAM
+            #pragma vertex   DNVert
+            #pragma fragment DNFrag
+            #pragma target   3.5
+
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+
+            TEXTURE2D(_BumpMap); SAMPLER(sampler_BumpMap);
+            float4 _MainTex_ST;
+            float  _BumpScale;
+
+            struct DNAttr
+            {
+                float4 positionOS : POSITION;
+                float3 normalOS   : NORMAL;
+                float4 tangentOS  : TANGENT;
+                float2 uv         : TEXCOORD0;
+            };
+            struct DNVary
+            {
+                float4 positionCS  : SV_POSITION;
+                float2 uv          : TEXCOORD0;
+                float3 normalWS    : TEXCOORD1;
+                float3 tangentWS   : TEXCOORD2;
+                float3 bitangentWS : TEXCOORD3;
+            };
+
+            DNVary DNVert(DNAttr v)
+            {
+                DNVary o;
+                VertexPositionInputs pi = GetVertexPositionInputs(v.positionOS.xyz);
+                VertexNormalInputs   ni = GetVertexNormalInputs(v.normalOS, v.tangentOS);
+                o.positionCS  = pi.positionCS;
+                o.uv          = TRANSFORM_TEX(v.uv, _MainTex);
+                o.normalWS    = ni.normalWS;
+                o.tangentWS   = ni.tangentWS;
+                o.bitangentWS = ni.bitangentWS;
+                return o;
+            }
+
+            float4 DNFrag(DNVary i) : SV_Target
+            {
+                half3 nTS    = UnpackNormalScale(SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap, i.uv), _BumpScale);
+                float3x3 TBN = float3x3(normalize(i.tangentWS),
+                                        normalize(i.bitangentWS),
+                                        normalize(i.normalWS));
+                float3 nWS   = normalize(mul(nTS, TBN));
+                return half4(NormalizeNormalPerPixel(nWS), 0.0);
             }
             ENDHLSL
         }

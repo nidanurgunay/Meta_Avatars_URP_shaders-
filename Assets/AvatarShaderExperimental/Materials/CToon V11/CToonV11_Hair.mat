@@ -39,12 +39,13 @@ Material:
   - _ENABLEPASS2_ON
   - _ENABLEPASS3_ON
   - _ENABLEPASS4_ON
-  - _ENABLEPOWERCURVE_ON
   - _ENABLERIM_ON
   - _ENABLETEXTURESOBEL_ON
   - _ENABLETHRESHOLD_ON
   - _ENABLETOONSHADING_ON
   - _NORMALMAP
+  - _USEAGGRESSIVEFILTERING_ON
+  - _USEDEBUGDEFAULTS_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -124,11 +125,11 @@ Material:
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 1
-    - _AlphaCutoff: 0.07
+    - _AlphaCutoff: 0.1
     - _AlphaToMask: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
-    - _BlurRadiusMultiplier: 0.8
+    - _BlurRadiusMultiplier: 10
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
@@ -139,7 +140,7 @@ Material:
     - _DepthFar: 50
     - _DepthNear: 5
     - _DetailAlbedoMapScale: 1
-    - _DetailBias: 0.5
+    - _DetailBias: 0
     - _DetailMode: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -155,7 +156,7 @@ Material:
     - _EnablePass2: 1
     - _EnablePass3: 1
     - _EnablePass4: 1
-    - _EnablePowerCurve: 1
+    - _EnablePowerCurve: 0
     - _EnableRim: 1
     - _EnableTextureSobel: 1
     - _EnableThreshold: 1
@@ -163,33 +164,33 @@ Material:
     - _EnvironmentReflections: 1
     - _FresnelEdgeStrength: 0.3
     - _FresnelEdgeThreshold: 0.3
-    - _GaussianCardinalWeight: 0.125
-    - _GaussianCenterWeight: 0.25
-    - _GaussianDiagonalWeight: 0.0625
+    - _GaussianCardinalWeight: 0.5
+    - _GaussianCenterWeight: 0.5
+    - _GaussianDiagonalWeight: 0.25
     - _GlossMapScale: 1
     - _Glossiness: 0.4472136
     - _GlossyReflections: 1
     - _InnerLineBlur: 0.5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.2
+    - _InnerLineThreshold: 0.1
     - _LightSensitivity: 0.8
     - _LineMapStrength: 1
     - _ManualDetail: 0.5
     - _Metallic: 0
     - _Mode: 3
-    - _NormalEdgeSmoothness: 0.1
-    - _NormalEdgeStrength: 0.5
-    - _NormalEdgeThreshold: 0.5
+    - _NormalEdgeSmoothness: 0.113
+    - _NormalEdgeStrength: 1
+    - _NormalEdgeThreshold: 0.281
     - _OcclusionStrength: 1
     - _OuterOutlineWidth: 0.005
-    - _OutlineDepthBias: 4
+    - _OutlineDepthBias: 1
     - _Parallax: 0.02
     - _PowerCurve: 1.5
     - _QueueOffset: -9
     - _RampSmoothing: 0.05
     - _ReceiveShadows: 1
     - _RimPower: 4
-    - _ShadowStrength: 0.6
+    - _ShadowStrength: 0.5
     - _ShowTextureOnly: 0
     - _Smoothness: 0.337
     - _SmoothnessTextureChannel: 0
@@ -206,15 +207,15 @@ Material:
     - _ToonSteps: 4
     - _ToonThreshold: 0.4
     - _UVSec: 0
-    - _UseAggressiveFiltering: 0
-    - _UseDebugDefaults: 0
+    - _UseAggressiveFiltering: 1
+    - _UseDebugDefaults: 1
     - _UseLightFiltering: 0
     - _UseModerateFiltering: 0
     - _UseOutlineDepthOffset: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _AmbientColor: {r: 0.29999998, g: 0.29999998, b: 0.29999998, a: 1}
+    - _AmbientColor: {r: 0.9057, g: 0.8928, b: 0.8928, a: 1}
     - _BaseColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EdgeColor: {r: 0, g: 0, b: 0, a: 1}

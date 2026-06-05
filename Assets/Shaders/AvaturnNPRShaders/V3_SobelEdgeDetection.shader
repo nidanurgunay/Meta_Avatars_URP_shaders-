@@ -35,7 +35,7 @@ Shader "Custom/V3_SobelEdgeDetection"
 
         [Header(Outer Outline)]
         [Toggle] _EnableOuterOutline ("Enable Outer Outline", Float) = 1
-        _OuterOutlineWidth ("Outline Width", Range(0,0.05)) = 0.003
+        _OuterOutlineWidth ("Outer Outline Width", Range(0,0.5)) = 0.005
         _OuterOutlineColor ("Outline Color", Color) = (0,0,0,1)
         [Toggle] _UseOutlineDepthOffset ("Use Depth Offset", Float) = 0
         _OutlineDepthBias ("Outline Depth Bias", Range(0,5)) = 1.0
@@ -43,14 +43,14 @@ Shader "Custom/V3_SobelEdgeDetection"
         [Header(Inner Lines Sobel)]
         [Toggle] _EnableInnerLines ("Enable Inner Lines", Float) = 1
         _InnerLineColor ("Inner Line Color", Color) = (0,0,0,1)
-        _InnerLineThreshold ("Inner Line Threshold", Range(0.001,0.5)) = 0.15
-        _InnerLineBlur ("Inner Line Sample Distance", Range(0.0,10.0)) = 1.0
+        _InnerLineThreshold ("Inner Line Threshold", Range(0.001,0.5)) = 0.2
+        _InnerLineBlur ("Inner Line Sample Distance", Range(0.0,10.0)) = 0.5
         _InnerLineStrength ("Inner Line Strength", Range(0,1)) = 1.0
 
         [Header(Rim and Ambient)]
         [Toggle] _EnableRim ("Enable Rim Lighting", Float) = 1
         _RimColor ("Rim Color", Color) = (0.408,0.408,0.408,1)
-        _RimPower ("Rim Power", Range(0.5,10)) = 3.0
+        _RimPower ("Rim Power", Range(0.1,8.0)) = 3.0
         _AmbientColor ("Ambient Color", Color) = (0.35,0.35,0.35,1)
 
         [Header(Alpha Test)]

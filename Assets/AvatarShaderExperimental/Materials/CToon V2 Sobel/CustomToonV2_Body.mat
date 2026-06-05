@@ -32,6 +32,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 8c8eedd0915724818be4399b70dba86a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _LineMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -45,19 +49,20 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ToonRamp:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 0115dac2e9f414d18b5ef82ea5bb4d4e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaCutoff: 0.07
+    - _AlphaCutoff: 0.1
+    - _BumpScale: 1
     - _CullMode: 2
     - _DebugInnerLines: 0
     - _DebugRawEdges: 0
     - _DebugView: 0
     - _DepthFar: 50
     - _DepthNear: 5
-    - _DetailBias: 0.5
+    - _DetailBias: 0
     - _DetailMode: 0
     - _EnableAlphaTest: 0
     - _EnableInnerLines: 1
@@ -67,17 +72,17 @@ Material:
     - _InnerLineBlur: 0.5
     - _InnerLineSmooth: 5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.2
+    - _InnerLineThreshold: 0.1
     - _InnerLineWidth: 2.16
-    - _LightSensitivity: 0.8
+    - _LightSensitivity: 0.613
     - _LineMapStrength: 1
-    - _ManualDetail: 0.5
+    - _ManualDetail: 0
     - _OuterOutlineWidth: 0.005
-    - _OutlineDepthBias: 4
+    - _OutlineDepthBias: 1
     - _OutlineWidth: 0.005
     - _RampSmoothing: 0.05
     - _RimPower: 4
-    - _ShadowStrength: 0.6
+    - _ShadowStrength: 0.5
     - _ShowTextureOnly: 0
     - _SpecPower: 16
     - _SpecThreshold: 0.9

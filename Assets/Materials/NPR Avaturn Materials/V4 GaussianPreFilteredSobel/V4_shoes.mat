@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: V4_head
+  m_Name: V4_shoes
   m_Shader: {fileID: 4800000, guid: 0f2cfdef4bd124a9aa13d186a415d964, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -42,7 +42,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: -2447118904992951434, guid: 15c5fb6e7e2814c17bb255ca3db0141e, type: 3}
+        m_Texture: {fileID: 4316272038174106607, guid: 15c5fb6e7e2814c17bb255ca3db0141e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -62,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: -1732159216777743971, guid: 15c5fb6e7e2814c17bb255ca3db0141e, type: 3}
+        m_Texture: {fileID: 5113559438986547135, guid: 15c5fb6e7e2814c17bb255ca3db0141e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -145,7 +145,7 @@ Material:
     - _GlossyReflections: 0
     - _InnerLineBlur: 0.5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.15
+    - _InnerLineThreshold: 0.05
     - _LightSensitivity: 0.8
     - _ManualDetail: 0.5
     - _Metallic: 0
@@ -172,9 +172,9 @@ Material:
     - _TextureIntensity: 1
     - _ThresholdMaxMultiplier: 1.9
     - _ThresholdMinMultiplier: 0
-    - _ToonSmoothness: 0.0216
-    - _ToonSteps: 5.77
-    - _ToonThreshold: 0.559
+    - _ToonSmoothness: 0.01
+    - _ToonSteps: 3
+    - _ToonThreshold: 0.5
     - _UseAggressiveFiltering: 1
     - _UseDebugDefaults: 0
     - _UseLightFiltering: 0

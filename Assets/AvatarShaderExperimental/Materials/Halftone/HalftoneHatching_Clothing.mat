@@ -14,6 +14,7 @@ Material:
   m_ValidKeywords:
   - _HALFTONESPACE_OBJECTSPACE
   - _HATCHSTYLE_LINE
+  - _NORMALMAP
   - _PATTERNMODE_HALFTONE
   m_InvalidKeywords:
   - _DEBUGMODE_OFF
@@ -38,6 +39,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: a60af4f862dc64319a1022bce5fb2852, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 8c8eedd0915724818be4399b70dba86a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _LineMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -59,7 +64,9 @@ Material:
     - _Alpha: 1
     - _AlphaBlend: 0
     - _AlphaCutoff: 0.07
-    - _CrossHatchAngle: 135
+    - _BrightCutoff: 0.4
+    - _BumpScale: 1
+    - _CrossHatchAngle: 132
     - _DebugInnerLines: 0
     - _DebugMode: 0
     - _DebugRawEdges: 0
@@ -67,24 +74,25 @@ Material:
     - _DepthNear: 5
     - _DetailBias: 0.392
     - _DetailMode: 2
-    - _DotSize: 0.12
+    - _DotSize: 0.133
     - _DstBlend: 0
     - _EnableAlphaTest: 0
     - _EnableInnerLines: 1
-    - _HalftoneAngle: 70
+    - _HalftoneAngle: 45
     - _HalftoneScale: 100
-    - _HalftoneSharpness: 2.3
+    - _HalftoneSharpness: 1
     - _HalftoneSpace: 1
     - _HatchAngle: 45
-    - _HatchScale: 20
+    - _HatchScale: 100
     - _HatchStyle: 0
-    - _HatchThickness: 0.15
+    - _HatchThickness: 0.044
     - _InnerLineBlur: 0.5
     - _InnerLineSmooth: 5
     - _InnerLineStrength: 1
     - _InnerLineThreshold: 0.193
     - _InnerLineWidth: 2.16
     - _LightSensitivity: 0
+    - _LightingInfluence: 0.232
     - _LightingStrength: 1
     - _LineMapStrength: 1
     - _ManualDetail: 0
@@ -105,14 +113,15 @@ Material:
     - _SpecularSmoothness: 0.05
     - _SpecularStrength: 0.5
     - _SrcBlend: 1
-    - _StippleDensity: 1
-    - _StippleScale: 7
+    - _StippleDensity: 1.19
+    - _StippleScale: 5
     - _TextureEdgeSmooth: 0.0366
     - _TextureEdgeThreshold: 0.05
-    - _TextureInfluence: 0.9
+    - _TextureInfluence: 0.878
     - _TextureIntensity: 1
-    - _ToneBias: 0.205
-    - _ToneLevels: 5.49
+    - _ToneBias: 0.208
+    - _ToneLevels: 8
+    - _ToneWhitePoint: 0.733
     - _ToonSmoothness: 0.037
     - _ToonSteps: 10
     - _ToonThreshold: 1
@@ -136,7 +145,6 @@ Material:
     - _SpecColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!114 &1269347749357950877
 MonoBehaviour:
   m_ObjectHideFlags: 11

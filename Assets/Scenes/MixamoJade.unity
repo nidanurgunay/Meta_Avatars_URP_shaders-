@@ -5121,7 +5121,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &225744437
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13647,6 +13647,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: af20c89d30f72411baa2b9d1b660aa34, type: 3}
       propertyPath: m_Name
       value: Ch37_nonPBR@Capoeira
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: af20c89d30f72411baa2b9d1b660aa34, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -41081,13 +41085,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2140337528}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.52597016, y: -0.77519757, z: 0.28418475, w: 0.20411575}
+  m_LocalRotation: {x: -0.5226416, y: 0.7775095, z: -0.29026592, w: -0.19511665}
   m_LocalPosition: {x: -3.3, y: 3.75, z: 0.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 139.056, y: -358.67102, z: -247.818}
+  m_LocalEulerAnglesHint: {x: 139.056, y: 0, z: -247.818}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

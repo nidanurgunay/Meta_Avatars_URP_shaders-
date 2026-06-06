@@ -53,7 +53,7 @@ Shader "NPR/HalftoneHatching"
 
         [Header(Lighting Response)]
         _ToneLevels ("Tone Levels (pattern density steps)", Range(2, 8)) = 5
-        _ToneBias ("Shadow Bias", Range(-0.5, 0.5)) = 0.0
+        _ToneBias ("Shadow Bias", Range(-1, 1)) = 0.0
 
         [Header(Outline)]
         _OutlineColor ("Outline Color", Color) = (0, 0, 0, 1)
@@ -196,12 +196,11 @@ Shader "NPR/HalftoneHatching"
                 float dist = length(gridPos);
 
                 // Dot radius scales with darkness (darker = bigger dots)
-                float dotRadius = sqrt(max(0.0, 1.0 - tone)) * 0.5;
+                float dotRadius = sqrt(1.0 - tone) * 0.5;
 
                 // Smooth edge
-                float sharpInv = 0.5 / max(_HalftoneSharpness, 0.001);
-                float pattern = 1.0 - smoothstep(dotRadius - sharpInv,
-                                                  dotRadius + sharpInv, dist);
+                float pattern = 1.0 - smoothstep(dotRadius - 0.5 / _HalftoneSharpness,
+                                                  dotRadius + 0.5 / _HalftoneSharpness, dist);
                 return pattern;
             }
 
@@ -331,11 +330,9 @@ Shader "NPR/HalftoneHatching"
                 float3 normalWS = normalize(input.normalWS);
 
                 #if defined(_NORMALMAP)
-                // GLTFast GLB sub-assets are raw-RGB normal maps — decode as plain RGB.
-                float3 normalTS = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
-                                      TRANSFORM_TEX(input.uv, _BumpMap)).rgb * 2.0 - 1.0;
-                normalTS.xy    *= _BumpScale;
-                normalTS         = normalize(normalTS);
+                float3 normalTS = UnpackNormalScale(
+                    SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
+                        TRANSFORM_TEX(input.uv, _BumpMap)), _BumpScale);
                 float3x3 TBN = float3x3(normalize(input.tangentWS),
                                         normalize(input.bitangentWS),
                                         normalWS);
@@ -404,8 +401,8 @@ Shader "NPR/HalftoneHatching"
                 #endif
 
                 // _TextureInfluence blends both paper and ink between flat colours and texture:
-                //   0 → pure _PaperColor / _InkColor  (flat comic look)
-                //   1 → baseAlbedo as paper, texture-tinted ink  (fully textured)
+                //   0 -> pure _PaperColor / _InkColor  (flat comic look)
+                //   1 -> baseAlbedo as paper, texture-tinted ink  (fully textured)
                 float3 paperCol = lerp(_PaperColor.rgb, baseAlbedo, _TextureInfluence);
                 float3 inkCol   = lerp(_InkColor.rgb,   baseAlbedo * _InkColor.rgb, _TextureInfluence);
 
@@ -502,7 +499,7 @@ Shader "NPR/HalftoneHatching"
             #pragma multi_compile _ _CASTING_PUNCTUAL_LIGHT_SHADOW
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-            #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Shadows.hlsl"
 
             float3 _LightDirection;
@@ -659,10 +656,9 @@ Shader "NPR/HalftoneHatching"
             {
                 float3 normalWS = normalize(input.normalWS);
                 #if defined(_NORMALMAP)
-                float3 nTS = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
-                                 TRANSFORM_TEX(input.uv, _BumpMap)).rgb * 2.0 - 1.0;
-                nTS.xy    *= _BumpScale;
-                nTS         = normalize(nTS);
+                float3 nTS = UnpackNormalScale(
+                    SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
+                        TRANSFORM_TEX(input.uv, _BumpMap)), _BumpScale);
                 float3x3 TBN = float3x3(normalize(input.tangentWS),
                                         normalize(input.bitangentWS), normalWS);
                 normalWS = normalize(mul(nTS, TBN));

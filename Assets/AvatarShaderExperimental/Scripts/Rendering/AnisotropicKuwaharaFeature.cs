@@ -26,7 +26,7 @@ public class AnisotropicKuwaharaFeature : ScriptableRendererFeature
         public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;
 
         [Header("Filter")]
-        [Range(2, 16)] public int   kernelSize  = 4;
+        [Range(2, 32)] public int   kernelSize  = 4;
         [Range(4, 8)]  public int   sectorCount = 8;
 
         [Header("Paper Parameters (Kyprianidis 2009)")]

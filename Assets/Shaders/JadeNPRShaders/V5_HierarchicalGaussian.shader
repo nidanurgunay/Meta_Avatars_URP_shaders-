@@ -250,6 +250,7 @@ Shader "Custom/V5_HierarchicalGaussian"
                 shaded += _AmbientColor.rgb * albedo.rgb;
                 if (_EnableRim > 0.5)
                 {
+                    float3 vWS = normalize(_WorldSpaceCameraPos - IN.posWS);
                     float rim = pow(1.0 - saturate(dot(vWS, nWS)), _RimPower);
                     shaded += rim * _RimColor.rgb;
                 }

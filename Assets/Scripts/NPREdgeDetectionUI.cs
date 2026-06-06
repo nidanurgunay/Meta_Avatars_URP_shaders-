@@ -736,7 +736,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
         // ── Kuwahara parameters (technique 5 — anisotropic) ──────────────────
         SectionLabel(t, "Kuwahara Filter", 5);
-        AddFloatRow(t, 5, "Radius",    "_K2Radius",   0.5f, 8f,    0.1f,   2.0f);
+        AddFloatRow(t, 5, "Radius",    "_K2Radius",   0.5f, 20f,   0.1f,   2.0f);
         AddFloatRow(t, 5, "Strength",  "_K2Strength", 0f,   1f,    0.01f,  1.0f);
         AddFloatRow(t, 5, "Alpha",     "_K2Alpha",    0.5f, 3f,    0.05f,  1.0f);
         AddFloatRow(t, 5, "Q Sharp",   "_K2Q",        1f,   16f,   0.5f,   8.0f);
@@ -744,7 +744,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
         // ── Kuwahara+Sobel parameters (technique 6) ───────────────────────────
         SectionLabel(t, "Kuwahara+Sobel", 6);
-        AddFloatRow(t, 6, "Kuw Radius",   "_K2SKuwRadius",   0.5f, 8f,    0.1f,    2.0f);
+        AddFloatRow(t, 6, "Kuw Radius",   "_K2SKuwRadius",   0.5f, 20f,   0.1f,    2.0f);
         AddFloatRow(t, 6, "Kuw Strength", "_K2SKuwStrength", 0f,   1f,    0.01f,   0.8f);
         AddFloatRow(t, 6, "Kuw Alpha",    "_K2SKuwAlpha",    0.5f, 3f,    0.05f,   1.0f);
         AddFloatRow(t, 6, "Kuw Q",        "_K2SKuwQ",        1f,   16f,   0.5f,    8.0f);
@@ -764,7 +764,7 @@ public class NPREdgeDetectionUI : MonoBehaviour
 
         // ── Kuwahara+Hier parameters (technique 7) ───────────────────────────
         SectionLabel(t, "Kuw+Hier", 7);
-        AddFloatRow(t, 7, "Kuw Radius",   "_K2HKuwRadius",   0.5f,  8f,    0.1f,    2.0f);
+        AddFloatRow(t, 7, "Kuw Radius",   "_K2HKuwRadius",   0.5f,  20f,   0.1f,    2.0f);
         AddFloatRow(t, 7, "Kuw Strength", "_K2HKuwStrength", 0f,    1f,    0.01f,   0.8f);
         AddFloatRow(t, 7, "Kuw Alpha",    "_K2HKuwAlpha",    0.5f,  3f,    0.05f,   1.0f);
         AddFloatRow(t, 7, "Kuw Q",        "_K2HKuwQ",        1f,    16f,   0.5f,    8.0f);

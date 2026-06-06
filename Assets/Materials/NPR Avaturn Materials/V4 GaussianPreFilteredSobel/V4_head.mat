@@ -145,7 +145,7 @@ Material:
     - _GlossyReflections: 0
     - _InnerLineBlur: 0.5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.15
+    - _InnerLineThreshold: 0.273
     - _LightSensitivity: 0.8
     - _ManualDetail: 0.5
     - _Metallic: 0

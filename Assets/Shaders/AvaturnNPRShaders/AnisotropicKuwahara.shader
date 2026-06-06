@@ -121,7 +121,7 @@ Shader "NPR/AnisotropicKuwahara"
             #if defined(SHADER_API_MOBILE)
                 #define MAX_RADIUS 6
             #else
-                #define MAX_RADIUS 16
+                #define MAX_RADIUS 32
             #endif
 
             int   _KernelSize;

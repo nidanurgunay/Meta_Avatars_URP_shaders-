@@ -36,7 +36,7 @@ public class KuwaharaFilterFeature : ScriptableRendererFeature
         public Shader kuwaharaShader;
 
         [Header("Filter Settings")]
-        [Range(2, 16)] public int kernelSize = 4;
+        [Range(2, 32)] public int kernelSize = 4;
         [Range(4, 8)]  public int sectorCount = 8;
         [Range(1, 18)] public float sharpness = 8f;
         [Range(1, 18)] public float hardness = 8f;

@@ -1,9 +1,20 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 public class HalftoneHatchingGUI : ShaderGUI
 {
+    // =========================================================================
+    // Preset panel state  (mirrors AvaturnPresetShaderGUI pattern)
+    // =========================================================================
+    static readonly string[] SlotNames = { "Head", "Body", "Hair", "Eyelash", "Look" };
+
+    static readonly Dictionary<string, int>    s_SelectedSlot  = new();
+    static readonly Dictionary<string, bool>   s_PresetFoldout = new();
+    static readonly Dictionary<string, bool>   s_DiffFoldout   = new();
+    static readonly Dictionary<string, string> s_PresetName    = new();
+
     // =========================================================================
     // NORMAL DEFAULTS  (shown as hints, applied by Reset button)
     // =========================================================================
@@ -19,6 +30,7 @@ public class HalftoneHatchingGUI : ShaderGUI
     static readonly (string name, float value)[] DefaultFloats =
     {
         ("_TextureInfluence",  0.5f),
+        ("_LightingInfluence", 0.75f),
         ("_HalftoneScale",     30f),
         ("_HalftoneSharpness", 10f),
         ("_HalftoneAngle",     45f),
@@ -29,8 +41,10 @@ public class HalftoneHatchingGUI : ShaderGUI
         ("_DotSize",           0.12f),
         ("_StippleScale",      50f),
         ("_StippleDensity",    1f),
-        ("_ToneLevels",        5f),
+        ("_ToneLevels",        6f),
         ("_ToneBias",          0f),
+        ("_ToneWhitePoint",    1f),
+        ("_BrightCutoff",      0.4f),
         ("_OutlineWidth",      0.002f),
         ("_Alpha",             1f),
         ("_AlphaCutoff",       0.5f),
@@ -50,22 +64,25 @@ public class HalftoneHatchingGUI : ShaderGUI
 
     static readonly (string name, float value)[] DebugFloats =
     {
-        ("_TextureInfluence",  1f),     // TODO
-        ("_HalftoneScale",     30f),    // TODO
-        ("_HalftoneSharpness", 10f),    // TODO
-        ("_HalftoneAngle",     45f),    // TODO
-        ("_HatchScale",        20f),    // TODO
-        ("_HatchAngle",        45f),    // TODO
-        ("_HatchThickness",    0.15f),  // TODO
-        ("_CrossHatchAngle",   135f),   // TODO
-        ("_DotSize",           0.12f),  // TODO
-        ("_StippleScale",      50f),    // TODO
-        ("_StippleDensity",    1f),     // TODO
-        ("_ToneLevels",        5f),     // TODO
-        ("_ToneBias",          0f),     // TODO
-        ("_OutlineWidth",      0.002f), // TODO
-        ("_Alpha",             1f),     // TODO
-        ("_AlphaCutoff",       0.5f),   // TODO
+        ("_TextureInfluence",  1f),
+        ("_LightingInfluence", 1f),
+        ("_HalftoneScale",     30f),
+        ("_HalftoneSharpness", 10f),
+        ("_HalftoneAngle",     45f),
+        ("_HatchScale",        20f),
+        ("_HatchAngle",        45f),
+        ("_HatchThickness",    0.15f),
+        ("_CrossHatchAngle",   135f),
+        ("_DotSize",           0.12f),
+        ("_StippleScale",      50f),
+        ("_StippleDensity",    1f),
+        ("_ToneLevels",        6f),
+        ("_ToneBias",          0f),
+        ("_ToneWhitePoint",    1f),
+        ("_BrightCutoff",      0.9f),
+        ("_OutlineWidth",      0.002f),
+        ("_Alpha",             1f),
+        ("_AlphaCutoff",       0.5f),
     };
 
     // =========================================================================
@@ -116,6 +133,18 @@ public class HalftoneHatchingGUI : ShaderGUI
     // =========================================================================
     public override void OnGUI(MaterialEditor editor, MaterialProperty[] props)
     {
+        var    material = editor.target as Material;
+        string matKey   = AssetDatabase.GetAssetPath(material);
+        if (string.IsNullOrEmpty(matKey)) matKey = material.name;
+
+        if (!s_PresetFoldout.ContainsKey(matKey)) s_PresetFoldout[matKey] = true;
+        if (!s_DiffFoldout.ContainsKey(matKey))   s_DiffFoldout[matKey]   = false;
+        if (!s_SelectedSlot.ContainsKey(matKey))  s_SelectedSlot[matKey]  = DetectSlot(material.name);
+        if (!s_PresetName.ContainsKey(matKey))    s_PresetName[matKey]    = "";
+
+        DrawPresetPanel(editor, props, material, matKey);
+        EditorGUILayout.Space(6);
+
         Header("Base");
         DrawWithHint(editor, FindProp("_BaseColor",        props), "default: white");
         DrawWithHint(editor, FindProp("_BaseMap",          props), "default: none");
@@ -151,8 +180,10 @@ public class HalftoneHatchingGUI : ShaderGUI
 
         EditorGUILayout.Space(4);
         Header("Lighting Response");
-        DrawWithHint(editor, FindProp("_ToneLevels", props), "default: 5");
-        DrawWithHint(editor, FindProp("_ToneBias",   props), "default: 0");
+        DrawWithHint(editor, FindProp("_LightingInfluence", props), "0=flat uniform  1=full NdotL  default: 0.75");
+        DrawWithHint(editor, FindProp("_ToneLevels",        props), "Praun TAM=6 levels  default: 6");
+        DrawWithHint(editor, FindProp("_ToneBias",          props), "default: 0");
+        DrawWithHint(editor, FindProp("_ToneWhitePoint",    props), "peak NdotL tone → pure paper (1=no remap, lower to widen highlight zone)");
 
         EditorGUILayout.Space(4);
         Header("Outline");
@@ -171,6 +202,217 @@ public class HalftoneHatchingGUI : ShaderGUI
 
         if (GUILayout.Button("Reset to Defaults", GUILayout.Height(28)))
             ApplyPreset(editor, isDebug: false);
+    }
+
+    // =========================================================================
+    // Preset panel (ShaderPresetStore-backed, same as AvaturnPresetShaderGUI)
+    // =========================================================================
+    void DrawPresetPanel(MaterialEditor editor, MaterialProperty[] props,
+                         Material material, string matKey)
+    {
+        s_PresetFoldout[matKey] = EditorGUILayout.BeginFoldoutHeaderGroup(
+            s_PresetFoldout[matKey], "Halftone/Hatching Slot Presets");
+
+        if (s_PresetFoldout[matKey])
+        {
+            EditorGUI.indentLevel++;
+
+            EditorGUILayout.LabelField("Slot", EditorStyles.boldLabel);
+            int newSlot = GUILayout.SelectionGrid(
+                s_SelectedSlot[matKey], SlotNames, 5, EditorStyles.miniButton);
+            if (newSlot != s_SelectedSlot[matKey])
+                s_SelectedSlot[matKey] = newSlot;
+
+            string slotName   = SlotNames[s_SelectedSlot[matKey]];
+            string shaderName = material.shader.name;
+
+            EditorGUILayout.Space(6);
+
+            List<string> existing = ShaderPresetStore.GetPresetNames(shaderName, slotName);
+            if (existing.Count > 0)
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    int curIdx = existing.IndexOf(s_PresetName[matKey]);
+                    EditorGUI.BeginChangeCheck();
+                    int newIdx = EditorGUILayout.Popup(
+                        "Saved", curIdx < 0 ? 0 : curIdx, existing.ToArray());
+                    if (EditorGUI.EndChangeCheck())
+                        s_PresetName[matKey] = existing[newIdx];
+
+                    if (GUILayout.Button("↺", GUILayout.Width(26)))
+                        ShaderPresetStore.Reload();
+                }
+            }
+
+            s_PresetName[matKey] = EditorGUILayout.TextField("Name", s_PresetName[matKey]);
+            string presetName = s_PresetName[matKey].Trim();
+            bool   hasPreset  = presetName.Length > 0 &&
+                                ShaderPresetStore.HasPreset(shaderName, slotName, presetName);
+
+            EditorGUILayout.Space(4);
+
+            if (hasPreset)
+            {
+                ShaderPresetStore.LoadPreset(shaderName, slotName, presetName,
+                    out List<(string n, float v)> floats,
+                    out List<(string n, Color v)> colors);
+
+                bool matches   = MatchesPreset(props, floats, colors);
+                var  headStyle = new GUIStyle(EditorStyles.label) { fontStyle = FontStyle.Bold };
+                headStyle.normal.textColor = matches
+                    ? new Color(0.2f, 0.7f, 0.2f) : new Color(0.75f, 0.45f, 0f);
+                EditorGUILayout.LabelField(
+                    matches ? $"✓  Matches \"{presetName}\"" : $"○  Differs from \"{presetName}\"",
+                    headStyle);
+
+                s_DiffFoldout[matKey] = EditorGUILayout.Foldout(
+                    s_DiffFoldout[matKey], "Property diff", true);
+                if (s_DiffFoldout[matKey])
+                {
+                    EditorGUI.indentLevel++;
+                    DrawDiff(props, floats, colors);
+                    EditorGUI.indentLevel--;
+                }
+            }
+            else if (presetName.Length > 0)
+            {
+                EditorGUILayout.HelpBox(
+                    $"No preset \"{presetName}\" saved yet. Tune the material and press Save.",
+                    MessageType.Info);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox(
+                    "Enter a name or pick from Saved to manage presets.",
+                    MessageType.Info);
+            }
+
+            EditorGUILayout.Space(4);
+
+            using (new EditorGUI.DisabledScope(presetName.Length == 0))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    using (new EditorGUI.DisabledScope(!hasPreset))
+                    {
+                        if (GUILayout.Button("Apply", GUILayout.Height(26)))
+                        {
+                            Undo.RecordObject(material, $"Apply Preset {presetName}");
+                            ShaderPresetStore.LoadPreset(shaderName, slotName, presetName,
+                                out List<(string n, float v)> floats,
+                                out List<(string n, Color v)> colors);
+                            ApplyPresetValues(props, floats, colors);
+                            SyncKeywords(material);
+                            EditorUtility.SetDirty(material);
+                            editor.Repaint();
+                        }
+                    }
+
+                    if (GUILayout.Button("Save", GUILayout.Height(26)))
+                    {
+                        ShaderPresetStore.SavePreset(shaderName, slotName, presetName, props);
+                        Debug.Log($"[HalftoneHatchingGUI] Saved \"{presetName}\" → {shaderName} / {slotName}");
+                    }
+
+                    using (new EditorGUI.DisabledScope(!hasPreset))
+                    {
+                        if (GUILayout.Button("Delete", GUILayout.Height(26)))
+                        {
+                            if (EditorUtility.DisplayDialog("Delete Preset",
+                                $"Delete \"{presetName}\" for {slotName}?", "Delete", "Cancel"))
+                            {
+                                ShaderPresetStore.DeletePreset(shaderName, slotName, presetName);
+                                s_PresetName[matKey] = "";
+                            }
+                        }
+                    }
+                }
+            }
+
+            EditorGUI.indentLevel--;
+        }
+
+        EditorGUILayout.EndFoldoutHeaderGroup();
+    }
+
+    // After loading float values for _PatternMode / _HalftoneSpace / _HatchStyle,
+    // sync the corresponding shader_feature keywords so the correct variant compiles.
+    static void SyncKeywords(Material mat)
+    {
+        if (mat.HasProperty("_PatternMode"))
+        {
+            int idx = Mathf.RoundToInt(mat.GetFloat("_PatternMode"));
+            foreach (var kw in PatternKeywords) mat.DisableKeyword(kw);
+            if (idx >= 0 && idx < PatternKeywords.Length) mat.EnableKeyword(PatternKeywords[idx]);
+        }
+        if (mat.HasProperty("_HalftoneSpace"))
+        {
+            int idx = Mathf.RoundToInt(mat.GetFloat("_HalftoneSpace"));
+            foreach (var kw in SpaceKeywords) mat.DisableKeyword(kw);
+            if (idx >= 0 && idx < SpaceKeywords.Length) mat.EnableKeyword(SpaceKeywords[idx]);
+        }
+        if (mat.HasProperty("_HatchStyle"))
+        {
+            int idx = Mathf.RoundToInt(mat.GetFloat("_HatchStyle"));
+            foreach (var kw in HatchStyleKeywords) mat.DisableKeyword(kw);
+            if (idx >= 0 && idx < HatchStyleKeywords.Length) mat.EnableKeyword(HatchStyleKeywords[idx]);
+        }
+    }
+
+    static void ApplyPresetValues(MaterialProperty[] props,
+        List<(string n, float v)> floats, List<(string n, Color v)> colors)
+    {
+        foreach (var (n, v) in floats)
+        { var p = FindProperty(n, props, false); if (p != null) p.floatValue = v; }
+        foreach (var (n, v) in colors)
+        { var p = FindProperty(n, props, false); if (p != null) p.colorValue = v; }
+    }
+
+    static bool MatchesPreset(MaterialProperty[] props,
+        List<(string n, float v)> floats, List<(string n, Color v)> colors)
+    {
+        foreach (var (n, v) in floats)
+        { var p = FindProperty(n, props, false); if (p != null && !Mathf.Approximately(p.floatValue, v)) return false; }
+        foreach (var (n, v) in colors)
+        { var p = FindProperty(n, props, false); if (p != null && p.colorValue != v) return false; }
+        return true;
+    }
+
+    static void DrawDiff(MaterialProperty[] props,
+        List<(string n, float v)> floats, List<(string n, Color v)> colors)
+    {
+        foreach (var (n, v) in floats)
+        {
+            var p = FindProperty(n, props, false);
+            if (p == null) continue;
+            bool match = Mathf.Approximately(p.floatValue, v);
+            var  style = new GUIStyle(EditorStyles.miniLabel);
+            style.normal.textColor = match ? new Color(0.3f, 0.6f, 0.3f) : new Color(0.8f, 0.35f, 0.1f);
+            EditorGUILayout.LabelField(n, match ? $"{p.floatValue:G4}  ✓" : $"{p.floatValue:G4}  →  {v:G4}", style);
+        }
+        foreach (var (n, v) in colors)
+        {
+            var p = FindProperty(n, props, false);
+            if (p == null) continue;
+            bool match = p.colorValue == v;
+            var  style = new GUIStyle(EditorStyles.miniLabel);
+            style.normal.textColor = match ? new Color(0.3f, 0.6f, 0.3f) : new Color(0.8f, 0.35f, 0.1f);
+            string cv = $"({p.colorValue.r:F2},{p.colorValue.g:F2},{p.colorValue.b:F2})";
+            string sv = $"({v.r:F2},{v.g:F2},{v.b:F2})";
+            EditorGUILayout.LabelField(n, match ? $"{cv}  ✓" : $"{cv}  →  {sv}", style);
+        }
+    }
+
+    static int DetectSlot(string name)
+    {
+        string l = name.ToLowerInvariant();
+        if (l.Contains("head") || l.Contains("face")) return 0;
+        if (l.Contains("body"))                        return 1;
+        if (l.Contains("hair"))                        return 2;
+        if (l.Contains("eyelash"))                     return 3;
+        if (l.Contains("look") || l.Contains("eye"))   return 4;
+        return 1;
     }
 
     // =========================================================================

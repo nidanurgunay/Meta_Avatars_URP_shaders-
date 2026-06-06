@@ -35,7 +35,7 @@ public class PostProcessController : MonoBehaviour
 
     public void SetKernelSize(int value)
     {
-        if (_kuwahara != null) _kuwahara.settings.kernelSize = Mathf.Clamp(value, 2, 16);
+        if (_kuwahara != null) _kuwahara.settings.kernelSize = Mathf.Clamp(value, 2, 32);
     }
 
     public void SetSectorCount(int value)

@@ -190,14 +190,14 @@ Shader "Avatar/MetaNPR"
         _HSkinSatMin             ("Skin Sat Min",     Range(0, 1))        = 0.15
 
         [Header(NPR Effect  Kuwahara technique)]
-        _K2Radius    ("Radius",     Range(0.5, 8))   = 2.0
+        _K2Radius    ("Radius",     Range(0.5, 20))  = 2.0
         _K2Strength  ("Strength",   Range(0, 1))     = 1.0
         _K2Alpha     ("Alpha",      Range(0.5, 3))   = 1.0
         _K2Q         ("Q Sharpness",Range(1, 16))    = 8.0
         _K2Tau       ("Tau Floor",  Range(0.001, 0.1)) = 0.02
 
         [Header(NPR Effect  Kuwahara Sobel technique)]
-        _K2SKuwRadius    ("Kuw Radius",    Range(0.5, 8))     = 2.0
+        _K2SKuwRadius    ("Kuw Radius",    Range(0.5, 20))    = 2.0
         _K2SKuwStrength  ("Kuw Strength",  Range(0, 1))       = 0.8
         _K2SKuwAlpha     ("Kuw Alpha",     Range(0.5, 3))     = 1.0
         _K2SKuwQ         ("Kuw Q",         Range(1, 16))      = 8.0
@@ -216,7 +216,7 @@ Shader "Avatar/MetaNPR"
         _K2SSobelStrength        ("Edge Strength",    Range(0, 1))       = 1.0
 
         [Header(NPR Effect  Kuwahara Hierarchical technique)]
-        _K2HKuwRadius    ("Kuw Radius",      Range(0.5, 8))     = 2.0
+        _K2HKuwRadius    ("Kuw Radius",      Range(0.5, 20))    = 2.0
         _K2HKuwStrength  ("Kuw Strength",    Range(0, 1))       = 0.8
         _K2HKuwAlpha     ("Kuw Alpha",       Range(0.5, 3))     = 1.0
         _K2HKuwQ         ("Kuw Q",           Range(1, 16))      = 8.0
@@ -286,6 +286,7 @@ Shader "Avatar/MetaNPR"
         _HTSharpness         ("Dot Sharpness",       Range(1, 50))      = 10.0
         _HTAngle             ("Grid Angle",          Range(0, 90))      = 45.0
         _HTToneBias          ("Tone Bias",           Range(-0.5, 0.5))  = 0.0
+        _HTBrightCutoff      ("Bright Cutoff",       Range(0, 0.95))    = 0.4
         _HTInkColor          ("Ink Color",           Color)             = (0.05, 0.05, 0.1, 1)
         _HTPaperColor        ("Paper Color",         Color)             = (0.95, 0.93, 0.88, 1)
         _HTTextureInfluence  ("Texture Influence",   Range(0, 1))       = 0.5
@@ -297,6 +298,7 @@ Shader "Avatar/MetaNPR"
         _HatCrossAngle       ("Cross Angle",         Range(0, 180))     = 135.0
         _HatThickness        ("Line Thickness",      Range(0.01, 0.5))  = 0.15
         _HatToneBias         ("Tone Bias",           Range(-0.5, 0.5))  = 0.0
+        _HatBrightCutoff     ("Bright Cutoff",       Range(0, 0.95))    = 0.4
         _HatInkColor         ("Ink Color",           Color)             = (0.05, 0.05, 0.1, 1)
         _HatPaperColor       ("Paper Color",         Color)             = (0.95, 0.93, 0.88, 1)
         _HatTextureInfluence ("Texture Influence",   Range(0, 1))       = 0.5

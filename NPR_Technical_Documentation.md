@@ -406,17 +406,23 @@ Two phases in one pass:
 ### Technique 12 — Halftone
 **File:** `NPREffect_Halftone.cginc`
 **Keyword:** `EFFECT_HALFTONE`
-**Source:** Adapted from `Assets/Shaders/AvaturnNPRShaders/HalftoneHatching.shader` (`HalftonePattern` function).
+**Source:** Adapted from `Assets/Shaders/CommonNPRShaders/HalftoneHatching.shader` (`HalftonePattern` function).
 
-Circular dot grid in UV space. Tone is derived from the luminance of the incoming PBR colour — darker areas produce larger dots, lighter areas produce smaller dots or none.
+Circular dot grid in UV space. Tone is derived from the luminance of the incoming PBR colour, normalised by `_HTToneWhitePoint` so the expected peak luminance maps to `tone = 1.0` (pure paper). Darker areas produce larger dots; fully-lit highlights produce none.
 
 ```
+lum      = dot(PBRcolor, float3(0.299, 0.587, 0.114))
+tone     = saturate(lum / HTToneWhitePoint + HTToneBias)   // white-point normalisation
 rotated  = Rotate2D(uv, HTAngle)
 gridPos  = frac(rotated × HTScale) − 0.5
 dist     = length(gridPos)
-dotRadius = sqrt(max(0, 1 − tone)) × 0.5      // darker → bigger dot
-pattern  = 1 − smoothstep(dotRadius ± 0.5/HTSharpness, dist)
+dotRadius = sqrt(max(0, 1 − tone)) × 0.5          // area ∝ darkness (halftone screen model)
+sharpInv  = 0.5 / max(HTSharpness, 0.001)
+visibility = smoothstep(0, 2×sharpInv, dotRadius)  // suppress near-zero-radius artifact
+pattern  = (1 − smoothstep(dotRadius − sharpInv, dotRadius + sharpInv, dist)) × visibility
 ```
+
+**Visibility suppression:** when `tone = 1.0` and `dotRadius = 0`, `smoothstep(−ε, +ε, 0) = 0.5` would leak faint ink at every grid centre. The `visibility` ramp drives the pattern to zero before `dotRadius` enters that degenerate range.
 
 **Colour model (identical to HalftoneHatching source):**
 ```
@@ -433,6 +439,7 @@ finalColor   = lerp(PBRcolor, patternColor, HTStrength)
 | Sharpness | Dot edge softness (1 = very soft, 50 = crisp) |
 | Grid Angle | Rotation of the dot grid (0–90°) |
 | Tone Bias | Shifts tone darker/lighter (-0.5–0.5) |
+| Tone White Point | Peak luminance mapped to tone=1.0 (pure paper); set to match material's max lit brightness (0.1–1.0, default 0.75) |
 | Ink Color | Dot fill colour |
 | Paper Color | Background colour |
 | Tex Influence | Blend between flat and PBR-tinted ink/paper |
@@ -445,22 +452,25 @@ finalColor   = lerp(PBRcolor, patternColor, HTStrength)
 ### Technique 13 — Hatching
 **File:** `NPREffect_Hatching.cginc`
 **Keyword:** `EFFECT_HATCHING`
-**Source:** Adapted from `Assets/Shaders/AvaturnNPRShaders/HalftoneHatching.shader` (`HatchingPattern` function, Tonal Art Map approach).
+**Source:** Adapted from `Assets/Shaders/CommonNPRShaders/HalftoneHatching.shader` (`HatchingPattern` function, Tonal Art Map approach).
 
-Four line layers that activate progressively as tone darkens, following Praun et al. "Real-Time Hatching" (SIGGRAPH 2001):
+Line layers activate progressively as tone darkens, following Praun et al. "Real-Time Hatching" (SIGGRAPH 2001). Tone is derived from the luminance of the incoming PBR colour, normalised by `_HatToneWhitePoint` so peak-lit pixels reach `tone = 1.0` (pure paper). Layer thresholds are driven by `_HatToneLevels` (default 6), matching Praun's TAM column spacing.
 
 ```
-t = 1 − tone   (darkness, 0=white, 1=black)
+lum  = dot(PBRcolor, float3(0.299, 0.587, 0.114))
+tone = saturate(lum / HatToneWhitePoint + HatToneBias)   // white-point normalisation
+t    = 1 − tone                                           // darkness (0=lit, 1=dark)
+step = 1.0 / HatToneLevels
 
-Layer 1 (t > 0.15): primary direction  × smoothstep(0.15, 0.40, t)
-Layer 2 (t > 0.35): cross direction    × smoothstep(0.35, 0.60, t)
-Layer 3 (t > 0.55): dense diagonal     × smoothstep(0.55, 0.80, t)  [thickness × 1.5]
-Layer 4 (t > 0.80): solid fill         = smoothstep(0.80, 1.00, t)
+Layer 1 (t > step):      primary direction  × smoothstep(step,   2×step, t)
+Layer 2 (t > 2×step):    cross direction    × smoothstep(2×step, 3×step, t)   [if N≥3]
+Layer 3 (t > 3×step):    dense diagonal     × smoothstep(3×step, 4×step, t)   [if N≥4, thickness×1.5]
+Fill    (t > (N-1)×step): solid ink         = smoothstep((N-1)×step, 1.0, t)
 
-pattern = max across all active layers
+pattern = max across active layers
 ```
 
-Each layer uses a rotated sine-style grid:
+Each layer uses a rotated line grid:
 ```
 rotated = Rotate2D(uv, angleDeg)
 linePos = frac(rotated.x × HatScale)
@@ -476,6 +486,8 @@ Same ink/paper colour model as Halftone (above) using `_Hat*` uniforms.
 | Cross Angle | Direction of Layer 2 lines (0–180°) |
 | Thickness | Line width (0.01 = hairline, 0.5 = thick) |
 | Tone Bias | Shifts tone darker/lighter |
+| Tone White Point | Peak luminance mapped to tone=1.0 (pure paper); set to match material's max lit brightness (0.1–1.0, default 0.75) |
+| Tone Levels | TAM column count — layer thresholds at k/N (2–8, default 6) |
 | Ink Color | Line colour |
 | Paper Color | Background between lines |
 | Tex Influence | Blend between flat and PBR-tinted ink/paper |
@@ -841,6 +853,18 @@ Screen-space hierarchical edge detection that combines depth, normal, and colour
 
 Requests `ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal` so Unity allocates the normals texture automatically.
 
+### Why these features are NOT applied to the MetaAvatar scene
+
+Two architectural reasons rule this out:
+
+1. **Frame scope** — a `ScriptableRendererFeature` blit operates on the entire camera frame. Applied to the MetaAvatar scene, it would stylise all scene content (walls, floor, props), not just the avatar. Scoping to the avatar alone would require an extra masking render pass (`AvatarMaskCapture.shader` exists for this purpose but adds pipeline complexity).
+
+2. **Quest VR performance** — each Renderer Feature adds a full-resolution blit pass that must be evaluated independently for both eye buffers in stereo. For a computationally intensive effect like the multi-pass Kuwahara or the depth+normals edge detection, this exceeds the acceptable GPU budget on Quest hardware.
+
+The MetaAvatar shader instead implements per-object adaptations of both techniques (`NPREffect_Kuwahara2.cginc` via `EFFECT_KUWAHARA`, `NPREffect_Hierarchical.cginc` via `EFFECT_HIERARCHICAL`) that run inside the `AppSpecificPostManipulation` hook — avatar-scoped, zero extra passes, same artistic intent.
+
+**Jade and Avaturn shader identity:** Both `JadeNPRShaders/AnisotropicKuwahara.shader` and `AvaturnNPRShaders/AnisotropicKuwahara.shader` are algorithmically identical (same 4 passes, same eigendecomposition, same sector blending). The two `HierarchicalEdgeDetection.shader` files are also identical in algorithm. The Avaturn version adds a `SAMPLER(sampler_AvatarMask)` declaration missing from Jade but the detection logic is unchanged.
+
 ---
 
 ## Avaturn Avatar Animation (Mixamo)
@@ -1023,9 +1047,11 @@ Both edge signals are max-combined and composited over the quantized shaded colo
 
 Standalone URP shader that applies either a halftone dot grid, cross-hatching lines, stippling, or a combination — all driven by lighting intensity. Four `shader_feature_local` keyword groups select the active mode at material import time; the float property (`_PatternMode`) stores the selection (0 = Halftone, 1 = Hatching, 2 = Stipple, 3 = Combined).
 
-#### Safety guard update (applied 2026-06-05)
+#### Bug fixes applied 2026-06-05 (two-patch update)
 
-`HalftonePattern` in `HalftoneHatching.shader` was updated to match the guards already present in `NPREffect_Halftone.cginc`:
+**Patch 1 — safety guards (initial)**
+
+`HalftonePattern` was updated to match the guards already present in `NPREffect_Halftone.cginc`:
 
 ```hlsl
 // Before
@@ -1042,27 +1068,128 @@ float pattern = 1.0 - smoothstep(dotRadius - sharpInv,
 
 `max(0.0, ...)` prevents NaN from `sqrt` when tone overshoots 1.0 (possible with high `_ToneBias`). `max(..., 0.001)` prevents divide-by-zero when `_HalftoneSharpness` is set to 0 in the Inspector.
 
+**Patch 2 — zero-dotRadius ink artifact + _ToneLevels dead-code fix (revised)**
+
+Two bugs caused uniform-looking dots. A third bug was introduced by the initial Patch 2 and corrected immediately.
+
+*Bug A: zero-dotRadius smoothstep artifact (fixed, retained).* When `tone = 1` (fully lit), `dotRadius = 0`. `smoothstep(-sharpInv, +sharpInv, 0)` evaluates to `0.5`, so `pattern = 0.5` — faint ink appeared at the grid centre even in bright highlights. Fix: an early-return guard suppresses the dot when `dotRadius < sharpInv`.
+
+```hlsl
+float dotRadius = sqrt(max(0.0, 1.0 - tone)) * 0.5;
+float sharpInv  = 0.5 / max(_HalftoneSharpness, 0.001);
+if (dotRadius < sharpInv) return 0.0;   // fully-lit cell: pure paper
+float pattern = 1.0 - smoothstep(dotRadius - sharpInv,
+                                  dotRadius + sharpInv, dist);
+```
+
+*Bug B: `_ToneLevels` dead code + incorrect quantisation (corrected).* The original code had `float levels = _ToneLevels;` in `HatchingPattern()` that was never used — thresholds were hardcoded. The initial fix mistakenly applied tone quantisation in `frag()` before calling pattern functions. This was wrong: Praun 2001 uses **continuous tone interpolation between TAM levels**, not discrete snapping. The quantisation mapped any `tone > 0.83` (with 5 levels) to `1.0`, which triggered the zero-dotRadius guard and produced a large stark-white region on the avatar — the visual "white placed on top of dots" artefact.
+
+**Correct fix:** `_ToneLevels` drives the hatch-layer threshold spacing. Thresholds are at `k / _ToneLevels` for k = 1…N-1, with continuous `smoothstep` blending over one step width — matching Praun's TAM interpolation between adjacent levels. Tone is never quantised; it remains a continuous NdotL × shadow value passed directly to the pattern functions.
+
+**Patch 3 — PBR luminance ceiling + Meta SDK tone normalisation (2026-06-05)**
+
+*Root cause.* Both the standalone shader (`NdotL`-based, `lerp(0.5, tone, _LightingInfluence)` clamp) and the Meta SDK hooks (luminance of composited PBR colour) suffer a luminance ceiling: the maximum achievable tone value is below 1.0. For the standalone shader with default `_LightingInfluence = 0.75`, full `NdotL = 1` yields `tone = 0.875`, not 1.0. For the Meta SDK hooks, dark-albedo skin or clothing (luminance ≈ 0.5–0.75 at full light) means `tone` never reaches 1.0. In both cases `t = 1 − tone > 0` always, so Layer 1 marks activate everywhere including fully-lit highlights — the "uniform hatching" artefact.
+
+*Fix — standalone shader (`HalftoneHatching.shader`).* Added `_ToneWhitePoint` (Range 0.1–1.0, default 1.0). Applied after the `_LightingInfluence` lerp:
+```hlsl
+tone = saturate(tone / max(_ToneWhitePoint, 0.001));
+```
+At default 1.0 the remapping is identity (backward compatible). Setting `_ToneWhitePoint = 0.875` with `_LightingInfluence = 0.75` restores a pure-paper highlight zone at full NdotL.
+
+*Fix — Meta SDK hatching hook (`NPREffect_Hatching.cginc`).* Replaced hardcoded thresholds with `_HatToneLevels`-driven spacing (matching the standalone shader). Added `_HatToneWhitePoint` (default 0.75):
+```hlsl
+tone = saturate(lum / max(_HatToneWhitePoint, 0.001) + _HatToneBias);
+```
+For a material whose peak lit luminance is 0.75, `lum / 0.75 = 1.0` → `t = 0.0` → pure paper. Darker regions remap proportionally, preserving the full tonal range below the white point.
+
+*Fix — Meta SDK halftone hook (`NPREffect_Halftone.cginc`).* Same `_HTToneWhitePoint` normalisation applied to the dot-radius luminance lookup. Additionally ported the `visibility` ramp from the standalone shader — this was missing in the original cginc, causing the zero-dotRadius smoothstep artefact (faint ink at every grid centre when `tone = 1.0`) to persist even before the white-point fix was needed.
+
+*Calibration guideline.* Set `_HatToneWhitePoint` / `_HTToneWhitePoint` to the luminance observed on the most-lit surface pixel of that material under the scene's key light. Skin under neutral white light: ≈ 0.60–0.75. Light clothing: ≈ 0.70–0.85. Dark clothing: ≈ 0.25–0.45. A too-low white point produces a very large blank highlight zone; a too-high value leaves marks in highlights.
+
+**Patch 4 — absolute TAM thresholds + direct NdotL tone computation (2026-06-06)**
+
+*Root cause.* The `_BrightCutoff` range-remap formula `t = saturate((t − C) / (1 − C))` with default `C = 0.4` had two compounding problems:
+
+1. **Compressed transitions.** All four layer transitions were squeezed into `tone < 0.6`. In typical 3D scenes most surface pixels have `tone > 0.4` (moderate-to-bright), so they received zero pattern. Shadow regions still existed but the layers were jammed into a narrow dark zone with 0.1-tone-unit transition windows — visually indistinguishable from each other.
+
+2. **Dynamic thresholds amplified the problem.** With `_ToneLevels = 6`, `step = 1/6`. Layer 1 started at remapped `t > 0.167`, which requires raw `t > 0.5` (`tone < 0.5`). Only the darkest half of the avatar showed any marks at all. The fill layer needed raw `t > 0.9` (`tone < 0.1`) — nearly invisible in practice.
+
+*Fix — `HalftoneHatching.shader` (standalone, all three pattern modes):* Remove the remap entirely. Use the working experimental shader's absolute thresholds directly on raw `t = 1 − tone`:
+
+```hlsl
+// Halftone: natural sqrt scaling — no explicit cutoff needed
+float t = max(0.0, 1.0 - tone);
+float dotRadius = sqrt(t) * 0.5;  // bright (t=0) → no dot; dark (t=1) → full cell
+
+// Hatching: absolute layer thresholds spread across full tonal range
+float t = 1.0 - tone;
+if (t > 0.15) pattern = max(pattern, HatchLine(...) * smoothstep(0.15, 0.40, t));  // Layer 1
+if (t > 0.35) pattern = max(pattern, HatchLine(...) * smoothstep(0.35, 0.60, t));  // Layer 2
+if (t > 0.55) pattern = max(pattern, HatchLine(...) * smoothstep(0.55, 0.80, t));  // Layer 3
+if (t > 0.80) pattern = max(pattern, smoothstep(0.80, 1.0, t));                    // Layer 4 fill
+```
+
+*Fix — `NPREffect_Hatching.cginc` (Meta SDK hook):* Same absolute thresholds. `_HatToneWhitePoint` normalisation already maps peak PBR luminance → `tone = 1.0`, so the absolute thresholds cover the full tonal range correctly.
+
+*Fix — `NPREffect_Halftone.cginc` (Meta SDK hook):* Replace `(t − _HTBrightCutoff) / (1 − _HTBrightCutoff)` remap with plain `t = max(0.0, 1.0 − tone)`. The `_HTToneWhitePoint` normalisation already ensures bright pixels reach `tone ≈ 1.0` and `dotRadius ≈ 0`.
+
+*Fix — tone computation in `HalftoneHatching.shader`:* The ambient SH + `lerp(0.5, tone, _LightingInfluence)` pipeline that was inherited from earlier shader versions compressed the tone range into ~[0.125, 0.875]. This left less than half the tonal range available for progressive layers. As of Patch 4 this was simplified to `tone = saturate(NdotL * shadow + _ToneBias)` to restore the full [0, 1] range. `_LightingInfluence`, `_ToneWhitePoint`, and `_BrightCutoff` remained declared but inactive in Patch 4 — see Patch 5 below for their proper implementation.
+
+**Patch 5 — `_LightingInfluence` / `_ToneWhitePoint` / `_BrightCutoff` implemented (2026-06-06)**
+
+*Root cause.* `_LightingInfluence`, `_ToneWhitePoint`, and `_BrightCutoff` were declared in Properties and CBUFFER (and surfaced in `HalftoneHatchingGUI`) but never applied in the fragment stage. Materials that stored non-default values for these properties (e.g. `_LightingInfluence = 0.079`, `_ToneBias = 0.5` on body materials) were therefore ignored, producing an unintended full-NdotL response instead of the near-flat look the artist tuned.
+
+*Fix — `HalftoneHatching.shader` tone computation:*
+```hlsl
+// _LightingInfluence=0: flat uniform (tone=1, pure paper); =1: full NdotL response
+float tone = saturate(lerp(1.0, NdotL * shadow, _LightingInfluence) + _ToneBias);
+// _ToneWhitePoint: remap so tones >= whitePoint become pure paper (widens highlight zone)
+tone = saturate(tone / max(_ToneWhitePoint, 0.001));
+```
+
+*Fix — `HalftoneHatching.shader` BrightCutoff (all pattern modes, applied after pattern is resolved):*
+```hlsl
+// _BrightCutoff: suppress pattern in the well-lit hatch-free zone
+pattern *= 1.0 - smoothstep(_BrightCutoff - 0.05, _BrightCutoff + 0.05, tone);
+```
+
+*Fix — `NPREffect_Halftone.cginc` and `NPREffect_Hatching.cginc`:* `_HTBrightCutoff` / `_HatBrightCutoff` applied identically after `HT_HalftonePattern` / `Hat_HatchingPattern` returns.
+
+*Fix — `HalftoneHatchingGUI.cs`:* `_BrightCutoff` (default 0.4) added to `DefaultFloats`; `_BrightCutoff` (0.9, wide open for debug) added to `DebugFloats`.
+
 #### Core algorithms
 
-**Halftone dot grid:**
+**Halftone dot grid — all three platforms:**
 ```hlsl
-rotated  = Rotate2D(uv, _HalftoneAngle)
-gridPos  = frac(rotated × _HalftoneScale) - 0.5
-dist     = length(gridPos)
-dotRadius = sqrt(max(0.0, 1.0 - tone)) × 0.5   // darker → bigger dot (photomechanical model)
-pattern  = 1 - smoothstep(dotRadius ± sharpInv, dist)
+// Standalone (Jody / Avaturn): tone = saturate(lerp(1.0, NdotL × shadow, _LightingInfluence) + _ToneBias)
+//                              then:  tone = saturate(tone / _ToneWhitePoint)
+// Meta SDK:                    tone = saturate(luminance(PBR_composite) / _HTToneWhitePoint + _HTToneBias)
+t         = max(0.0, 1.0 - tone)                                   // darkness: 0=lit, 1=dark
+dotRadius = sqrt(t) × 0.5                                          // area ∝ darkness (photomechanical)
+sharpInv  = 0.5 / max(_HalftoneSharpness, 0.001)
+visibility = smoothstep(0, 2×sharpInv, dotRadius)                  // suppress near-zero artifact
+pattern   = (1 − smoothstep(dotRadius − sharpInv, dotRadius + sharpInv, dist)) × visibility
 ```
 
-**TAM 4-layer hatching (Praun et al. 2001 approximation):**
-```hlsl
-t = 1.0 - tone   // darkness
+Expected: highlights → no dots (tone=1 → dotRadius=0), midtones → medium dots, shadows → large dots.
 
-Layer 1 (t > 0.15): primary lines  × smoothstep(0.15, 0.40, t)
-Layer 2 (t > 0.35): cross lines    × smoothstep(0.35, 0.60, t)
-Layer 3 (t > 0.55): dense diagonal × smoothstep(0.55, 0.80, t)  [thickness × 1.5]
-Layer 4 (t > 0.80): solid fill     = smoothstep(0.80, 1.00, t)
+**TAM hatching (Praun et al. 2001) — absolute thresholds, all three platforms:**
+```hlsl
+t = 1.0 - tone   // darkness (0=lit, 1=dark)
+
+Layer 1 at t > 0.15:  primary lines    × smoothstep(0.15, 0.40, t)
+Layer 2 at t > 0.35:  cross hatch      × smoothstep(0.35, 0.60, t)
+Layer 3 at t > 0.55:  dense diagonal   × smoothstep(0.55, 0.80, t)  [thickness × 1.5]
+Layer 4 at t > 0.80:  near-black fill  = smoothstep(0.80, 1.00, t)
 pattern = max across active layers
 ```
+
+Tonal distribution:
+- Highlight (tone > 0.85, t < 0.15): pure paper, no marks
+- Light shadow (t ≈ 0.25): sparse single-direction lines appear
+- Mid shadow (t ≈ 0.50): cross-hatch adds density
+- Deep shadow (t ≈ 0.70): dense diagonal fills gaps
+- Near-black (t > 0.80): near-solid ink fill
 
 **Colour model (identical across all three avatar platforms):**
 ```
@@ -1077,7 +1204,7 @@ finalColor   = lerp(PBRcolor, patternColor, Strength)
 | Dimension | Jody (Mixamo) | Avaturn | Meta Avatar SDK |
 |-----------|--------------|---------|-----------------|
 | Shader file | `CommonNPRShaders/HalftoneHatching.shader` | `CommonNPRShaders/HalftoneHatching.shader` | `NPREffect_Halftone.cginc` + `NPREffect_Hatching.cginc` |
-| Tone derivation | `NdotL × shadow + _ToneBias` | `NdotL × shadow + _ToneBias` | `luminance(PBR_composite) + _HTToneBias` |
+| Tone derivation | `saturate(NdotL × shadow + _ToneBias)` | `saturate(NdotL × shadow + _ToneBias)` | `saturate(luminance(PBR_composite) / _HTToneWhitePoint + _HTToneBias)` |
 | Coordinate modes | ScreenSpace / ObjectSpace (UV) / WorldSpace | ScreenSpace / ObjectSpace (UV) / WorldSpace | UV-space only |
 | OVR skinning bridge | No (standard SkinnedMeshRenderer) | No (GLTFast SkinnedMeshRenderer) | SDK-native |
 | Normal map decode | `rgb × 2.0 - 1.0` (GLTFast; incorrect for Jody FBX if `_NORMALMAP` enabled) | `rgb × 2.0 - 1.0` (GLTFast, correct) | N/A (hook receives post-PBR colour) |
@@ -1097,17 +1224,52 @@ Uses `_BaseMap` (not `_MainTex`) for the albedo. Has a built-in inverted-hull ou
 | `_PatternMode` | 0=Halftone, 1=Hatching, 2=Stipple, 3=Combined |
 | `_HalftoneScale` / `_HalftoneSharpness` / `_HalftoneAngle` | Dot grid parameters |
 | `_HatchScale` / `_HatchAngle` / `_HatchThickness` / `_CrossHatchAngle` | Line parameters |
-| `_ToneLevels` / `_ToneBias` | Lighting response (tone quantization steps and bias) |
+| `_LightingInfluence` | Blends between flat (0 → tone always 1.0, no pattern) and full NdotL shadow response (1 → tone = NdotL × shadow). Formula: `lerp(1.0, NdotL × shadow, _LightingInfluence)`. Default **0.75**. |
+| `_ToneLevels` | Hatch layer count; default **6** matching Praun 2001's 6 TAM columns |
+| `_ToneWhitePoint` | Peak NdotL tone remapped to 1.0 (pure paper); compensates for `_LightingInfluence < 1` clamping max tone below 1.0 — lower to widen the hatch-free highlight zone; default **1.0** (no remap, backward compatible) |
+| `_ToneBias` | Additional tone offset (positive = lighter overall, simulates extra ambient) |
+| `_BrightCutoff` | Suppress pattern in the well-lit hatch-free zone. Applied after all pattern modes via `pattern *= 1 − smoothstep(C−0.05, C+0.05, tone)`. Default **0.4** (pattern only where tone < 0.45). Set to 0.9+ to allow pattern across nearly the full tonal range. Meta SDK equivalents `_HTBrightCutoff` / `_HatBrightCutoff` apply identically in their respective cginc hooks. |
 | `_InkColor` / `_PaperColor` / `_TextureInfluence` | Colour model |
 | `_OutlineWidth` / `_OutlineColor` | Built-in silhouette outline |
 | `_AlphaCutoff` + `_ALPHATEST_ON` keyword | Alpha test for eyelash material |
 
-**Materials:** `Assets/Materials/NPR Avaturn Materials/VHH HalftoneHatching/`
-- `VHH_body.mat` — body texture, Halftone mode, outline on
-- `VHH_head.mat` — head texture, Halftone mode, outline on
-- `VHH_hair.mat` — hair texture, Halftone mode, outline on
-- `VHH_eyelash.mat` — eyelash texture, `_ALPHATEST_ON` keyword, `_AlphaCutoff: 0.07`, no outline
-- `VHH_look.mat` — eye texture, Halftone mode, no outline
+**Avaturn V4 materials** (thesis-canonical naming, matching V3/V5 folder convention):
+`Assets/Materials/NPR Avaturn Materials/V4 HalftoneHatching/`
+- `V4_body.mat` — body texture from Avaturn GLB, Halftone/ObjectSpace, outline on
+- `V4_head.mat` — head texture, Halftone/ObjectSpace, outline on
+- `V4_hair.mat` — hair texture, Halftone/ObjectSpace, outline on
+- `V4_eyelash.mat` — eyelash texture, `_ALPHATEST_ON`, `_AlphaCutoff: 0.07`, no outline
+- `V4_look.mat` — eye texture, Halftone/ObjectSpace, no outline
+
+**Jody (Mixamo) V4 materials** (consistent naming):
+`Assets/AvatarShaderExperimental/Materials/V4 HalftoneHatching/`
+- `V4_body.mat` — body texture + normal map (`_NORMALMAP`), Halftone/ObjectSpace, outline on
+- `V4_clothing.mat` — clothing texture + normal map, Halftone/ObjectSpace, outline on
+- `V4_hair.mat` — hair texture + normal map, `_ALPHATEST_ON`, `_AlphaCutoff: 0.07`, no outline
+- `V4_eyelash.mat` — eyelash texture + normal map, `_ALPHATEST_ON`, `_AlphaCutoff: 0.07`, no outline
+
+**Legacy VHH materials** (also fixed):
+`Assets/Materials/NPR Avaturn Materials/VHH HalftoneHatching/`
+- All five VHH_*.mat files updated: shader GUID corrected to `937be21d7640a4690a1dd9ebc159ba35`, `_HALFTONESPACE_OBJECTSPACE` / `_HATCHSTYLE_LINE` / `_PATTERNMODE_HALFTONE` keywords added. These may remain in scenes that were previously configured; use V4_* materials for new work.
+
+**Consistent parameters across all V4 materials:**
+
+| Parameter | Value | Notes |
+|-----------|-------|-------|
+| `_HalftoneScale` | 30 | Medium dot density |
+| `_HalftoneSharpness` | 10 | Crisp dots |
+| `_HalftoneAngle` | 45° | Standard halftone screen angle |
+| `_HalftoneSpace` | 1 (ObjectSpace/UV) | Stable on avatar rotation |
+| `_HatchScale` | 20 | Line frequency |
+| `_HatchAngle` | 45° | Primary line direction |
+| `_CrossHatchAngle` | 135° | Perpendicular cross lines |
+| `_HatchThickness` | 0.15 | Medium line weight |
+| `_ToneLevels` | 5 | Density steps |
+| `_ToneBias` | 0 | No bias (adjust per-scene lighting) |
+| `_TextureInfluence` | 0.5 | Half PBR tint, half flat ink/paper |
+| `_InkColor` | (0.05, 0.05, 0.1) | Dark blue-black ink |
+| `_PaperColor` | (0.95, 0.93, 0.88) | Warm cream paper |
+| `_OutlineWidth` | 0.002 (body/head/hair) / 0 (eyelash/look) | |
 
 ---
 
@@ -1251,6 +1413,10 @@ Assets/
 │   │   └── AnisotropicKuwaharaFeature.cs  — simpler 3-pass Kuwahara (no masking, no edge step)
 │   ├── Materials/V1 InvertedHull/         — JadeHull materials using Custom/V1_InvertedHullOutline (same shader as VHull)
 │   │   └── JadeHull_body.mat / JadeHull_eyelash.mat / JadeHull_hair.mat / JadeHull_head.mat / JadeHull_look.mat
+│   ├── Materials/V4 HalftoneHatching/     — Jody V4 halftone/hatching (same shader as Avaturn V4)
+│   │   ├── V4_body.mat / V4_clothing.mat  — body+clothing textures, _NORMALMAP, ObjectSpace, outline on
+│   │   └── V4_hair.mat / V4_eyelash.mat   — hair/eyelash texture, _ALPHATEST_ON, _AlphaCutoff 0.07, no outline
+│   ├── Materials/Halftone/                — Legacy Jody halftone materials (older per-character shader variant)
 ├── URP_QUEST_Renderer.asset               — active renderer (all scenes); has Kuwahara + EdgeDetection features
 ├── URP_QUEST.asset                        — active URP pipeline; depth+opaque textures enabled
 ├── Shaders/
@@ -1317,8 +1483,11 @@ Assets/
 │   │   ├── V5_hair.mat                    — alpha-test; edge detection ON
 │   │   ├── V5_eyelash.mat                 — alpha-test; all edge layers OFF, no outline
 │   │   └── V5_look.mat                    — eyes; all edge layers OFF, no outline
+│   ├── V4 HalftoneHatching/               — V4 Halftone/Hatching (thesis-canonical V4_*.mat naming)
+│   │   ├── V4_body.mat / V4_head.mat / V4_hair.mat / V4_look.mat
+│   │   └── V4_eyelash.mat                 — _ALPHATEST_ON, _AlphaCutoff 0.07, no outline
 │   ├── V8 QuantizedSobel/                 — V8 quantized-colour dual-Sobel materials
-│   ├── VHH HalftoneHatching/              — Halftone/Hatching standalone materials (HalftoneHatching.shader)
+│   ├── VHH HalftoneHatching/              — Legacy halftone/hatching materials (shader GUID fixed 2026-06-05)
 │   └── VXT XToon/                         — XToon 2D-ramp materials (need _ToonRamp assigned)
 └── Samples/Meta Avatars SDK/40.0.1/
     └── Sample Scenes/Scripts/

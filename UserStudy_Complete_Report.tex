@@ -1,0 +1,787 @@
+\documentclass[11pt, a4paper]{article}
+
+%% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathpazo}
+\usepackage[scaled=0.90]{helvet}
+\usepackage{microtype}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{mdframed}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{caption}
+
+%% ── Colours ───────────────────────────────────────────────────────────────────
+\definecolor{konstanzblue}{RGB}{0, 74, 153}
+\definecolor{sectiongray}{RGB}{80, 80, 80}
+\definecolor{lightgray}{RGB}{245, 245, 245}
+\definecolor{warningbg}{RGB}{255, 248, 230}
+\definecolor{warningborder}{RGB}{200, 150, 0}
+
+%% ── Headings ──────────────────────────────────────────────────────────────────
+\titleformat{\section}{\sffamily\large\bfseries\color{konstanzblue}}{\thesection}{1em}{}[\vspace{-2pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\sffamily\normalsize\bfseries\color{sectiongray}}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\sffamily\normalsize\itshape\color{sectiongray}}{\thesubsubsection}{1em}{}
+
+%% ── Header / Footer ───────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\sffamily\color{sectiongray} User Study Report --- Abstraction Mechanisms for Virtual Avatars}
+\fancyhead[R]{\small\sffamily\color{sectiongray} Nidanur Günay, University of Konstanz}
+\fancyfoot[C]{\small\sffamily\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%% ── Spacing ───────────────────────────────────────────────────────────────────
+\setstretch{1.15}
+\setlist[itemize]{itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{itemsep=2pt, topsep=4pt}
+
+%% ── Questionnaire helpers ─────────────────────────────────────────────────────
+% Semantic differential: left anchor, five boxes, right anchor
+\newcommand{\semdiffitem}[2]{%
+  \noindent
+  \begin{tabular}{r@{\ \ }c@{\ }c@{\ }c@{\ }c@{\ }c@{\ \ }l}
+    \small\textit{#1} &
+    $\square$ & $\square$ & $\square$ & $\square$ & $\square$ &
+    \small\textit{#2} \\[-2pt]
+    & \tiny 1 & \tiny 2 & \tiny 3 & \tiny 4 & \tiny 5 & \\
+  \end{tabular}
+  \vspace{3pt}
+}
+
+% 7-point Likert item
+\newcommand{\likertitem}[1]{%
+  \noindent
+  \begin{tabular}{p{8.5cm}@{\ }c@{\ }c@{\ }c@{\ }c@{\ }c@{\ }c@{\ }c}
+    \small #1 &
+    $\square$ & $\square$ & $\square$ & $\square$ & $\square$ & $\square$ & $\square$ \\[-2pt]
+    & \tiny 1 & \tiny 2 & \tiny 3 & \tiny 4 & \tiny 5 & \tiny 6 & \tiny 7 \\
+  \end{tabular}
+  \vspace{3pt}
+}
+
+% Section divider for questionnaire blocks
+\newcommand{\qsection}[1]{%
+  \vspace{6pt}
+  \noindent{\sffamily\small\bfseries\color{konstanzblue} #1}\\[2pt]
+  \noindent\rule{\linewidth}{0.3pt}
+  \vspace{4pt}
+}
+
+% Shaded info box
+\newmdenv[
+  backgroundcolor=lightgray,
+  linecolor=konstanzblue,
+  linewidth=1pt,
+  leftmargin=0pt,
+  rightmargin=0pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=8pt,
+  skipbelow=8pt
+]{infobox}
+
+% Warning box
+\newmdenv[
+  backgroundcolor=warningbg,
+  linecolor=warningborder,
+  linewidth=1pt,
+  leftmargin=0pt,
+  rightmargin=0pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=8pt,
+  skipbelow=8pt
+]{warnbox}
+
+%% ── Document ──────────────────────────────────────────────────────────────────
+\begin{document}
+
+%% ── Title page ────────────────────────────────────────────────────────────────
+\begin{titlepage}
+\centering
+\vspace*{2cm}
+
+{\sffamily\LARGE\bfseries\color{konstanzblue}
+User Study Design Report\\[8pt]
+\large\mdseries Abstraction Mechanisms for Virtual Avatars}
+
+\vspace{1.5cm}
+{\large\sffamily Nidanur Günay}\\[4pt]
+{\normalsize\sffamily Master's Thesis, University of Konstanz}\\[2pt]
+{\normalsize\sffamily Department of Computer and Information Science}\\[2pt]
+{\normalsize\sffamily Supervised by Prof.\,Dr.\,Oliver Deussen and Prof.\,Dr.\,Tiare Feuchtner}
+
+\vspace{1cm}
+{\normalsize\sffamily June 2026}
+
+\vspace{2cm}
+\noindent\rule{0.6\linewidth}{0.8pt}
+
+\vspace{1.2cm}
+\begin{minipage}{0.85\textwidth}
+\small\sffamily\centering
+This document provides expert recommendations for conducting the within-subjects
+video-based user study, detailed summaries of all measurement instrument literature
+with DOIs, and a complete ready-to-use questionnaire tailored to the three study
+conditions.
+\end{minipage}
+
+\vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+%% ════════════════════════════════════════════════════════════════════════════════
+\section{Findings and Expert Recommendations}
+\label{sec:recommendations}
+%% ════════════════════════════════════════════════════════════════════════════════
+
+\subsection{Study Overview and Rationale}
+
+This study addresses Research Question 3 of the thesis: how does visual abstraction level affect perceived trust in virtual avatar advisors? Three stimulus conditions are compared within each participant:
+
+\begin{infobox}
+\begin{tabular}{@{}lll}
+\textbf{C1} & Real Person & Pre-recorded video of a real human advisor (ground truth) \\[4pt]
+\textbf{C2} & Avaturn Realistic & Same advisor scenario with an Avaturn avatar, no NPR \\[4pt]
+\textbf{C3} & Avaturn NPR & Same Avaturn avatar rendered with the selected NPR shader \\
+\end{tabular}
+\end{infobox}
+
+The avatar platform is held constant between C2 and C3. This isolates the perceptual effect of NPR stylisation from platform variation. C1 provides an absolute trust anchor against which both avatar conditions are compared.
+
+\subsection{Why a Video-Based Design Is Scientifically Valid}
+
+A video-based study is the methodologically correct choice for this thesis for three reasons. First, it ensures every participant receives identical stimuli: same script, same camera angle, same voice, same timing, and same facial performance. Second, it eliminates confounds introduced by real-time rendering variance, network latency, or interaction quality differences. Third, it enables online distribution, making larger samples achievable within a thesis timeline.
+
+The limitation must be reported in the thesis: this study measures perceived trust toward pre-recorded avatar advisors and does not measure real-time embodied interaction or live conversational trust. This is not a weakness in the chosen research question; it is a deliberate and well-motivated scope decision.
+
+\subsection{Stimulus Production Guidelines}
+
+Every variable except rendering style must be held constant across C2 and C3. The following controls are mandatory:
+
+\begin{itemize}
+  \item Same script, delivered by the same voice (either a real voice or a TTS voice applied uniformly)
+  \item Same facial animation data, rendered twice under two material configurations
+  \item Same camera distance, angle, and framing in all conditions
+  \item Same background scene, lighting setup, and ambient sound
+  \item Same video resolution, codec, bitrate, and duration
+  \item Same Unity scene for both avatar conditions; only the shader material is swapped
+\end{itemize}
+
+For C1 (real person), control what can be controlled: same background, same framing, same script read aloud, same approximate video length. Minor uncontrolled variance in real-person expression is expected and acceptable; the role of C1 is a perceptual anchor, not a matched experimental cell.
+
+\textbf{Recommended video duration:} 45 to 60 seconds per video. This is sufficient for trust and eeriness responses to stabilise, short enough to maintain participant attention, and consistent with stimulus durations used in McDonnell et al.\ (2012) and Canales et al.\ (2024).
+
+\subsection{Counterbalancing Scheme}
+
+The study uses a within-subjects design with three conditions and three advisor scenarios (Academic, Travel, Information Reliability). To avoid order effects and scenario-condition confounds, a \textbf{balanced Latin Square} design is required.
+
+Each participant sees all three conditions. Each condition is paired with a different scenario. Across participants, each condition appears equally often in each presentation position, and each scenario appears equally often with each condition.
+
+\begin{center}
+\begin{tabular}{@{}lllll@{}}
+\toprule
+\textbf{Group} & \textbf{Video 1} & \textbf{Video 2} & \textbf{Video 3} & \textbf{N required} \\
+\midrule
+G1 & C1 / Scenario 1 & C2 / Scenario 2 & C3 / Scenario 3 & $n/6$ \\
+G2 & C1 / Scenario 2 & C3 / Scenario 1 & C2 / Scenario 3 & $n/6$ \\
+G3 & C2 / Scenario 1 & C1 / Scenario 3 & C3 / Scenario 2 & $n/6$ \\
+G4 & C2 / Scenario 3 & C3 / Scenario 2 & C1 / Scenario 1 & $n/6$ \\
+G5 & C3 / Scenario 2 & C1 / Scenario 1 & C2 / Scenario 3 & $n/6$ \\
+G6 & C3 / Scenario 3 & C2 / Scenario 1 & C1 / Scenario 2 & $n/6$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This scheme ensures that condition order, scenario assignment, and presentation position are all balanced. Participants must be recruited in multiples of six for a perfectly balanced design. A target of 48 participants (8 per group) satisfies both the balance requirement and the minimum power threshold described in Section~\ref{sec:samplesize}.
+
+\subsection{Sample Size and Power}
+\label{sec:samplesize}
+
+For a within-subjects repeated measures design with three conditions, a medium effect size ($\eta^2_p = 0.06$), significance threshold $\alpha = 0.05$, and power $1 - \beta = 0.80$, a power analysis yields a minimum of approximately 28 participants. For $\eta^2_p = 0.10$ (the effect size range observed in Canales et al.\ 2024), approximately 20 participants suffice.
+
+\textbf{Recommended target:} 42 to 48 participants. This provides power above 0.90 for medium effects, satisfies the Latin Square balance requirement (multiple of 6), and accounts for approximately 10 to 15\% expected attrition. For an online study via Prolific or a university participant pool, 48 completed responses is achievable within two to three weeks.
+
+\begin{warnbox}
+\textbf{Exclusion criteria.} Exclude any participant who: (a) fails an attention check item embedded in the questionnaire; (b) completes the entire study in under five minutes; (c) reports not watching one or more videos fully. These exclusions should be pre-registered in the study materials.
+\end{warnbox}
+
+\subsection{Platform Recommendation}
+
+Use \textbf{Qualtrics} for survey delivery. It supports video embedding, within-block randomisation, Latin Square group assignment via URL parameters, and automated data export to SPSS or R. Key configuration settings:
+
+\begin{itemize}
+  \item Disable back-navigation after each video block to prevent re-rating
+  \item Set a minimum time-on-page of 30 seconds per video page to prevent skipping
+  \item Embed an attention check item in block 2 (e.g., ``For this question, please select 4'')
+  \item Set the survey to prevent multiple completions from the same IP address
+\end{itemize}
+
+\subsection{Participant Instructions}
+
+Display the following instructions on the opening page, after the consent form:
+
+\begin{infobox}
+\small
+In this study you will watch three short videos. In each video, a virtual advisor gives a recommendation. After each video, please answer a series of questions based on your \textbf{immediate impression} of the advisor.
+
+Please complete this study on a \textbf{laptop or desktop computer}. A phone screen is too small for accurate viewing.
+
+There are no right or wrong answers. Please respond based on what you actually felt, not what you think you should feel.
+
+The study takes approximately 10 to 15 minutes.
+\end{infobox}
+
+\subsection{Hypotheses}
+
+\begin{tabular}{@{}lp{11cm}@{}}
+\toprule
+\textbf{H1} & NPR stylisation (C3) will produce lower eeriness ratings than the photorealistic avatar (C2). \\[3pt]
+\textbf{H2} & NPR stylisation (C3) will not produce significantly lower overall trust ratings than C2 (null result expected, consistent with Canales et al.\ 2024). \\[3pt]
+\textbf{H3} & Both avatar conditions (C2, C3) will produce lower trust ratings than the real person baseline (C1). \\[3pt]
+\textbf{H4} & Perceived eeriness will negatively predict trust scores across all conditions. \\[3pt]
+\textbf{H5} & Perceived anthropomorphism will mediate the relationship between render condition and eeriness. \\
+\bottomrule
+\end{tabular}
+
+\subsection{Statistical Analysis Plan}
+
+\textbf{Primary analyses.} For each questionnaire subscale (Godspeed Likeability, Godspeed Anthropomorphism, Eeriness, Trust Competence, Trust Benevolence, Trust Integrity), run a one-way repeated measures ANOVA with condition (C1, C2, C3) as the within-subjects factor. Report partial $\eta^2$ as effect size. Where Mauchly's test indicates a violation of sphericity, apply the Greenhouse-Geisser correction.
+
+\textbf{Post-hoc comparisons.} Use pairwise $t$-tests with Bonferroni correction. The theoretically critical comparisons are C2 vs C3 (NPR effect) and C2 vs C1 / C3 vs C1 (avatar vs human gap).
+
+\textbf{Mediation analysis.} Test whether anthropomorphism mediates the condition-to-eeriness path, and whether eeriness mediates the condition-to-trust path, using the PROCESS macro (Hayes, 2022) with 5000 bootstrap iterations.
+
+\textbf{Behavioural indicator.} Analyse the forced-choice preference frequencies across conditions using a chi-square goodness-of-fit test against equal probability.
+
+\textbf{Non-parametric fallback.} If Shapiro-Wilk tests indicate non-normality for any subscale, use Friedman's test in place of repeated measures ANOVA, and Wilcoxon signed-rank tests for pairwise comparisons.
+
+\subsection{Reporting Checklist}
+
+Before submitting the thesis, verify that the Evaluation chapter includes:
+
+\begin{itemize}
+  \item Participant demographics table (age range, mean, SD; gender distribution; VR experience)
+  \item Cronbach's $\alpha$ for each subscale across the full sample
+  \item Means and standard deviations per condition per subscale, presented in a table
+  \item ANOVA results: $F$, df, $p$, $\eta^2_p$ for each subscale
+  \item Post-hoc pairwise results with Bonferroni-corrected $p$-values
+  \item Forced-choice frequency table and chi-square result
+  \item At least two figures: (1) a bar chart or violin plot of trust by condition; (2) eeriness by condition
+\end{itemize}
+
+\newpage
+
+%% ════════════════════════════════════════════════════════════════════════════════
+\section{Article Summaries}
+\label{sec:articles}
+%% ════════════════════════════════════════════════════════════════════════════════
+
+The following articles form the measurement foundation of the user study. Each entry includes the full bibliographic reference, DOI, a detailed content summary, and notes on the specific relevance to this thesis.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{McKnight \& Chervany (2001) --- Trust Conceptual Typology}
+
+\begin{infobox}
+\small
+\textbf{Full reference:} McKnight, D.\,H.\,\& Chervany, N.\,L. (2001). What trust means in e-commerce customer relationships: An interdisciplinary conceptual typology. \textit{International Journal of Electronic Commerce}, 6(2), 35--59.\\[4pt]
+\textbf{DOI:} \texttt{10.1080/10864415.2001.11044235}
+\end{infobox}
+
+\textbf{What the paper argues.} McKnight and Chervany synthesised trust research from psychology, sociology, economics, and management science to produce an interdisciplinary conceptual typology. Their central contribution is a decomposition of trustworthiness into three independently measurable components: \textit{competence} (the belief that an agent has the ability and knowledge to do what is needed), \textit{benevolence} (the belief that the agent cares about the trustor's wellbeing and will act in their interest), and \textit{integrity} (the belief that the agent adheres to a set of principles the trustor considers acceptable, including honesty and promise-keeping). They further distinguish dispositional trust (a stable personality tendency to trust others) from institution-based trust (belief that structures and norms make an environment safe) and interpersonal trust (trust in a specific other party). The paper argues that trust measurement fails when researchers collapse these dimensions into a single score, because the antecedents and consequences of competence-based trust and benevolence-based trust differ substantially.
+
+\textbf{Methodology.} The paper is a conceptual synthesis with no empirical study component. Its contribution is the taxonomic framework itself.
+
+\textbf{Relevance to this thesis.} The three-component typology is the theoretical foundation for the trust battery used in this study, as adopted by Canales et al.\ (2024). The competence and integrity dimensions map onto cognitive trust, while benevolence maps onto affective trust, consistent with the Alipour et al.\ (2025) classification. Citing McKnight and Chervany when introducing the three-dimension structure is mandatory to establish that the questionnaire design has a grounded theoretical basis.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Ho \& MacDorman (2010) --- Validated Eeriness Instrument}
+
+\begin{infobox}
+\small
+\textbf{Full reference:} Ho, C.-C.\,\& MacDorman, K.\,F. (2010). Revisiting the Uncanny Valley Theory: Developing and validating an alternative to the Godspeed indices. \textit{Computers in Human Behavior}, 26(6), 2712--2728.\\[4pt]
+\textbf{DOI:} \texttt{10.1016/j.chb.2010.08.011}
+\end{infobox}
+
+\textbf{What the paper argues.} Ho and MacDorman critiqued the original Godspeed eeriness items as measuring too broad a negative affect, and proposed a refined two-subscale instrument. The first subscale, \textit{eeriness}, captures the distinctive uncanny emotional response: feelings of strangeness, unsettledness, and creepiness triggered by near-human imperfection. The second subscale, \textit{human likeness}, captures the participant's perceptual placement of the stimulus on the humanness continuum. The two subscales are empirically distinguishable: it is possible for a stimulus to score high on human likeness without scoring high on eeriness (a fully convincing digital human), and it is possible to score high on eeriness while scoring low on human likeness (a robotic face that is not human-like but still unsettling). This two-subscale structure makes the mechanism of the Uncanny Valley testable: the theory predicts that eeriness is high specifically in the middle range of the human-likeness continuum, not uniformly across it.
+
+\textbf{Methodology.} Two studies were conducted. Study 1 used 16 image stimuli ranging from robotic to hyper-realistic and collected ratings from 209 participants. Exploratory factor analysis identified the two-subscale structure. Study 2 validated the instrument with a new sample and confirmed factorial stability. The final instrument consists of 18 semantic differential items (9 per subscale) on 5-point scales.
+
+\textbf{Relevance to this thesis.} The eeriness subscale items used in this study's questionnaire are grounded in Ho and MacDorman's validated instrument. Their distinction between eeriness and human-likeness is directly operationalised here by combining the eeriness subscale with the Godspeed anthropomorphism subscale. This combination makes the proposed mediation analysis (H5) empirically tractable: if NPR reduces eeriness, the anthropomorphism ratings reveal whether this happens because NPR lowers perceived human-likeness or because NPR modifies the perceptual quality of human-likeness in a way that avoids the uncanny response.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Bartneck et al.\ (2009) --- Godspeed Questionnaire Series}
+
+\begin{infobox}
+\small
+\textbf{Full reference:} Bartneck, C., Kuli\'{c}, D., Croft, E., \& Zoghbi, S. (2009). Measurement instruments for the anthropomorphism, animacy, likeability, perceived intelligence, and perceived safety of robots. \textit{International Journal of Social Robotics}, 1(1), 71--81.\\[4pt]
+\textbf{DOI:} \texttt{10.1007/s12369-008-0001-3}
+\end{infobox}
+
+\textbf{What the paper argues.} Bartneck et al.\ noted that the emerging field of human-robot interaction (HRI) lacked standardised, validated measurement instruments for the perceptual and affective dimensions most relevant to social robot design. They developed and validated five subscale batteries using semantic differential items: (1) anthropomorphism, measuring perceived human-like qualities; (2) animacy, measuring perceived aliveness and responsiveness; (3) likeability, measuring affective appeal and warmth; (4) perceived intelligence, measuring perceived competence and knowledge; and (5) perceived safety, measuring comfort and absence of anxiety around the robot. Each subscale contains five items on a five-point scale with opposing adjective anchors. The paper reports Cronbach's $\alpha$ ranging from 0.67 (anthropomorphism) to 0.87 (likeability), and confirms construct validity through correlational analysis with external measures.
+
+\textbf{Methodology.} Validation used a sample of 156 participants evaluating two robotic platforms (Robovie and iCat) across the five subscales. Confirmatory factor analysis supported the five-factor structure.
+
+\textbf{Relevance to this thesis.} The Godspeed likeability subscale is used as the primary affective trust indicator. The anthropomorphism subscale is used to test the mediating mechanism between render condition and eeriness (H5). The perceived safety subscale supplements the trust battery as a benevolence-adjacent measure. Godspeed has been widely applied in avatar studies including Zibrek et al.\ (2019) and Latoschik et al.\ (2017), making it a standard citation-traceable benchmark.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{MacDorman \& Ishiguro (2006) --- Uncanny Valley Empirical Programme}
+
+\begin{infobox}
+\small
+\textbf{Full reference:} MacDorman, K.\,F.\,\& Ishiguro, H. (2006). The uncanny advantage of using androids in cognitive and social science research. In \textit{Proceedings of the ICDL-2006 Workshop on Android Science}, 1--9.\\[4pt]
+\textbf{Note:} Conference proceedings; no DOI assigned. Available from author's website.
+\end{infobox}
+
+\textbf{What the paper argues.} MacDorman and Ishiguro argued that androids, robotic systems designed to closely resemble humans, are uniquely valuable scientific tools precisely because they can be positioned at any point along the human-likeness continuum with experimental control. By manipulating android appearance systematically, researchers can generate Uncanny Valley responses on demand and study the psychological and cognitive mechanisms that produce them. The paper proposed a set of semantic differential scales to operationalise eeriness and strangeness as measurable affective responses, converting Mori's qualitative curve into a quantifiable experimental variable. It also proposed that the Uncanny Valley effect is driven not merely by imperfection in appearance, but by violations of categorical perception: when an agent is ambiguous between the ``human'' and ``non-human'' categories, the cognitive mismatch produces a negative affective response.
+
+\textbf{Methodology.} The paper combines a theoretical argument with the introduction of a measurement instrument. A pilot study is reported but sample size and full statistical details are not provided in the proceedings version.
+
+\textbf{Relevance to this thesis.} MacDorman and Ishiguro's eeriness scales are the original source of the eeriness measurement approach used in this study. Their categorical perception account of the Uncanny Valley supports the prediction that NPR stylisation can reduce eeriness by shifting the stimulus away from the ambiguous boundary region between human and non-human categories, even if perceived human-likeness is not dramatically reduced.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Canales, Roble, \& Neff (2024) --- Trust and Avatar Stylisation}
+
+\begin{infobox}
+\small
+\textbf{Full reference:} Canales, R., Roble, D., \& Neff, M. (2024). The impact of avatar stylization on trust. In \textit{2024 IEEE Conference on Virtual Reality and 3D User Interfaces (VR)}, 418--428.\\[4pt]
+\textbf{DOI:} \texttt{10.1109/VR58804.2024.00063}
+\end{infobox}
+
+\textbf{What the paper argues.} Canales et al.\ conducted a controlled experiment in which participants viewed a virtual doctor avatar rendered at three stylisation levels: photorealistic, semi-realistic, and caricatured. Trust was measured across three dimensions adapted from the McKnight-Chervany typology: competence, benevolence, and integrity. A behavioural indicator was collected via a forced-choice task asking participants to select which doctor they would consult for a follow-up appointment. The key finding is a dissociation: self-reported trust ratings were broadly equivalent across all three stylisation levels, but the semi-realistic condition attracted the highest rate of behavioural selection. This dissociation implies that render style influences implicit social judgment in ways not fully captured by explicit self-report scales. Semi-realistic stylisation appears to optimise the balance between perceived approachability and perceived competence.
+
+\textbf{Methodology.} Between-subjects experiment with three groups ($n \approx 100$ per group, total $n = 312$). Stimuli were pre-recorded video presentations of the same virtual doctor performing the same script under three material configurations. The trust battery consisted of 11 Likert items (4 competence, 4 benevolence, 3 integrity) on 7-point scales. Behavioural trust was the single forced-choice item. Statistical analysis used ANOVA with post-hoc Tukey tests.
+
+\textbf{Relevance to this thesis.} The trust battery adapted for this study's questionnaire is based directly on the Canales et al.\ instrument. Their finding that semi-realistic (i.e.\ stylised) avatars match or exceed photorealistic avatars on behavioural trust is the primary empirical motivation for H2. The video-based design, scripted advisor scenarios, and the combination of self-report with behavioural preference all follow the Canales et al.\ paradigm, making it the closest prior work to this thesis.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Alipour, Hartmann, \& Alimardani (2025) --- Systematic Review}
+
+\begin{infobox}
+\small
+\textbf{Full reference:} Alipour, A., Hartmann, T., \& Alimardani, M. (2025). Would you rely on an eerie agent? A systematic review of the impact of the Uncanny Valley Effect on trust in human-agent interaction. \textit{arXiv preprint arXiv:2505.05543}.\\[4pt]
+\textbf{DOI / arXiv:} \texttt{arXiv:2505.05543} $|$ \url{https://arxiv.org/abs/2505.05543}
+\end{infobox}
+
+\textbf{What the paper argues.} Alipour et al.\ conducted a PRISMA-compliant systematic review of 53 empirical studies at the intersection of Uncanny Valley effects and trust in human-agent interaction. They proposed a framework classifying trust into three measurement categories: cognitive trust (perceived competence and reliability), affective trust (warmth, comfort, and emotional engagement), and behavioural trust (willingness to act on agent guidance). The review identified four major methodological weaknesses across the surveyed literature: (1) the majority of studies used static image stimuli rather than dynamic video or interactive conditions; (2) most studies conflated trust with adjacent constructs such as likeability and comfort; (3) studies rarely included behavioural indicators alongside self-report, masking the dissociation Canales et al.\ later observed; and (4) the uncanny valley effect was rarely operationalised with a validated instrument. Alipour et al.\ concluded that well-designed future studies should employ dynamic stimuli, measure trust across all three dimensions independently, and include at least one behavioural indicator.
+
+\textbf{Methodology.} Systematic review following PRISMA guidelines. 53 papers included after screening. Qualitative synthesis of methodological approaches and findings; no meta-analytic quantitative synthesis reported.
+
+\textbf{Relevance to this thesis.} This review directly justifies three design choices in this study: (1) use of video stimuli (dynamic, not static); (2) separate measurement of cognitive, affective, and behavioural trust; (3) inclusion of a forced-choice preference task as a behavioural trust indicator. Citing Alipour et al.\ when introducing the multi-component trust battery provides methodological grounding and demonstrates awareness of identified weaknesses in the field.
+
+\newpage
+
+%% ════════════════════════════════════════════════════════════════════════════════
+\section{Questionnaire}
+\label{sec:questionnaire}
+%% ════════════════════════════════════════════════════════════════════════════════
+
+\begin{warnbox}
+\small\textbf{Administration note.} This questionnaire is administered three times in sequence, once after each video. The block header (C1 / C2 / C3) is replaced in practice by a neutral label such as ``Video 1'', ``Video 2'', or ``Video 3'' to avoid priming participants to the experimental condition. In Qualtrics, the three blocks are displayed identically; only the video embedded before each block changes according to the participant's assigned counterbalancing group.
+\end{warnbox}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Opening Page and Consent}
+
+\begin{infobox}
+\small
+\textbf{Study Title:} Perception of Virtual Avatar Advisors\\[4pt]
+\textbf{Researcher:} Nidanur Günay, University of Konstanz\\[4pt]
+\textbf{Purpose:} This study investigates how people perceive virtual avatar advisors. You will watch three short videos and answer questions about your impressions.\\[4pt]
+\textbf{Duration:} Approximately 10 to 15 minutes.\\[4pt]
+\textbf{Participation:} Voluntary. You may withdraw at any time without consequence.\\[4pt]
+\textbf{Data:} Anonymous. No personal data is collected beyond the responses below. Data will be stored securely and used for academic research only.
+\end{infobox}
+
+\vspace{6pt}
+$\square$ \quad \small I have read the above information and I agree to participate in this study.
+
+\vspace{12pt}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Participant Instructions}
+
+\begin{infobox}
+\small
+Please complete this study on a \textbf{laptop or desktop computer}. A phone screen is too small for accurate viewing.
+
+You will watch \textbf{three short videos}. Each video shows a virtual advisor making a recommendation. After each video, you will answer a set of questions about your immediate impression of the advisor.
+
+\textbf{There are no right or wrong answers.} Please respond based on your honest first impression, not what you think the ``correct'' answer is.
+
+Please watch each video in full before answering.
+\end{infobox}
+
+\vspace{12pt}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Demographic Questions}
+
+\vspace{6pt}
+
+\noindent\textbf{1.} What is your age? \quad \underline{\hspace{3cm}} years
+
+\vspace{8pt}
+\noindent\textbf{2.} What is your gender?\\[4pt]
+$\square$ \ Man \quad $\square$ \ Woman \quad $\square$ \ Non-binary / third gender \quad $\square$ \ Prefer not to say \quad $\square$ \ Other: \underline{\hspace{2cm}}
+
+\vspace{8pt}
+\noindent\textbf{3.} What is your highest completed level of education?\\[4pt]
+$\square$ \ Secondary school \quad $\square$ \ Bachelor's degree \quad $\square$ \ Master's degree \quad $\square$ \ Doctoral degree \quad $\square$ \ Other: \underline{\hspace{2cm}}
+
+\vspace{8pt}
+\noindent\textbf{4.} How often do you use or interact with virtual avatars or computer-generated characters (in games, VR, social media, video calls, etc.)?\\[4pt]
+$\square$ \ Never \quad $\square$ \ Rarely (a few times per year) \quad $\square$ \ Occasionally (monthly) \quad $\square$ \ Regularly (weekly) \quad $\square$ \ Daily
+
+\vspace{8pt}
+\noindent\textbf{5.} Have you ever used a VR headset (e.g.\ Meta Quest, HTC Vive, PlayStation VR)?\\[4pt]
+$\square$ \ Never \quad $\square$ \ Once or twice \quad $\square$ \ A few times \quad $\square$ \ Regularly
+
+\vspace{8pt}
+\noindent\textbf{6.} How would you describe your familiarity with virtual avatars or digital humans?\\[4pt]
+$\square$ \ No familiarity \quad $\square$ \ Some familiarity \quad $\square$ \ Moderate familiarity \quad $\square$ \ High familiarity
+
+\vspace{8pt}
+\noindent\textbf{7.} Are you viewing this study on a laptop or desktop computer?\\[4pt]
+$\square$ \ Yes \quad $\square$ \ No (please switch to a laptop or desktop before continuing)
+
+\vspace{8pt}
+\noindent\textbf{8.} Are you using headphones or speakers?\\[4pt]
+$\square$ \ Headphones \quad $\square$ \ Built-in speakers \quad $\square$ \ External speakers \quad $\square$ \ No audio
+
+\newpage
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Per-Video Questionnaire Block}
+\label{sec:perblock}
+
+\textit{This block is repeated three times, once after each video. The heading ``\textsf{VIDEO [N]}'' and the scenario description change each time; all questions remain identical.}
+
+\vspace{10pt}
+
+\begin{center}
+\large\sffamily\bfseries VIDEO \fbox{\phantom{000}}
+\end{center}
+
+\vspace{6pt}
+\noindent Please watch the video above in full, then answer all questions on this page.
+
+\vspace{12pt}
+
+%% ── Part A: Godspeed Anthropomorphism ─────────────────────────────────────────
+\qsection{Part A. Human-Likeness \textnormal{(Bartneck et al., 2009 --- Godspeed Anthropomorphism subscale)}}
+
+\noindent\small Rate your impression of the avatar on the following scales.
+Circle or tick the number that best represents your perception.\\
+\textit{1 = strongly left anchor, 5 = strongly right anchor.}
+
+\vspace{6pt}
+\semdiffitem{Fake}{Natural}
+\semdiffitem{Machinelike}{Humanlike}
+\semdiffitem{Unconscious}{Conscious}
+\semdiffitem{Artificial}{Lifelike}
+\semdiffitem{Moving rigidly}{Moving naturally}
+
+\vspace{10pt}
+
+%% ── Part B: Godspeed Likeability ──────────────────────────────────────────────
+\qsection{Part B. Likeability \textnormal{(Bartneck et al., 2009 --- Godspeed Likeability subscale)}}
+
+\noindent\small Rate your overall impression of the avatar.
+
+\vspace{6pt}
+\semdiffitem{Dislike}{Like}
+\semdiffitem{Unfriendly}{Friendly}
+\semdiffitem{Unkind}{Kind}
+\semdiffitem{Unpleasant}{Pleasant}
+\semdiffitem{Awful}{Nice}
+
+\vspace{10pt}
+
+%% ── Part C: Godspeed Perceived Safety ─────────────────────────────────────────
+\qsection{Part C. Comfort \textnormal{(Bartneck et al., 2009 --- Godspeed Perceived Safety subscale)}}
+
+\noindent\small Rate how you feel in the presence of this avatar.
+
+\vspace{6pt}
+\semdiffitem{Anxious}{Relaxed}
+\semdiffitem{Agitated}{Calm}
+\semdiffitem{Tense}{At ease}
+\semdiffitem{Uncomfortable}{Comfortable}
+\semdiffitem{Uneasy}{Settled}
+
+\vspace{10pt}
+
+%% ── Part D: Eeriness ──────────────────────────────────────────────────────────
+\qsection{Part D. Eeriness \textnormal{(Ho \& MacDorman, 2010 --- adapted)}}
+
+\noindent\small Rate the extent to which the following words describe your impression of the avatar.\\
+\textit{1 = strongly left anchor, 5 = strongly right anchor.}
+
+\vspace{6pt}
+\semdiffitem{Not at all eerie}{Very eerie}
+\semdiffitem{Not at all creepy}{Very creepy}
+\semdiffitem{Predictable}{Unsettling}
+\semdiffitem{Natural}{Strange}
+\semdiffitem{Comfortable to watch}{Disturbing to watch}
+\semdiffitem{Familiar}{Uncanny}
+
+\vspace{10pt}
+
+%% ── Part E: Trust --- Competence ──────────────────────────────────────────────
+\qsection{Part E. Trust --- Competence \textnormal{(Canales et al., 2024; McKnight \& Chervany, 2001)}}
+
+\noindent\small Please rate your agreement with each statement.\\
+\textit{1 = Strongly Disagree \quad 4 = Neither \quad 7 = Strongly Agree}
+
+\vspace{6pt}
+\likertitem{I believe this avatar is capable and competent.}
+\likertitem{I would rely on advice given by this avatar.}
+\likertitem{This avatar seems knowledgeable.}
+\likertitem{This avatar gives the impression of being reliable.}
+
+\vspace{10pt}
+
+%% ── Part F: Trust --- Benevolence ─────────────────────────────────────────────
+\qsection{Part F. Trust --- Benevolence \textnormal{(Canales et al., 2024; McKnight \& Chervany, 2001)}}
+
+\noindent\small Please rate your agreement with each statement.\\
+\textit{1 = Strongly Disagree \quad 4 = Neither \quad 7 = Strongly Agree}
+
+\vspace{6pt}
+\likertitem{I feel comfortable in the presence of this avatar.}
+\likertitem{This avatar appears to have good intentions.}
+\likertitem{I believe this avatar would act in my best interest.}
+\likertitem{This avatar seems genuinely trustworthy.}
+
+\vspace{10pt}
+
+%% ── Part G: Trust --- Integrity ───────────────────────────────────────────────
+\qsection{Part G. Trust --- Integrity \textnormal{(Canales et al., 2024; McKnight \& Chervany, 2001)}}
+
+\noindent\small Please rate your agreement with each statement.\\
+\textit{1 = Strongly Disagree \quad 4 = Neither \quad 7 = Strongly Agree}
+
+\vspace{6pt}
+\likertitem{This avatar behaves in a consistent and predictable way.}
+\likertitem{This avatar appears to be honest.}
+\likertitem{I believe this avatar would keep its word.}
+
+\vspace{10pt}
+
+%% ── Part H: Advice ────────────────────────────────────────────────────────────
+\qsection{Part H. Response to the Recommendation}
+
+\noindent\small Answer the following questions about the recommendation given in this video.
+
+\vspace{6pt}
+\noindent\textbf{H1.} Would you follow the recommendation given by this advisor?\\[6pt]
+$\square$ \ Yes, definitely \quad $\square$ \ Probably yes \quad $\square$ \ Not sure \quad $\square$ \ Probably not \quad $\square$ \ Definitely not
+
+\vspace{8pt}
+\likertitem{How confident are you in the recommendation this avatar gave? \textnormal{\small(1 = Not at all confident, 7 = Completely confident)}}
+
+\vspace{8pt}
+\likertitem{How much did the avatar's visual appearance affect how you evaluated its recommendation? \textnormal{\small(1 = Not at all, 7 = Very strongly)}}
+
+\vspace{12pt}
+
+%% ── Attention Check (only in Block 2) ─────────────────────────────────────────
+\begin{warnbox}
+\small\textbf{Attention check} (include only in the second video block, not in blocks 1 or 3):\\[4pt]
+\textbf{H4.} This question is to verify you are reading carefully. Please select option 4 below, regardless of anything else.\\[6pt]
+$\square$ \ 1 \quad $\square$ \ 2 \quad $\square$ \ 3 \quad $\square$ \ 4 \quad $\square$ \ 5
+\end{warnbox}
+
+\vspace{10pt}
+
+%% ── Part I: Open question ─────────────────────────────────────────────────────
+\qsection{Part I. Open Question}
+
+\noindent\textbf{I1.} In a few words, what influenced your trust or distrust in this particular advisor?
+
+\vspace{6pt}
+\noindent\fbox{\begin{minipage}{\linewidth}\vspace{3cm}\end{minipage}}
+
+\newpage
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Post-Study Comparison Questions}
+\label{sec:postcomp}
+
+\noindent\textit{These questions are shown once, after all three videos have been watched and rated.}
+
+\vspace{10pt}
+
+\qsection{Comparative Preference}
+
+\noindent\textbf{P1.} If you were to receive advice from a virtual assistant in real life, which of the three advisors you just saw would you prefer to interact with?\\[8pt]
+$\square$ \ Advisor from Video 1 \quad $\square$ \ Advisor from Video 2 \quad $\square$ \ Advisor from Video 3 \quad $\square$ \ No preference
+
+\vspace{10pt}
+\noindent\textbf{P2.} Which advisor felt the most trustworthy overall?\\[8pt]
+$\square$ \ Advisor from Video 1 \quad $\square$ \ Advisor from Video 2 \quad $\square$ \ Advisor from Video 3 \quad $\square$ \ All equally trustworthy
+
+\vspace{10pt}
+\noindent\textbf{P3.} Which advisor felt the least natural or most unsettling?\\[8pt]
+$\square$ \ Advisor from Video 1 \quad $\square$ \ Advisor from Video 2 \quad $\square$ \ Advisor from Video 3 \quad $\square$ \ None were unsettling
+
+\vspace{10pt}
+\noindent\textbf{P4.} Which advisor would be most suitable for a professional context (e.g.\ a customer service assistant or academic advisor)?\\[8pt]
+$\square$ \ Advisor from Video 1 \quad $\square$ \ Advisor from Video 2 \quad $\square$ \ Advisor from Video 3 \quad $\square$ \ No preference
+
+\vspace{10pt}
+\noindent\textbf{P5.} Rank the three advisors from most preferred (1) to least preferred (3) for the purpose of receiving advice.\\[8pt]
+\begin{tabular}{@{}lccc@{}}
+\toprule
+& \textbf{Rank 1} (most preferred) & \textbf{Rank 2} & \textbf{Rank 3} (least preferred) \\
+\midrule
+Advisor from Video 1 & $\square$ & $\square$ & $\square$ \\[4pt]
+Advisor from Video 2 & $\square$ & $\square$ & $\square$ \\[4pt]
+Advisor from Video 3 & $\square$ & $\square$ & $\square$ \\
+\bottomrule
+\end{tabular}
+
+\vspace{14pt}
+\qsection{Open Reflection}
+
+\noindent\textbf{P6.} Looking back at all three advisors, what was the most important factor in deciding which one you trusted the most? Please describe in a few sentences.
+
+\vspace{6pt}
+\noindent\fbox{\begin{minipage}{\linewidth}\vspace{3.5cm}\end{minipage}}
+
+\vspace{12pt}
+\noindent\textbf{P7.} Did the visual appearance of any advisor distract you from the content of the recommendation? If yes, please describe.
+
+\vspace{6pt}
+\noindent\fbox{\begin{minipage}{\linewidth}\vspace{2.5cm}\end{minipage}}
+
+\newpage
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Debriefing Page}
+
+\begin{infobox}
+\small
+\textbf{Thank you for completing this study.}
+
+\vspace{6pt}
+This study investigated how visual rendering style affects people's perception of virtual avatar advisors. The three videos you watched showed the same or equivalent advisor scenarios rendered in different visual styles: one was a recording of a real person, one was a computer-generated avatar with a realistic appearance, and one was the same computer-generated avatar rendered with a stylised, non-photorealistic visual effect.
+
+\vspace{6pt}
+We are interested in whether stylised rendering affects perceived trust. Based on prior research, we expect that stylised avatars may reduce the ``uncanny valley'' effect --- the unsettling feeling sometimes produced by near-realistic digital faces --- while maintaining comparable levels of perceived trustworthiness.
+
+\vspace{6pt}
+If you have any questions about this study, please contact: \texttt{nidanur.guenay@uni-konstanz.de}
+
+\vspace{6pt}
+Your responses have been saved. You may now close this window.
+\end{infobox}
+
+\newpage
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Questionnaire Summary Table}
+
+The table below summarises all questionnaire items by section, scale type, and measurement target. This is provided for reference during survey construction in Qualtrics.
+
+\begin{longtable}{@{}llllp{4cm}@{}}
+\toprule
+\textbf{Block} & \textbf{Part} & \textbf{Items} & \textbf{Scale} & \textbf{Construct / Source} \\
+\midrule
+\endhead
+Per video & A & 5 & Sem.~diff.~1--5 & Anthropomorphism (Godspeed) \\
+Per video & B & 5 & Sem.~diff.~1--5 & Likeability (Godspeed) \\
+Per video & C & 5 & Sem.~diff.~1--5 & Perceived Safety (Godspeed) \\
+Per video & D & 6 & Sem.~diff.~1--5 & Eeriness (Ho \& MacDorman) \\
+Per video & E & 4 & Likert 1--7 & Trust: Competence (Canales) \\
+Per video & F & 4 & Likert 1--7 & Trust: Benevolence (Canales) \\
+Per video & G & 3 & Likert 1--7 & Trust: Integrity (Canales) \\
+Per video & H & 3 & Mixed & Advice response \\
+Per video & I & 1 & Open text & Trust rationale \\
+\midrule
+Post-study & P1--P4 & 4 & Forced choice & Comparative preference \\
+Post-study & P5 & 1 & Ranking & Preference ordering \\
+Post-study & P6--P7 & 2 & Open text & Reflective explanation \\
+\midrule
+\multicolumn{3}{l}{\textbf{Items per video block}} & \multicolumn{2}{l}{30 (excl. open text)} \\
+\multicolumn{3}{l}{\textbf{Total closed items}} & \multicolumn{2}{l}{$3 \times 30 + 6 = 96$} \\
+\multicolumn{3}{l}{\textbf{Estimated completion time}} & \multicolumn{2}{l}{10--15 minutes} \\
+\bottomrule
+\end{longtable}
+
+\newpage
+
+%% ════════════════════════════════════════════════════════════════════════════════
+\section{Scoring Guide}
+\label{sec:scoring}
+%% ════════════════════════════════════════════════════════════════════════════════
+
+\subsection{Scale Direction and Reverse Scoring}
+
+All Godspeed semantic differential items are oriented so that higher scores indicate a more positive or human-like perception. No reverse scoring is required for Parts A, B, or C.
+
+For Part D (Eeriness), items 3 and 4 use the anchor orientation ``Predictable/Natural'' (low eeriness) to ``Unsettling/Strange'' (high eeriness). This is consistent with the Ho and MacDorman (2010) operationalisation. \textbf{No reverse scoring is required} because high scores on all items uniformly indicate high eeriness.
+
+For Parts E, F, and G (Likert trust items), higher scores uniformly indicate higher trust. No reverse scoring is required.
+
+\subsection{Subscale Score Computation}
+
+\begin{center}
+\begin{tabular}{@{}llp{7cm}@{}}
+\toprule
+\textbf{Subscale} & \textbf{Score} & \textbf{Compute as} \\
+\midrule
+Anthropomorphism & A\_score & Mean of Part A items (1--5) \\
+Likeability & L\_score & Mean of Part B items (1--5) \\
+Perceived Safety & S\_score & Mean of Part C items (1--5) \\
+Eeriness & E\_score & Mean of Part D items (1--5) \\
+Trust Competence & TC\_score & Mean of Part E items (1--7) \\
+Trust Benevolence & TB\_score & Mean of Part F items (1--7) \\
+Trust Integrity & TI\_score & Mean of Part G items (1--7) \\
+Overall Trust & T\_score & Mean of TC, TB, TI scores \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Internal Consistency Check}
+
+Before running any ANOVA, compute Cronbach's $\alpha$ for each subscale across all participants and all conditions. Expected values based on validation studies:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Subscale} & \textbf{Expected $\alpha$} & \textbf{Reference} \\
+\midrule
+Anthropomorphism & 0.67--0.80 & Bartneck et al.\ (2009) \\
+Likeability & 0.85--0.90 & Bartneck et al.\ (2009) \\
+Perceived Safety & 0.75--0.85 & Bartneck et al.\ (2009) \\
+Eeriness & 0.80--0.90 & Ho \& MacDorman (2010) \\
+Trust (overall) & 0.85--0.92 & Canales et al.\ (2024) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+If any subscale's $\alpha < 0.65$, investigate item-total correlations and consider removing the weakest item before running inferential tests. Report the final $\alpha$ values in the thesis Evaluation chapter.
+
+\end{document}

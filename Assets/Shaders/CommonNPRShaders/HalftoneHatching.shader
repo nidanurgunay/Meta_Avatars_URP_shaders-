@@ -330,9 +330,14 @@ Shader "NPR/HalftoneHatching"
                 float3 normalWS = normalize(input.normalWS);
 
                 #if defined(_NORMALMAP)
-                float3 normalTS = UnpackNormalScale(
-                    SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
-                        TRANSFORM_TEX(input.uv, _BumpMap)), _BumpScale);
+                // Raw-RGB normal map (GLTFast / Avaturn convention) — decode as plain RGB.
+                // UnpackNormalScale reads the alpha channel for X on DX11 (DXT5nm), which
+                // produces X≈1 for any texture without a packed alpha → wrong NdotL.
+                float4 bumpSample = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
+                                        TRANSFORM_TEX(input.uv, _BumpMap));
+                float3 normalTS = bumpSample.rgb * 2.0 - 1.0;
+                normalTS.xy    *= _BumpScale;
+                normalTS        = normalize(normalTS);
                 float3x3 TBN = float3x3(normalize(input.tangentWS),
                                         normalize(input.bitangentWS),
                                         normalWS);
@@ -656,9 +661,10 @@ Shader "NPR/HalftoneHatching"
             {
                 float3 normalWS = normalize(input.normalWS);
                 #if defined(_NORMALMAP)
-                float3 nTS = UnpackNormalScale(
-                    SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
-                        TRANSFORM_TEX(input.uv, _BumpMap)), _BumpScale);
+                float4 bumpSampleDN = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
+                                         TRANSFORM_TEX(input.uv, _BumpMap));
+                float3 nTS = normalize(bumpSampleDN.rgb * 2.0 - 1.0);
+                nTS.xy    *= _BumpScale;
                 float3x3 TBN = float3x3(normalize(input.tangentWS),
                                         normalize(input.bitangentWS), normalWS);
                 normalWS = normalize(mul(nTS, TBN));

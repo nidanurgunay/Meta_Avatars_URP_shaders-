@@ -14,16 +14,16 @@ Material:
   m_ValidKeywords:
   - _HALFTONESPACE_OBJECTSPACE
   - _HATCHSTYLE_LINE
-  - _NORMALMAP
   - _PATTERNMODE_HALFTONE
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -39,26 +39,26 @@ Material:
     m_Floats:
     - _Alpha: 1
     - _AlphaCutoff: 0.5
+    - _BrightCutoff: 0.4
     - _BumpScale: 1
     - _CrossHatchAngle: 135
-    - _DotSize: 0.12
+    - _DotSize: 0.148
     - _DstBlend: 0
     - _HalftoneAngle: 45
-    - _HalftoneScale: 30
-    - _HalftoneSharpness: 10
+    - _HalftoneScale: 100
+    - _HalftoneSharpness: 3.8
     - _HalftoneSpace: 1
     - _HatchAngle: 45
     - _HatchScale: 20
     - _HatchStyle: 0
     - _HatchThickness: 0.15
-    - _OutlineWidth: 0.002
+    - _OutlineWidth: 0.005
     - _PatternMode: 0
     - _SrcBlend: 1
     - _StippleDensity: 1
-    - _StippleScale: 50
-    - _TextureInfluence: 0.5
-    - _ToneBias: 0
-    - _BrightCutoff: 0.4
+    - _StippleScale: 62
+    - _TextureInfluence: 1
+    - _ToneBias: 0.0
     - _ToneLevels: 5
     - _ZWrite: 1
     m_Colors:

@@ -41,19 +41,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46853fd63f44668a55e432a1113a2cd, type: 3}
   m_Name: EdgeDetectionFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     renderPassEvent: 550
     edgeShader: {fileID: 4800000, guid: cbbd79783d4a74d49bc2c349a189e00c, type: 3}
     edgeColor: {r: 0, g: 0, b: 0, a: 1}
-    depthThreshold: 5
-    normalThreshold: 0.51
-    colorThreshold: 0.5
+    depthThreshold: 0.01
+    normalThreshold: 0.94
+    colorThreshold: 0.3
     depthWeight: 1
     normalWeight: 1
     colorWeight: 1
     edgeWidth: 0.92
-    adaptiveStrength: 1
+    adaptiveStrength: 0
     avatarLayer:
       serializedVersion: 2
       m_Bits: 320
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a37147cf30146778e0fd9258a1018a, type: 3}
   m_Name: KuwaharaFilterFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     renderPassEvent: 550
     kuwaharaShader: {fileID: 4800000, guid: b2466d13b2c9f4b5c80fbef454266920, type: 3}
@@ -99,7 +99,8 @@ MonoBehaviour:
   m_RendererFeatures:
   - {fileID: -2345678901234567890}
   - {fileID: -3456789012345678901}
-  m_RendererFeatureMap: 2ef5c89e777972dfcb93a947b50407d0
+  - {fileID: 5064763170097653089}
+  m_RendererFeatureMap: 2ef5c89e777972dfcb93a947b50407d061e526d944a74946
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -141,3 +142,29 @@ MonoBehaviour:
   m_CopyDepthMode: 1
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &5064763170097653089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0532b8bf319354c259b05280a82b2ecb, type: 3}
+  m_Name: MultiScaleKuwaharaFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  settings:
+    renderPassEvent: 500
+    shader: {fileID: 4800000, guid: ce6b5aa4dbd474bb4883c414d704f941, type: 3}
+    kernelSize: 14.75
+    sharpness: 18
+    hardness: 13.5
+    alpha: 1
+    numScales: 3
+    edgeThresholdMin: 0.02
+    edgeThresholdMax: 0.2
+    avatarLayer:
+      serializedVersion: 2
+      m_Bits: 512

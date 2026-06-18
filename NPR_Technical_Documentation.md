@@ -1135,19 +1135,11 @@ if (t > 0.80) pattern = max(pattern, smoothstep(0.80, 1.0, t));                 
 
 *Fix — tone computation in `HalftoneHatching.shader`:* The ambient SH + `lerp(0.5, tone, _LightingInfluence)` pipeline that was inherited from earlier shader versions compressed the tone range into ~[0.125, 0.875]. This left less than half the tonal range available for progressive layers. As of Patch 4 this was simplified to `tone = saturate(NdotL * shadow + _ToneBias)` to restore the full [0, 1] range. `_LightingInfluence`, `_ToneWhitePoint`, and `_BrightCutoff` remained declared but inactive in Patch 4 — see Patch 5 below for their proper implementation.
 
-**Patch 5 — `_LightingInfluence` / `_ToneWhitePoint` / `_BrightCutoff` implemented (2026-06-06)**
+**Patch 5 — `_BrightCutoff` wired up in GUI and Meta SDK includes (2026-06-06)**
 
-*Root cause.* `_LightingInfluence`, `_ToneWhitePoint`, and `_BrightCutoff` were declared in Properties and CBUFFER (and surfaced in `HalftoneHatchingGUI`) but never applied in the fragment stage. Materials that stored non-default values for these properties (e.g. `_LightingInfluence = 0.079`, `_ToneBias = 0.5` on body materials) were therefore ignored, producing an unintended full-NdotL response instead of the near-flat look the artist tuned.
+*Root cause.* `_BrightCutoff` was declared in Properties and CBUFFER but never applied in the fragment stage, and was missing from `HalftoneHatchingGUI`'s default/debug preset maps. The `_LightingInfluence` and `_ToneWhitePoint` are declared for GUI/preset compatibility only and intentionally NOT applied in the fragment — they were surfaced so artist-tuned material values survive preset round-trips without corrupting other properties.
 
-*Fix — `HalftoneHatching.shader` tone computation:*
-```hlsl
-// _LightingInfluence=0: flat uniform (tone=1, pure paper); =1: full NdotL response
-float tone = saturate(lerp(1.0, NdotL * shadow, _LightingInfluence) + _ToneBias);
-// _ToneWhitePoint: remap so tones >= whitePoint become pure paper (widens highlight zone)
-tone = saturate(tone / max(_ToneWhitePoint, 0.001));
-```
-
-*Fix — `HalftoneHatching.shader` BrightCutoff (all pattern modes, applied after pattern is resolved):*
+*Fix — `HalftoneHatching.shader` BrightCutoff:*
 ```hlsl
 // _BrightCutoff: suppress pattern in the well-lit hatch-free zone
 pattern *= 1.0 - smoothstep(_BrightCutoff - 0.05, _BrightCutoff + 0.05, tone);
@@ -1156,6 +1148,33 @@ pattern *= 1.0 - smoothstep(_BrightCutoff - 0.05, _BrightCutoff + 0.05, tone);
 *Fix — `NPREffect_Halftone.cginc` and `NPREffect_Hatching.cginc`:* `_HTBrightCutoff` / `_HatBrightCutoff` applied identically after `HT_HalftonePattern` / `Hat_HatchingPattern` returns.
 
 *Fix — `HalftoneHatchingGUI.cs`:* `_BrightCutoff` (default 0.4) added to `DefaultFloats`; `_BrightCutoff` (0.9, wide open for debug) added to `DebugFloats`.
+
+**Patch 6 — Normal map decode corrected + shader aligned with working standalone (2026-06-07)**
+
+*Root cause — inverted halftone pattern.* After applying V4 materials, dots appeared on the lit centre of the face and were absent on the shadowed edges — the opposite of correct halftone behaviour. `HalftoneHatching.shader` had been updated to use `UnpackNormalScale()` (Unity DXT5nm decode). On DX11 / PC this reads the **alpha channel for X** and reconstructs Z; for a texture without a packed alpha, X collapses to 1.0 on every fragment, producing a world-space normal that always points in +X regardless of surface orientation. The wrong NdotL values caused the shadow side to read as lit and the lit side to read as dark, directly inverting the halftone pattern.
+
+Both V4 Jade and V4 Avaturn materials reference the same normal map (GUID `8c8eedd0915724818be4399b70dba86a`), which is a **raw RGB** texture imported via GLTFast — it must be decoded as `rgb * 2.0 - 1.0`, not via DXT5nm.
+
+Fix — `HalftoneHatching.shader` ForwardLit pass:
+
+```hlsl
+#if defined(_NORMALMAP)
+// Raw-RGB normal map (GLTFast / Avaturn convention) — decode as plain RGB.
+// UnpackNormalScale reads the alpha channel for X on DX11 (DXT5nm), which
+// produces X≈1 for any texture without a packed alpha → wrong NdotL.
+float4 bumpSample = SAMPLE_TEXTURE2D(_BumpMap, sampler_BumpMap,
+                        TRANSFORM_TEX(input.uv, _BumpMap));
+float3 normalTS = bumpSample.rgb * 2.0 - 1.0;
+normalTS.xy    *= _BumpScale;
+normalTS        = normalize(normalTS);
+float3x3 TBN = float3x3(normalize(input.tangentWS),
+                        normalize(input.bitangentWS),
+                        normalWS);
+normalWS = normalize(mul(normalTS, TBN));
+#endif
+```
+
+Same change applied to the DepthNormals pass. Tone formula remains the simple direct form `tone = saturate(NdotL * shadow + _ToneBias)` from the working standalone shader.
 
 #### Core algorithms
 

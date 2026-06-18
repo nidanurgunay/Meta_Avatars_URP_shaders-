@@ -15,9 +15,9 @@ Material:
   - _ALPHATEST_ON
   - _HALFTONESPACE_OBJECTSPACE
   - _HATCHSTYLE_LINE
-  - _NORMALMAP
   - _PATTERNMODE_HALFTONE
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

@@ -100,7 +100,7 @@ Material:
     - _InnerLineBlur: 0.5
     - _InnerLineSmooth: 5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.1
+    - _InnerLineThreshold: 0.15
     - _InnerLineWidth: 2
     - _LightSensitivity: 0.8
     - _LineMapStrength: 1

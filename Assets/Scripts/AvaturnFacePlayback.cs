@@ -217,7 +217,7 @@ public class AvaturnFacePlayback : MonoBehaviour
         _duration = _frames.Count > 0 ? _frames[_frames.Count - 1].time : 0f;
     }
 
-    // Parses HH:MM:SS:FF — FF is a frame number, not milliseconds
+    // Parses HH:MM:SS:FF or HH:MM:SS:FF.subfraction (Live Link Face format)
     private float ParseTimecode(string tc)
     {
         // Try simple float first (some exports use seconds directly)
@@ -230,7 +230,9 @@ public class AvaturnFacePlayback : MonoBehaviour
         int.TryParse(parts[0], out int hh);
         int.TryParse(parts[1], out int mm);
         int.TryParse(parts[2], out int ss);
-        int.TryParse(parts[3], out int ff);
+        // FF may have a decimal sub-frame suffix (e.g. "20.131") — parse as float
+        float.TryParse(parts[3], System.Globalization.NumberStyles.Float,
+            System.Globalization.CultureInfo.InvariantCulture, out float ff);
         return hh * 3600f + mm * 60f + ss + ff / recordingFps;
     }
 

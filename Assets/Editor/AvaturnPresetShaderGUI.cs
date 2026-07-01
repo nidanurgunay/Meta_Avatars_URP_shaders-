@@ -6,6 +6,11 @@ using UnityEngine;
 // Presets are saved to Assets/Editor/ShaderPresets.csv — commit it to keep your values.
 // For XToon shaders (those with _DetailMode) the panel shows Depth / Curvature / Manual
 // quick-select buttons; all other shaders get a free-text preset name.
+//
+// Auto-save: after every property change, the current values are saved to a preset named
+// "AutoSave_<Slot>" (e.g. "AutoSave_Head") as soon as the mouse is released. This means
+// the last tuned state is always retrievable from the Saved dropdown even if you forget
+// to click Save.
 public class AvaturnPresetShaderGUI : ShaderGUI
 {
     static readonly string[] SlotNames  = { "Head", "Body", "Hair", "Eyelash", "Look", "Shoe" };
@@ -15,6 +20,10 @@ public class AvaturnPresetShaderGUI : ShaderGUI
     static readonly Dictionary<string, bool>   s_PresetFoldout = new Dictionary<string, bool>();
     static readonly Dictionary<string, bool>   s_DiffFoldout   = new Dictionary<string, bool>();
     static readonly Dictionary<string, string> s_PresetName    = new Dictionary<string, string>();
+
+    // Auto-save state: set when a property changes, flushed once hotControl == 0
+    static bool   s_PendingAutoSave;
+    static string s_PendingAutoSaveMat;
 
     public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] props)
     {
@@ -27,18 +36,40 @@ public class AvaturnPresetShaderGUI : ShaderGUI
         if (!s_SelectedSlot.ContainsKey(matKey))  s_SelectedSlot[matKey]  = DetectSlot(material.name);
         if (!s_PresetName.ContainsKey(matKey))     s_PresetName[matKey]    = "";
 
+        // Flush auto-save once the user releases any dragged control
+        if (s_PendingAutoSave && s_PendingAutoSaveMat == matKey && GUIUtility.hotControl == 0)
+        {
+            s_PendingAutoSave = false;
+            string autoSlot = SlotNames[s_SelectedSlot[matKey]];
+            ShaderPresetStore.SavePreset(material.shader.name, autoSlot,
+                "AutoSave_" + autoSlot, props);
+        }
+
         DrawPresetPanel(materialEditor, props, material, matKey);
         DrawDebugDefaultsToggle(materialEditor, props);
 
         EditorGUILayout.Space(6);
+
+        // Detect any property change and queue an auto-save
+        EditorGUI.BeginChangeCheck();
         base.OnGUI(materialEditor, props);
+        if (EditorGUI.EndChangeCheck())
+        {
+            s_PendingAutoSave    = true;
+            s_PendingAutoSaveMat = matKey;
+            materialEditor.Repaint();
+        }
     }
 
     void DrawPresetPanel(MaterialEditor materialEditor, MaterialProperty[] props,
                          Material material, string matKey)
     {
+        bool autoSavePending = s_PendingAutoSave && s_PendingAutoSaveMat == matKey;
+        string header = autoSavePending
+            ? "Avaturn Slot Presets  [ unsaved changes ]"
+            : "Avaturn Slot Presets";
         s_PresetFoldout[matKey] = EditorGUILayout.BeginFoldoutHeaderGroup(
-            s_PresetFoldout[matKey], "Avaturn Slot Presets");
+            s_PresetFoldout[matKey], header);
 
         if (s_PresetFoldout[matKey])
         {
@@ -75,8 +106,8 @@ public class AvaturnPresetShaderGUI : ShaderGUI
                 EditorGUILayout.Space(4);
             }
 
-            // ── Existing presets dropdown ────────────────────────────────────
-            List<string> existing = ShaderPresetStore.GetPresetNames(shaderName, slotName);
+            // ── Existing presets dropdown (all slots for this shader) ────────
+            List<string> existing = ShaderPresetStore.GetPresetNames(shaderName);
             if (existing.Count > 0)
             {
                 using (new EditorGUILayout.HorizontalScope())
@@ -97,14 +128,14 @@ public class AvaturnPresetShaderGUI : ShaderGUI
             s_PresetName[matKey] = EditorGUILayout.TextField("Name", s_PresetName[matKey]);
             string presetName = s_PresetName[matKey].Trim();
             bool   hasPreset  = presetName.Length > 0 &&
-                                ShaderPresetStore.HasPreset(shaderName, slotName, presetName);
+                                ShaderPresetStore.HasPreset(shaderName, "", presetName);
 
             EditorGUILayout.Space(4);
 
             // ── Status + diff ────────────────────────────────────────────────
             if (hasPreset)
             {
-                ShaderPresetStore.LoadPreset(shaderName, slotName, presetName,
+                ShaderPresetStore.LoadPreset(shaderName, "", presetName,
                     out List<(string n, float v)> floats,
                     out List<(string n, Color v)> colors);
 
@@ -152,7 +183,7 @@ public class AvaturnPresetShaderGUI : ShaderGUI
                         if (GUILayout.Button("Apply", GUILayout.Height(26)))
                         {
                             Undo.RecordObject(material, $"Apply Preset {presetName}");
-                            ShaderPresetStore.LoadPreset(shaderName, slotName, presetName,
+                            ShaderPresetStore.LoadPreset(shaderName, "", presetName,
                                 out List<(string n, float v)> floats,
                                 out List<(string n, Color v)> colors);
                             ApplyPreset(props, floats, colors);

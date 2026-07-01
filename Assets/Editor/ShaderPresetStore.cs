@@ -43,25 +43,28 @@ public static class ShaderPresetStore
         }
     }
 
-    public static List<string> GetPresetNames(string shader, string slot)
+    // Pass slot = "" to get preset names across all slots for this shader.
+    public static List<string> GetPresetNames(string shader, string slot = "")
     {
         EnsureLoaded();
         var names = new List<string>();
         foreach (Row r in s_Rows)
-            if (r.shader == shader && r.slot == slot && !names.Contains(r.preset))
+            if (r.shader == shader && (slot == "" || r.slot == slot) && !names.Contains(r.preset))
                 names.Add(r.preset);
         return names;
     }
 
+    // Pass slot = "" to check across all slots.
     public static bool HasPreset(string shader, string slot, string preset)
     {
         EnsureLoaded();
         foreach (Row r in s_Rows)
-            if (r.shader == shader && r.slot == slot && r.preset == preset)
+            if (r.shader == shader && (slot == "" || r.slot == slot) && r.preset == preset)
                 return true;
         return false;
     }
 
+    // Pass slot = "" to load from whichever slot contains this preset name.
     public static void LoadPreset(string shader, string slot, string preset,
         out List<(string n, float v)>  floats,
         out List<(string n, Color v)>  colors)
@@ -72,7 +75,8 @@ public static class ShaderPresetStore
 
         foreach (Row r in s_Rows)
         {
-            if (r.shader != shader || r.slot != slot || r.preset != preset) continue;
+            if (r.shader != shader || r.preset != preset) continue;
+            if (slot != "" && r.slot != slot) continue;
 
             if (r.type == "float")
             {
@@ -152,5 +156,6 @@ public static class ShaderPresetStore
         string dir = Path.GetDirectoryName(AbsPath);
         if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
         File.WriteAllText(AbsPath, sb.ToString());
+        AssetDatabase.ImportAsset(CSV_RELATIVE, ImportAssetOptions.Default);
     }
 }

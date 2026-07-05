@@ -1,0 +1,199 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{parskip}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage{xcolor}
+\definecolor{uniblue}{RGB}{0,83,159}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries\color{uniblue} Pre-Study Parameter Configuration}\\[4pt]
+
+\end{center}
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+The selected NPR shader combines multiple rendering techniques in a single pass: an inverted hull geometry outline, Gaussian pre-filtered Sobel edge detection, XToon 2D ramp tonal shading, and rim light. Post-process effects including a Kuwahara painterly filter and a hierarchical depth edge layer can be added on top.
+
+Although the shader includes a Gaussian pre-filter stage that smooths the luminance signal before Sobel edge detection, this stage was disabled across all pre-study configurations. Preliminary testing showed no perceptually meaningful visual difference between the pre-filter enabled and disabled at the parameter ranges used for this avatar, so a dedicated round for this parameter was omitted.
+
+Each round varied one parameter group while all others were held constant. Participants ranked images twice per round: by stylization quality as a character, and by trustworthiness as an advisor.
+
+\bigskip
+
+%% ROUND 1
+\noindent{\bfseries Round 1 \textemdash\ Inner Line Threshold (L1\textendash L5)}
+
+\smallskip
+\begin{tabular}{ll}
+\toprule
+\textbf{Label} & \textbf{\texttt{\_InnerLineThreshold}} \\
+\midrule
+L1 & 0.01 \\
+L2 & 0.02 \\
+L3 & 0.03 \\
+L4 & 0.04 \\
+L5 & 0.05 \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\noindent\textit{Fixed: Gaussian blur off, normal edges off, inner line sample distance 0.2, light sensitivity 0.5, shadow strength 0.5, outline width 0.005, depth offset on, rim light on.}
+
+\bigskip
+
+%% ROUND 2
+\noindent{\bfseries Round 2 \textemdash\ Outer Outline Width and Depth Offset (O1\textendash O6)}
+
+\smallskip
+\begin{tabular}{llll}
+\toprule
+\textbf{Label} & \textbf{Outline Width} & \textbf{Depth Offset} & \textbf{Depth Bias} \\
+\midrule
+O1 & 0.005 & Off & 15 \\
+O2 & 0.005 & On  & 15 \\
+O3 & 0.007 & Off & 15 \\
+O4 & 0.007 & On  & 15 \\
+O5 & 0.003 & Off & 15 \\
+O6 & 0.003 & On  & 15 \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\noindent\textit{Fixed: inner line threshold 0.05 (L5). Depth bias 15 throughout to make on/off difference clearly visible (effect is negligible below 5).}
+
+\bigskip
+
+%% ROUND 3
+\noindent{\bfseries Round 3 \textemdash\ XToon Toon Shading (T1\textendash T5)}
+
+\noindent Detail mode fixed to Depth. Curvature and Manual excluded (near-identical output at 1\,m framing).
+
+\smallskip
+\begin{tabular}{lll}
+\toprule
+\textbf{Label} & \textbf{Shadow Strength} & \textbf{Detail Bias} \\
+\midrule
+T1 & 1.0 & 0.5 \\
+T2 & 0.0 & 0.5 \\
+T3 & 0.5 & 0.5 \\
+T4 & 0.5 & 1.0 \\
+T5 & 0.5 & 0.0 \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\noindent\textit{Fixed: outline width 0.005, depth offset on (bias 15), inner line threshold 0.03.}
+
+\bigskip
+
+%% ROUND 4
+\noindent{\bfseries Round 4 \textemdash\ Rim Light On/Off (R1\textendash R2)}
+
+\noindent Rim power fixed at 4.0 (selected by preliminary testing as balanced without over-brightening the silhouette).
+
+\smallskip
+\begin{tabular}{lll}
+\toprule
+\textbf{Label} & \textbf{Rim Light} & \textbf{Rim Power} \\
+\midrule
+R1 & Off & 4.0 \\
+R2 & On  & 4.0 \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+%% ROUND 5
+\noindent{\bfseries Round 5 \textemdash\ Kuwahara Kernel Size (K1\textendash K4)}
+
+\noindent Kuwahara applied on top of V4 base (L5 configuration). K1 is the unfiltered V4 reference. Sector count excluded (no perceptible difference across its range).
+
+\smallskip
+\begin{tabular}{lll}
+\toprule
+\textbf{Label} & \textbf{Kernel Size} & \textbf{Notes} \\
+\midrule
+K1 & --- & V4 baseline, no Kuwahara \\
+K2 & 2   & Minimal smoothing \\
+K3 & 17  & Mid-range \\
+K4 & 32  & Maximum smoothing \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+%% ROUND 6
+\noindent{\bfseries Round 6 \textemdash\ Kuwahara Hardness and Sharpness (A1\textendash A4)}
+
+\noindent Applied on top of V4 base (L5). A1 is the V4 reference without Kuwahara. Hardness and sharpness are varied inversely.
+
+\smallskip
+\begin{tabular}{lll}
+\toprule
+\textbf{Label} & \textbf{Hardness} & \textbf{Sharpness} \\
+\midrule
+A1 & --- & --- \\
+A2 & 1   & 18  \\
+A3 & 9   & 9   \\
+A4 & 18  & 1   \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+%% ROUND 7
+\noindent{\bfseries Round 7 \textemdash\ Hierarchical Depth Edge Threshold (H1\textendash H6)}
+
+\noindent Only depth edges tested. Colour edges already handled by V4 Sobel. Normal edges excluded (camera-angle-dependent, unsuitable for fixed-view ranking). Depth scale fixed at 2.
+
+\smallskip
+\begin{tabular}{ll}
+\toprule
+\textbf{Label} & \textbf{Depth Threshold} \\
+\midrule
+H1 & \textit{(to be filled)} \\
+H2 & \textit{(to be filled)} \\
+H3 & \textit{(to be filled)} \\
+H4 & \textit{(to be filled)} \\
+H5 & \textit{(to be filled)} \\
+H6 & \textit{(to be filled)} \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+\noindent\rule{\linewidth}{0.4pt}
+
+\noindent{\bfseries Baseline V4 Configuration (L5, used as reference in Rounds 5\textendash 7)}
+
+\smallskip
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Inner line threshold        & 0.05 \\
+Inner line sample distance  & 0.2  \\
+Gaussian blur               & Off  \\
+Normal edges                & Off  \\
+Fresnel edges               & Off  \\
+Light sensitivity           & 0.5  \\
+Shadow strength             & 0.5  \\
+Detail mode                 & Depth \\
+Detail bias                 & 0.5  \\
+Outer outline width         & 0.005 \\
+Depth offset                & On   \\
+Depth bias                  & 15   \\
+Rim light                   & On   \\
+Rim power                   & 4.0  \\
+\bottomrule
+\end{tabular}
+
+\end{document}

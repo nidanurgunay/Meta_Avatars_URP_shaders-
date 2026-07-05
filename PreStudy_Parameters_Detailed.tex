@@ -1,0 +1,321 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{parskip}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\definecolor{uniblue}{RGB}{0,83,159}
+\definecolor{notegray}{RGB}{90,90,90}
+
+\titleformat{\section}{\large\bfseries\color{uniblue}}{}{0em}{}[\vspace{-4pt}\rule{\linewidth}{0.4pt}]
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\newcommand{\prop}[1]{\texttt{#1}}
+\newcommand{\note}[1]{{\small\color{notegray}\textit{Note: #1}}}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries\color{uniblue} Pre-Study Parameter Log \textemdash\ Detailed Reference}\\[4pt]
+  {\large V4 Gaussian Pre-Filtered Sobel \texttt{(Custom/V4\_GaussianPreFilteredSobel)}}\\[8pt]
+  {\normalsize Nidanur G\"{u}nay \quad|\quad Master's Thesis \quad|\quad University of Konstanz, 2026}
+\end{center}
+
+\medskip
+\noindent\rule{\linewidth}{0.4pt}
+\medskip
+
+\section*{Study Design Overview}
+
+\textbf{Shader composition:} The selected NPR shader is a combination of multiple rendering techniques within a single shader pass: an inverted hull geometry outline for silhouette definition, Gaussian pre-filtered Sobel edge detection for interior material boundaries, XToon 2D ramp shading for tonal abstraction, and a rim light for silhouette emphasis. Post-process effects including a Kuwahara painterly filter and a hierarchical depth edge layer can be added on top of this base. Because a shader of this kind exposes a large number of configurable parameters, and perceptually optimal values cannot be determined from visual inspection alone, a structured pilot study was designed to select the best configuration for the main user study.
+
+\medskip
+\textbf{Purpose:} Select the optimal V8 shader parameter combination for the C3 (Avaturn NPR) condition before the main user study.
+
+\textbf{Note on Gaussian pre-filter:} Although the shader name includes a Gaussian pre-filter stage (\prop{\_EnableGaussianBlur}) that smooths the luminance signal before Sobel edge detection, this stage was disabled across all pre-study configurations (\prop{\_EnableGaussianBlur = 0}). Preliminary testing showed no perceptually meaningful visual difference between the pre-filter enabled and disabled at the parameter ranges used for this avatar. A dedicated round for this parameter was therefore omitted to keep the study length manageable.
+
+\medskip
+\textbf{Structure:} 7 rounds. Each round tests one parameter group in isolation while all others are held constant at the baseline established by the previous round's winning selection.
+
+\textbf{Questions per round:}
+\begin{enumerate}[nosep]
+  \item Rank images from best (1) to worst as a stylized character
+  \item Rank images from most (1) to least trustworthy as an advisor
+  \item Optional free text: what influenced your ranking?
+\end{enumerate}
+
+\textbf{Parameter carry-forward:} The winner from each round becomes the fixed value for all subsequent rounds. Round 5 winner also determines whether Kuwahara is included in the final C3 configuration (K1 winning = no Kuwahara; K2--K4 = Kuwahara with that kernel size).
+
+\bigskip
+
+%% ROUND 1
+\section*{Round 1 \textemdash\ Inner Line Threshold (L1\textendash L5)}
+
+\subsection*{What it controls}
+\prop{\_InnerLineThreshold} sets the minimum gradient magnitude required for Sobel edge detection to draw an inner line. Lower values draw more lines including texture noise; higher values suppress noise but may miss faint structural edges.
+
+\subsection*{Variants}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Label} & \prop{\_InnerLineThreshold} \\
+\midrule
+L1 & 0.01 \\
+L2 & 0.02 \\
+L3 & 0.03 \\
+L4 & 0.04 \\
+L5 & 0.05 \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Fixed parameters}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Shader property} \\
+\midrule
+Gaussian blur       & Off  & \prop{\_EnableGaussianBlur = 0} \\
+Normal edges        & Off  & \prop{\_EnableNormalEdges = 0}  \\
+Fresnel edges       & Off  & \prop{\_EnableFresnelEdge = 0}  \\
+Inner line sample dist. & 0.2 & \prop{\_InnerLineBlur = 0.2} \\
+Light sensitivity   & 0.5  & \prop{\_LightSensitivity = 0.5} \\
+Shadow strength     & 0.5  & \prop{\_ShadowStrength = 0.5}   \\
+Detail mode         & Depth & \prop{\_DetailMode = 0}         \\
+Detail bias         & 0.5  & \prop{\_DetailBias = 0.5}       \\
+Outer outline width & 0.005 & \prop{\_OuterOutlineWidth = 0.005} \\
+Depth offset        & On   & \prop{\_UseOutlineDepthOffset = 1} \\
+Rim light           & On   & \prop{\_EnableRim = 1}          \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Why these values}
+Range 0.01--0.05 covers the perceptually useful variation for this avatar. Below 0.01, baked texture gradients on clothing produce heavy noise. Above 0.05, structural lines on clothing begin to disappear. L5 (0.05) was expected to be cleanest on the head material because the modified texture (reduced baked shading) has lower gradient noise.
+
+\note{CSV discrepancy: L1 shows \prop{\_OutlineDepthBias = 15} while L2/L5 show 5. L1 was saved at a different time. Functionally irrelevant for Round 1 since threshold is the varied parameter.}
+
+\bigskip
+
+%% ROUND 2
+\section*{Round 2 \textemdash\ Outer Outline Width and Depth Offset (O1\textendash O6)}
+
+\subsection*{What it controls}
+\prop{\_OuterOutlineWidth}: thickness of the inverted-hull geometry outline.\\
+\prop{\_UseOutlineDepthOffset}: pushes the outline geometry slightly behind in clip space to avoid z-fighting at eye geometry and thin mesh edges.\\
+\prop{\_OutlineDepthBias}: magnitude of the clip-space depth push when offset is on.
+
+\subsection*{Variants}
+
+\begin{tabular}{llll}
+\toprule
+\textbf{Label} & \prop{\_OuterOutlineWidth} & \textbf{Depth Offset} & \prop{\_OutlineDepthBias} \\
+\midrule
+O1 & 0.005 & Off & 15 \\
+O2 & 0.005 & On  & 15 \\
+O3 & 0.007 & Off & 15 \\
+O4 & 0.007 & On  & 15 \\
+O5 & 0.003 & Off & 15 \\
+O6 & 0.003 & On  & 15 \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\noindent Inner line threshold fixed at 0.05 (L5). All other parameters from Round 1 baseline.
+
+\subsection*{Why depth bias 15 for this round}
+The depth offset effect (artifact removal around eye geometry) is not clearly visible below a bias value of approximately 5. Bias 15 was used to make the on/off comparison perceptually unambiguous for naive participants. The purpose of this round is to establish whether participants prefer offset on or off; the exact bias magnitude is not selected here.
+
+\subsection*{Why these three widths}
+0.005 is the baseline. 0.007 (wider) and 0.003 (narrower) bracket it with equal steps. Wider risks covering facial details; narrower risks disappearing at viewing distance.
+
+\note{CSV discrepancy: O1--O5 show \prop{\_OutlineDepthBias = 5} while O6 shows 15. Only O6 is correct per the intended configuration. This is a save-order artifact. The rendered images used in the form should be verified to have been exported with bias 15.}
+
+\bigskip
+
+%% ROUND 3
+\section*{Round 3 \textemdash\ XToon Toon Shading (T1\textendash T5)}
+
+\subsection*{What it controls}
+\prop{\_ShadowStrength}: how strongly the dark shadow tone replaces the lit colour in unlit regions. 0 = no shadow darkening, 1 = maximum.\\
+\prop{\_DetailBias}: where the 2D ramp detail axis is sampled when using Depth mode. 0 = near (less variation), 1 = far (more depth-based abstraction variation).\\
+\prop{\_DetailMode}: fixed to Depth (0) for this round.
+
+\subsection*{Variants}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Label} & \textbf{Shadow Strength} & \textbf{Detail Bias} \\
+\midrule
+T1 & 1.0 & 0.5 \\
+T2 & 0.0 & 0.5 \\
+T3 & 0.5 & 0.5 \\
+T4 & 0.5 & 1.0 \\
+T5 & 0.5 & 0.0 \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\noindent Outer outline width 0.005, depth offset on (bias 15), inner line threshold 0.03.
+
+\subsection*{Why Curvature and Manual were excluded}
+Preliminary inspection showed Curvature mode produces near-identical output to Depth mode for this avatar's smooth geometry. Manual mode is identical to Depth at the same numeric value. Including all three would have tripled the round without actionable differentiation.
+
+\subsection*{Matrix design rationale}
+T3 (SS\,=\,0.5, DB\,=\,0.5) is the neutral midpoint. T1/T2 test extreme shadow strength while holding detail bias constant. T4/T5 test extreme detail bias while holding shadow strength at the midpoint. This cross-pattern isolates each parameter's effect independently.
+
+\note{CSV: inner line threshold varies between rounds (0.03 for t1/t3/t4, 0.05 for t2/t5 in some slots). This reflects a save-order inconsistency. The intended value depends on which L preset was chosen as Round 1 winner.}
+
+\bigskip
+
+%% ROUND 4
+\section*{Round 4 \textemdash\ Rim Light On/Off (R1\textendash R2)}
+
+\subsection*{What it controls}
+\prop{\_EnableRim} toggles a Fresnel-based rim highlight at the avatar silhouette. \prop{\_RimPower} controls the tightness of the rim band.
+
+\subsection*{Variants}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Label} & \textbf{Rim Light} & \prop{\_RimPower} \\
+\midrule
+R1 & Off & 4.0 \\
+R2 & On  & 4.0 \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Why rim power 4.0}
+Values below 3.0 produce a broad glow that competes with toon shading. Values above 5.0 produce a hairline rim barely visible at viewing distance. 4.0 gives a visible, balanced silhouette highlight. Confirmed from CSV: \prop{\_RimPower = 4} for both r1 and r2.
+
+\subsection*{Why rim power variation was not tested}
+The study already covers 7 parameter groups. On/off has the largest perceptual impact; rim power can be adjusted after the study if needed.
+
+\bigskip
+
+%% ROUND 5
+\section*{Round 5 \textemdash\ Kuwahara Kernel Size (K1\textendash K4)}
+
+\subsection*{What it controls}
+\prop{\_KernelSize}: radius of the isotropic Kuwahara filter in pixels. Larger kernels produce more aggressively smoothed, more painterly output at the cost of fine detail. Shader: \texttt{AnisotropicKuwahara.shader} (isotropic implementation; anisotropic requires a separate structure tensor pass unavailable in the single-pass fragment hook).
+
+K1 is the V4 baseline (L5 configuration) with no Kuwahara. Included as a reference anchor.
+
+\subsection*{Variants}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Label} & \prop{\_KernelSize} & \textbf{Notes} \\
+\midrule
+K1 & ---  & V4 baseline, no Kuwahara \\
+K2 & 2    & Minimal effect \\
+K3 & 17   & Mid-range (step: $(32-2)/2 \approx 15$) \\
+K4 & 32   & Maximum smoothing \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Why these values}
+Kernel range is 2--32. Three values at equal spacing cover the full range. K2=2 is included to give a gradient between no-filter and full effect; it produces minimal visible change but keeps the ranking spectrum coherent.
+
+\subsection*{Why sector count was excluded}
+Testing showed no perceptual difference across sector count values for this avatar and material. Adding a sector count round would lengthen the study without useful data.
+
+\note{K presets are not stored in ShaderPresets.csv. Kuwahara is a separate material/shader applied as a post-process layer, not a V4 shader property.}
+
+\bigskip
+
+%% ROUND 6
+\section*{Round 6 \textemdash\ Kuwahara Hardness and Sharpness (A1\textendash A4)}
+
+\subsection*{What it controls}
+\prop{\_Hardness}: how sharply the filter transitions between sectors at region boundaries. Higher = more defined blocky paint regions.\\
+\prop{\_Sharpness}: how smoothly variance is weighted across the sector. Higher = smoother gradients within paint regions.
+
+These parameters are inversely related: maximizing both over-sharpens; minimizing both blurs excessively. Testing them inversely covers the useful perceptual space efficiently.
+
+A1 is the V4 baseline (L5) without Kuwahara, for direct comparison.
+
+\subsection*{Variants}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Label} & \prop{\_Hardness} & \prop{\_Sharpness} \\
+\midrule
+A1 & --- & --- \\
+A2 & 1   & 18  \\
+A3 & 9   & 9   \\
+A4 & 18  & 1   \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Relationship to Round 5}
+Round 5 selects the kernel size. Round 6 fixes that kernel size and tests hardness/sharpness. If K1 wins Round 5 (no Kuwahara preferred), Round 6 is still run to gather data, but Kuwahara may be excluded from the final C3 configuration.
+
+\bigskip
+
+%% ROUND 7
+\section*{Round 7 \textemdash\ Hierarchical Depth Edge Threshold (H1\textendash H6)}
+
+\subsection*{What it controls}
+\prop{\_DepthThreshold}: minimum depth gradient required to draw a depth edge. Lower = more edges (structural transitions plus noise); higher = fewer, cleaner depth-break edges only.\\
+\prop{\_DepthScale}: amplifies raw depth differences before thresholding. Fixed at 2 to produce stable edges at typical avatar viewing distances.
+
+\subsection*{Variants}
+
+\begin{tabular}{ll}
+\toprule
+\textbf{Label} & \prop{\_DepthThreshold} \\
+\midrule
+H1 & \textit{(fill in)} \\
+H2 & \textit{(fill in)} \\
+H3 & \textit{(fill in)} \\
+H4 & \textit{(fill in)} \\
+H5 & \textit{(fill in)} \\
+H6 & \textit{(fill in)} \\
+\bottomrule
+\end{tabular}
+
+\subsection*{Why only depth edges in this round}
+Colour edges are already handled by the V4 Sobel component (not re-tested here). Normal edges are camera-angle-dependent: for a fixed-view ranking study, the same avatar would look different from different angles, confounding parameter choice with view angle. Normal edges were evaluated through direct material inspection during development. Testing all three cue types in a ranking study would produce noise, not signal.
+
+\note{H1--H6 depth threshold values are not yet in ShaderPresets.csv. Fill in the exact values used when generating the H images.}
+
+\bigskip
+
+%% CARRY-FORWARD
+\section*{Parameter Carry-Forward Summary}
+
+\begin{tabular}{lll}
+\toprule
+\textbf{Round} & \textbf{Parameter tested} & \textbf{Carries forward as} \\
+\midrule
+R1 & Inner line threshold & Fixed for R2 onward \\
+R2 & Outline width + depth offset & Fixed for R3 onward \\
+R3 & Shadow strength + detail bias & Fixed for R4 onward \\
+R4 & Rim light on/off & Fixed for R5 onward \\
+R5 & Kuwahara kernel size & Fixed for R6 \\
+R6 & Kuwahara hardness/sharpness & Fixed for R7 \\
+R7 & Depth threshold & Final C3 parameter set \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+%% THESIS NOTES
+\section*{Notes for Thesis Writing}
+
+\begin{itemize}[nosep,leftmargin=1.2em]
+  \item Refer to this as a ``parameter selection pilot study'' or ``pilot ranking study'', not a ``user study''.
+  \item The pre-study is described in the Evaluation chapter, section on technique and parameter selection (\textit{sec:eval\_selection}).
+  \item Key framing: the pre-study determines which parameter values go into C3. This matters because C2 vs C3 is the critical comparison in the main study.
+  \item Justifications for exclusions (no Gaussian blur round, no sector count round, no Curvature/Manual mode, no normal edges in R7) are documented above and can be used directly in thesis text.
+  \item The study is video-based; do not reference real-time rendering performance as a constraint anywhere in the evaluation chapter.
+  \item Do not mention Fresnel in the thesis.
+\end{itemize}
+
+\end{document}

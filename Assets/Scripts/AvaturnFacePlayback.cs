@@ -1,6 +1,6 @@
 // AvaturnFacePlayback.cs
 //
-// Plays back a Live Link Face CSV recording on the Avaturn avatar's blend shapes.
+// Plays back a Live Link Face CSV recording on all Avaturn avatars under a parent.
 // Use this instead of AvaturnFaceCapture when you cannot stream live (e.g. eduroam).
 //
 // ── SETUP ───────────────────────────────────────────────────────────────────
@@ -8,9 +8,11 @@
 // 2. After recording: tap the take → Share → Export CSV.
 // 3. Copy the .csv file into your Unity project (e.g. Assets/FaceData/).
 //    Unity will import it as a TextAsset automatically.
-// 4. Attach this component to the ROOT GameObject of your Avaturn avatar.
+// 4. Attach this component to the AVATARS parent GameObject (the folder that
+//    contains all your Avaturn avatars). It drives every avatar under it at once.
 // 5. Drag the imported CSV asset into the "Csv File" field in the Inspector.
-// 6. Press Play — the face animation loops from the CSV with no network needed.
+// 6. Optionally drag the matching audio WAV into the "Audio Clip" field.
+// 7. Press Play — all avatars animate together with no network needed.
 //
 // ── CSV FORMAT ──────────────────────────────────────────────────────────────
 // Live Link Face exports rows like:
@@ -24,7 +26,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[AddComponentMenu("Avaturn/Face Playback (CSV)")]
+[AddComponentMenu("Avaturn/Face Playback (CSV) — attach to Avatars parent")]
 public class AvaturnFacePlayback : MonoBehaviour
 {
     [Header("Data")]
@@ -115,17 +117,28 @@ public class AvaturnFacePlayback : MonoBehaviour
 
     private void SetupAudio()
     {
-        if (audioClip == null) return;
+        if (audioClip == null)
+        {
+            Debug.LogWarning("[FacePlayback] No AudioClip assigned — assign the WAV in the Inspector.");
+            return;
+        }
 
         _audioSource = GetComponent<AudioSource>();
         if (_audioSource == null)
             _audioSource = gameObject.AddComponent<AudioSource>();
 
+        _audioSource.enabled = true;
         _audioSource.clip = audioClip;
         _audioSource.loop = loop;
         _audioSource.volume = volume;
+        _audioSource.spatialBlend = 0f;
         _audioSource.playOnAwake = false;
         _audioSource.Play();
+
+        var listener = FindFirstObjectByType<AudioListener>();
+        Debug.Log($"[FacePlayback] Audio: clip='{audioClip.name}' length={audioClip.length:F2}s " +
+                  $"volume={volume} playing={_audioSource.isPlaying} " +
+                  $"listener={(listener != null ? listener.gameObject.name : "MISSING — add AudioListener to scene")}");
     }
 
     private void Update()

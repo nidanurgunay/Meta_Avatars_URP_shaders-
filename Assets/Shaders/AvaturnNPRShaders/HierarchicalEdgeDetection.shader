@@ -56,6 +56,10 @@ Shader "Hidden/PostProcess/HierarchicalEdgeDetection"
             // Adaptive sensitivity
             float _AdaptiveStrength;     // How much edges adapt to local brightness (0-1)
 
+            // Depth gradient amplifier — perspective-normalised, so threshold stays
+            // consistent regardless of camera distance. Increase to detect subtler depth breaks.
+            float _DepthScale;           // Depth gradient amplifier (1-100, default 10)
+
             // Style controls
             float _FadeWithDepth;        // Edges fade at distance (0=no, 1=full)
             float _DepthFadeStart;       // Distance where fading begins
@@ -94,16 +98,18 @@ Shader "Hidden/PostProcess/HierarchicalEdgeDetection"
             }
 
             // ---- LAYER 1: Depth Silhouettes ----
-            // Detects object boundaries using depth discontinuities.
-            // Raw linear-eye-depth differences are in world-space metres, so the
-            // threshold is an absolute depth jump, consistent at any camera distance.
+            // Perspective-normalised depth gradient: dividing by depth makes the
+            // response distance-invariant so _DepthThreshold works consistently
+            // regardless of how close or far the camera is from the surface.
             float ComputeDepthEdge(float2 uv, float2 offset)
             {
                 float d_tl = GetLinearEyeDepth(uv + float2(-offset.x,  offset.y));
                 float d_tr = GetLinearEyeDepth(uv + float2( offset.x,  offset.y));
                 float d_bl = GetLinearEyeDepth(uv + float2(-offset.x, -offset.y));
                 float d_br = GetLinearEyeDepth(uv + float2( offset.x, -offset.y));
-                return RobertsCross(d_tl, d_tr, d_bl, d_br);
+                float raw = RobertsCross(d_tl, d_tr, d_bl, d_br);
+                float centerD = GetLinearEyeDepth(uv);
+                return raw / max(centerD, 0.01) * _DepthScale;
             }
 
             // ---- LAYER 2: Normal Creases ----

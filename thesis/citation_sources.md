@@ -346,4 +346,157 @@ This document tracks every citation added to `references.bib` that was not sourc
 
 ---
 
+---
+
+## Added in Session: Trust Foundation Citations (2026-06-21)
+
+### `mayer1995`
+- **Full title:** An Integrative Model of Organizational Trust
+- **Authors:** Roger C. Mayer, James H. Davis, F. David Schoorman
+- **Journal:** Academy of Management Review, Vol. 20, No. 3, pp. 709–734
+- **Year:** 1995
+- **DOI:** 10.5465/amr.1995.9508080335
+- **Verify at:** https://doi.org/10.5465/amr.1995.9508080335
+- **Source:** Foundational organizational trust theory — no physical PDF in thesis folder; DOI confirmed on Academy of Management website
+- **What the paper argues:** Proposes the ABI integrative model: trustworthiness comprises three independently evaluable components — Ability (domain-specific competence), Benevolence (orientation toward the trustor's interests), and Integrity (adherence to moral principles). Defines trust as the willingness to be vulnerable to another party's actions irrespective of the ability to monitor. Introduces propensity to trust as an individual-level moderator of how the trustee's characteristics translate into trust.
+- **Used in:**
+  1. `thesis/chapters/02_related_work.tex` §Trust and Credibility in Virtual Agents — opening paragraph establishing the theoretical foundation
+  2. `thesis/chapters/02_related_work.tex` §Research Gap — trust battery attribution sentence
+  3. `UserStudy_Complete_Report.tex` — theoretical framework section
+
+```bibtex
+@article{mayer1995,
+  author    = {Mayer, Roger C. and Davis, James H. and Schoorman, F. David},
+  title     = {An Integrative Model of Organizational Trust},
+  journal   = {Academy of Management Review},
+  year      = {1995},
+  volume    = {20},
+  number    = {3},
+  pages     = {709--734},
+  doi       = {10.5465/amr.1995.9508080335},
+}
+```
+
+### `mcknight2001`
+- **Full title:** What Trust Means in E-Commerce Customer Relationships: An Interdisciplinary Conceptual Typology
+- **Authors:** D. Harrison McKnight, Norman L. Chervany
+- **Journal:** International Journal of Electronic Commerce, Vol. 6, No. 2, pp. 35–59
+- **Year:** 2001
+- **DOI:** 10.1080/10864415.2001.11044235
+- **Verify at:** https://doi.org/10.1080/10864415.2001.11044235
+- **Source:** Trust typology literature — no physical PDF in thesis folder
+- **What the paper argues:** Extends the Mayer et al. ABI model into a comprehensive typology distinguishing trusting beliefs (assessments of trustworthiness) from trusting intentions (willingness to depend). Identifies competence, benevolence, integrity, and predictability as separable trusting belief dimensions. Provides a framework for measuring trust across both attitudinal and behavioural dimensions simultaneously.
+- **Used in:**
+  1. `thesis/chapters/02_related_work.tex` §Trust and Credibility in Virtual Agents — introduced alongside Mayer et al.
+  2. `thesis/chapters/02_related_work.tex` §Research Gap — operationalisation sentence for trust battery
+  3. `UserStudy_Complete_Report.tex` — trust framework section
+
+```bibtex
+@article{mcknight2001,
+  author    = {McKnight, D. Harrison and Chervany, Norman L.},
+  title     = {What Trust Means in {E-Commerce} Customer Relationships: An Interdisciplinary Conceptual Typology},
+  journal   = {International Journal of Electronic Commerce},
+  year      = {2001},
+  volume    = {6},
+  number    = {2},
+  pages     = {35--59},
+  doi       = {10.1080/10864415.2001.11044235},
+}
+```
+
+### `ho2010` (bibliographic correction)
+- **Full title:** Revisiting the Uncanny Valley Theory: Developing and Validating an Alternative to the Godspeed Indices
+- **Authors:** Chin-Chang Ho, Karl F. MacDorman
+- **Journal:** Computers in Human Behavior, Vol. 26, No. 6, pp. 1508–1518
+- **Year:** 2010
+- **DOI:** 10.1016/j.chb.2010.05.015 *(corrected from wrong DOI in prior session)*
+- **Pages:** 1508–1518 *(corrected from wrong pages 2712–2728 in prior session)*
+- **Verify at:** https://doi.org/10.1016/j.chb.2010.05.015
+- **What the paper argues:** Develops and validates a two-subscale instrument for uncanny valley measurement, distinguishing perceived eeriness from perceived human-likeness placement. Demonstrates that eeriness and humanness are statistically orthogonal (r = .02), meaning a stimulus can be rated both highly human-like and highly eerie simultaneously. Validates the eeriness subscale (6 semantic differential items, Cronbach's α = .74) across multiple stimulus types. The correct scale has 8 items total; this thesis uses 6 of them.
+
+```bibtex
+@article{ho2010,
+  author    = {Ho, Chin-Chang and MacDorman, Karl F.},
+  title     = {Revisiting the Uncanny Valley Theory: Developing and Validating an Alternative to the {Godspeed} Indices},
+  journal   = {Computers in Human Behavior},
+  year      = {2010},
+  volume    = {26},
+  number    = {6},
+  pages     = {1508--1518},
+  doi       = {10.1016/j.chb.2010.05.015},
+}
+```
+
+### `alipour2025`
+- **Full title:** Would You Rely on an Eerie Agent? A Systematic Review of the Impact of the Uncanny Valley Effect on Trust in Human-Agent Interaction
+- **Authors:** Ahdiyeh Alipour, Tilo Hartmann, Maryam Alimardani
+- **Venue:** arXiv preprint arXiv:2505.05543 [cs.HC]
+- **Year:** 2025
+- **arXiv:** https://arxiv.org/abs/2505.05543
+- **Source:** Full 75-page paper read from images provided in session (2026-06-21)
+- **What the paper argues:** PRISMA-compliant systematic review of 53 empirical studies on UVE–trust interactions across 7 databases (641→311→53 after screening, inter-rater Kappa = 0.61). Novel taxonomy of trust operationalisation: (1) direct trust measures (n=24), (2) trust-related constructs — competence, credibility, acceptability (n=11), (3) trust-related intentions — behavioral indicators, advice following (n=18). Among 41 empirically tested studies: 17 direct negative effect, 24 conditional/moderated effect, 10 no effect. 42/53 used indirect encounters (video/images). Identifies moderators: task type (n=6), familiarity (n=3), age (n=3), personality (n=3). Key recommendations: dynamic video stimuli, combine self-report + behavioral, 3–5+ human-likeness levels, power analysis, mediation model. Documents competence as a buffer: MacDorman (2019), Dai & MacDorman (2021), Patel & MacDorman (2015) all show competence can override eeriness on trust.
+- **Used in:**
+  1. `thesis/chapters/02_related_work.tex` §Trust and Credibility in Virtual Agents — full Alipour paragraph
+  2. `thesis/chapters/02_related_work.tex` §Research Gap — forced-choice behavioral task motivation
+  3. `UserStudy_Complete_Report.tex` — comprehensive dedicated section with taxonomy table, findings summary, moderators, limitations, and recommendations
+
+```bibtex
+@misc{alipour2025,
+  author        = {Alipour, Ahdiyeh and Hartmann, Tilo and Alimardani, Maryam},
+  title         = {Would You Rely on an Eerie Agent? {A} Systematic Review of the Impact of the Uncanny Valley Effect on Trust in Human--Agent Interaction},
+  year          = {2025},
+  eprint        = {2505.05543},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.HC},
+  url           = {https://arxiv.org/abs/2505.05543},
+}
+```
+
+---
+
+## Added in Session: Section 4.2 Avatar Platforms (2026-07-02)
+
+### `avaturn`
+- **Full title:** Avaturn: AI-Powered Avatar Creation from a Single Photograph
+- **Author/Organisation:** Avaturn Inc.
+- **Year:** 2024
+- **DOI:** None (online service)
+- **Verify at:** https://avaturn.me
+- **Used in:** `04_methodology.tex` §4.2 Avatar Platforms and Rendering Constraints
+- **Sentence:** "Avaturn is an avatar creation service that uses AI to reconstruct a rigged, blendshape-animated avatar from a single uploaded photograph, shown in Figure~\ref{fig:avaturn_default}~\cite{avaturn}."
+- **Summary:** Avaturn is a commercial service that produces a fully rigged, blendshape-animated humanoid avatar from a single uploaded photograph using learned 3D reconstruction. The output is a glTF 2.0 (.glb) file containing geometry, PBR textures, skeleton rig, and ARKit-compatible blendshape targets. The photorealistic facial reconstruction quality makes it suitable as a high-fidelity avatar baseline for perceptual studies.
+
+```bibtex
+@misc{avaturn,
+  author       = {{Avaturn Inc.}},
+  title        = {Avaturn: {AI}-Powered Avatar Creation from a Single Photograph},
+  year         = {2024},
+  note         = {Online service producing rigged, blendshape-animated glTF avatars from a photograph},
+}
+```
+
+---
+
+### `gltf2`
+- **Full title:** glTF 2.0 Specification
+- **Author/Organisation:** Khronos Group
+- **Year:** 2017
+- **DOI:** None (technical specification)
+- **Verify at:** https://www.khronos.org/gltf/
+- **Used in:** `04_methodology.tex` §4.2 Avatar Platforms and Rendering Constraints
+- **Sentence:** "Avaturn exports avatars in the \texttt{.glb} format, the binary container of the glTF~2.0 standard, which packages geometry, PBR materials, skeleton rig, and blendshape targets into a single file~\cite{gltf2}."
+- **Summary:** The glTF 2.0 specification defines an open standard for the efficient transmission and loading of 3D scenes and models. The binary variant (.glb) packs all resources (meshes, textures, skeletons, animations, morph targets) into a single file. It has become the standard interchange format for real-time 3D assets. The specification defines PBR material semantics (metallic-roughness workflow), morph targets (used for blendshape animation), and skeletal animation. Unity does not load glTF natively at runtime; GLTFast is required.
+
+```bibtex
+@techreport{gltf2,
+  author       = {{Khronos Group}},
+  title        = {{glTF} 2.0 Specification},
+  institution  = {The Khronos Group},
+  year         = {2017},
+  note         = {Open standard for 3D asset transmission; binary container format is \texttt{.glb}},
+}
+```
+
+---
+
 > **Instructions:** Before submission, open each DOI link, confirm title and authors match what is in `references.bib`, and tick it off. For entries without a DOI, check the ResearchGate or ACM DL link listed above.

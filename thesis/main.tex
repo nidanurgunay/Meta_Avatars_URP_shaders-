@@ -29,6 +29,12 @@
 %% ---- Paragraph style handled by parskip=half in \documentclass ----
 \raggedbottom   % prevent vertical stretch on short pages (avoids big inter-paragraph gaps)
 
+%% ---- Float placement parameters (allow large figures alongside short text blocks) ----
+\renewcommand{\topfraction}{0.95}       % up to 95% of page may be top floats
+\renewcommand{\bottomfraction}{0.80}    % up to 80% of page may be bottom floats
+\renewcommand{\textfraction}{0.05}      % at least 5% of page must be text
+\renewcommand{\floatpagefraction}{0.85} % float-only pages must be at least 85% full
+
 %% ---- Page Layout ----
 \usepackage[
   a4paper,
@@ -73,6 +79,7 @@
 \usepackage{subcaption}
 \captionsetup{labelfont=bf, font=small, labelsep=colon, format=hang}
 \usepackage{wrapfig}
+\usepackage[section]{placeins} % auto FloatBarrier before every \section
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}

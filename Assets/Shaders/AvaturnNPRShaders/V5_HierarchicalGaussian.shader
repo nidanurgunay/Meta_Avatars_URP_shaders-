@@ -40,8 +40,9 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
 
         [Header(Edge   Depth Layer)]
         [Toggle] _EnableDepthEdge ("Enable Depth Edge", Float) = 1
-        _HDepthThreshold ("Depth Threshold", Range(0.001,0.2)) = 0.05
+        _HDepthThreshold ("Depth Threshold", Range(0.001,0.5)) = 0.05
         _HDepthWeight    ("Depth Weight",    Range(0,1))        = 1.0
+        _HDepthScale     ("Depth Scale",     Range(1,100))      = 10.0
 
         [Header(Edge   Normal Layer)]
         [Toggle] _EnableNormalEdge ("Enable Normal Edge", Float) = 1
@@ -56,10 +57,13 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
 
         [Header(Gaussian Preblur on Color Layer)]
         [Toggle] _EnableGaussBlur  ("Enable Gaussian Preblur", Float) = 1
-        _HBlurRadius      ("Blur Radius",     Range(0.1,5.0))  = 0.5
-        _HCenterWeight    ("Center Weight",   Range(0,1))       = 0.25
-        _HCardinalWeight  ("Cardinal Weight", Range(0,0.5))     = 0.125
-        _HDiagonalWeight  ("Diagonal Weight", Range(0,0.25))    = 0.0625
+        _HBlurRadius      ("Blur Radius (sigma)",Range(0.1,5.0)) = 0.5
+        _HCenterWeight    ("Center Weight",   Range(0,1))         = 0.25
+        _HCardinalWeight  ("Cardinal Weight", Range(0,0.5))       = 0.125
+        _HDiagonalWeight  ("Diagonal Weight", Range(0,0.25))      = 0.0625
+        _HXDoGK           ("XDoG Radius Ratio k",   Range(1.1,4.0)) = 1.6
+        _HXDoGTau         ("XDoG Tau",              Range(0.9,1.0)) = 0.98
+        _HXDoGPhi         ("XDoG Sharpness (Phi)",  Range(1,50))    = 10.0
 
         [Header(Skin Discard on Color Layer)]
         [Toggle] _HEnableSkinDiscard ("Suppress color edges on skin", Float) = 0
@@ -108,11 +112,12 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
                 float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower, _EnableRim;
                 float  _OuterOutlineWidth;
                 float  _EnableAlphaTest, _AlphaCutoff;
-                float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight;
+                float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight, _HDepthScale;
                 float  _EnableNormalEdge, _HNormalThreshold, _HNormalWeight;
                 float  _EnableColorEdge,  _HColorThreshold,  _HColorWeight, _HEdgeWidth;
                 float  _EnableGaussBlur,  _HBlurRadius;
                 float  _HCenterWeight, _HCardinalWeight, _HDiagonalWeight;
+                float  _HXDoGK, _HXDoGTau, _HXDoGPhi;
                 float  _HEdgeStrength, _HAdaptiveStrength;
                 float  _HEnableSkinDiscard, _HSkinHueMin, _HSkinHueMax, _HSkinSatMin;
                 float4 _ShadowColor;
@@ -189,11 +194,12 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
                 float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower, _EnableRim;
                 float  _OuterOutlineWidth;
                 float  _EnableAlphaTest, _AlphaCutoff;
-                float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight;
+                float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight, _HDepthScale;
                 float  _EnableNormalEdge, _HNormalThreshold, _HNormalWeight;
                 float  _EnableColorEdge,  _HColorThreshold,  _HColorWeight, _HEdgeWidth;
                 float  _EnableGaussBlur,  _HBlurRadius;
                 float  _HCenterWeight, _HCardinalWeight, _HDiagonalWeight;
+                float  _HXDoGK, _HXDoGTau, _HXDoGPhi;
                 float  _HEdgeStrength, _HAdaptiveStrength;
                 float  _HEnableSkinDiscard, _HSkinHueMin, _HSkinHueMax, _HSkinSatMin;
                 float4 _ShadowColor;
@@ -292,14 +298,14 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
                     shaded += rim * _RimColor.rgb;
                 }
 
-                // ── Layer 1: Depth proxy (camera distance gradient) ───────────
+                // ── Layer 1: Depth proxy (perspective-normalised distance gradient) ──
                 float depthLine = 0.0;
                 if (_EnableDepthEdge > 0.5)
                 {
                     float d    = length(IN.posWS - _WorldSpaceCameraPos);
                     float dDx  = abs(ddx(d));
                     float dDy  = abs(ddy(d));
-                    float edge = sqrt(dDx * dDx + dDy * dDy);
+                    float edge = sqrt(dDx * dDx + dDy * dDy) / max(d, 0.01) * _HDepthScale;
                     depthLine  = smoothstep(_HDepthThreshold - 0.001,
                                             _HDepthThreshold + 0.001, edge);
                 }
@@ -315,28 +321,25 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
                                              _HNormalThreshold + 0.02, edge);
                 }
 
-                // ── Layer 3: Color Roberts Cross with Gaussian preblur ────────
+                // ── Layer 3: XDoG texture edge (Difference of Gaussians) ──────
                 float colorLine = 0.0;
                 if (_EnableColorEdge > 0.5)
                 {
-                    float off = _HEdgeWidth * 0.001;
-                    float br  = _EnableGaussBlur > 0.5 ? _HBlurRadius * 0.001 : 0.0;
-
                     float totalW = _HCenterWeight + 4.0*_HCardinalWeight + 4.0*_HDiagonalWeight;
-                    float cW     = _EnableGaussBlur > 0.5 ? _HCenterWeight   / totalW : 1.0;
-                    float cardW  = _EnableGaussBlur > 0.5 ? _HCardinalWeight / totalW : 0.0;
-                    float diagW  = _EnableGaussBlur > 0.5 ? _HDiagonalWeight / totalW : 0.0;
+                    totalW = max(totalW, 0.0001);
+                    float cW    = _HCenterWeight   / totalW;
+                    float cardW = _HCardinalWeight / totalW;
+                    float diagW = _HDiagonalWeight / totalW;
 
-                    float lumTR = GaussianLuma(IN.uv + float2( off,  off), br, cW, cardW, diagW);
-                    float lumTL = GaussianLuma(IN.uv + float2(-off,  off), br, cW, cardW, diagW);
-                    float lumBR = GaussianLuma(IN.uv + float2( off, -off), br, cW, cardW, diagW);
-                    float lumBL = GaussianLuma(IN.uv + float2(-off, -off), br, cW, cardW, diagW);
+                    float sigma1 = _HBlurRadius * 0.001;
+                    float sigma2 = _HBlurRadius * _HXDoGK * 0.001;
+                    float g1 = GaussianLuma(IN.uv, sigma1, cW, cardW, diagW);
+                    float g2 = GaussianLuma(IN.uv, sigma2, cW, cardW, diagW);
+                    float D  = g1 - _HXDoGTau * g2;
+                    colorLine = D < -_HColorThreshold
+                        ? saturate(-tanh(_HXDoGPhi * (D + _HColorThreshold)))
+                        : 0.0;
 
-                    float edge = abs(lumTR - lumBL) + abs(lumTL - lumBR);
-                    colorLine  = smoothstep(_HColorThreshold - 0.01,
-                                            _HColorThreshold + 0.01, edge);
-
-                    // Zero color edges on skin-hued pixels (suppresses nose/cheek highlights).
                     if (_HEnableSkinDiscard > 0.5)
                     {
                         float3 hsv = RGBtoHSV(SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv).rgb);
@@ -345,14 +348,15 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
                     }
                 }
 
-                // ── Weighted max-pooling + adaptive brightness suppression ────
-                float brightness = dot(albedo.rgb, LUMA);
-                float adaptive   = lerp(1.0, saturate(brightness * 2.0), _HAdaptiveStrength);
+                // ── Weighted max-pooling + AHEAD adaptive gain (normal layer only) ────
+                float L        = dot(albedo.rgb, LUMA);
+                float adaptive = min(1.0 / (3.0 * L + 0.1), 4.0);
+                adaptive = lerp(1.0, adaptive, _HAdaptiveStrength);
 
-                float edgeFinal = max(depthLine  * _HDepthWeight,
-                                  max(normalLine * _HNormalWeight,
+                float edgeFinal = max(depthLine * _HDepthWeight,
+                                  max(normalLine * _HNormalWeight * adaptive,
                                       colorLine  * _HColorWeight));
-                edgeFinal = smoothstep(0.2, 0.55, edgeFinal * adaptive);
+                edgeFinal = smoothstep(0.2, 0.55, edgeFinal);
                 edgeFinal = saturate(edgeFinal * _HEdgeStrength);
 
                 shaded = lerp(shaded, _HEdgeColor.rgb, edgeFinal);
@@ -386,11 +390,12 @@ Shader "Custom/Avaturn_V5_HierarchicalGaussian"
                 float  _TextureIntensity, _BumpScale, _ShadowStrength, _RimPower, _EnableRim;
                 float  _OuterOutlineWidth;
                 float  _EnableAlphaTest, _AlphaCutoff;
-                float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight;
+                float  _EnableDepthEdge,  _HDepthThreshold,  _HDepthWeight, _HDepthScale;
                 float  _EnableNormalEdge, _HNormalThreshold, _HNormalWeight;
                 float  _EnableColorEdge,  _HColorThreshold,  _HColorWeight, _HEdgeWidth;
                 float  _EnableGaussBlur,  _HBlurRadius;
                 float  _HCenterWeight, _HCardinalWeight, _HDiagonalWeight;
+                float  _HXDoGK, _HXDoGTau, _HXDoGPhi;
                 float  _HEdgeStrength, _HAdaptiveStrength;
                 float  _HEnableSkinDiscard, _HSkinHueMin, _HSkinHueMax, _HSkinSatMin;
                 float4 _ShadowColor;

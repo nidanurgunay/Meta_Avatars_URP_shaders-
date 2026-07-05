@@ -40,6 +40,10 @@ public class EdgeDetectionFeature : ScriptableRendererFeature
         [Range(0.5f, 4f)] public float edgeWidth = 1f;
         [Range(0, 1)] public float adaptiveStrength = 0.5f;
 
+        [Header("Depth Sensitivity")]
+        [Tooltip("Amplifies the perspective-normalised depth gradient. Higher = more sensitive to depth breaks.")]
+        [Range(1f, 100f)] public float depthScale = 10f;
+
         [Header("Avatar Masking")]
         [Tooltip("Set to the layer your avatar is on. Leave Nothing for full-screen edges.")]
         public LayerMask avatarLayer = 0;
@@ -172,6 +176,7 @@ public class EdgeDetectionFeature : ScriptableRendererFeature
             _material.SetColor("_EdgeColor", _settings.edgeColor);
             _material.SetFloat("_EdgeWidth", _settings.edgeWidth);
             _material.SetFloat("_AdaptiveStrength", _settings.adaptiveStrength);
+            _material.SetFloat("_DepthScale", _settings.depthScale);
 
             if (useMask)
             {

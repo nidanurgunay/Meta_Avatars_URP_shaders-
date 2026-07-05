@@ -80,8 +80,8 @@ void AppSpecificPostManipulation(avatar_FragmentInput i, inout avatar_FragmentOu
 
 #if defined(ENABLE_NPR_EDGES) && !defined(OUTLINE_PASS)
   #if defined(EFFECT_SOBEL) || defined(EFFECT_NORMAL_EDGE) || defined(EFFECT_GAUSS_SOBEL) || defined(EFFECT_HIERARCHICAL) || defined(EFFECT_KUWAHARA) || defined(EFFECT_KUWAHARA_SOBEL) || defined(EFFECT_KUW_GAUSS_HIER) || defined(EFFECT_TOON) || defined(EFFECT_TOON_SOBEL) || defined(EFFECT_TOON_HIER) || defined(EFFECT_HALFTONE) || defined(EFFECT_HATCHING) || defined(EFFECT_XTOON)
-    #if defined(EFFECT_XTOON)
-    // XToon needs positionWS for real depth and shadow — pass it as 5th arg.
+    #if defined(EFFECT_XTOON) || defined(EFFECT_HIERARCHICAL)
+    // XToon and Hierarchical need positionWS for depth — pass it as 5th arg.
     o.color = ApplyNPREffect(o.color, i.geometry.texcoord_0,
                              i.geometry.normal, i.geometry.worldViewDir,
                              (float3)i.geometry.positionInWorldSpace);

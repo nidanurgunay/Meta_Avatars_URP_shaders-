@@ -38,7 +38,7 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
         _OuterOutlineWidth ("Outer Outline Width", Range(0, 0.5)) = 0.005
         _OuterOutlineColor ("Outer Outline Color", Color) = (0,0,0,1)
         [Toggle] _UseOutlineDepthOffset ("Use Depth Offset", Float) = 0
-        _OutlineDepthBias ("Outline Depth Bias", Range(0, 5)) = 1.0
+        _OutlineDepthBias ("Outline Depth Bias", Range(0, 15)) = 1.0
 
         [Header(Edge Detection Modes)]
         [Toggle] _EnableTextureSobel ("Enable Texture Sobel", Float) = 1
@@ -145,7 +145,13 @@ Shader "Custom/V4_GaussianPreFilteredSobel"
                 o.pos = TransformWorldToHClip(posInputs.positionWS + normInputs.normalWS * _OuterOutlineWidth);
 
                 #if _USEOUTLINEDEPTHOFFSET_ON
-                    o.pos.z -= _OutlineDepthBias * 0.0001;
+                    // Multiply by pos.w so the offset is perspective-correct (same NDC push at any distance).
+                    // UNITY_REVERSED_Z handles Metal/DX reversed depth vs OpenGL.
+                    #if UNITY_REVERSED_Z
+                        o.pos.z -= _OutlineDepthBias * 0.001 * o.pos.w;
+                    #else
+                        o.pos.z += _OutlineDepthBias * 0.001 * o.pos.w;
+                    #endif
                 #endif
 
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);

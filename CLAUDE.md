@@ -256,6 +256,37 @@ Keep the language as natural and human as possible. Write in a clear academic re
 
 **No em-dashes.** Em-dashes look AI-generated. Use commas, colons, or semicolons instead.
 
+**Minimise semicolons.** Eliminate semicolons wherever possible without introducing a grammatical error. Prefer splitting into two sentences, or using a comma with a conjunction. Semicolons are only acceptable to separate items in a complex list or when the conjunction "therefore" or "however" follows immediately (e.g., "...; therefore, ..."). Never use a semicolon simply to join two independent clauses that could stand as separate sentences.
+
+---
+
+### 4.5 Project Report Prose Style — Reference Patterns
+
+`NidanurGunay_Project_Report.pdf` is the canonical writing style reference for related work and methodology prose. Before writing any section, identify the matching paragraph type below and apply the same construction.
+
+**Attribution pattern.** Name the authors first, then the verb, then the finding, then the citation. Never open with the paper title.
+- Correct: "Lake et al. showed that this strategy is well suited for real-time animation~\cite{lake2000}."
+- Avoid: "In [10], it was shown that..."
+
+**Connector words per paragraph role:**
+- `Furthermore,` — adds a new positive point that builds on the previous one
+- `However,` — pivots to a limitation or counterpoint
+- `This` / `This observation` / `This led to` — connects a finding to its implication or the next technique
+- `A later broader survey by` — introduces follow-on or survey work
+
+**Logical chain structure — driven by limitations, not chronology.**
+Each paragraph follows: established fact → limitation of that approach → next technique that addresses it. The narrative arc is always "this works, but fails here, which motivates the next step."
+
+**Implication sentence.** After stating a finding, one sentence draws the implication for the current work. Examples from the report: "This observation motivated the exploration of additional edge detection techniques in subsequent versions." / "Thus, these geometric methods are not capable of identifying structural boundaries and cannot convey internal surface details."
+
+**Technical term introduction pattern.** On first use: "[term], [brief role definition], [what it does in this context]." Example: "The Sobel operator, a discrete differentiation tool widely utilized in computer vision and NPR to approximate image intensity gradients."
+
+**Sentence-level rules:**
+- Active voice for findings: "Lake et al. showed...", "Marr and Hildreth observed..."
+- Passive voice for technical processes: "was implemented", "were computed", "is applied"
+- One finding per sentence; no restating what was just said
+- No structural announcements ("In this section, we discuss..."); just present the content directly
+
 ---
 
 ## 5. Citation Guidelines
@@ -264,7 +295,7 @@ Keep the language as natural and human as possible. Write in a clear academic re
 
 1. **One sentence, one citation.** Never place two citations for the same claim back to back. If two papers support the same sentence, combine them: `\cite{a,b}`.
 
-2. **Name the author or concept before citing.** Write what the cited work contributed, then cite. "Barla et al. term this Normal Field Abstraction~\cite{barla2006}" is correct. A bare `~\cite{barla2006}` at the end of a sentence that never names Barla is not.
+2. **Citations always appear at the end of the sentence.** Place the citation immediately before the full stop, not mid-sentence after the named concept. "Lake et al. establish that this approach is well-suited for real-time animation~\cite{lake2000}." is correct. "Lake et al.~\cite{lake2000} establish that..." is not. The author or concept must still be named somewhere in the sentence body; a bare `~\cite{barla2006}` with no mention of Barla anywhere in the sentence is equally incorrect.
 
 3. **No citations inside `lstlisting` captions.** Move any citation to the prose paragraph that explains the listing.
 
@@ -439,6 +470,26 @@ This rule applies to the Related Work chapter, Methodology chapter, and Evaluati
 
 ## 9. Reference Articles
 
+**Article Summaries PDF:** `article_summaries.pdf` in the project root contains detailed summaries of all articles used in the thesis. It is compiled from `article_summaries.tex` in the same location. Before writing any section that cites these articles, read the relevant entry in that PDF — it contains full bibliographic details, DOI, methodology notes, and relevance statements. The PDF is organised into three sections:
+
+- **Section 1 — Uncanny Valley:** MacDorman & Ishiguro (2006), Ho & MacDorman (2010), Mori (1970), McDonnell et al. (2012), Seymour et al. (2021)
+- **Section 2 — User Study / Trust and Avatar Perception:** McKnight & Chervany (2001), Mayer et al. (1995), Bartneck et al. (2009), Canales et al. (2024), Alipour et al. (2025), Nowak & Biocca (2003), Nowak & Rauh (2005), Weidner et al. (2023), Kuffner dos Anjos & Pereira (2024), Alimardani et al. (2024), Dubosc et al. (2025), Tao et al. (2025), Cihodaru-Ştefanache & Podina (2025)
+- **Section 3 — NPR / Nonphotorealistic Rendering:** Gooch et al. (1998), Lake et al. (2000), Isenberg et al. (2003), Gonzalez & Woods (2018), Marr & Hildreth (1980), Canny (1986), Barla et al. (2006), Kyprianidis et al. (2009), Praun et al. (2001), Roberts (1963), Kumar & Poornima (2019), Wisessing et al. (2016), Wisessing et al. (2020), Petikam et al. (2021), Riefard et al. (2024), Roshaan (2026/AHEAD)
+
+### 9.1 Article Summary Slide Decks — MANDATORY UPDATE RULE
+
+Three Beamer slide-deck files exist in the project root, one per section of `article_summaries.pdf`. Every article that has an entry in `article_summaries.pdf` must also have a corresponding slide in the appropriate deck. **When a new article summary is added to `article_summaries.pdf` or `article_summaries.tex`, a matching slide must be added to the correct deck file and the PDF recompiled.**
+
+| Category | LaTeX source | Compiled PDF | Pages | Compile command |
+| --- | --- | --- | --- | --- |
+| Uncanny Valley | `Slides_UncannyValley.tex` | `Slides_UncannyValley.pdf` | 6 | `pdflatex -interaction=nonstopmode Slides_UncannyValley.tex` |
+| User Study / Trust | `Slides_UserStudy.tex` | `Slides_UserStudy.pdf` | 16 | `pdflatex -interaction=nonstopmode Slides_UserStudy.tex` |
+| NPR | `Slides_NPR.tex` | `Slides_NPR.pdf` | 17 | `pdflatex -interaction=nonstopmode Slides_NPR.tex` |
+
+**Slide layout template** (same across all three decks): left coloured panel (3.5cm wide, author/year + description + method badge), right panel (10.15cm wide) with three finding boxes (y: 5.20–6.00, 4.35–5.15, 3.50–4.30) and a green "What this thesis cites / adopts / implements" box (y: 0.10–3.40). Text in finding boxes uses `\tiny\sffamily` for NPR slides (longer technical content) and `\scriptsize\sffamily` for UV and User Study slides.
+
+Run all compile commands from the project root, not from `thesis/`.
+
 Physical PDFs in `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/`:
 
 | File | Content |
@@ -456,3 +507,141 @@ Physical PDFs in `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/`:
 | `MacDorman2006AndroidScience.pdf` | Uncanny valley in androids |
 | `Isenberg_2003_ADG.pdf` | NPR for characters |
 | `Effects of Realism and Representation on Self-Embodied Avatars in Immersive Virtual Environments.pdf` | Avatar self-embodiment study |
+
+---
+
+## 11. User Study Presentation
+
+### 11.1 Presentation File
+
+| What | Path |
+|---|---|
+| LaTeX source | `UserStudy_Slides.tex` (project root) |
+| Compiled PDF | `UserStudy_Slides.pdf` |
+| Complete study report | `UserStudy_Complete_Report.tex` / `.pdf` |
+| Compile command | `pdflatex -interaction=nonstopmode UserStudy_Slides.tex` (run from project root, not `thesis/`) |
+
+The slides use the Beamer `default` theme, Helvetica (`\sfdefault`), Konstanz blue (`#00539F`), and TikZ for all diagrams. No bibliography needed — compile with a single `pdflatex` run.
+
+### 11.2 Slide Structure (12 slides)
+
+| Slide | Title | Content |
+|---|---|---|
+| 1 | Title | "User Study — Perception of Virtual Avatar Advisors" |
+| 2 | Literature Foundation | 6 papers × what we adopt, professor figure (TikZ) |
+| 3 | Three Study Conditions | C1 / C2 / C3 cards, critical comparison bracket C2–C3 |
+| 4 | Three Advisor Scenarios | Horizontal table: S1 Career / S2 Travel / S3 Learning |
+| 5 | What Participants See | Scrolled browser mockup of Career Choice vignette page |
+| 6 | Study Flow Overview | Left-to-right flow: Consent → Demo → × 3 blocks → Debrief |
+| 7 | Scene 1 — Welcome & Consent | Browser mockup, checkbox, Start button |
+| 8 | Scene 2 — Vignette + Baseline | Browser mockup, scenario context box, radio buttons |
+| 9 | Scene 3 — Video Stimulus | Video placeholder, play button, condition badge |
+| 10 | Scene 4 — Questionnaire | Parts A–I compact view: eeriness, likeability, trust |
+| 11 | Scene 5 — Advisor Selection | Three video thumbnails, primary behavioural measure badge |
+| 12 | Scene 6 — Debrief | Checkmark, condition reveal, contact email |
+
+### 11.3 Literature — What Each Paper Contributes
+
+These six papers form the measurement foundation of the user study. Know this table for thesis writing.
+
+| Paper | What we adopt |
+|---|---|
+| Mori (1970) — Uncanny Valley | Core motivation: NPR moves avatars out of the uncanny zone |
+| Canales, Roble & Neff (2024) — Trust + Avatar Stylisation | Study paradigm (video, scripted advisor), trust battery, forced-choice behavioral task |
+| McKnight & Chervany (2001) — Trust Typology | Theoretical framework: Competence / Benevolence / Integrity as independent dimensions |
+| Bartneck et al. (2009) — Godspeed Questionnaire | Anthropomorphism subscale (Part D) + Likeability subscale (Part C), 5-point semantic differential |
+| Ho & MacDorman (2010) — Eeriness Instrument | Eeriness subscale (Part B): 6 semantic differential items, 5-point scale |
+| Alipour, Hartmann & Alimardani (2025) — Systematic Review | Design rationale: dynamic video stimuli + multi-component trust measurement + behavioral indicator |
+
+**Key finding from Canales et al. (2024):** Self-reported trust was broadly equivalent across stylisation levels, but the semi-realistic (stylised) condition attracted the highest rate of behavioral selection. This dissociation motivates H2 (NPR does not reduce trust) and justifies including a forced-choice measure alongside self-report scales.
+
+### 11.4 Questionnaire Structure
+
+The questionnaire runs once per video block (3 blocks total). Parts and their sources:
+
+| Part | Name | Items | Scale | Source |
+| --- | --- | --- | --- | --- |
+| Pre-video | Baseline preference | 1 | Multiple choice | Exploratory secondary measure |
+| A | Comprehension check | 1 | Multiple choice | Exclusion criterion |
+| C | Likeability | 5 | Sem. diff. 1–5 | Bartneck et al. (2009) — Godspeed |
+| D | Human-Likeness / Anthropomorphism | 5 | Sem. diff. 1–5 | Bartneck et al. (2009) — Godspeed |
+| B | Eeriness | 6 | Sem. diff. 1–5 | Ho & MacDorman (2010) |
+| E | Trust: Competence | 4 | Likert 1–7 | Canales et al. (2024); McKnight & Chervany (2001) |
+| F | Trust: Benevolence | 4 | Likert 1–7 | Canales et al. (2024); McKnight & Chervany (2001) |
+| G | Trust: Integrity | 3 | Likert 1–7 | Canales et al. (2024); McKnight & Chervany (2001) |
+| H | Recommendation agreement + appearance influence + warmth | 3 | Likert 1–7 | Custom; H3 grounded in Gao et al. (2025) |
+| I | Visual style check (manipulation check, 2 items) | 2 | Likert 1–7 | Custom |
+| J | Open question (Block 2 only) | 1 | Free text | Custom |
+| P1 | Advisor selection (primary behavioural measure) | 1 | Forced choice | Canales et al. (2024) paradigm |
+
+**Scale note:** Parts B–D use 5-point semantic differential. Parts E–I use 7-point Likert (1 = Strongly Disagree, 7 = Strongly Agree). The scale change is marked with a separator in Qualtrics.
+
+**Presentation order within 5-point block:** C → D → B (likeability and anthropomorphism before eeriness, to avoid priming toward uncanniness before trust ratings).
+
+**Demographics Q9 (propensity to trust):** Added as a 7-point Likert covariate — "In general, I tend to trust people I meet for the first time." Per Mayer et al. (1995).
+
+**Power analysis (documented in report §Sample Size):** At η²p = 0.06, α = 0.05, power 0.90 requires ~38 participants. Target n = 48 (8 per Latin Square group) exceeds this threshold and accounts for attrition.
+
+### 11.5 Three Scenario Vignettes (full text)
+
+These are the exact texts shown to participants on screen before each video.
+
+**Scenario 1 — Career Choice** (Recommends: Job A | Primary trust dimension: Competence)
+
+> You recently completed your master's degree and have received two job offers in your field. Both positions start in one month. You have no strong financial pressure and both cities are equally acceptable to you. You have five days to decide.
+>
+> **Job A** is a broad generalist role at a smaller company. The work area is yours to define, the team is small, and your contributions are directly visible. Skills transfer across industries. The starting salary is approximately 8,000 euros per year less than Job B.
+>
+> **Job B** is a specialist role at a large, well-known company in a high-demand field. The salary is substantially higher and the employer name carries weight on a CV. The role involves deep specialisation within a large team, with less individual visibility.
+
+Advisor spoken recommendation (~45 s): *"My recommendation is Job A. The flexibility to change direction does not come back once you have committed to a specialist track. At the start of a career, the option to pivot is more valuable than it will ever be later. Job A keeps that option open. Job B narrows it."*
+
+---
+
+**Scenario 2 — Travel Route** (Recommends: Route B | Primary trust dimensions: Benevolence, Competence)
+
+> You have just arrived by train in a city you have never visited before. You need to reach your hotel, where you are meeting a group of colleagues in about one hour. You have checked a map app and found two routes, both using public transport.
+>
+> **Route A** takes around 20 minutes and involves one transfer between lines at a mid-size station you have never used. If the connection runs on time, you arrive approximately 40 minutes before your meeting.
+>
+> **Route B** takes around 50 minutes on a single direct line with no transfers. It loops through the city centre. You arrive approximately 10 minutes before your meeting.
+
+Advisor spoken recommendation (~43 s): *"My recommendation is Route B. Route A's buffer depends entirely on a connection going well at a station you have never used. If that transfer fails, you are not just arriving a little later. For a meeting you cannot miss, I would rather have certainty than a larger buffer that depends on luck."*
+
+---
+
+**Scenario 3 — Learning Resource** (Recommends: Option A | Primary trust dimension: Integrity)
+
+> You want to learn data analysis to strengthen your CV. You have set aside a few weeks and found two options. You need to decide which one to commit to.
+>
+> **Option A** is a structured online course from a well-known learning platform. It costs 35 euros, runs about eight hours over a few weeks, and awards a certificate you can add to your CV. The curriculum is set out from start to finish.
+>
+> **Option B** is a free video tutorial series by a practitioner with a strong reputation and a large following. The content covers the same material at no cost. There is no certificate, and you set your own pace.
+
+Advisor spoken recommendation (~41 s): *"My recommendation is Option A. The content quality between the two is genuinely comparable — I want to be honest about that. What you are paying 35 euros for is the certificate. When you add data analysis to your CV, a credential from a named platform communicates it clearly and quickly to someone reading your application."*
+
+---
+
+**Design principles across all three scenarios:**
+
+- Recommendations alternate A, B, A to avoid systematic option-label bias
+- Each scenario targets a different trust dimension (Competence / Benevolence+Competence / Integrity)
+- Both options are presented with equal detail and genuine trade-offs — no obviously correct answer
+- The advisor speaks only their recommendation and reasoning, not a re-narration of the options
+- The pre-video baseline question records the participant's preference before the advisor speaks
+
+### 11.6 Counterbalancing
+
+Balanced Latin Square with 6 groups (G1–G6). Each participant sees all three conditions paired with different scenarios. Minimum recommended n = 48 (8 per group) for power ≥ 0.90 at medium effect size. Data mapping: each participant's "Video 1/2/3" response must be remapped to condition (C1/C2/C3) using their group assignment before aggregating.
+
+### 11.7 Primary Hypothesis Summary
+
+| Hypothesis | Prediction |
+| --- | --- |
+| H1 | NPR (C3) produces lower eeriness than photorealistic avatar (C2) |
+| H2 | NPR (C3) does NOT produce significantly lower trust than C2 (null expected) |
+| H3 | Both avatar conditions (C2, C3) produce lower trust than real person (C1) |
+| H4 | Eeriness negatively predicts trust across all conditions |
+| H5 | Anthropomorphism mediates the condition → eeriness path (exploratory) |
+
+**Critical comparison for the thesis:** C2 vs C3. This is the only pair where animation is held constant and only the NPR shader changes. All other pairs confound rendering with animation naturalness.

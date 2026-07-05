@@ -46,14 +46,15 @@ MonoBehaviour:
     renderPassEvent: 550
     edgeShader: {fileID: 4800000, guid: cbbd79783d4a74d49bc2c349a189e00c, type: 3}
     edgeColor: {r: 0, g: 0, b: 0, a: 1}
-    depthThreshold: 0.01
-    normalThreshold: 0.94
-    colorThreshold: 0.3
+    depthThreshold: 0.09
+    normalThreshold: 5
+    colorThreshold: 1
     depthWeight: 1
     normalWeight: 1
     colorWeight: 1
-    edgeWidth: 0.92
+    edgeWidth: 0.5
     adaptiveStrength: 0
+    depthScale: 2
     avatarLayer:
       serializedVersion: 2
       m_Bits: 320
@@ -72,12 +73,12 @@ MonoBehaviour:
   m_Active: 0
   settings:
     renderPassEvent: 550
-    kuwaharaShader: {fileID: 4800000, guid: b2466d13b2c9f4b5c80fbef454266920, type: 3}
-    kernelSize: 32
+    kuwaharaShader: {fileID: 4800000, guid: 1ed4a9d7e041a448d98147edbaa335f4, type: 3}
+    kernelSize: 17
     sectorCount: 8
-    sharpness: 1
-    hardness: 18
-    zeroCrossing: 0.315
+    sharpness: 18
+    hardness: 1
+    zeroCrossing: 0.3
     avatarLayer:
       serializedVersion: 2
       m_Bits: 384
@@ -154,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0532b8bf319354c259b05280a82b2ecb, type: 3}
   m_Name: MultiScaleKuwaharaFeature
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     renderPassEvent: 500
     shader: {fileID: 4800000, guid: ce6b5aa4dbd474bb4883c414d704f941, type: 3}

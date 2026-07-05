@@ -92,7 +92,7 @@ public class AnisotropicKuwaharaFeature : ScriptableRendererFeature
         Material GetMaterial()
         {
             if (_mat != null) return _mat;
-            var shader = Shader.Find("NPR/AnisotropicKuwahara");
+            var shader = Shader.Find("NPR/AnisotropicKuwahara_V2");
             if (shader == null)
             {
                 Debug.LogError("[AnisotropicKuwahara] Shader 'NPR/AnisotropicKuwahara' not found.");

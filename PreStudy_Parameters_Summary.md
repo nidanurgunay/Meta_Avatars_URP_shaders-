@@ -78,10 +78,10 @@ The Kuwahara filter is applied as a post-process layer on top of the V4 base con
 |-------|------------|-------|
 | K1 | — | V4 baseline (L5), no Kuwahara |
 | K2 | 2 | Minimal smoothing |
-| K3 | 17 | Mid-range |
-| K4 | 32 | Maximum smoothing |
+| K3 | 5 | Mid-range |
+| K4 | 8 | Maximum visible smoothing — no perceptual difference observed above this value |
 
-Steps are spaced across the supported kernel range (2–32). Sector count was excluded after preliminary testing showed no perceptually meaningful difference across its range.
+Steps tested: 2, 5, 8. Kernel sizes above 8 produce no visible difference (Gaussian weight concentrates effect near kernel centre; outer samples on smooth skin fall below the tau variance floor and contribute equally to all sectors). Sector count was excluded after preliminary testing showed no perceptually meaningful difference across its range.
 
 ---
 

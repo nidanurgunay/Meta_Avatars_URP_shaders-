@@ -57,7 +57,7 @@
   \node[anchor=north west, font=\small\sffamily, text=white!80]
     at ($(current page.north west)+(1.0,-4.1)$) {Kyprianidis 2009 \textbullet{} Praun 2001 \textbullet{} Roberts 1963 \textbullet{} Kumar \& Poornima 2019 \textbullet{} Wisessing 2016 \textbullet{} Wisessing 2020};
   \node[anchor=north west, font=\small\sffamily, text=white!80]
-    at ($(current page.north west)+(1.0,-4.8)$) {Petikam 2021 \textbullet{} Riefard 2024 \textbullet{} Roshaan 2026 (AHEAD)};
+    at ($(current page.north west)+(1.0,-4.8)$) {Petikam 2021 \textbullet{} Zell 2015 \textbullet{} Riefard 2024 \textbullet{} Roshaan 2026 (AHEAD)};
   \node[anchor=south west, font=\small\sffamily, text=white!60]
     at ($(current page.south west)+(1.0,0.5)$)
     {Nidanur G\"unay \quad\textbullet\quad University of Konstanz \quad\textbullet\quad 2026};
@@ -637,6 +637,42 @@
   at (3.82,3.1) {What this thesis implements};
 \node[font=\footnotesize\sffamily\color{kgreen!80!black}, anchor=north west, text width=9.65cm]
   at (3.82,2.92) {The V5 (Hierarchical) shader is directly inspired by AHEAD's three-cue fusion architecture: depth-proxy edges, normal derivative creases, and Roberts Cross colour edges combined via max-pooling. The thesis implements a simplified, non-adaptive version: a depth proxy derived from vertex positions is used instead of the depth buffer (not available in the SDK fragment hook), and static threshold parameters replace the adaptive $T_\ell = k\cdot\sigma_\ell$ mechanism. AHEAD is the primary NPR technical precedent for V5.};
+\end{tikzpicture}
+\end{center}
+\end{frame}
+
+%% ═══════════════════════════════════════════════════════════════════════════
+%% Zell et al. 2015 — To Stylize or Not to Stylize?
+%% ═══════════════════════════════════════════════════════════════════════════
+\begin{frame}{Zell et al. (2015) \textnormal{\normalsize --- Shape and Material Stylization on the Perception of CG Faces}}
+\begin{center}
+\begin{tikzpicture}[x=1cm, y=1cm]
+\fill[kblue!60!kgreen] (0.0,0.0) rectangle (3.5,6.6);
+\node[font=\small\sffamily\bfseries, text=white, align=center, text width=3.1cm]
+  at (1.75,5.82) {Zell et al.\\(2015)};
+\draw[white!30, line width=0.3pt] (0.2,5.00) -- (3.3,5.00);
+\node[font=\tiny\sffamily, text=white!85, align=center, text width=3.0cm]
+  at (1.75,4.25) {3 perceptual experiments; shape vs.\ material stylization on realism, appeal, and eeriness; 3--5 levels per dimension; two characters, five expressions};
+\fill[white!20, rounded corners=2pt] (0.2,0.35) rectangle (3.3,1.10);
+\node[font=\tiny\sffamily\bfseries, text=white, align=center]
+  at (1.75,0.72) {SIGGRAPH Asia 2015\\ACM Trans.\ Graphics};
+\node[font=\small\sffamily\bfseries\color{kblue!60!kgreen}] at (8.72,6.42) {Key Findings};
+\draw[kblue!30, line width=0.3pt] (3.65,6.10) -- (13.8,6.10);
+\fill[kblue!8!kgreen!6, rounded corners=3pt] (3.65,5.20) rectangle (13.8,6.00);
+\node[font=\tiny\sffamily\color{kblue!70!kgreen}, anchor=west, text width=9.65cm]
+  at (3.80,5.60) {\textbf{Shape governs realism; material governs appeal and eeriness:} shape stylization level drives perceived realism; material stylization level drives appeal, attractiveness, and eeriness independently --- the two dimensions dissociate cleanly and are not correlated ($\alpha < 0.5$ in all experiments); realism alone is a bad predictor for appeal};
+\fill[kblue!8!kgreen!6, rounded corners=3pt] (3.65,4.35) rectangle (13.8,5.15);
+\node[font=\tiny\sffamily\color{kblue!70!kgreen}, anchor=west, text width=9.65cm]
+  at (3.80,4.75) {\textbf{Mismatch between shape and material is costly:} cartoon shape + realistic material produced the lowest appeal and highest eeriness; matching stylization levels maximises appeal regardless of absolute realism; moderate Gaussian blur on a realistic albedo texture significantly increased appeal without reducing realism --- texture simplification is an effective appeal lever};
+\fill[kblue!8!kgreen!6, rounded corners=3pt] (3.65,3.50) rectangle (13.8,4.30);
+\node[font=\tiny\sffamily\color{kblue!70!kgreen}, anchor=west, text width=9.65cm]
+  at (3.80,3.90) {\textbf{Shape controls expression intensity; material does not:} perceived emotional intensity decreased continuously with increasing shape stylization; material stylization had no significant effect on intensity; expression recognition accuracy remained high across all stylization levels for most emotions, confirming stylised characters remain readable};
+\fill[kgreen!12, draw=kgreen!40, rounded corners=3pt, line width=0.6pt]
+  (3.65,0.1) rectangle (13.8,3.40);
+\node[font=\small\sffamily\bfseries\color{kgreen!70!black}, anchor=west]
+  at (3.82,3.1) {What this thesis cites};
+\node[font=\footnotesize\sffamily\color{kgreen!80!black}, anchor=north west, text width=9.65cm]
+  at (3.82,2.92) {This thesis holds avatar shape constant and changes only the material rendering through NPR shaders. Zell et al.\ confirm that material is the dimension governing appeal and eeriness independently of shape, making NPR shader stylisation the correct lever for reducing eeriness in C3. The mismatch finding validates applying a consistent NPR treatment across the full avatar surface. The blur result in Experiment 1c directly supports H1: moderate material stylisation reduces eeriness without degrading perceived realism.};
 \end{tikzpicture}
 \end{center}
 \end{frame}

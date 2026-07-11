@@ -499,4 +499,62 @@ This document tracks every citation added to `references.bib` that was not sourc
 
 ---
 
+---
+
+## Added in Session: Abstraction-Level Citation Pair (2026-07-09)
+
+### `wallraven2008`
+- **Full title:** Evaluating the Perceptual Realism of Animated Facial Expressions
+- **Authors:** Christian Wallraven, Martin Breidt, Douglas W. Cunningham, Heinrich H. Bülthoff
+- **Journal:** ACM Transactions on Applied Perception, Vol. 4, No. 4, Article 23, 20 pages
+- **Year:** 2008
+- **DOI:** 10.1145/1278760.1278764
+- **Physical file:** `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/NPR/Evaluating the perceptual realism of animated facial expressions. .pdf`
+- **What the paper argues:** Three psychophysical experiments measuring recognition, intensity, sincerity, and typicality of CG animated facial expressions benchmarked against real video. Key findings: motion is the dominant channel (removing head motion dropped recognition from 65.5% to 44.2%); shape blurring does not impair recognition when motion is intact but does reduce perceived intensity and sincerity; adding eyes raised recognition by ~5% and significantly increased intensity and sincerity ratings.
+- **Used in:** Thesis sentence about excessive stylisation undermining expressive readability
+- **Exact cited sentence:** §4 Summary, p. 23:19 — "In addition, in Experiment 2, we found clear effects of shape blurring on both intensity and sincerity judgments. This demonstrates that, even though reduced shape information does not affect recognition, it does influence the perceived quality of the expression."
+
+```bibtex
+@article{wallraven2008,
+  author    = {Wallraven, Christian and Breidt, Martin and Cunningham, Douglas W. and B{\"u}lthoff, Heinrich H.},
+  title     = {Evaluating the Perceptual Realism of Animated Facial Expressions},
+  journal   = {ACM Transactions on Applied Perception},
+  year      = {2008},
+  volume    = {4},
+  number    = {4},
+  pages     = {23:1--23:20},
+  doi       = {10.1145/1278760.1278764},
+  publisher = {ACM},
+}
+```
+
+---
+
+### `zell2015`
+- **Full title:** To Stylize or Not to Stylize? The Effect of Shape and Material Stylization on the Perception of Computer-Generated Faces
+- **Authors:** Eduard Zell, Carlos Aliaga, Adrian Jarabo, Katja Zibrek, Diego Gutierrez, Rachel McDonnell, Mario Botsch
+- **Journal:** ACM Transactions on Graphics, Vol. 34, No. 6, Article 184, 12 pages (SIGGRAPH Asia 2015)
+- **Year:** 2015
+- **DOI:** 10.1145/2816795.2818126
+- **Physical file:** `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/NPR/To Stylize or not to Stylize?_Zell.pdf`
+- **What the paper argues:** Factorial perceptual study crossing 3-5 levels of shape stylisation with 3-5 levels of material stylisation on CG faces (male and female actors). Core finding: shape governs perceived realism and expression intensity; material governs appeal, eeriness, and attractiveness. Realism is a bad predictor for appeal. Mismatched shape/material raises eeriness. Moderate texture blurring increases appeal without degrading realism. Expression intensity decreases as shape becomes more stylised (less realistic).
+- **Used in:** Thesis sentence about excessive stylisation undermining expressive readability
+- **Exact cited sentence:** Main Findings list, p. 184:2 — "The perceived intensity of expressions decreases with realism of shape, but is nearly independent of material stylization." (Interpretation: as shape stylisation increases and realism decreases, perceived intensity also decreases.)
+
+```bibtex
+@article{zell2015,
+  author    = {Zell, Eduard and Aliaga, Carlos and Jarabo, Adrian and Zibrek, Katja and Gutierrez, Diego and McDonnell, Rachel and Botsch, Mario},
+  title     = {To Stylize or Not to Stylize? {The} Effect of Shape and Material Stylization on the Perception of Computer-Generated Faces},
+  journal   = {ACM Transactions on Graphics},
+  year      = {2015},
+  volume    = {34},
+  number    = {6},
+  pages     = {184:1--184:12},
+  doi       = {10.1145/2816795.2818126},
+  publisher = {ACM},
+}
+```
+
+---
+
 > **Instructions:** Before submission, open each DOI link, confirm title and authors match what is in `references.bib`, and tick it off. For entries without a DOI, check the ResearchGate or ACM DL link listed above.

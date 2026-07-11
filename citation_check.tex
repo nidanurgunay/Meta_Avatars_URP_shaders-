@@ -1,0 +1,218 @@
+%% Citation Paraphrase Verification Log
+%% Thesis: Abstraction Mechanisms for Virtual Avatars
+%% Student: Nidanur Günay, University of Konstanz, 2026
+%% Purpose: Verify that every paraphrase in the thesis matches the original source.
+%%          Check each box once the original PDF has been read and the paraphrase confirmed.
+
+\documentclass[11pt, a4paper]{article}
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=3cm]{geometry}
+\usepackage{amssymb}      % for \square
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{parskip}
+\usepackage{microtype}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[hidelinks]{hyperref}
+
+%% Colours
+\definecolor{konstanzblue}{RGB}{0, 83, 159}
+\definecolor{lightgray}{RGB}{245, 245, 245}
+\definecolor{midgray}{RGB}{180, 180, 180}
+\definecolor{darkred}{RGB}{160, 30, 30}
+
+%% Entry command
+\newcounter{citentry}
+\newcommand{\citentry}[6]{%
+  %% Args: {key} {section} {claim in thesis} {paraphrase in thesis} {original text} {notes}
+  \stepcounter{citentry}
+  \vspace{10pt}
+  \noindent\colorbox{lightgray}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
+    \vspace{4pt}
+    \textbf{\textcolor{konstanzblue}{\#\thecitentry \quad #1}}
+    \hfill \textit{Section: #2}
+    \vspace{4pt}
+  }}
+
+  \vspace{4pt}
+  \noindent\begin{tabular}{@{}p{3cm} p{\dimexpr\linewidth-3.5cm}@{}}
+    \textbf{Claim in thesis:}   & \textit{``#3''} \\[4pt]
+    \textbf{Paraphrase used:}   & #4 \\[4pt]
+    \textbf{Original text:}     & \textcolor{darkred}{\textit{``#5''}} \\[4pt]
+    \textbf{Notes:}             & #6 \\
+  \end{tabular}
+
+  \vspace{6pt}
+  \noindent $\square$\quad \textbf{Validated} — original PDF read; paraphrase confirmed accurate.
+
+  \vspace{2pt}
+  \noindent\textcolor{midgray}{\rule{\linewidth}{0.4pt}}
+}
+
+\begin{document}
+
+\begin{center}
+  {\Large\bfseries\textcolor{konstanzblue}{Citation Paraphrase Verification Log}}\\[6pt]
+  {\normalsize Thesis: \textit{Abstraction Mechanisms for Virtual Avatars}}\\
+  {\normalsize Nidanur Günay \textbullet\ University of Konstanz \textbullet\ 2026}\\[4pt]
+  {\small Check each $\square$ once you have opened the original PDF, located the passage, and confirmed the paraphrase is accurate.}
+\end{center}
+
+\vspace{8pt}
+\noindent\textcolor{midgray}{\rule{\linewidth}{0.8pt}}
+
+%% ─────────────────────────────────────────────────────────────────
+\section*{NPR / Nonphotorealistic Rendering}
+
+\citentry
+  {gooch1998 — Gooch et al.\ (1998)}
+  {§4.3 NPR Technique Design, opening sentence}
+  {NPR techniques in computer graphics encompass a wide range of abstraction levels.}
+  {Direct paraphrase of the opening claim from the abstract/introduction.}
+  {NPR techniques used in computer graphics vary greatly in their level of abstraction.}
+  {Original PDF: \texttt{Articles/NPR/Gooch1998.pdf}. Confirm that this sentence appears in the article's introductory framing and that the paraphrase does not overstate the claim.}
+
+\citentry
+  {gooch1998 — Gooch et al.\ (1998)}
+  {§4.3.3 V2 Toon Shading, motivation paragraph}
+  {Gooch et al.\ established that replacing physically accurate illumination with a tonal structure communicates surface orientation more effectively in stylised rendering contexts.}
+  {Paraphrase of the core claim of the cool-to-warm illumination model.}
+  {The use of cool-to-warm colour transitions communicates object shape and lighting direction more clearly than conventional illumination in many stylised contexts.}
+  {Original PDF: \texttt{Articles/NPR/Gooch1998.pdf}. Confirm Gooch's specific claim is about cool-to-warm tonal transitions and surface readability, not about discrete band quantisation (which is Lake).}
+
+\citentry
+  {lake2000 — Lake et al.\ (2000)}
+  {§4.3.3 V2 Toon Shading, motivation paragraph}
+  {Lake et al.\ then demonstrated that discrete tonal quantisation applied to the illumination response produces the characteristic flat appearance associated with hand drawn animation.}
+  {Paraphrase of Lake et al.'s description of cel shading for real time games.}
+  {Cel shading is achieved by quantising the diffuse lighting term into a small number of discrete levels, producing the flat appearance typical of hand-drawn cartoons.}
+  {Original PDF: \texttt{Articles/NPR/lake2000.pdf} (verify exact filename). Confirm Lake's specific contribution is discrete tonal bands (not cool-to-warm), and that the chronology is correct: Gooch 1998 precedes Lake 2000.}
+
+\citentry
+  {lake2000 — Lake et al.\ (2000)}
+  {§4.3.3 V2 Toon Shading, equation~(toon\_quant)}
+  {This operation replaces continuous gradients with discrete tonal transitions, producing the characteristic stepped appearance of the technique.}
+  {Paraphrase of Lake's description of the floor-quantisation formula applied to the lighting response.}
+  {The toon shading formula divides the continuous lighting response into discrete bands using a floor function, creating the stepped tonal appearance characteristic of cel animation.}
+  {Original PDF: \texttt{Articles/NPR/lake2000.pdf}. Confirm the equation matches Lake's formulation and that the citation is correctly attached to the result sentence rather than to the variable definitions.}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§4.3.2 V1 Inverted Hull Outline, selection rationale}
+  {Object silhouettes are a defining visual feature of nonphotorealistic rendering. The inverted hull method produces stable geometric silhouettes without requiring screen space processing.}
+  {Paraphrase of Isenberg's characterisation of silhouette edges and outline techniques for NPR characters.}
+  {Silhouette edges are the most prominent visual cue in NPR character rendering. Geometry-based outline methods generate stable outlines entirely within the vertex stage, without the cost of screen-space edge detection.}
+  {Original PDF: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}. Confirm Isenberg's specific claim about silhouette prominence and the inverted hull being geometry-based.}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§4.3.2 V1 Inverted Hull Outline, limitations}
+  {The method executes entirely within the GPU vertex transformation stage. Creases, clothing seams, and facial contours receive no edge marking, as the method captures only the external silhouette of the mesh.}
+  {Paraphrase of the shared limitation of geometry-based outline methods: they cannot capture interior edges.}
+  {Geometry-based methods are limited to the outer silhouette of a mesh. Interior boundaries, such as creases and surface discontinuities, are not captured by expanding back-facing vertices.}
+  {Original PDF: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}. Confirm the interior-edge limitation is stated by Isenberg and applies to the inverted hull / shell method specifically.}
+
+\citentry
+  {barla2006 — Barla et al.\ (2006)}
+  {§4.3.4 V2.2 X-Toon Shading, core technique}
+  {Barla et al.\ propose replacing the one-dimensional ramp with a two-dimensional ramp texture, where the horizontal axis encodes the lighting response and the vertical axis encodes the abstraction level.}
+  {Direct paraphrase of the 2D ramp formulation in X-Toon.}
+  {The XToon shader uses a 2D texture as a lookup table, where one axis is the standard diffuse lighting term and the second axis encodes an abstraction parameter independent of the lighting.}
+  {Original PDF: \texttt{Articles/NPR/x-toon.pdf}. Confirm the exact axis assignments (lighting vs.\ abstraction) and that the paper distinguishes the abstraction axis from the lighting axis as independent.}
+
+\citentry
+  {barla2006 — Barla et al.\ (2006)}
+  {§4.3.4 V2.2 X-Toon Shading, Normal Field Abstraction}
+  {Barla et al.\ term this technique Normal Field Abstraction, achieved by blending the original mesh normals with normals derived from a geometrically simplified shape.}
+  {Direct paraphrase of Normal Field Abstraction as described in the X-Toon paper.}
+  {Normal Field Abstraction blends the object's surface normals with the normals of a simplified proxy shape, reducing high-frequency normal variation and producing a more abstracted shading response.}
+  {Original PDF: \texttt{Articles/NPR/x-toon.pdf}. Confirm the term ``Normal Field Abstraction'' is used by Barla et al.\ and that the blending mechanism matches the description.}
+
+\citentry
+  {kyprianidis2009 — Kyprianidis et al.\ (2009)}
+  {§4.3.7 V7 Kuwahara Painterly Filter}
+  {Unlike earlier isotropic versions that use fixed rectangular quadrants, the anisotropic filter adapts its shape and orientation to the local image structure.}
+  {Paraphrase of Kyprianidis's distinction between isotropic and anisotropic Kuwahara variants.}
+  {The anisotropic Kuwahara filter orients its sampling region along the dominant local image structure, producing directionally coherent painterly strokes rather than the fixed-quadrant artefacts of the original isotropic version.}
+  {Original PDF: \texttt{Articles/NPR/anisotropic\_kuwahara.pdf}. Confirm Kyprianidis explicitly contrasts isotropic and anisotropic variants and describes the structure tensor orientation mechanism.}
+
+\citentry
+  {gonzalez2018 — Gonzalez \& Woods (2018)}
+  {§4.3.5 V4 Sobel Edge Detection}
+  {The horizontal and vertical gradient components $G_x$ and $G_y$ are estimated using the Sobel kernels.}
+  {Reference to Gonzalez \& Woods for the standard Sobel convolution kernels and gradient magnitude formula.}
+  {The Sobel operator uses two $3\times3$ convolution masks to approximate the horizontal and vertical first-order image derivatives, yielding gradient components $G_x$ and $G_y$. The gradient magnitude $M = \sqrt{G_x^2 + G_y^2}$ measures local intensity change.}
+  {Original: \texttt{Gonzales,Woods-Digital.Image.Processing.4th.Edition.pdf}. Confirm Sobel kernel values, gradient magnitude formula, and BT.601 luma coefficients used in the luminance conversion.}
+
+\citentry
+  {canny1986 — Canny (1986)}
+  {§4.3.5 V4 Sobel and §4.3.6 V4.2 Gaussian Sobel}
+  {Gradient-based detectors require prior smoothing to suppress noise sensitivity.}
+  {Paraphrase of Canny's smoothing-before-differentiation principle.}
+  {A smoothing step must precede gradient computation to suppress noise, since differentiation is inherently a high-pass operation that amplifies noise alongside genuine edges.}
+  {Original PDF: \texttt{Articles/NPR/canny1986.pdf} (verify filename). Confirm Canny states this principle explicitly in the context of his multi-stage detector and that the cite is not overclaiming.}
+
+\citentry
+  {marr1980 — Marr \& Hildreth (1980)}
+  {§4.3.6 V4.2 Gaussian Prefiltered Sobel}
+  {The Gaussian filter is the preferred smoothing choice because it is isotropic: it attenuates noise equally in all spatial directions without introducing an orientation bias.}
+  {Paraphrase of Marr \& Hildreth's justification for Gaussian smoothing before differentiation.}
+  {The Gaussian is the only smoothing function that is both linear and isotropic, making it optimal for pre-filtering before gradient-based edge detection, as it does not introduce any directional bias into the subsequent derivative computation.}
+  {Original PDF: locate in \texttt{Articles/NPR/}. Confirm Marr \& Hildreth use the isotropy argument to justify Gaussian smoothing specifically.}
+
+%% ─────────────────────────────────────────────────────────────────
+\section*{Uncanny Valley and Avatar Perception}
+
+\citentry
+  {mori1970 — Mori (1970)}
+  {§4.4.1 H1 hypothesis}
+  {A photorealistic avatar at near-human fidelity occupies the most problematic region of the affinity curve, whereas stylised abstraction deliberately relocates the representation to the stable, comfortable slope below the valley.}
+  {Paraphrase of Mori's uncanny valley curve and the implication that stylisation avoids the valley.}
+  {As a robot's appearance approaches human likeness, affinity rises until it enters a region of sudden discomfort (the valley). Below this region, simplified or cartoon-like representations are perceived positively.}
+  {Original PDF: \texttt{Articles/uncanny1970.pdf}. Confirm Mori's original curve implies that representations below full human likeness sit on the positive slope, motivating stylisation as a deliberate design strategy.}
+
+\citentry
+  {canales2024 — Canales et al.\ (2024)}
+  {§4.4.2 H2 hypothesis}
+  {Canales et al.\ found equivalent self-reported trust across three stylisation levels for a virtual doctor advisor.}
+  {Paraphrase of Canales et al.'s key null finding on self-reported trust.}
+  {Self-reported trust ratings did not differ significantly across the three avatar stylisation conditions; however, participants showed a preference for the semi-realistic stylised avatar in the behavioural selection task.}
+  {Original PDF: \texttt{Articles/trust/Avatar\_Stylization\_and\_Trust\_IEEE\_VR\_2024.pdf}. Confirm the null result for self-reported trust and the specific finding about behavioural selection favouring the stylised condition. This dissociation is the main motivation for including P1 in our study.}
+
+\citentry
+  {nowak2003 — Nowak \& Biocca (2003)}
+  {§2 Related Work / §4 Methodology}
+  {Avatar realism affects social presence and trust judgments in virtual environments.}
+  {Paraphrase of Nowak \& Biocca's finding on avatar realism and social presence.}
+  {More realistic avatars were associated with higher social presence, but this relationship was moderated by the degree of perceived copresence and the task context.}
+  {Original PDF: \texttt{Articles/Nowak2003.pdf}. Confirm the exact direction of the realism-to-presence relationship and whether trust or only social presence is the outcome variable.}
+
+\citentry
+  {ho2010 — Ho \& MacDorman (2010)}
+  {§4.4.1 H4 and H5 hypotheses}
+  {Eeriness and human-likeness are orthogonal perceptual dimensions (reported $r \approx .02$), making H5's mediation path empirically testable rather than structurally guaranteed.}
+  {Paraphrase of Ho \& MacDorman's orthogonality finding between eeriness and anthropomorphism.}
+  {Factor analysis revealed that eeriness and human-likeness load onto separate, uncorrelated dimensions ($r \approx .02$), indicating that an entity can be perceived as highly human-like without being perceived as eerie, and vice versa.}
+  {Original PDF: locate in \texttt{Articles/trust/} or \texttt{Articles/Uncanney Valley/}. Confirm the $r \approx .02$ figure and that the paper explicitly claims orthogonality rather than weak correlation.}
+
+%% ─────────────────────────────────────────────────────────────────
+\section*{Trust Theory}
+
+\citentry
+  {mayer1995 — Mayer et al.\ (1995)}
+  {§4.4.3 Per-Block Questionnaire, trust battery}
+  {The eleven trust items are structured around the three-component Ability-Benevolence-Integrity (ABI) model of Mayer et al.}
+  {Reference to the ABI framework as the theoretical basis of the trust battery.}
+  {Trust is defined as the willingness to be vulnerable to another party based on positive expectations regarding their ability, benevolence, and integrity. These three components are conceptually and empirically distinct.}
+  {Original: locate in \texttt{Articles/trust/}. Confirm the ABI model names the three components in this order and that each is treated as a separate construct (not a unidimensional measure).}
+
+\citentry
+  {mcknight2001 — McKnight \& Chervany (2001)}
+  {§4.4.3 Per-Block Questionnaire, trust battery}
+  {Operationalised within the trusting-beliefs framework of McKnight and Chervany.}
+  {Reference to McKnight \& Chervany's operationalisation of trust beliefs as the source of the item wording.}
+  {Trusting beliefs reflect the truster's confident perception of the trustee's attributes (competence, benevolence, integrity, predictability). These can be measured as multi-item scales at the level of a specific interaction or relationship.}
+  {Original: locate in \texttt{Articles/trust/}. Confirm McKnight \& Chervany provide the scale items (or item templates) used in Parts E, F, G. If they only provide the framework and Canales et al.\ adapted the items, the citation chain must reflect both.}
+
+\end{document}

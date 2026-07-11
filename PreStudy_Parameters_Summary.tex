@@ -25,23 +25,23 @@ The selected NPR shader combines multiple rendering techniques in a single pass:
 
 Although the shader includes a Gaussian pre-filter stage that smooths the luminance signal before Sobel edge detection, this stage was disabled across all pre-study configurations. Preliminary testing showed no perceptually meaningful visual difference between the pre-filter enabled and disabled at the parameter ranges used for this avatar, so a dedicated round for this parameter was omitted.
 
-Each round varied one parameter group while all others were held constant. Participants ranked images twice per round: by stylization quality as a character, and by trustworthiness as an advisor.
+The study consists of five rounds. The rim light round was removed to reduce participant burden. The two separate Kuwahara rounds were merged into a single round with kernel size fixed at 8 and hardness/sharpness varied. Each round varied one parameter group while all others were held constant. Participants ranked images by trustworthiness as an advisor. Images are labelled by round and letter (e.g.\ R2 C = Round~2, image~C).
 
 \bigskip
 
 %% ROUND 1
-\noindent{\bfseries Round 1 \textemdash\ Inner Line Threshold (L1\textendash L5)}
+\noindent{\bfseries Round 1 \textemdash\ Inner Line Threshold (R1 A\textendash E)}
 
 \smallskip
 \begin{tabular}{ll}
 \toprule
 \textbf{Label} & \textbf{\texttt{\_InnerLineThreshold}} \\
 \midrule
-L1 & 0.01 \\
-L2 & 0.02 \\
-L3 & 0.03 \\
-L4 & 0.04 \\
-L5 & 0.05 \\
+R1 A & 0.01 \\
+R1 B & 0.02 \\
+R1 C & 0.03 \\
+R1 D & 0.04 \\
+R1 E & 0.05 \\
 \bottomrule
 \end{tabular}
 
@@ -51,29 +51,29 @@ L5 & 0.05 \\
 \bigskip
 
 %% ROUND 2
-\noindent{\bfseries Round 2 \textemdash\ Outer Outline Width and Depth Offset (O1\textendash O6)}
+\noindent{\bfseries Round 2 \textemdash\ Outer Outline Width and Depth Offset (R2 A\textendash F)}
 
 \smallskip
 \begin{tabular}{llll}
 \toprule
 \textbf{Label} & \textbf{Outline Width} & \textbf{Depth Offset} & \textbf{Depth Bias} \\
 \midrule
-O1 & 0.005 & Off & 15 \\
-O2 & 0.005 & On  & 15 \\
-O3 & 0.007 & Off & 15 \\
-O4 & 0.007 & On  & 15 \\
-O5 & 0.003 & Off & 15 \\
-O6 & 0.003 & On  & 15 \\
+R2 A & 0.005 & Off & 15 \\
+R2 B & 0.005 & On  & 15 \\
+R2 C & 0.007 & Off & 15 \\
+R2 D & 0.007 & On  & 15 \\
+R2 E & 0.003 & Off & 15 \\
+R2 F & 0.003 & On  & 15 \\
 \bottomrule
 \end{tabular}
 
 \smallskip
-\noindent\textit{Fixed: inner line threshold 0.05 (L5). Depth bias 15 throughout to make on/off difference clearly visible (effect is negligible below 5).}
+\noindent\textit{Fixed: inner line threshold 0.05 (R1 E). Depth bias 15 throughout to make on/off difference clearly visible (effect is negligible below 5).}
 
 \bigskip
 
 %% ROUND 3
-\noindent{\bfseries Round 3 \textemdash\ XToon Toon Shading (T1\textendash T5)}
+\noindent{\bfseries Round 3 \textemdash\ XToon Toon Shading (R3 A\textendash E)}
 
 \noindent Detail mode fixed to Depth. Curvature and Manual excluded (near-identical output at 1\,m framing).
 
@@ -82,11 +82,11 @@ O6 & 0.003 & On  & 15 \\
 \toprule
 \textbf{Label} & \textbf{Shadow Strength} & \textbf{Detail Bias} \\
 \midrule
-T1 & 1.0 & 0.5 \\
-T2 & 0.0 & 0.5 \\
-T3 & 0.5 & 0.5 \\
-T4 & 0.5 & 1.0 \\
-T5 & 0.5 & 0.0 \\
+R3 A & 1.0 & 0.5 \\
+R3 B & 0.0 & 0.5 \\
+R3 C & 0.5 & 0.5 \\
+R3 D & 0.5 & 1.0 \\
+R3 E & 0.5 & 0.0 \\
 \bottomrule
 \end{tabular}
 
@@ -96,83 +96,50 @@ T5 & 0.5 & 0.0 \\
 \bigskip
 
 %% ROUND 4
-\noindent{\bfseries Round 4 \textemdash\ Rim Light On/Off (R1\textendash R2)}
+\noindent{\bfseries Round 4 \textemdash\ Kuwahara Hardness and Sharpness (R4 A\textendash D)}
 
-\noindent Rim power fixed at 4.0 (selected by preliminary testing as balanced without over-brightening the silhouette).
-
-\smallskip
-\begin{tabular}{lll}
-\toprule
-\textbf{Label} & \textbf{Rim Light} & \textbf{Rim Power} \\
-\midrule
-R1 & Off & 4.0 \\
-R2 & On  & 4.0 \\
-\bottomrule
-\end{tabular}
-
-\bigskip
-
-%% ROUND 5
-\noindent{\bfseries Round 5 \textemdash\ Kuwahara Kernel Size (K1\textendash K4)}
-
-\noindent Kuwahara applied on top of V4 base (L5 configuration). K1 is the unfiltered V4 reference. Sector count excluded (no perceptible difference across its range). Tested values: 2, 5, 8. No visible difference was observed above kernel size~8.
-
-\smallskip
-\begin{tabular}{lll}
-\toprule
-\textbf{Label} & \textbf{Kernel Size} & \textbf{Notes} \\
-\midrule
-K1 & --- & V4 baseline, no Kuwahara \\
-K2 & 2   & Minimal smoothing \\
-K3 & 5   & Mid-range \\
-K4 & 8   & Maximum visible smoothing \\
-\bottomrule
-\end{tabular}
-
-\bigskip
-
-%% ROUND 6
-\noindent{\bfseries Round 6 \textemdash\ Kuwahara Hardness and Sharpness (A1\textendash A4)}
-
-\noindent Applied on top of V4 base (L5). A1 is the V4 reference without Kuwahara. Hardness and sharpness are varied inversely.
+\noindent Kuwahara applied on top of V4 base (R1 E). Kernel size fixed at 8 (no visible difference observed above this value). R4 A is the V4 baseline without Kuwahara. Hardness and sharpness are varied inversely across three combinations. Sector count excluded (no perceptible difference across its range).
 
 \smallskip
 \begin{tabular}{lll}
 \toprule
 \textbf{Label} & \textbf{Hardness} & \textbf{Sharpness} \\
 \midrule
-A1 & --- & --- \\
-A2 & 1   & 18  \\
-A3 & 9   & 9   \\
-A4 & 18  & 1   \\
+R4 A & --- & --- \\
+R4 B & 18  & 1   \\
+R4 C & 9   & 9   \\
+R4 D & 1   & 18  \\
 \bottomrule
 \end{tabular}
 
+\smallskip
+\noindent\textit{Kernel size: 8 for all Kuwahara variants.}
+
 \bigskip
 
-%% ROUND 7
-\noindent{\bfseries Round 7 \textemdash\ Hierarchical Depth Edge Threshold (H1\textendash H6)}
+%% ROUND 5
+\noindent{\bfseries Round 5 \textemdash\ Hierarchical Depth Edge Threshold (R5 A\textendash F)}
 
-\noindent Only depth edges tested. Colour edges already handled by V4 Sobel. Normal edges excluded (camera-angle-dependent, unsuitable for fixed-view ranking). Depth scale fixed at 2.
+\noindent Only depth edges tested. Colour edges already handled by V4 Sobel. Normal edges excluded (camera-angle-dependent, unsuitable for fixed-view ranking). Depth scale fixed at 2. R5 A is the V4 baseline without hierarchical depth edges.
 
 \smallskip
 \begin{tabular}{ll}
 \toprule
 \textbf{Label} & \textbf{Depth Threshold} \\
 \midrule
-H1 & \textit{(to be filled)} \\
-H2 & \textit{(to be filled)} \\
-H3 & \textit{(to be filled)} \\
-H4 & \textit{(to be filled)} \\
-H5 & \textit{(to be filled)} \\
-H6 & \textit{(to be filled)} \\
+R5 A & --- (base, no hierarchical depth edge) \\
+R5 B & 0.0  \\
+R5 C & 0.02 \\
+R5 D & 0.03 \\
+R5 E & 0.04 \\
+R5 F & 0.05 \\
 \bottomrule
 \end{tabular}
 
 \bigskip
 \noindent\rule{\linewidth}{0.4pt}
 
-\noindent{\bfseries Baseline V4 Configuration (L5, used as reference in Rounds 5\textendash 7)}
+\noindent{\bfseries Baseline V4 Configuration (R1 E, used as reference in Rounds 4\textendash 5)}
 
 \smallskip
 \begin{tabular}{ll}

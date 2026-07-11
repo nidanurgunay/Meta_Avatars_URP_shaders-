@@ -46,7 +46,7 @@ MonoBehaviour:
     renderPassEvent: 550
     edgeShader: {fileID: 4800000, guid: cbbd79783d4a74d49bc2c349a189e00c, type: 3}
     edgeColor: {r: 0, g: 0, b: 0, a: 1}
-    depthThreshold: 0.09
+    depthThreshold: 0.06
     normalThreshold: 5
     colorThreshold: 1
     depthWeight: 1
@@ -74,7 +74,7 @@ MonoBehaviour:
   settings:
     renderPassEvent: 550
     kuwaharaShader: {fileID: 4800000, guid: 1ed4a9d7e041a448d98147edbaa335f4, type: 3}
-    kernelSize: 5
+    kernelSize: 8
     sectorCount: 8
     sharpness: 18
     hardness: 1

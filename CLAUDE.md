@@ -240,7 +240,7 @@ pdftoppm -r 150 main.pdf /tmp/page && sips -s format jpeg /tmp/page-1.ppm --out 
 
 **No Fresnel in the thesis.** The Fresnel effect was removed from the design. Do not mention it.
 
-**STRICT RULE — No hyphenated compound words.** Hyphenated words are a strong signal of AI-generated text. Write without them. Rewrite any phrase that would naturally use a hyphen.
+**STRICT RULE — No hyphenated compound words.** Hyphenated words are a strong signal of AI-generated text. Write without them. Rewrite any phrase that would naturally use a hyphen. Use a hyphen only when it is grammatically required, for example in standard prefix compounds where omitting it would create an ambiguous or unreadable word. Never use one simply to join a compound adjective.
 
 | Instead of | Write |
 |---|---|
@@ -253,6 +253,36 @@ pdftoppm -r 150 main.pdf /tmp/page && sips -s format jpeg /tmp/page-1.ppm --out 
 | per-fragment computation | per fragment computation |
 
 Keep the language as natural and human as possible. Write in a clear academic register without AI-signature phrasing.
+
+**Academic register — human-written tone.** Use formal vocabulary and precise causal connectors, but keep the prose natural. Specific rules:
+
+- Prefer `given that` or `since` over `because` when opening a causal clause mid-sentence
+- Prefer `meaning that` or `consequently` over `so` for causal conclusions
+- Prefer `progressing to` or `undertaking` over weak passive constructions such as `are addressed`
+- Active voice for decisions and findings; passive only for established technical processes (`was implemented`, `were computed`)
+- Avoid over-formal constructions: never use `owing to the fact that`, `it is evident that`, `it should be noted that`, or `it can be seen that`
+- Every sentence should read as if a careful human writer produced it without assistance
+
+**Sentence linking and cohesion — MANDATORY.** Academic paragraphs must form a logical chain, not a list of isolated sentences. Every sentence must connect explicitly to the one before it through at least one of the following devices:
+
+- **Thematic pickup:** open the new sentence by repeating or echoing a key noun or concept from the end of the previous sentence. Example: "…rendering internally." → "This internal rendering architecture, however, prevents…"
+- **Pronoun reference:** use "It," "This," "These," or "They" to carry the subject forward when the referent is unambiguous. Example: "…cannot be added." → "It must instead be injected…"
+- **Pivot connectors:** use "however," "consequently," "furthermore," or "nonetheless" when the sentence contrasts with or builds on the previous one.
+- **Never open a sentence with a subject that has not been mentioned or clearly implied in the preceding sentence.** This is the most common violation: jumping to a new topic without a bridge word or lexical echo.
+
+Before finalising any paragraph, read it aloud and check that each sentence picks up a thread from the one before it.
+
+**Tense consistency — MANDATORY.** Use tense deliberately and consistently across all chapters:
+
+- **Present tense** for platform and tool descriptions (what they are, what they do), established facts, general truths, and what the thesis contains ("Chapter 4 describes…").
+- **Past tense** for completed project actions, development decisions, and the user study ("Nine techniques were developed…", "The study was conducted…").
+- **Citation tense rule:** past tense for the act of research ("Lake et al. showed…"), present tense for the finding or ongoing truth ("…that this approach scales well").
+- **Never mix tenses within a single sentence** unless the two clauses genuinely refer to different time periods.
+- Before finalising any section, scan every sentence for present/past mixing. A sentence that contains both a present and a past verb requires explicit justification.
+
+**No same-root repetition across adjacent sentences.** If a word or its root appears in one sentence, do not use the same root in the immediately following sentence. This is a common pattern in AI-generated text. Rewrite one occurrence with a synonym or restructure the sentence. Example: "techniques presented in this thesis. Each platform presents…" violates this rule; fix by changing one to "described" or "offers."
+
+**No repeated phrases across adjacent sentences.** Beyond word roots, avoid repeating the same multi-word phrase in consecutive sentences. Rephrase one occurrence using a synonym construction. Example: "without requiring" appearing in two consecutive sentences must be varied — rewrite one as "eliminating the need for" or "independent of."
 
 **No em-dashes.** Em-dashes look AI-generated. Use commas, colons, or semicolons instead.
 
@@ -289,7 +319,62 @@ Each paragraph follows: established fact → limitation of that approach → nex
 
 ---
 
+### 4.6 Academic Writing Style Guide
+
+**Primary objective:** maximise clarity, precision, logical flow, technical accuracy, readability, and consistency. Every edit must improve at least one of these. Do not rewrite for the sake of rewriting.
+
+**Clarity over complexity.** Prefer the clearest possible sentence. Never replace simple words with more sophisticated ones unless they improve precision. Write for readers familiar with the field but not with the specific implementation.
+
+**Preserve meaning.** Never change technical meaning, introduce new assumptions, exaggerate claims, omit implementation details, or oversimplify technical explanations.
+
+**Precision.** Use precise technical terminology. Replace vague expressions with specific ones:
+
+- shader logic → shader implementation
+- works well → performs effectively
+- good quality → high fidelity
+- thing → component
+
+**Paragraph structure.** Each paragraph should: (1) open with a topic sentence, (2) provide supporting technical details, (3) give evidence or explanation, (4) close with a sentence explaining significance. One central idea per paragraph.
+
+**Sentence construction.** Prefer active voice unless passive improves clarity. Avoid unnecessarily long sentences. Split when readability improves. Vary length naturally. Maintain parallel structure when comparing multiple systems, algorithms, or platforms.
+
+**Academic tone — words to avoid:**
+
+- obviously, clearly, simply, basically, really, very, huge, amazing, perfect, excellent, incredible, easy, nice
+- It is worth noting that… / It should be emphasized that… / In today's rapidly evolving…
+- robust, comprehensive, novel, leverages, utilizes, seamlessly, state-of-the-art (unless factually justified)
+
+**Preferred objective verbs:** enables, provides, supports, facilitates, demonstrates, indicates, suggests, results in, improves, reduces, increases, requires, constrains.
+
+**Evidence-based writing.** Do not make unsupported claims. Qualify statements appropriately ("This method can improve…" not "This method improves…"). Distinguish clearly between facts, observations, interpretations, and assumptions.
+
+**Conciseness.** Every sentence must contribute new information. Remove redundant phrases, unnecessary adjectives, filler words, and repeated ideas.
+
+**Revision checklist before finalising any paragraph:**
+
+- Topic sentence is clear
+- Every sentence adds new information
+- No redundant words remain
+- Technical terminology is consistent
+- Comparisons are parallel
+- Claims are appropriately qualified
+- The final sentence explains why the discussion is relevant
+- Reads as though written by an experienced researcher, not an AI
+
+Target style: papers published in ACM TOG, IEEE VR, IEEE TVCG, CHI, and Eurographics.
+
+---
+
 ## 5. Citation Guidelines
+
+### 5.0 No-Hallucination Rule — MANDATORY
+
+**Never fabricate or guess any bibliographic field.** Before adding or editing a `references.bib` entry, every field must be verified against the actual source.
+
+- For academic papers: verify author names, title, venue/journal, year, and page numbers from the source PDF. Do not invent DOIs or page numbers.
+- For web services and software (e.g. `@misc` entries): add a `howpublished` URL only if you can confirm it. Do not guess URLs.
+- If a field cannot be confirmed, leave it out and flag it with a `TODO` comment in the note field rather than filling it in with a guess.
+- Do not expand abbreviations or acronyms (e.g. SDK internal system names) from sources that are not publicly accessible. If the only source is an internal corporate document or inaccessible wiki, describe the system by its observable behaviour instead.
 
 ### 5.1 Placement Rules
 
@@ -470,6 +555,12 @@ This rule applies to the Related Work chapter, Methodology chapter, and Evaluati
 
 ## 9. Reference Articles
 
+**MANDATORY — Check the original PDF before attributing any claim.** Article summaries can paraphrase or omit nuance. Before writing any sentence that attributes a specific finding or argument to an author, read the relevant passage in the original PDF. The summaries are a starting point; the original source is authoritative. If a claim cannot be found in the original PDF, do not attribute it to that author.
+
+**Physical article PDFs are stored at:** `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/`
+
+This folder contains subfolders by topic (e.g. `trust/`, `NPR/`). Always look here first for the original source before relying solely on `article_summaries.tex`.
+
 **Article Summaries PDF:** `article_summaries.pdf` in the project root contains detailed summaries of all articles used in the thesis. It is compiled from `article_summaries.tex` in the same location. Before writing any section that cites these articles, read the relevant entry in that PDF — it contains full bibliographic details, DOI, methodology notes, and relevance statements. The PDF is organised into three sections:
 
 - **Section 1 — Uncanny Valley:** MacDorman & Ishiguro (2006), Ho & MacDorman (2010), Mori (1970), McDonnell et al. (2012), Seymour et al. (2021)
@@ -507,6 +598,7 @@ Physical PDFs in `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/`:
 | `MacDorman2006AndroidScience.pdf` | Uncanny valley in androids |
 | `Isenberg_2003_ADG.pdf` | NPR for characters |
 | `Effects of Realism and Representation on Self-Embodied Avatars in Immersive Virtual Environments.pdf` | Avatar self-embodiment study |
+| `trust/Avatar_Stylization_and_Trust_IEEE_VR_2024.pdf` | Canales et al. (2024) — avatar stylisation and trust, IEEE VR |
 
 ---
 

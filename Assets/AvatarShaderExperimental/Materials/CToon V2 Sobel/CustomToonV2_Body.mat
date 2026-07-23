@@ -13,9 +13,9 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _DETAILMODE_DEPTH
-  - _USEOUTLINEDEPTHOFFSET_ON
   m_InvalidKeywords:
   - _DEBUGVIEW_FINAL
+  - _ENABLEALPHATEST_ON
   - _ENABLEINNERLINES_ON
   - _ENABLEOUTEROUTLINE_ON
   - _ENABLERIM_ON
@@ -64,7 +64,7 @@ Material:
     - _DepthNear: 5
     - _DetailBias: 0
     - _DetailMode: 0
-    - _EnableAlphaTest: 0
+    - _EnableAlphaTest: 1
     - _EnableInnerLines: 1
     - _EnableOuterOutline: 1
     - _EnableRim: 1
@@ -72,11 +72,11 @@ Material:
     - _InnerLineBlur: 0.5
     - _InnerLineSmooth: 5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.1
+    - _InnerLineThreshold: 0.3
     - _InnerLineWidth: 2.16
-    - _LightSensitivity: 0.613
+    - _LightSensitivity: 0.8
     - _LineMapStrength: 1
-    - _ManualDetail: 0
+    - _ManualDetail: 0.5
     - _OuterOutlineWidth: 0.005
     - _OutlineDepthBias: 1
     - _OutlineWidth: 0.005
@@ -93,11 +93,11 @@ Material:
     - _ToonSteps: 4
     - _ToonThreshold: 0.4
     - _UseDebugDefaults: 0
-    - _UseOutlineDepthOffset: 1
+    - _UseOutlineDepthOffset: 0
     - _UseRamp: 0
     - _UseTextureEdges: 1
     m_Colors:
-    - _AmbientColor: {r: 0.29999998, g: 0.29999998, b: 0.29999998, a: 1}
+    - _AmbientColor: {r: 0.35, g: 0.35, b: 0.35, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _InnerLineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OuterOutlineColor: {r: 0, g: 0, b: 0, a: 1}

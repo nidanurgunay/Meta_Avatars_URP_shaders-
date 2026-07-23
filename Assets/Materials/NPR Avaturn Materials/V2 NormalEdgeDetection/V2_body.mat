@@ -17,6 +17,7 @@ Material:
   m_InvalidKeywords:
   - _ENABLENORMALEDGES_ON
   - _ENABLEOUTEROUTLINE_ON
+  - _ENABLERIM_ON
   - _USENORMALMAP_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -103,15 +104,16 @@ Material:
     - _DepthFar: 50
     - _DepthNear: 5
     - _DetailAlbedoMapScale: 1
-    - _DetailBias: 0
+    - _DetailBias: 0.5
     - _DetailMode: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EnableAlphaTest: 0
+    - _EnableAlphaTest: 1
     - _EnableFresnelEdge: 0
     - _EnableNormalEdges: 1
     - _EnableOuterOutline: 1
+    - _EnableRim: 1
     - _EnableTextureSobel: 0
     - _EnvironmentReflections: 1
     - _FresnelEdgeStrength: 0.3
@@ -120,7 +122,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _LightSensitivity: 0.8
-    - _ManualDetail: 0
+    - _ManualDetail: 0.5
     - _Metallic: 0
     - _NormalEdgeSmoothness: 0.1
     - _NormalEdgeStrength: 1
@@ -133,7 +135,7 @@ Material:
     - _RampSmoothing: 0.05
     - _ReceiveShadows: 1
     - _RimPower: 3
-    - _ShadowStrength: 0.5
+    - _ShadowStrength: 0.7
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SobelFilterMode: 2

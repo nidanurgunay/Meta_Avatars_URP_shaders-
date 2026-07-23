@@ -557,4 +557,59 @@ This document tracks every citation added to `references.bib` that was not sourc
 
 ---
 
+---
+
+## Added in Session: V4 Sobel and V4.2 Gaussian Prefiltered Sobel (2026-07-14)
+
+### `gonzalez2018` — additional usage in V4 and V4.2
+
+**V4, §Sobel Edge Detection, paragraph 1**
+- Claim: Sobel incorporates spatial averaging to suppress noise
+- Supporting passage (p.719): "It can be demonstrated… that using a 2 in the center location provides image smoothing." and "The fact that the Sobel kernels have better noise-suppression (smoothing) characteristics makes them preferable because… noise suppression is an important issue when dealing with derivatives."
+- Used as: `~\cite{gonzalez2018}` on the opening sentence (removed the previously incorrect `kong2023` co-citation)
+
+**V4, §Sobel Edge Detection, paragraph 2 — equation**
+- Claim: gradient magnitude formula $M_S = \sqrt{g_x^2 + g_y^2}$
+- Supporting passage (p.716, Eq.10-17): $M(x,y) = \|\nabla f(x,y)\| = \sqrt{g_x^2(x,y) + g_y^2(x,y)}$
+- Sobel-specific partials (p.719, Eqs.10-24, 10-25): $g_x = (z_7 + 2z_8 + z_9) - (z_1 + 2z_2 + z_3)$, $g_y = (z_3 + 2z_6 + z_9) - (z_1 + 2z_4 + z_7)$
+- Used as: second `~\cite{gonzalez2018}` in paragraph 2, on the equation prose sentence
+
+**V4.2, §Gaussian Prefiltered Sobel, paragraph 1 — Gaussian domain smoothness**
+- Claim: Gaussian is smooth in both spatial and frequency domains, avoiding ringing artefacts
+- Supporting passage (p.725): "the Gaussian function is smooth in both the spatial and frequency domains (see Section 4.8), and is thus less likely to introduce artifacts (e.g., ringing) not present in the original image"
+- Used as: `~\cite{marr1980,gonzalez2018}` combined on the Marr-Hildreth sentence
+
+### `marr1980` — additional usage in V4.2
+
+**V4.2, §Gaussian Prefiltered Sobel, paragraph 1**
+- Claim: Marr and Hildreth argued that gradient operators should be preceded by Gaussian filtering
+- Supporting passage (Gonzalez p.724, summarising Marr and Hildreth): "Marr and Hildreth argued (1) that intensity changes are not independent of image scale, implying that their detection requires using operators of different sizes; and (2) that a sudden intensity change will give rise to a peak or trough in the first derivative"
+- Used as: `~\cite{marr1980,gonzalez2018}` combined on the argument sentence
+
+### `canny1986` — additional usage in V4.2
+
+**V4.2, §Gaussian Prefiltered Sobel, paragraph 1**
+- Claim: Canny showed Gaussian pre-smoothing is optimal under additive noise
+- Supporting passage (Gonzalez p.729–730): "using numerical optimization with 1-D step edges corrupted by additive white Gaussian noise led to the conclusion that a good approximation to the optimal step edge detector is the first derivative of a Gaussian"
+- Supporting passage (Gonzalez p.732): "Summarizing, the Canny edge detection algorithm consists of the following steps: 1. Smooth the input image with a Gaussian filter."
+- Used as: `~\cite{canny1986}` on the Canny confirmation sentence
+
+---
+
+### `roshaan2026` — AHEAD: Adaptive Hierarchical Edge Detection
+
+**V5, §Hierarchical Edge Detection, paragraph 1**
+- Claim 1: Hierarchical edge detection fuses multiple complementary cues into a unified edge representation
+  - Supporting passage (AHEAD Abstract): "The suggested framework uses a Max-pooling fusion technique to integrate the scene after breaking it down into separate Silhouette, Structure and Texture layers."
+  - Supporting passage (AHEAD Contributions): "We introduce a novel three layer hierarchy (Silhouette, Structure and Texture)… We demonstrate how stratifying edges based on their semantic role allows for precise control over image composition."
+- Claim 2 (implicit, sentence 5): combining independent responses produces a more complete boundary representation than any single detector
+  - Supporting passage (AHEAD Introduction): "use of any one of these solely as a single pass filter results in subpar edge detection"
+  - Supporting passage (AHEAD Abstract): "This method preserves edge integrity better than conventional linear averaging of the single-pass filters."
+- Full reference: Roshaan, M. K. L. (2026). AHEAD: Adaptive hierarchical edge detection for real-time artistic stylization. Research Square preprint, Article rs-8849147/v1. February 2026.
+- DOI: None (preprint). URL: https://www.researchsquare.com/article/rs-8849147/v1
+- Physical PDF verified: `Adaptive Hierarchical Edge Detection.pdf` in Articles folder
+- Used as: `~\cite{roshaan2026}` on the opening sentence of V5 paragraph 1
+
+---
+
 > **Instructions:** Before submission, open each DOI link, confirm title and authors match what is in `references.bib`, and tick it off. For entries without a DOI, check the ResearchGate or ACM DL link listed above.

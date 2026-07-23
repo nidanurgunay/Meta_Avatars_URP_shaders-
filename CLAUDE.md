@@ -240,17 +240,28 @@ pdftoppm -r 150 main.pdf /tmp/page && sips -s format jpeg /tmp/page-1.ppm --out 
 
 **No Fresnel in the thesis.** The Fresnel effect was removed from the design. Do not mention it.
 
-**STRICT RULE — No hyphenated compound words.** Hyphenated words are a strong signal of AI-generated text. Write without them. Rewrite any phrase that would naturally use a hyphen. Use a hyphen only when it is grammatically required, for example in standard prefix compounds where omitting it would create an ambiguous or unreadable word. Never use one simply to join a compound adjective.
+**STRICT RULE — Hyphenated compound words.** Hyphenated words are a common signal of AI-generated text and must be minimised. However, two categories of hyphens are permitted and must be retained:
 
-| Instead of | Write |
-|---|---|
-| real-time rendering | real time rendering |
-| high-quality output | high quality output |
-| non-photorealistic | nonphotorealistic (or restructure the sentence) |
-| post-processing | post processing |
-| screen-space effects | screen space effects |
-| edge-detection algorithm | edge detection algorithm |
-| per-fragment computation | per fragment computation |
+1. **Established computer graphics, signal processing, and rendering terminology.** When a hyphenated form is the conventional usage in academic publications (ACM SIGGRAPH, IEEE VR, IEEE TVCG, Eurographics), retain the hyphen. Removing it would deviate from standard field usage and create inconsistency with cited work.
+2. **Grammatically required hyphens.** Standard prefix compounds where omitting the hyphen would produce an ambiguous or unreadable word, and cases where English grammar requires the hyphen (e.g. compound modifiers with a number: `9-tap`, `3×3`).
+
+For all other compound adjectives, find an alternative phrasing without a hyphen. Never introduce a hyphen to join an ad hoc compound modifier that is not an established technical term. Never violate standard English grammar rules by removing a hyphen that is required for correctness.
+
+| Term | Rule | Correct form |
+| --- | --- | --- |
+| real-time rendering | keep — standard CG term | real-time |
+| screen-space effects | keep — standard CG term | screen-space |
+| non-photorealistic | keep — standard CG term | non-photorealistic |
+| low-pass / high-pass filter | keep — standard signal processing | low-pass / high-pass |
+| gradient-based method | keep — standard CG/CV usage | gradient-based |
+| axis-aligned bounding box | keep — standard CG term | axis-aligned |
+| post-processing | keep — standard CG term | post-processing |
+| per-fragment computation | keep — standard shader term | per-fragment |
+| high-quality output | avoid — ad hoc modifier | high quality output |
+| camera-captured texture | avoid — ad hoc modifier | rephrase: "photographically captured texture" |
+| selfie-derived albedo | avoid — ad hoc modifier | rephrase: "photographic albedo" |
+| cross-avatar tuning | avoid — ad hoc modifier | rephrase: "tuning across avatar platforms" |
+| edge-sharpening pipeline | avoid — ad hoc modifier | edge sharpening pipeline |
 
 Keep the language as natural and human as possible. Write in a clear academic register without AI-signature phrasing.
 
@@ -261,6 +272,8 @@ Keep the language as natural and human as possible. Write in a clear academic re
 - Prefer `progressing to` or `undertaking` over weak passive constructions such as `are addressed`
 - Active voice for decisions and findings; passive only for established technical processes (`was implemented`, `were computed`)
 - Avoid over-formal constructions: never use `owing to the fact that`, `it is evident that`, `it should be noted that`, or `it can be seen that`
+- Avoid opening a sentence with "Rather than X, Y." This construction delays the subject and feels formulaic. Move the main action first and place the contrast at the end. Example: avoid "Rather than using the normal field, V4 applies the operator to the albedo"; write "V4 applies the operator to the albedo rather than the surface normal field." Using "rather than" inside or at the end of a sentence is acceptable.
+- Opening a sentence with a subordinating conjunction such as "Although," "Since," "While," or "Even though" is valid academic style and preferred over splitting the clause into two sentences. Do not break apart a correct "Although X, Y" or "Since X, Y" construction. This rule applies only to subordinating conjunctions; the "Rather than X, Y" rule applies separately.
 - Every sentence should read as if a careful human writer produced it without assistance
 
 **Sentence linking and cohesion — MANDATORY.** Academic paragraphs must form a logical chain, not a list of isolated sentences. Every sentence must connect explicitly to the one before it through at least one of the following devices:
@@ -282,11 +295,44 @@ Before finalising any paragraph, read it aloud and check that each sentence pick
 
 **No same-root repetition across adjacent sentences.** If a word or its root appears in one sentence, do not use the same root in the immediately following sentence. This is a common pattern in AI-generated text. Rewrite one occurrence with a synonym or restructure the sentence. Example: "techniques presented in this thesis. Each platform presents…" violates this rule; fix by changing one to "described" or "offers."
 
+**Exception — precise technical terms.** A term is exempt from this rule when it is a standard technical term with no suitable synonym, and substituting it would reduce precision or produce unnatural phrasing in the field. The repeated term must be genuinely irreplaceable, not just convenient. Examples of exempt terms: `pixel` ("pixel neighbourhood… more pixels"), `normal` when referring specifically to the surface normal vector in a shader context, `derivative` in a mathematical or calculus context. Non-examples: words like "technique," "approach," "method," or "render" are not exempt because synonyms exist.
+
 **No repeated phrases across adjacent sentences.** Beyond word roots, avoid repeating the same multi-word phrase in consecutive sentences. Rephrase one occurrence using a synonym construction. Example: "without requiring" appearing in two consecutive sentences must be varied — rewrite one as "eliminating the need for" or "independent of."
+
+**Conjunction variety — MANDATORY.** The same conjunction or transitional phrase must not appear in consecutive paragraphs, and must not be overused within a section. The authoritative reference is `Academic_Conjunctions.pdf` in the project root. Before finalising any section, check that "however," "consequently," and "furthermore" do not each appear more than once across two consecutive paragraphs. If they do, replace one occurrence with an equivalent from the tables below.
+
+Preferred formal interchangeable pairs (all from the PDF):
+
+| Role | Primary | Swap with |
+|---|---|---|
+| Contrast / limitation | however | nevertheless, nonetheless, yet, conversely |
+| Addition | furthermore | moreover, equally, in addition |
+| Consequence | consequently | therefore, thus, accordingly, hence |
+| Cause | since | given that, as, in view of |
+| Summary | taken together | in summary, overall (neutral) |
+| Sequence | subsequently | thereafter, ultimately |
+
+Thesis-specific defaults from the PDF (bold = preferred):
+- **however** to pivot to a limitation; **nevertheless / nonetheless** as alternates
+- **furthermore** to add a supporting point; **moreover** as the primary alternate
+- **since / given that** over *because* for causal clauses
+- **consequently / meaning that** over *so* for results
+- Never use: *owing to the fact that*, *it is evident that*, *it should be noted that*
+- *due to* is semi-formal — prefer *given* or *since* where possible
 
 **No em-dashes.** Em-dashes look AI-generated. Use commas, colons, or semicolons instead.
 
 **Minimise semicolons.** Eliminate semicolons wherever possible without introducing a grammatical error. Prefer splitting into two sentences, or using a comma with a conjunction. Semicolons are only acceptable to separate items in a complex list or when the conjunction "therefore" or "however" follows immediately (e.g., "...; therefore, ..."). Never use a semicolon simply to join two independent clauses that could stand as separate sentences.
+
+**Conjunction-linked sentences over participial phrases — MANDATORY.** When two ideas are connected by cause, consequence, or addition, express the link with an explicit coordinating conjunction ("and," "but," "yet") rather than a participial phrase ("-ing" construction appended to the preceding clause). Participial phrases compress two ideas into one clause and make the logical link implicit; a conjunction makes the connection visible and keeps each sentence to one main idea.
+
+| Wrong | Correct |
+| --- | --- |
+| "…produces weaker gradients, resulting in cleaner edges." | "…produces weaker gradients, and edge structures are consequently cleaner." |
+| "…incorporates spatial averaging to suppress noise" | "…incorporates spatial averaging, and this reduces noise sensitivity." |
+| "…incorporates the ramp, allowing finer control" | "…incorporates the ramp, and this allows finer control over the tonal distribution." |
+
+When a sentence contains more than one participial phrase, split it and join the parts with a conjunction. This also applies to relative clauses introduced by "which": prefer "This Y" or "and Y" as a follow-on sentence over "…X, which Y."
 
 ---
 
@@ -350,6 +396,18 @@ Each paragraph follows: established fact → limitation of that approach → nex
 
 **Conciseness.** Every sentence must contribute new information. Remove redundant phrases, unnecessary adjectives, filler words, and repeated ideas.
 
+**No cross-section repetition.** If a concept, decision, or rationale has been fully explained in a preceding section or chapter, do not re-state it in prose in a later section. Use a `\Cref{}` cross-reference to point back to the original explanation. A later section may add new information or a brief contextual pointer, but must not re-explain what was already covered. This applies to platform capabilities and selection rationale, technique descriptions, avatar properties, and any design decision already documented earlier in the thesis.
+
+**No within-section knowledge duplication — MANDATORY.** Within a single subsection, each paragraph must introduce only information not already stated in a preceding paragraph of the same subsection. Before writing or editing a paragraph, identify what the previous paragraph already established. The new paragraph must add only genuinely new content: a different level of detail, a new mechanism, a platform-specific observation, or a consequence. It must not re-list items, re-enumerate layers or cues, or restate conclusions already drawn. Common violations to check:
+
+- A paragraph re-enumerates the same components (e.g. depth/normal/colour layers) already listed in the paragraph above.
+- A second paragraph opens with "X combines…" when the first already said "X applies…to combine…"
+- A summary sentence restates the topic sentence of the same paragraph.
+
+Every sentence in a paragraph must pass the test: does this add something the reader did not already know from any earlier paragraph in this subsection?
+
+**No duplication between main text and figure captions.** Figure label legends (e.g., what a parameter abbreviation such as $t$, $C_Z$, $D_t$, $N_t$, or $C_t$ means) belong in the figure caption only. Never explain the same label in the main body text. Conversely, do not repeat in a caption what the surrounding text has already stated at length.
+
 **Revision checklist before finalising any paragraph:**
 
 - Topic sentence is clear
@@ -376,17 +434,23 @@ Target style: papers published in ACM TOG, IEEE VR, IEEE TVCG, CHI, and Eurograp
 - If a field cannot be confirmed, leave it out and flag it with a `TODO` comment in the note field rather than filling it in with a guess.
 - Do not expand abbreviations or acronyms (e.g. SDK internal system names) from sources that are not publicly accessible. If the only source is an internal corporate document or inaccessible wiki, describe the system by its observable behaviour instead.
 
+### 5.0a Citation Format — IEEE Numeric
+
+The thesis uses **IEEE numeric citations** (`style=ieee, sorting=none` in biblatex). Citations compile as bracketed numbers, e.g. `[1]`, `[6]`, `[9]`. Numbers are assigned in the order citations first appear in the text and will shift if text is added before them. Always refer to citations by their **bib key** (e.g. `barla2006`, `lake2000`) in source and discussion, not by number, since numbers are unstable. The compiled number for a given key can be confirmed by building the PDF.
+
 ### 5.1 Placement Rules
 
 1. **One sentence, one citation.** Never place two citations for the same claim back to back. If two papers support the same sentence, combine them: `\cite{a,b}`.
 
-2. **Citations always appear at the end of the sentence.** Place the citation immediately before the full stop, not mid-sentence after the named concept. "Lake et al. establish that this approach is well-suited for real-time animation~\cite{lake2000}." is correct. "Lake et al.~\cite{lake2000} establish that..." is not. The author or concept must still be named somewhere in the sentence body; a bare `~\cite{barla2006}` with no mention of Barla anywhere in the sentence is equally incorrect.
+2. **Citations always appear at the end of the sentence.** Place the citation immediately before the full stop, not mid-sentence after the named concept. "Lake et al. establish that this approach is well-suited for real-time animation~\cite{lake2000}." is correct. "Lake et al.~\cite{lake2000} establish that..." is not. **Author attribution rule applies in Related Work only.** In Related Work, the author or concept must be named in the sentence body — a bare `~\cite{barla2006}` with no mention of Barla is not acceptable there. In all other chapters (Methodology, Implementation, Evaluation), a citation may appear at the end of a sentence without the author being named in the body, provided the cited claim is clearly identified.
 
 3. **No citations inside `lstlisting` captions.** Move any citation to the prose paragraph that explains the listing.
 
 4. **Each citation must directly support the claim it is attached to.** Do not attach a citation just because the paper is broadly relevant.
 
-5. **Verify placement before finalising every section.** Check every paragraph. The citation must be on the exact sentence making the claim.
+5. **Never attach a citation to a sentence describing our own empirical work.** If the sentence says what *we* evaluated, implemented, or observed, it does not get a citation — even if the method used comes from a cited paper. Split the sentence: one sentence credits the external method with a citation, the next sentence states our evaluation without one. Example — Wrong: "Three modes were evaluated using the attribute mapping mechanism~\cite{barla2006}." Correct: "The attribute mapping mechanism of Barla et al.\ supports three modes~\cite{barla2006}. All three were evaluated in this work."
+
+6. **Verify placement before finalising every section.** Check every paragraph. The citation must be on the exact sentence making the claim.
 
 ### 5.2 When to Cite
 
@@ -686,7 +750,7 @@ These are the exact texts shown to participants on screen before each video.
 >
 > **Job B** is a specialist role at a large, well-known company in a high-demand field. The salary is substantially higher and the employer name carries weight on a CV. The role involves deep specialisation within a large team, with less individual visibility.
 
-Advisor spoken recommendation (~45 s): *"My recommendation is Job A. The flexibility to change direction does not come back once you have committed to a specialist track. At the start of a career, the option to pivot is more valuable than it will ever be later. Job A keeps that option open. Job B narrows it."*
+Advisor spoken recommendation (~22 s): *"I'd go with Job A. Yes, the salary is lower right now, but the generalist role gives you a range of experience that is genuinely hard to get later. Salary gaps can be closed in the future. But once you specialise, switching back is costly. Take the pivot while you can."*
 
 ---
 
@@ -694,11 +758,11 @@ Advisor spoken recommendation (~45 s): *"My recommendation is Job A. The flexibi
 
 > You have just arrived by train in a city you have never visited before. You need to reach your hotel, where you are meeting a group of colleagues in about one hour. You have checked a map app and found two routes, both using public transport.
 >
-> **Route A** takes around 20 minutes and involves one transfer between lines at a mid-size station you have never used. If the connection runs on time, you arrive approximately 40 minutes before your meeting.
+> **Route A** takes around 50 minutes on a single direct line with no transfers. It loops through the city centre. You arrive approximately 10 minutes before your meeting.
 >
-> **Route B** takes around 50 minutes on a single direct line with no transfers. It loops through the city centre. You arrive approximately 10 minutes before your meeting.
+> **Route B** takes around 20 minutes and involves one transfer between lines at a mid-size station you have never used. If the connection runs on time, you arrive approximately 40 minutes before your meeting.
 
-Advisor spoken recommendation (~43 s): *"My recommendation is Route B. Route A's buffer depends entirely on a connection going well at a station you have never used. If that transfer fails, you are not just arriving a little later. For a meeting you cannot miss, I would rather have certainty than a larger buffer that depends on luck."*
+Advisor spoken recommendation (~22 s): *"I'd take Route B. Yes, it has a transfer at a station you have never used. But it gets you there forty minutes early. If something goes wrong, you still have enough time to recover. Route A is direct but leaves only ten minutes. That may not be enough. Take the buffer."*
 
 ---
 
@@ -706,11 +770,11 @@ Advisor spoken recommendation (~43 s): *"My recommendation is Route B. Route A's
 
 > You want to learn data analysis to strengthen your CV. You have set aside a few weeks and found two options. You need to decide which one to commit to.
 >
-> **Option A** is a structured online course from a well-known learning platform. It costs 35 euros, runs about eight hours over a few weeks, and awards a certificate you can add to your CV. The curriculum is set out from start to finish.
+> **Option A** is a structured online course from a well-known learning platform. It costs 350 euros, runs about eight hours over a few weeks, and awards a certificate you can add to your CV. The curriculum is set out from start to finish.
 >
 > **Option B** is a free video tutorial series by a practitioner with a strong reputation and a large following. The content covers the same material at no cost. There is no certificate, and you set your own pace.
 
-Advisor spoken recommendation (~41 s): *"My recommendation is Option A. The content quality between the two is genuinely comparable — I want to be honest about that. What you are paying 35 euros for is the certificate. When you add data analysis to your CV, a credential from a named platform communicates it clearly and quickly to someone reading your application."*
+Advisor spoken recommendation (~22 s): *"I would take Option A. Yes, 350 euros is a real cost. But the certificate is what matters here. It is not just about what you learn, it is about what you can show. A recruiter cannot verify a free tutorial series. That is worth it."*
 
 ---
 

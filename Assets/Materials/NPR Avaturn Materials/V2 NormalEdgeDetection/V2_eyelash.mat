@@ -105,7 +105,7 @@ Material:
     - _DepthFar: 50
     - _DepthNear: 5
     - _DetailAlbedoMapScale: 1
-    - _DetailBias: 0
+    - _DetailBias: 0.5
     - _DetailMode: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
@@ -123,7 +123,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _LightSensitivity: 0.8
-    - _ManualDetail: 0
+    - _ManualDetail: 0.5
     - _Metallic: 0
     - _NormalEdgeSmoothness: 0.1
     - _NormalEdgeStrength: 1
@@ -136,7 +136,7 @@ Material:
     - _RampSmoothing: 0.05
     - _ReceiveShadows: 1
     - _RimPower: 3
-    - _ShadowStrength: 0.5
+    - _ShadowStrength: 0.7
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SobelFilterMode: 2

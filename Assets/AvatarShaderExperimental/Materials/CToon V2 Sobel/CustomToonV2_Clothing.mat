@@ -64,7 +64,7 @@ Material:
     - _DepthNear: 5
     - _DetailBias: 0
     - _DetailMode: 0
-    - _EnableAlphaTest: 0
+    - _EnableAlphaTest: 1
     - _EnableInnerLines: 1
     - _EnableOuterOutline: 1
     - _EnableRim: 1
@@ -72,7 +72,7 @@ Material:
     - _InnerLineBlur: 0.5
     - _InnerLineSmooth: 5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.021
+    - _InnerLineThreshold: 0.2
     - _InnerLineWidth: 2.16
     - _LightSensitivity: 0.613
     - _LineMapStrength: 1

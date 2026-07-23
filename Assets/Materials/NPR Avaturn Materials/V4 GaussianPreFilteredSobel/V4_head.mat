@@ -156,7 +156,7 @@ Material:
     - _GlossyReflections: 0
     - _InnerLineBlur: 0.2
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.03
+    - _InnerLineThreshold: 0.05
     - _LightSensitivity: 0.5
     - _LipColorTolerance: 0.064
     - _LipEdgePower: 1.5

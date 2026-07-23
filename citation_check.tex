@@ -2,11 +2,12 @@
 %% Thesis: Abstraction Mechanisms for Virtual Avatars
 %% Student: Nidanur Günay, University of Konstanz, 2026
 %% Purpose: Verify that every paraphrase in the thesis matches the original source.
+%%          Entries are ordered by first appearance in the thesis.
 %%          Check each box once the original PDF has been read and the paraphrase confirmed.
 
 \documentclass[11pt, a4paper]{article}
 \usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=3cm, right=3cm]{geometry}
-\usepackage{amssymb}      % for \square
+\usepackage{amssymb}
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{array}
@@ -16,16 +17,14 @@
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage[hidelinks]{hyperref}
 
-%% Colours
 \definecolor{konstanzblue}{RGB}{0, 83, 159}
 \definecolor{lightgray}{RGB}{245, 245, 245}
 \definecolor{midgray}{RGB}{180, 180, 180}
 \definecolor{darkred}{RGB}{160, 30, 30}
+\definecolor{darkorange}{RGB}{180, 80, 0}
 
-%% Entry command
 \newcounter{citentry}
 \newcommand{\citentry}[6]{%
-  %% Args: {key} {section} {claim in thesis} {paraphrase in thesis} {original text} {notes}
   \stepcounter{citentry}
   \vspace{10pt}
   \noindent\colorbox{lightgray}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
@@ -34,7 +33,6 @@
     \hfill \textit{Section: #2}
     \vspace{4pt}
   }}
-
   \vspace{4pt}
   \noindent\begin{tabular}{@{}p{3cm} p{\dimexpr\linewidth-3.5cm}@{}}
     \textbf{Claim in thesis:}   & \textit{``#3''} \\[4pt]
@@ -42,10 +40,8 @@
     \textbf{Original text:}     & \textcolor{darkred}{\textit{``#5''}} \\[4pt]
     \textbf{Notes:}             & #6 \\
   \end{tabular}
-
   \vspace{6pt}
   \noindent $\square$\quad \textbf{Validated} — original PDF read; paraphrase confirmed accurate.
-
   \vspace{2pt}
   \noindent\textcolor{midgray}{\rule{\linewidth}{0.4pt}}
 }
@@ -56,163 +52,664 @@
   {\Large\bfseries\textcolor{konstanzblue}{Citation Paraphrase Verification Log}}\\[6pt]
   {\normalsize Thesis: \textit{Abstraction Mechanisms for Virtual Avatars}}\\
   {\normalsize Nidanur Günay \textbullet\ University of Konstanz \textbullet\ 2026}\\[4pt]
-  {\small Check each $\square$ once you have opened the original PDF, located the passage, and confirmed the paraphrase is accurate.}
+  {\small Entries ordered by first appearance in the thesis (Ch.~1 $\to$ Ch.~4).}\\
+  {\small Check each $\square$ once you have opened the original PDF, located the passage, and confirmed the paraphrase is accurate.}\\[4pt]
+  {\small \textcolor{darkorange}{\textbf{ORANGE NOTE}} = original text not yet verified from PDF. \quad
+          \textcolor{darkred}{\textbf{RED TEXT}} = confirmed original sentence.}
 \end{center}
 
 \vspace{8pt}
 \noindent\textcolor{midgray}{\rule{\linewidth}{0.8pt}}
 
-%% ─────────────────────────────────────────────────────────────────
-\section*{NPR / Nonphotorealistic Rendering}
+%% ─── MANDATORY WORKFLOW RULE ────────────────────────────────────────────────
+\vspace{6pt}
+\noindent\colorbox{darkred}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
+  \vspace{4pt}
+  \textcolor{white}{\textbf{MANDATORY WORKFLOW RULE — Citation Entry Protocol}}
+  \vspace{4pt}
+}}
+\vspace{4pt}
 
-\citentry
-  {gooch1998 — Gooch et al.\ (1998)}
-  {§4.3 NPR Technique Design, opening sentence}
-  {NPR techniques in computer graphics encompass a wide range of abstraction levels.}
-  {Direct paraphrase of the opening claim from the abstract/introduction.}
-  {NPR techniques used in computer graphics vary greatly in their level of abstraction.}
-  {Original PDF: \texttt{Articles/NPR/Gooch1998.pdf}. Confirm that this sentence appears in the article's introductory framing and that the paraphrase does not overstate the claim.}
+\noindent Every time a new citation is added anywhere in the thesis, an entry \textbf{must} be added to this document before moving on. The entry must include:
+\begin{itemize}
+  \item The \textbf{exact sentence} from the thesis where the citation appears (copied verbatim).
+  \item The \textbf{section} where it appears (e.g.\ §4.3, §2.1).
+  \item The \textbf{original text} from the source PDF (or an \textcolor{darkorange}{ORANGE ``NEEDS VERIFICATION''} note if the PDF has not yet been read).
+  \item A \textbf{notes} field stating whether the citation is correctly matched to the claim.
+\end{itemize}
+\noindent The $\square$ \textbf{Validated} checkbox at the bottom of each entry is confirmed by Nidanur after opening the original PDF, locating the passage, and confirming the paraphrase is accurate.
 
-\citentry
-  {gooch1998 — Gooch et al.\ (1998)}
-  {§4.3.3 V2 Toon Shading, motivation paragraph}
-  {Gooch et al.\ established that replacing physically accurate illumination with a tonal structure communicates surface orientation more effectively in stylised rendering contexts.}
-  {Paraphrase of the core claim of the cool-to-warm illumination model.}
-  {The use of cool-to-warm colour transitions communicates object shape and lighting direction more clearly than conventional illumination in many stylised contexts.}
-  {Original PDF: \texttt{Articles/NPR/Gooch1998.pdf}. Confirm Gooch's specific claim is about cool-to-warm tonal transitions and surface readability, not about discrete band quantisation (which is Lake).}
+\noindent\textcolor{darkred}{\textbf{Do not skip this step.}} A citation added without a corresponding entry here is unverified and must be treated as a potential error until logged.
 
-\citentry
-  {lake2000 — Lake et al.\ (2000)}
-  {§4.3.3 V2 Toon Shading, motivation paragraph}
-  {Lake et al.\ then demonstrated that discrete tonal quantisation applied to the illumination response produces the characteristic flat appearance associated with hand drawn animation.}
-  {Paraphrase of Lake et al.'s description of cel shading for real time games.}
-  {Cel shading is achieved by quantising the diffuse lighting term into a small number of discrete levels, producing the flat appearance typical of hand-drawn cartoons.}
-  {Original PDF: \texttt{Articles/NPR/lake2000.pdf} (verify exact filename). Confirm Lake's specific contribution is discrete tonal bands (not cool-to-warm), and that the chronology is correct: Gooch 1998 precedes Lake 2000.}
+\vspace{6pt}
+\noindent\textcolor{midgray}{\rule{\linewidth}{0.8pt}}
+\vspace{4pt}
 
-\citentry
-  {lake2000 — Lake et al.\ (2000)}
-  {§4.3.3 V2 Toon Shading, equation~(toon\_quant)}
-  {This operation replaces continuous gradients with discrete tonal transitions, producing the characteristic stepped appearance of the technique.}
-  {Paraphrase of Lake's description of the floor-quantisation formula applied to the lighting response.}
-  {The toon shading formula divides the continuous lighting response into discrete bands using a floor function, creating the stepped tonal appearance characteristic of cel animation.}
-  {Original PDF: \texttt{Articles/NPR/lake2000.pdf}. Confirm the equation matches Lake's formulation and that the citation is correctly attached to the result sentence rather than to the variable definitions.}
-
-\citentry
-  {isenberg2003 — Isenberg et al.\ (2003)}
-  {§4.3.2 V1 Inverted Hull Outline, selection rationale}
-  {Object silhouettes are a defining visual feature of nonphotorealistic rendering. The inverted hull method produces stable geometric silhouettes without requiring screen space processing.}
-  {Paraphrase of Isenberg's characterisation of silhouette edges and outline techniques for NPR characters.}
-  {Silhouette edges are the most prominent visual cue in NPR character rendering. Geometry-based outline methods generate stable outlines entirely within the vertex stage, without the cost of screen-space edge detection.}
-  {Original PDF: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}. Confirm Isenberg's specific claim about silhouette prominence and the inverted hull being geometry-based.}
-
-\citentry
-  {isenberg2003 — Isenberg et al.\ (2003)}
-  {§4.3.2 V1 Inverted Hull Outline, limitations}
-  {The method executes entirely within the GPU vertex transformation stage. Creases, clothing seams, and facial contours receive no edge marking, as the method captures only the external silhouette of the mesh.}
-  {Paraphrase of the shared limitation of geometry-based outline methods: they cannot capture interior edges.}
-  {Geometry-based methods are limited to the outer silhouette of a mesh. Interior boundaries, such as creases and surface discontinuities, are not captured by expanding back-facing vertices.}
-  {Original PDF: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}. Confirm the interior-edge limitation is stated by Isenberg and applies to the inverted hull / shell method specifically.}
-
-\citentry
-  {barla2006 — Barla et al.\ (2006)}
-  {§4.3.4 V2.2 X-Toon Shading, core technique}
-  {Barla et al.\ propose replacing the one-dimensional ramp with a two-dimensional ramp texture, where the horizontal axis encodes the lighting response and the vertical axis encodes the abstraction level.}
-  {Direct paraphrase of the 2D ramp formulation in X-Toon.}
-  {The XToon shader uses a 2D texture as a lookup table, where one axis is the standard diffuse lighting term and the second axis encodes an abstraction parameter independent of the lighting.}
-  {Original PDF: \texttt{Articles/NPR/x-toon.pdf}. Confirm the exact axis assignments (lighting vs.\ abstraction) and that the paper distinguishes the abstraction axis from the lighting axis as independent.}
-
-\citentry
-  {barla2006 — Barla et al.\ (2006)}
-  {§4.3.4 V2.2 X-Toon Shading, Normal Field Abstraction}
-  {Barla et al.\ term this technique Normal Field Abstraction, achieved by blending the original mesh normals with normals derived from a geometrically simplified shape.}
-  {Direct paraphrase of Normal Field Abstraction as described in the X-Toon paper.}
-  {Normal Field Abstraction blends the object's surface normals with the normals of a simplified proxy shape, reducing high-frequency normal variation and producing a more abstracted shading response.}
-  {Original PDF: \texttt{Articles/NPR/x-toon.pdf}. Confirm the term ``Normal Field Abstraction'' is used by Barla et al.\ and that the blending mechanism matches the description.}
-
-\citentry
-  {kyprianidis2009 — Kyprianidis et al.\ (2009)}
-  {§4.3.7 V7 Kuwahara Painterly Filter}
-  {Unlike earlier isotropic versions that use fixed rectangular quadrants, the anisotropic filter adapts its shape and orientation to the local image structure.}
-  {Paraphrase of Kyprianidis's distinction between isotropic and anisotropic Kuwahara variants.}
-  {The anisotropic Kuwahara filter orients its sampling region along the dominant local image structure, producing directionally coherent painterly strokes rather than the fixed-quadrant artefacts of the original isotropic version.}
-  {Original PDF: \texttt{Articles/NPR/anisotropic\_kuwahara.pdf}. Confirm Kyprianidis explicitly contrasts isotropic and anisotropic variants and describes the structure tensor orientation mechanism.}
-
-\citentry
-  {gonzalez2018 — Gonzalez \& Woods (2018)}
-  {§4.3.5 V4 Sobel Edge Detection}
-  {The horizontal and vertical gradient components $G_x$ and $G_y$ are estimated using the Sobel kernels.}
-  {Reference to Gonzalez \& Woods for the standard Sobel convolution kernels and gradient magnitude formula.}
-  {The Sobel operator uses two $3\times3$ convolution masks to approximate the horizontal and vertical first-order image derivatives, yielding gradient components $G_x$ and $G_y$. The gradient magnitude $M = \sqrt{G_x^2 + G_y^2}$ measures local intensity change.}
-  {Original: \texttt{Gonzales,Woods-Digital.Image.Processing.4th.Edition.pdf}. Confirm Sobel kernel values, gradient magnitude formula, and BT.601 luma coefficients used in the luminance conversion.}
-
-\citentry
-  {canny1986 — Canny (1986)}
-  {§4.3.5 V4 Sobel and §4.3.6 V4.2 Gaussian Sobel}
-  {Gradient-based detectors require prior smoothing to suppress noise sensitivity.}
-  {Paraphrase of Canny's smoothing-before-differentiation principle.}
-  {A smoothing step must precede gradient computation to suppress noise, since differentiation is inherently a high-pass operation that amplifies noise alongside genuine edges.}
-  {Original PDF: \texttt{Articles/NPR/canny1986.pdf} (verify filename). Confirm Canny states this principle explicitly in the context of his multi-stage detector and that the cite is not overclaiming.}
-
-\citentry
-  {marr1980 — Marr \& Hildreth (1980)}
-  {§4.3.6 V4.2 Gaussian Prefiltered Sobel}
-  {The Gaussian filter is the preferred smoothing choice because it is isotropic: it attenuates noise equally in all spatial directions without introducing an orientation bias.}
-  {Paraphrase of Marr \& Hildreth's justification for Gaussian smoothing before differentiation.}
-  {The Gaussian is the only smoothing function that is both linear and isotropic, making it optimal for pre-filtering before gradient-based edge detection, as it does not introduce any directional bias into the subsequent derivative computation.}
-  {Original PDF: locate in \texttt{Articles/NPR/}. Confirm Marr \& Hildreth use the isotropy argument to justify Gaussian smoothing specifically.}
-
-%% ─────────────────────────────────────────────────────────────────
-\section*{Uncanny Valley and Avatar Perception}
-
-\citentry
-  {mori1970 — Mori (1970)}
-  {§4.4.1 H1 hypothesis}
-  {A photorealistic avatar at near-human fidelity occupies the most problematic region of the affinity curve, whereas stylised abstraction deliberately relocates the representation to the stable, comfortable slope below the valley.}
-  {Paraphrase of Mori's uncanny valley curve and the implication that stylisation avoids the valley.}
-  {As a robot's appearance approaches human likeness, affinity rises until it enters a region of sudden discomfort (the valley). Below this region, simplified or cartoon-like representations are perceived positively.}
-  {Original PDF: \texttt{Articles/uncanny1970.pdf}. Confirm Mori's original curve implies that representations below full human likeness sit on the positive slope, motivating stylisation as a deliberate design strategy.}
-
-\citentry
-  {canales2024 — Canales et al.\ (2024)}
-  {§4.4.2 H2 hypothesis}
-  {Canales et al.\ found equivalent self-reported trust across three stylisation levels for a virtual doctor advisor.}
-  {Paraphrase of Canales et al.'s key null finding on self-reported trust.}
-  {Self-reported trust ratings did not differ significantly across the three avatar stylisation conditions; however, participants showed a preference for the semi-realistic stylised avatar in the behavioural selection task.}
-  {Original PDF: \texttt{Articles/trust/Avatar\_Stylization\_and\_Trust\_IEEE\_VR\_2024.pdf}. Confirm the null result for self-reported trust and the specific finding about behavioural selection favouring the stylised condition. This dissociation is the main motivation for including P1 in our study.}
+%% ═══════════════════════════════════════════════════════════════════
+\section*{Chapter 1 — Introduction}
 
 \citentry
   {nowak2003 — Nowak \& Biocca (2003)}
-  {§2 Related Work / §4 Methodology}
-  {Avatar realism affects social presence and trust judgments in virtual environments.}
-  {Paraphrase of Nowak \& Biocca's finding on avatar realism and social presence.}
-  {More realistic avatars were associated with higher social presence, but this relationship was moderated by the degree of perceived copresence and the task context.}
-  {Original PDF: \texttt{Articles/Nowak2003.pdf}. Confirm the exact direction of the realism-to-presence relationship and whether trust or only social presence is the outcome variable.}
+  {§1.1 Motivation}
+  {Nowak and Biocca demonstrated that avatar appearance exerts a measurable influence on social presence and interpersonal trust.}
+  {Paraphrase of Nowak \& Biocca's core finding on avatar appearance and social outcomes.}
+  {Participants interacting with the less-anthropomorphic image reported more copresence and social presence than those interacting with partners represented by either no image at all or by a highly anthropomorphic image of the other, indicating that the more anthropomorphic images set up higher expectations that lead to reduced presence when these expectations were not met.}
+  {Source: \texttt{Articles/Nowak2003.pdf}, Abstract. CONFIRMED. Note: the original finding is about copresence and social presence, not trust directly. Verify that the thesis does not overstate ``interpersonal trust'' if the paper measures only presence/copresence.}
 
 \citentry
-  {ho2010 — Ho \& MacDorman (2010)}
-  {§4.4.1 H4 and H5 hypotheses}
-  {Eeriness and human-likeness are orthogonal perceptual dimensions (reported $r \approx .02$), making H5's mediation path empirically testable rather than structurally guaranteed.}
-  {Paraphrase of Ho \& MacDorman's orthogonality finding between eeriness and anthropomorphism.}
-  {Factor analysis revealed that eeriness and human-likeness load onto separate, uncorrelated dimensions ($r \approx .02$), indicating that an entity can be perceived as highly human-like without being perceived as eerie, and vice versa.}
-  {Original PDF: locate in \texttt{Articles/trust/} or \texttt{Articles/Uncanney Valley/}. Confirm the $r \approx .02$ figure and that the paper explicitly claims orthogonality rather than weak correlation.}
+  {weidner2023 — Weidner \& Broll (2023)}
+  {§1.1 Motivation}
+  {Weidner and Broll extended this finding to video mediated interaction, showing that the visual design of an avatar functions as a communicative act in its own right.}
+  {Paraphrase of Weidner \& Broll's finding on avatar fidelity and social perception.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — open \texttt{Articles/Weidner2023.pdf} and locate the sentence about avatar visual design as a communicative act or about video-mediated interaction.]}}
+  {PDF available: \texttt{Articles/Weidner2023.pdf}. Has not been read. Verify the exact finding and that ``communicative act'' is supported by the paper.}
+
+\citentry
+  {mori1970 — Mori (1970)}
+  {§1.1 Motivation — first use}
+  {Mori termed this effect the Uncanny Valley, proposing that as a human representation approaches but falls just short of true photorealistic fidelity it tends to evoke unease rather than familiarity.}
+  {Paraphrase of Mori's original uncanny valley hypothesis.}
+  {I have noticed that, in climbing toward the goal of making robots appear human, our affinity for them increases until we come to a valley (Figure 1), which I call the uncanny valley.}
+  {Source: \texttt{Articles/uncanny1970.pdf}, p.~2 (IEEE Spectrum translation). CONFIRMED. The thesis paraphrase is accurate. Mori's original is about robots; the thesis correctly extends the concept to digital representations.}
+
+\citentry
+  {mcdonnell2012 — McDonnell et al.\ (2012)}
+  {§1.1 Motivation}
+  {A claim corroborated empirically for computer generated characters by McDonnell et al.}
+  {Citation for empirical corroboration of uncanny valley in CG characters.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — open \texttt{Articles/McDonnell, R., Breidt, M., and Bülthoff, H. H. (2012)...pdf} and locate the central finding about eeriness and render style.]}}
+  {PDF available but not yet read. Also cited as \texttt{McDonnell09\_HappyZombies.pdf} — verify which file is the correct 2012 paper. The thesis cites \texttt{mcdonnell2012}.}
+
+\citentry
+  {canales2024 — Canales et al.\ (2024)}
+  {§1.1 Motivation}
+  {[Uncanny valley claim] corroborated in the specific context of avatar stylisation and trust by Canales et al.}
+  {Citation establishing avatar stylisation and trust as the specific research context.}
+  {Style differences did not lead to any significant differences in the subjective trust scores, and notably, there was no evidence that the realistic avatars were viewed as more trustworthy.}
+  {Source: \texttt{Articles/trust/Avatar\_Stylization\_and\_Trust\_IEEE\_VR\_2024.pdf}, §6 Results. CONFIRMED. The citation is appropriate: Canales provides the trust-stylisation context. Verify which exact sentence is closest to the §1.1 use.}
+
+\citentry
+  {gooch1998 — Gooch et al.\ (1998)}
+  {§1.1 Motivation}
+  {Gooch et al.\ established a formal model for this approach, replacing physically accurate shading with stylised cues that communicate form without simulating light.}
+  {Paraphrase of Gooch's contribution: stylised illumination over physical accuracy.}
+  {A non-photorealistic lighting model for automatic technical illustration... uses cool-to-warm color shifts to convey surface orientation without relying on photorealistic shading.}
+  {Source: \texttt{Articles/NPR/Gooch1998.pdf}. CONFIRMED in previous session. The abstract states the model replaces Lambertian diffuse with cool-to-warm transitions. The paraphrase ``communicate form without simulating light'' is accurate in spirit. Confirm exact wording from abstract.}
+
+\citentry
+  {metasdk — Meta Avatars SDK}
+  {§1.2 Problem Statement}
+  {[The SDK] exposing only a single fragment level hook, evaluated after all lighting computation, to third-party developers.}
+  {Technical description of the SDK's NPR integration constraint.}
+  {\textcolor{darkorange}{[NO PUBLIC PDF — internal SDK documentation. This is an engineering fact verified through implementation, not a citable external source. Confirm the citation is to SDK documentation and not a peer-reviewed paper.]}}
+  {Internal SDK reference. Cannot be verified from a public PDF. Confirm that the bib entry for \texttt{metasdk} correctly cites the SDK documentation with a URL or version number.}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§1.2 Problem Statement}
+  {Prior NPR research has not had to address constraints of this kind; the literature, represented by surveys such as Isenberg et al., assumes full pipeline access and custom assets.}
+  {Citation for the prior NPR literature assuming full pipeline access.}
+  {Generating object silhouettes lies at the heart of nonphotorealism.}
+  {Source: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}, p.~28. CONFIRMED in previous session. The citation is used here as a representative survey, not for this specific sentence. Verify that the paper indeed assumes full pipeline access (it does — all techniques require custom shader control).}
 
 %% ─────────────────────────────────────────────────────────────────
-\section*{Trust Theory}
+\section*{Chapter 2 — Related Work}
+
+\citentry
+  {mori1970 — Mori (1970)}
+  {§2.1 Uncanny Valley and Avatar Realism — hypothesis definition}
+  {The Uncanny Valley hypothesis was first articulated by Mori, who proposed that human affinity toward an artificial figure increases with its degree of human likeness up to a critical threshold, at which point subtle imperfections cause a sharp drop in comfort.}
+  {Paraphrase of the core UV hypothesis.}
+  {I have noticed that, in climbing toward the goal of making robots appear human, our affinity for them increases until we come to a valley (Figure 1), which I call the uncanny valley.}
+  {CONFIRMED. Same source as Entry~\#3. The thesis paraphrase adds ``subtle imperfections cause a sharp drop'' which is also supported by Mori's text about the prosthetic hand and zombie examples.}
+
+\citentry
+  {macdorman2006 — MacDorman \& Ishiguro (2006)}
+  {§2.1 Uncanny Valley — empirically tractable research programme}
+  {MacDorman and Ishiguro advanced the Uncanny Valley from a qualitative hypothesis into an empirically tractable research programme... they proposed semantic differential instruments to quantify eeriness and strangeness as measurable affective dimensions.}
+  {Paraphrase of MacDorman \& Ishiguro's methodological contribution.}
+  {Mori predicted that, as robots appear more human, they seem more familiar, until a point is reached at which subtle imperfections give a sensation of strangeness. [Additionally:] subtle flaws in appearance and movement can be more apparent and eerie in very humanlike robots.}
+  {Source: \texttt{Articles/MacDorman2006AndroidScience.pdf}, pp.~299--300. PARTIALLY CONFIRMED. The p.~300 text supports the ``sensation of strangeness'' claim. HOWEVER: the ``semantic differential instruments'' claim needs pages beyond p.~300 — read more of the paper to verify this specific contribution. The 4 pages read do not yet show the instrument development.}
+
+\citentry
+  {mcdonnell2012 — McDonnell et al.\ (2012)}
+  {§2.1 Uncanny Valley — render style study}
+  {McDonnell et al.\ exposed participants to video stimuli of the same animated character rendered across six distinct styles... Photorealistic rendering was associated with significantly higher eeriness ratings and lower appeal than stylised conditions.}
+  {Paraphrase of McDonnell et al.'s key finding on render style and eeriness.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/McDonnell, R., Breidt, M., and Bülthoff, H. H. (2012)...pdf} and locate the finding about photorealistic rendering and eeriness ratings across style conditions.]}}
+  {PDF available. This is the most important citation for the empirical motivation of the thesis. Priority for verification.}
+
+\citentry
+  {seymour2021 — Seymour et al.\ (2021)}
+  {§2.1 Uncanny Valley — field study}
+  {Seymour et al.\ compared a near photorealistic digital human to a caricature avatar... Participants rated the photorealistic avatar as more trustworthy; however, the caricature condition did not trigger Uncanny Valley discomfort, occupying instead a stable, neutral region.}
+  {Paraphrase of Seymour et al.'s dissociation finding.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/Seymour, Yuan, Dennis \& Riemer, ``Have We Crossed the Uncanny Valley?'' (2021).pdf} and locate the finding about photorealistic vs.\ caricature trust and eeriness.]}}
+  {PDF available. Verify the specific finding about trustworthiness ratings and the caricature not triggering discomfort.}
 
 \citentry
   {mayer1995 — Mayer et al.\ (1995)}
-  {§4.4.3 Per-Block Questionnaire, trust battery}
-  {The eleven trust items are structured around the three-component Ability-Benevolence-Integrity (ABI) model of Mayer et al.}
-  {Reference to the ABI framework as the theoretical basis of the trust battery.}
-  {Trust is defined as the willingness to be vulnerable to another party based on positive expectations regarding their ability, benevolence, and integrity. These three components are conceptually and empirically distinct.}
-  {Original: locate in \texttt{Articles/trust/}. Confirm the ABI model names the three components in this order and that each is treated as a separate construct (not a unidimensional measure).}
+  {§2.2 Trust — ABI model definition}
+  {Mayer et al.\ defined trustworthiness as comprising three independently evaluable components: ability, benevolence, and integrity.}
+  {Paraphrase of the ABI trust model.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Mayer, Davis, \& Schoorman (1995), ``An integrative model of organizational trust,'' \textit{Academy of Management Review}, 20(3), 709--734. Key sentence likely from Abstract or p.~717.]}}
+  {No PDF in \texttt{Articles/} folder. This is a foundational paper cited extensively. Obtain the PDF and verify. The ABI model and the definition of trust as ``willingness to be vulnerable'' are confirmed to be from this paper by the Canales (2024) paper which cites it for the same definition.}
 
 \citentry
   {mcknight2001 — McKnight \& Chervany (2001)}
-  {§4.4.3 Per-Block Questionnaire, trust battery}
-  {Operationalised within the trusting-beliefs framework of McKnight and Chervany.}
-  {Reference to McKnight \& Chervany's operationalisation of trust beliefs as the source of the item wording.}
-  {Trusting beliefs reflect the truster's confident perception of the trustee's attributes (competence, benevolence, integrity, predictability). These can be measured as multi-item scales at the level of a specific interaction or relationship.}
-  {Original: locate in \texttt{Articles/trust/}. Confirm McKnight \& Chervany provide the scale items (or item templates) used in Parts E, F, G. If they only provide the framework and Canales et al.\ adapted the items, the citation chain must reflect both.}
+  {§2.2 Trust — trusting beliefs typology}
+  {McKnight and Chervany extended this conceptual structure into a typology separating trusting beliefs from trusting intentions, allowing trust measurement to span both attitudinal and behavioural dimensions.}
+  {Paraphrase of McKnight \& Chervany's typology of trust.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/trust/What Trust Means in E-Commerce Customer Relationships.pdf} and locate the passage about trusting beliefs vs.\ trusting intentions.]}}
+  {PDF available: \texttt{Articles/trust/What Trust Means in E-Commerce Customer Relationships.pdf}. Verify this is the correct McKnight \& Chervany 2001 paper and confirm the distinction between trusting beliefs and intentions.}
+
+\citentry
+  {alipour2025 — Alipour et al.\ (2025)}
+  {§2.2 Trust — systematic review}
+  {Alipour et al.\ conducted a PRISMA-compliant systematic review of 53 empirical studies at the intersection of Uncanny Valley effects and trust.}
+  {Paraphrase of Alipour et al.'s scope.}
+  {Following PRISMA guidelines, a systematic search identified 53 empirical studies that investigated both UVE-related constructs and trust or trust-related outcomes.}
+  {Source: \texttt{Articles/trust/Alipor\_Would You Rely on an Eerie Agent?.pdf}, Abstract. CONFIRMED.}
+
+\citentry
+  {alipour2025 — Alipour et al.\ (2025)}
+  {§2.2 Trust — methodological prescription}
+  {Alipour et al.\ conclude that well-designed future studies should employ dynamic video stimuli and include at least one behavioural indicator alongside self-report ratings.}
+  {Paraphrase of Alipour et al.'s design recommendation.}
+  {The results of our systematic review reveal that most studies rely on static images or hypothetical scenarios with limited real-time interaction, and the majority use subjective trust measures.}
+  {Source: \texttt{Articles/trust/Alipor\_Would You Rely on an Eerie Agent?.pdf}, Abstract. PARTIALLY CONFIRMED. The abstract confirms the limitation of static images and subjective measures, which implies the recommendation for dynamic stimuli. Read further pages to locate the exact forward-looking prescription sentence.}
+
+\citentry
+  {nowak2005 — Nowak \& Rauh (2005)}
+  {§2.2 Trust — avatar anthropomorphism and credibility}
+  {Nowak and Rauh provided an early empirical foundation... perceived anthropomorphism and avatar gender expression both predicted credibility judgments, with more anthropomorphic avatars rated as more credible.}
+  {Paraphrase of Nowak \& Rauh's credibility finding.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Nowak \& Rauh (2005), ``The Influence of the Avatar on Online Perceptions of Anthropomorphism, Androgyny, Credibility, Homophily, and Attraction,'' \textit{Journal of Computer-Mediated Communication}.]}}
+  {No PDF available. Cannot verify. Confirm the 255 participant count and the finding direction (more anthropomorphic → more credible).}
+
+\citentry
+  {nowak2003 — Nowak \& Biocca (2003)}
+  {§2.2 Trust — diminishing returns of anthropomorphism}
+  {Nowak and Biocca extended this framework by demonstrating that anthropomorphism and perceived agency contribute independently to social presence and copresence, and that very high levels of visual anthropomorphism do not consistently produce higher social presence.}
+  {Paraphrase of the diminishing-returns finding.}
+  {Participants interacting with the less-anthropomorphic image reported more copresence and social presence than those interacting with partners represented by either no image at all or by a highly anthropomorphic image of the other, indicating that the more anthropomorphic images set up higher expectations that lead to reduced presence when these expectations were not met.}
+  {Source: \texttt{Articles/Nowak2003.pdf}, Abstract. CONFIRMED. The abstract directly states the diminishing-returns pattern.}
+
+\citentry
+  {canales2024 — Canales et al.\ (2024)}
+  {§2.2 Trust — multi-component stylisation study}
+  {Self-reported trust ratings were broadly equivalent across all three style levels; however, the semi-realistic condition attracted the highest rate of behavioural selection.}
+  {Paraphrase of Canales et al.'s key dissociation finding.}
+  {Trust ratings are largely consistent across the style levels, but participants were more likely to select doctors with the `Mid' level of stylization for a second opinion.}
+  {Source: \texttt{Articles/trust/Avatar\_Stylization\_and\_Trust\_IEEE\_VR\_2024.pdf}, Abstract. CONFIRMED. Both halves of the dissociation are in the abstract.}
+
+\citentry
+  {gao2025 — Gao et al.\ (2025)}
+  {§2.2 Trust — stylised vs realistic comparable trust}
+  {Gao et al.\ found that stylised agents achieved trust levels statistically comparable to realistic agents on all measured dimensions, while voice characteristics were found to have a negligible effect on trust outcomes.}
+  {Paraphrase of Gao et al.'s equivalence finding.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Gao et al.\ (2025). Verify: (a) trust equivalence across stylisation, (b) voice negligible effect, (c) perceived agent age as moderator.]}}
+  {No PDF available. The thesis makes three specific claims about this paper (trust equivalence, voice effect, age moderator). All three must be verified.}
+
+\citentry
+  {weidner2023 — Weidner \& Broll (2023)}
+  {§2.2 Trust — fidelity and self-embodiment}
+  {Weidner and Broll examined how avatar visual fidelity interacts with self-embodiment and social perception, finding that fidelity effects on social judgments are mediated by the observer's sense of identification with the avatar.}
+  {Paraphrase of Weidner \& Broll's mediation finding.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/Weidner2023.pdf} and locate the mediation finding about identification.]}}
+  {PDF available. Check the specific claim about mediation by identification. This is distinct from the §1.1 use of the same paper.}
+
+\citentry
+  {bartneck2009 — Bartneck et al.\ (2009)}
+  {§2.2 Trust — Godspeed Questionnaire}
+  {The Godspeed Questionnaire Series, developed by Bartneck et al., provides validated semantic differential scales for five perceptual dimensions: anthropomorphism, animacy, likeability, perceived intelligence, and perceived safety.}
+  {Citation for the Godspeed Questionnaire.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/trust/Bartneck\_2009\_Measurement Instruments for the Anthropomorphism.pdf} and confirm the five subscales and their item descriptions.]}}
+  {PDF available. Confirm the five subscales. Note: the paper's title is ``Measurement Instruments for the Anthropomorphism, Animacy, Likeability, Perceived Intelligence, and Perceived Safety of Robots.'' Confirm this is the Bartneck et al.\ 2009 Godspeed paper.}
+
+\citentry
+  {macdorman2006 — MacDorman \& Ishiguro (2006)}
+  {§2.2 Trust — eeriness-specific instruments}
+  {The eeriness-specific instruments introduced by MacDorman and Ishiguro complement the Godspeed series by targeting the negative affective response to near-human imperfection directly.}
+  {Citation for MacDorman's eeriness operationalisation.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read remaining pages of \texttt{Articles/MacDorman2006AndroidScience.pdf} (read pp.~297--300 so far) to locate the specific eeriness instrument or scale description.]}}
+  {Partially read. The 4 pages read do not yet show the scale. Read the rest of the paper. Note: the thesis may be conflating MacDorman 2006 with a different paper for the ``eeriness instrument'' — verify that the scale is actually presented here vs.\ in a later MacDorman paper.}
+
+\citentry
+  {ho2010 — Ho \& MacDorman (2010)}
+  {§2.2 Trust — eeriness and human-likeness orthogonality}
+  {Ho and MacDorman... establishing it as a standalone alternative to the Godspeed eeriness items. Their principal finding is that the two dimensions are orthogonal: the reported correlation between eeriness and human-likeness in their validation data is approximately zero ($r \approx .02$).}
+  {Paraphrase of Ho \& MacDorman's orthogonality finding.}
+  {Phase 2 of this study developed alternative indices with non-significant correlations ($p > .05$) between the proposed $y$-axis eeriness and $x$-axis perceived humanness ($r = .02$).}
+  {Source: \texttt{Articles/trust/Ho2010UncannyValleyIndices.pdf}, Abstract. CONFIRMED. The $r = .02$ figure is in the abstract. Confirm the instrument description (6 items) by reading further pages.}
+
+%% ─────────────────────────────────────────────────────────────────
+\subsection*{§2.3 Non-Photorealistic Rendering for Virtual Humans}
+
+\citentry
+  {gooch1998 — Gooch et al.\ (1998)}
+  {§2.3 NPR for virtual humans — cool-to-warm model}
+  {The foundational contribution to NPR lighting is the cool-to-warm shading model introduced by Gooch et al., which replaced the continuous Lambertian diffuse term with a hue shift from cool shadows to warm highlights.}
+  {Paraphrase of Gooch's specific contribution.}
+  {A Non-Photorealistic Lighting Model for Automatic Technical Illustration... [replaces] the Lambertian model with cool-to-warm color transitions that convey surface orientation more clearly in line drawings.}
+  {Source: \texttt{Articles/NPR/Gooch1998.pdf}. CONFIRMED in previous session. Paraphrase accurate. Note: Gooch targets technical illustration, not character rendering — thesis correctly notes this.}
+
+\citentry
+  {lake2000 — Lake et al.\ (2000)}
+  {§2.3 NPR — inverted hull technique}
+  {The inverted hull technique described by Lake et al.\ expands back-facing polygons along vertex normals by a small offset, creating a slightly enlarged shell of the mesh.}
+  {Paraphrase of Lake et al.'s outline method description.}
+  {\textcolor{darkorange}{[PARTIALLY CONFIRMED — Lake et al.\ (2000) actually describe SED (silhouette edge detection via front/back polygon classification), not the geometry-based inverted hull backface expansion. Read \texttt{Articles/NPR/npar2000\_lake\_et\_al.pdf} §4.1 to confirm whether the inverted hull description is accurate for this citation, or whether the citation should be to Isenberg (2003) instead.]}}
+  {IMPORTANT FLAG: Previous session confirmed Lake et al.\ use SED (front/back polygon edge test and line segment rendering), not the vertex-normal expansion described in this sentence. The inverted hull (shell method) may be better attributed to Isenberg 2003. Resolve this before submission.}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§2.3 NPR — geometry-based methods incapable of interior}
+  {Isenberg et al.\ provide a systematic survey of silhouette algorithms and conclude that geometry-based methods are robust and distance-independent but structurally incapable of detecting internal surface detail.}
+  {Paraphrase of Isenberg's survey conclusion on limitations.}
+  {Generating object silhouettes lies at the heart of nonphotorealism. [And:] Thus, these geometric methods are not capable of identifying structural boundaries and cannot convey internal surface details.}
+  {Source: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}, p.~28. CONFIRMED in previous session. Both the centrality claim and the interior-edge limitation are supported.}
+
+\citentry
+  {gonzalez2018 — Gonzalez \& Woods (2018)}
+  {§2.3 NPR — Sobel for luminance boundaries}
+  {The Sobel operator, a discrete gradient approximation applied to the diffuse texture via a $3{\times}3$ convolution kernel, identifies luminance boundaries corresponding to clothing patterns, facial contours, and painted surface details.}
+  {Citation for Sobel operator and gradient mathematics.}
+  {[p.~718, §10.2 ``Gradient Operators'':] ``Obtaining the gradient of an image requires computing the partial derivatives $\partial f/\partial x$ and $\partial f/\partial y$ at every pixel location in the image.'' [p.~719, Eqs.~(10-24) and (10-25):] $g_x = (z_7 + 2z_8 + z_9) - (z_1 + 2z_2 + z_3)$ and $g_y = (z_3 + 2z_6 + z_9) - (z_1 + 2z_4 + z_7)$ [Sobel kernels with $\pm2$ weighting in centre row/column, as shown in Fig.~10.14.] ``These kernels are called the \textit{Sobel operators} (Sobel [1970]).'' [p.~719:] ``The fact that the Sobel kernels have better noise-suppression (smoothing) characteristics makes them preferable.''}
+  {Source: \texttt{Articles/Gonzales,Woods-Digital.Image.Processing.4th.Edition.pdf}, pp.~718--719. CONFIRMED. The $G_x$/$G_y$ matrices with $\pm2$ centre weighting are confirmed in Fig.~10.14 and Eqs.~(10-24)--(10-25). NOTE: BT.601 luma coefficients still need separate verification in the colour chapter (Ch.~6). Do not mark the BT.601 claim as confirmed until that is done.}
+
+\citentry
+  {marr1980 — Marr \& Hildreth (1980)}
+  {§2.3 NPR — low-pass pre-filtering prerequisite}
+  {Marr and Hildreth demonstrated that low-pass pre-filtering is a prerequisite for stable gradient computation.}
+  {Citation for the smoothing-before-differentiation principle.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Marr \& Hildreth (1980), ``Theory of Edge Detection,'' \textit{Proceedings of the Royal Society B}, 207(1167), 187--217. The key sentence is about Gaussian smoothing before differentiation.]}}
+  {No PDF in collection. Cannot verify directly. The principle is well-established. Confirm the specific claim that Marr \& Hildreth use the \emph{isotropy} argument to justify Gaussian (vs.\ other) smoothing.}
+
+\citentry
+  {barla2006 — Barla et al.\ (2006)}
+  {§2.3 NPR — X-Toon 2D ramp by view angle and depth}
+  {Barla et al.\ introduced X-Toon, which parameterises the shading tone ramp by both view angle and depth, enabling a two-dimensional lookup that encodes artistic intent unavailable in a one-dimensional quantisation step.}
+  {Paraphrase of the X-Toon 2D ramp concept.}
+  {In this paper we describe X-Toon, a toon shader that supports view-dependent effects through two independent extensions to conventional toon shading. The first incorporates a notion of tone detail, so that tone varies with depth or orientation relative to the camera. For this, we replace the conventional 1D texture used in toon shading with a 2D texture, where the second dimension corresponds to desired tone `detail'.}
+  {Source: \texttt{Articles/NPR/x-toon.pdf}, §1 Introduction (highlighted passage). CONFIRMED in current session. Exact sentence confirmed.}
+
+\citentry
+  {kyprianidis2009 — Kyprianidis et al.\ (2009)}
+  {§2.3 NPR — anisotropic Kuwahara extension}
+  {Kyprianidis et al.\ extended the isotropic Kuwahara with an anisotropic formulation aligned to local image structure, producing brush-stroke effects oriented along salient contours; the anisotropic extension requires a structure tensor computed from a prior render pass.}
+  {Paraphrase of Kyprianidis's anisotropic extension and its constraint.}
+  {We present a non-photorealistic rendering technique to transform color images and videos into painterly abstractions. It is based on a generalization of the Kuwahara filter that is adapted to the local shape of features, derived from the smoothed structure tensor. Contrary to conventional edge-preserving filters, our filter generates a painting-like flattening effect along the local feature directions while preserving shape boundaries.}
+  {Source: \texttt{Articles/NPR/anisotropic\_kuwahara.pdf}, Abstract. CONFIRMED in current session. The structure tensor requirement and prior render pass are also confirmed in §3 Method.}
+
+\citentry
+  {praun2001 — Praun et al.\ (2001)}
+  {§2.3 NPR — real-time hatching}
+  {Praun et al.\ demonstrated real-time hatching as a complementary branch of this design space, in which tonal regions are conveyed by oriented stroke textures rather than flat fills or edge lines.}
+  {Citation for real-time hatching as NPR technique.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/NPR/hatching.pdf} and confirm it is Praun et al.\ 2001 and that the description of tonal art maps and oriented stroke textures matches.]}}
+  {PDF available. Verify this is the correct paper (``Real-Time Hatching'' or ``Tonal Art Maps'') and confirm the stroke-texture description.}
+
+\citentry
+  {zibrek2019tap — Zibrek et al.\ (2019, ACM TAP)}
+  {§2.3 NPR — social reception study}
+  {Zibrek et al.\ conducted a within-participants VR study... Photorealism did not significantly improve emotional recognition or social presence; in some conditions the NPR condition was rated more positively.}
+  {Paraphrase of Zibrek et al.'s social reception finding.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Zibrek et al.\ (2019), \textit{ACM Transactions on Applied Perception}.]}}
+  {No PDF available. Cannot verify. Confirm the finding direction: NPR $\geq$ photorealism for emotional recognition and social presence.}
+
+\citentry
+  {zibrek2019mig — Zibrek \& McDonnell (2019, MIG)}
+  {§2.3 NPR — place illusion study}
+  {Zibrek and McDonnell extended this investigation to embodied VR, finding that photorealism significantly increased place illusion but had a weaker and less consistent effect on social presence.}
+  {Paraphrase of Zibrek \& McDonnell's dissociation finding.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Zibrek \& McDonnell (2019), \textit{MIG 2019}.]}}
+  {No PDF available. Cannot verify. Confirm the dissociation between place illusion and social presence.}
+
+\citentry
+  {latoschik2017 — Latoschik et al.\ (2017)}
+  {§2.3 NPR — abstract/semi-realistic/realistic VR study}
+  {Latoschik et al.\ in an immersive social VR context. The semi-realistic condition produced social experiences comparable to the realistic condition on several dimensions, while the abstract condition diverged more substantially.}
+  {Paraphrase of Latoschik et al.'s finding on representation levels.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/Effects of Realism and Representation on Self-Embodied Avatars in Immersive Virtual Environments.pdf} and locate the finding about semi-realistic vs.\ realistic conditions.]}}
+  {PDF available. Confirm the three-condition comparison (abstract/semi-realistic/realistic) and that semi-realistic ≈ realistic on most social dimensions.}
+
+%% ═══════════════════════════════════════════════════════════════════
+\section*{Chapter 3 — Background}
+
+\citentry
+  {gonzalez2018 — Gonzalez \& Woods (2018)}
+  {§3.2 Edge Detection — Sobel operator}
+  {The Sobel operator estimates the gradient using two $3\times3$ kernels: $G_x$ and $G_y$.}
+  {Reference for the Sobel kernel values and gradient magnitude formula.}
+  {[p.~719, Fig.~10.14 and Eqs.~(10-24)--(10-25):] $g_x = (z_7 + 2z_8 + z_9) - (z_1 + 2z_2 + z_3)$; $g_y = (z_3 + 2z_6 + z_9) - (z_1 + 2z_4 + z_7)$. ``These kernels are called the \textit{Sobel operators} (Sobel [1970]).'' [p.~716, Eq.~(10-17):] ``The \textit{magnitude}, $M(x, y)$, of this gradient vector at a point $(x, y)$ is given by its Euclidean vector norm: $M(x,y) = \|\nabla f(x,y)\| = \sqrt{g_x^2(x,y) + g_y^2(x,y)}$.'' [p.~720, Eq.~(10-26):] Approximate form $M(x,y) \approx |g_x| + |g_y|$ also given.}
+  {Source: pp.~716, 719--720. CONFIRMED. The $G_x$/$G_y$ kernel values in the thesis Eq.~(2) match the Gonzalez \& Woods matrices exactly (row~3 minus row~1 with $\pm2$ centre column weighting). The Euclidean magnitude formula and the absolute-value approximation are both confirmed.}
+
+\citentry
+  {marr1980 — Marr \& Hildreth (1980)}
+  {§3.2.3 Gaussian Pre-Filtering}
+  {Marr and Hildreth established that stable edge detection requires low-pass smoothing before gradient computation.}
+  {Citation for the smoothing-before-differentiation principle in background chapter.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — same source as Entry~\#25. No PDF available.]}}
+  {Same citation as §2.3. Confirm the Gaussian commutation property (Eq.~\ref{eq:gauss\_deriv\_commute}) is consistent with Marr \& Hildreth's formulation.}
+
+\citentry
+  {canny1986 — Canny (1986)}
+  {§3.2.3 Gaussian Pre-Filtering}
+  {Canny's influential edge detector built on this principle: smooth with a Gaussian, compute the gradient of the smoothed image, and apply non-maximum suppression to obtain thin, stable edge maps.}
+  {Citation for Canny's three-stage edge detection pipeline.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Canny (1986), ``A Computational Approach to Edge Detection,'' \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 8(6), 679--698.]}}
+  {No PDF available. Confirm the three-stage pipeline (Gaussian smooth → gradient → non-maximum suppression) is accurately described.}
+
+\citentry
+  {kyprianidis2009 — Kyprianidis et al.\ (2009)}
+  {§3.3 The Kuwahara Filter}
+  {The Kuwahara filter is a structure-preserving smoothing operator that produces piecewise-uniform regions with sharp inter-region boundaries. [Also:] An anisotropic extension by Kyprianidis et al.\ aligns the filter kernel with local image structure by computing a structure tensor from a prior render pass.}
+  {Citation for the Kuwahara filter definition and anisotropic extension.}
+  {We present a non-photorealistic rendering technique to transform color images and videos into painterly abstractions. It is based on a generalization of the Kuwahara filter that is adapted to the local shape of features, derived from the smoothed structure tensor.}
+  {Source: \texttt{Articles/NPR/anisotropic\_kuwahara.pdf}, Abstract. CONFIRMED. The isotropic Kuwahara (4 quadrants, minimum variance) is classical prior work; Kyprianidis extends it. The structure tensor requirement is confirmed.}
+
+\citentry
+  {latoschik2017 — Latoschik et al.\ (2017)}
+  {§3.4 Virtual Avatars — representation consequences}
+  {Where an avatar sits along this continuum has measurable consequences for how users are perceived, how much social presence is felt, and how the avatar is trusted.}
+  {Citation for avatar representation level affecting social outcomes (alongside nowak2003).}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — same source as Entry~\#31. Read \texttt{Articles/Effects of Realism...pdf}.]}}
+  {Same paper as §2.3. The §3.4 use is for avatar representation continuum effects generally. Confirm this general claim is supported.}
+
+\citentry
+  {yee2007 — Yee \& Bailenson (2007)}
+  {§3.4 Virtual Avatars — Proteus effect}
+  {Yee and Bailenson demonstrated through a series of experiments that users assigned more attractive or physically taller avatars adopted behaviours consistent with those characteristics... This tendency, termed the Proteus effect.}
+  {Citation for the Proteus effect.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Yee \& Bailenson (2007), ``The Proteus Effect: The Effect of Transformed Self-Representation on Behavior,'' \textit{Human Communication Research}.]}}
+  {No PDF available. Confirm: (a) the specific behaviours mentioned (more disclosure, more assertive negotiation, shorter distances); (b) the term ``Proteus effect'' is from this paper.}
+
+\citentry
+  {ho2010 — Ho \& MacDorman (2010)}
+  {§3.5 Trust and Social Presence — eeriness instrument, orthogonality}
+  {Ho and MacDorman developed a separate eeriness instrument... Their central methodological finding is that eeriness and human-likeness are orthogonal perceptual dimensions: the reported correlation between the two dimensions in their validation data is approximately zero ($r \approx .02$).}
+  {Paraphrase of Ho \& MacDorman's key methodological contribution.}
+  {Phase 2 of this study developed alternative indices with non-significant correlations ($p > .05$) between the proposed $y$-axis eeriness and $x$-axis perceived humanness ($r = .02$).}
+  {CONFIRMED — same source as Entry~\#20. Exact $r = .02$ figure confirmed from Abstract.}
+
+\citentry
+  {alipour2025 — Alipour et al.\ (2025)}
+  {§3.5 Trust — systematic review, negative association}
+  {A systematic review by Alipour et al.\ examined the relationship between uncanny valley discomfort and trust across 42 empirical studies. Their review found a consistent negative association... Alipour et al.\ also found that the association is strongest when stimuli are presented as dynamic video clips.}
+  {Paraphrase of Alipour et al.'s meta-analytic finding on eeriness and trust.}
+  {The results of our systematic review reveal that most studies rely on static images or hypothetical scenarios with limited real-time interaction.}
+  {Source: \texttt{Articles/trust/Alipor\_Would You Rely on an Eerie Agent?.pdf}, Abstract. PARTIALLY CONFIRMED. The abstract confirms the static image dominance. The specific claim about ``42 studies'' and ``consistent negative association'' and ``strongest for video stimuli'' must be verified from the body of the paper (pages 4+).}
+
+%% ═══════════════════════════════════════════════════════════════════
+\section*{Chapter 4 — Methodology}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§4.3 NPR Technique Design — opening claim}
+  {NPR techniques in computer graphics encompass a wide range of abstraction levels.}
+  {General NPR survey citation supporting the range-of-abstraction claim. Swapped from gooch1998 (2025-07-16): Gooch (1998) is a single-technique paper on cool-to-warm lighting, not a survey of abstraction levels. Isenberg (2003) surveys multiple NPR technique classes and is the closest general NPR survey in the bib.}
+  {Generating object silhouettes lies at the heart of nonphotorealism.}
+  {Source: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}, p.~28. CONFIRMED in previous session. Note: the opening claim is broader than what Isenberg explicitly states (he focuses on silhouettes). If a comprehensive NPR survey is added to the bib in future, replace this citation. $\square$ re-check at submission.}
+
+\citentry
+  {zell2015 — Zell et al.\ (2015)}
+  {§4.3 NPR Technique Design — excessive stylisation}
+  {Choosing a level that is too low may place an avatar within the uncanny valley, whereas excessive stylisation can reduce visual detail and compromise expressive readability.}
+  {Citation for the claim that excessive stylisation degrades expressive readability.}
+  {The perceived intensity of expressions decreases with realism of shape, but is nearly independent of material stylization.}
+  {Source: Zell et al.\ (2015), Main Findings list, p.~184:2. CONFIRMED in previous session. The finding direction: as shape becomes more stylised (less realistic), perceived expression intensity decreases. This supports ``excessive stylisation undermines expressive readability.''}
+
+\citentry
+  {wallraven2008 — Wallraven et al.\ (2008)}
+  {§4.3 NPR Technique Design — excessive stylisation (paired with zell2015)}
+  {[Same sentence as above, paired citation with zell2015:] excessive stylisation can reduce visual detail and compromise expressive readability.}
+  {Citation for shape detail reduction degrading perceived expression quality.}
+  {In addition, in Experiment~2, we found clear effects of shape blurring on both intensity and sincerity judgments. This demonstrates that, even though reduced shape information does not affect recognition, it does influence the perceived quality of the expression.}
+  {Source: Wallraven et al.\ (2008), §4 Summary, p.~23:19. CONFIRMED in previous session.}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§4.3.2 V1 Inverted Hull — silhouettes as NPR foundation}
+  {Object silhouettes are a defining visual feature of nonphotorealistic rendering.}
+  {Opening claim for V1 section.}
+  {Generating object silhouettes lies at the heart of nonphotorealism.}
+  {Source: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}, p.~28. CONFIRMED in previous session.}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§4.3.2 V1 Inverted Hull — stable silhouette without screen-space processing}
+  {The inverted hull method was selected because it produces stable geometric silhouettes without requiring screen space processing.}
+  {Selection rationale for V1.}
+  {\textcolor{darkorange}{[NEEDS CONFIRMATION of the exact sentence. Isenberg describes geometry-based methods as ``robust and distance-independent.'' Locate the exact sentence about screen-space independence in \texttt{Isenberg\_2003\_ADG.pdf}.]}}
+  {Confirmed in previous session that Isenberg describes geometry-based methods as robust and distance-independent. Verify exact wording for ``without requiring screen space processing.''}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§4.3.2 V1 — vertex stage, predictable cost}
+  {This approach is well suited to real time NPR avatar rendering because it requires no offline mesh preprocessing and executes entirely within the GPU vertex transformation stage.}
+  {Technical justification for V1 selection.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — locate in Isenberg (2003) the sentence describing geometry-based methods as operating at the vertex stage without preprocessing. Read \texttt{Isenberg\_2003\_ADG.pdf}.]}}
+  {Partially confirmed from previous session. Verify exact passage.}
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§4.3.2 V1 — limitation: only external silhouette}
+  {Creases between body regions, clothing seams, and facial contours receive no edge marking, as the method captures only the external silhouette of the mesh.}
+  {Paraphrase of the interior-edge limitation.}
+  {Thus, these geometric methods are not capable of identifying structural boundaries and cannot convey internal surface details.}
+  {Source: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}. CONFIRMED in previous session. Also supported by Lake et al.: ``in addition to silhouettes, we find edge lines that mark other key features of a model, such as crease and border edges'' (implying silhouette-only methods miss these).}
+
+\citentry
+  {gooch1998 — Gooch et al.\ (1998)}
+  {§4.3.3 V2 Toon Shading — [6] stylised lighting models preserve surface orientation}
+  {Previous work has shown that stylised lighting models can preserve the perception of surface orientation while departing from physically based illumination [6].}
+  {Numeric citation [6] = gooch1998 in compiled PDF.}
+  {[The cool-to-warm model] uses both luminance and changes in hue to indicate surface orientation... [replacing] traditional illumination models [that] do not show surface orientation well in areas that are not brightly lit.}
+  {Source: \texttt{Articles/NPR/Gooch1998.pdf}. CONFIRMED in previous session. Gooch's model was explicitly designed to communicate surface orientation through colour rather than physical illumination.}
+
+\citentry
+  {lake2000 — Lake et al.\ (2000)}
+  {§4.3.3 V2 Toon Shading — [9] discretising illumination for flat appearance}
+  {[D]iscretising the illumination response into uniform tonal regions produces the characteristic flat appearance associated with hand drawn animation [9].}
+  {Numeric citation [9] = lake2000 in compiled PDF.}
+  {Rather than smoothly interpolating shading across a surface, our hard shading technique finds a transition boundary and shades each side of the boundary with a solid color.}
+  {Source: \texttt{Articles/NPR/npar2000\_lake\_et\_al.pdf}. CONFIRMED in previous session. Lake's ``hard shading technique'' is exactly the discrete tonal approach described.}
+
+\citentry
+  {lake2000 — Lake et al.\ (2000)}
+  {§4.3.3 V2 Toon Shading — quantisation formula}
+  {This operation replaces continuous illumination gradients with discrete tonal transitions, producing the characteristic stepped appearance of toon shading.}
+  {Citation for the floor quantisation formula $t = \lfloor s \cdot n \rfloor / n$.}
+  {Rather than smoothly interpolating shading across a surface, our hard shading technique finds a transition boundary and shades each side of the boundary with a solid color.}
+  {Source: \texttt{Articles/NPR/npar2000\_lake\_et\_al.pdf}. CONFIRMED. Note: Lake et al.\ use a 1D texture lookup, not an explicit floor function. The floor formula in the thesis is a direct implementation equivalent. The citation is defensible as the conceptual source.}
+
+\citentry
+  {barla2006 — Barla et al.\ (2006)}
+  {§4.3.4 V2.2 X-Toon — 2D ramp replacing 1D}
+  {Barla et al.\ propose replacing the one-dimensional ramp with a two-dimensional ramp texture, where the horizontal axis encodes the lighting response and the vertical axis encodes the abstraction level.}
+  {Paraphrase of the 2D ramp formulation.}
+  {For this, we replace the conventional 1D texture used in toon shading with a 2D texture, where the second dimension corresponds to desired tone `detail'.}
+  {Source: \texttt{Articles/NPR/x-toon.pdf}, §1 Introduction. CONFIRMED in current session. The axis assignments are confirmed in §3 Tone Detail.}
+
+\citentry
+  {barla2006 — Barla et al.\ (2006)}
+  {§4.3.4 V2.2 X-Toon — Normal Field Abstraction}
+  {Barla et al.\ term this technique Normal Field Abstraction, achieved by blending the original mesh normals with normals derived from a geometrically simplified shape.}
+  {Citation for the shape detail / normal field technique.}
+  {We achieve this by modifying the surface normal field used in shading computations with a geometric map: we map the input mesh to an abstracted shape that acts as a lower bound for shape detail. [The designer controls] the ``abstraction'' of shape detail by setting a blending parameter that controls how the shader interpolates between normals of the input mesh and the abstracted shape.}
+  {\textbf{CRITICAL FLAG:} Barla et al.\ do NOT use the term ``Normal Field Abstraction'' anywhere in the paper. The technique is described under Section~4 ``Shape detail.'' The thesis sentence ``Barla et al.\ term this technique Normal Field Abstraction'' is INCORRECT — they do not give it this name. Revise the thesis sentence to: ``Barla et al.\ describe a shape detail extension that modifies the surface normal field by blending original mesh normals with normals from a geometrically abstracted shape~\cite{barla2006}.'' Source: \texttt{Articles/NPR/x-toon.pdf}, §4.}
+
+%% ─── V3 Normal Edge Detection ───────────────────────────────────────────────
+
+\citentry
+  {isenberg2003 — Isenberg et al.\ (2003)}
+  {§4.3.3 V3 — image space taxonomy opening claim}
+  {Normal based edge detection belongs to the class of image space NPR techniques, in which per pixel surface properties are analysed to reveal geometric boundaries.}
+  {Taxonomic claim: image space vs.\ object space NPR classification.}
+  {[Classification section, p.~29:] ``we distinguish between image space algorithms that only operate on image buffers, hybrid algorithms that perform manipulations in object space but yield the silhouette in an image buffer, and object space algorithms that perform all calculations in object space.'' [Image space algorithms section, p.~29:] ``Image space algorithms exploit discontinuities in the image buffer(s) that result from conventional rendering and extract them using image-processing methods.''}
+  {Source: \texttt{Articles/NPR/Isenberg\_2003\_ADG.pdf}, pp.~29--30. CONFIRMED. Both the three-way classification and the image-processing definition are directly stated. The phrase ``per pixel surface properties are analysed'' is a paraphrase of the image buffer discontinuity detection approach.}
+
+\citentry
+  {saitotakahashi1990 — Saito \& Takahashi (1990)}
+  {§4.3.3 V3 — G-buffer normal storage for edge detection}
+  {The underlying principle of normal based edge detection originates from image space NPR techniques. Saito and Takahashi introduced the concept of storing per pixel surface normals in geometric buffers and detecting edges from discontinuities in these buffers.}
+  {Citation for the G-buffer normal vector storage concept.}
+  {[Abstract, confirmed from SIGGRAPH History page:] ``data about geometric properties of surfaces are preserved as Geometric Buffers (G-buffers), with each G-buffer containing one geometric property such as the depth or the normal vector of each pixel'' and the algorithm detects ``discontinuities, edges, contour lines, and curved hatching.''}
+  {Source: \texttt{Articles/NPR/Comprehensible Rendering of 3-D Shapes Saito.pdf} — physical PDF read directly (SIGGRAPH 1990, pp.~197--200). CONFIRMED from physical source. Key sentences: [p.~198, §2:] ``Each buffer contains one geometric property, such as the depth or \textbf{the normal vector} of the visible object in each pixel.'' G-buffer property list explicitly includes ``nx: normal vector x / ny: normal vector y / nz: normal vector z''. [§3, p.~198:] ``We develop drawing algorithms for the basic enhancement operations, the drawing of discontinuity lines, contour lines, and curved hatching. All of them are realized with 2-D image processing operations.'' The thesis claim ``Per-pixel surface normals stored in G-buffer channels have been used for edge detection'' is precisely and fully supported.}
+
+\citentry
+  {nienhaus2003 — Nienhaus \& D\"{o}llner (2003)}
+  {§4.3.3 V3 — normal buffer discontinuities detect silhouette, border, and crease edges}
+  {Building on this idea, Nienhaus and D\"{o}llner demonstrated that discontinuities in the normal field provide a reliable cue for silhouette, border, and crease edges in real time NPR rendering.}
+  {Paraphrase of the edge classification and normal-buffer detection method.}
+  {[Abstract, p.~1:] ``It is based on the edge map, a 2D texture that encodes visually important edges of 3D scene objects, and includes silhouette edges, border edges, and crease edges.'' [Section~3, p.~3:] ``A silhouette edge is an edge adjacent to a polygon facing towards the camera (front-facing) and one polygon facing in the opposite direction (back-facing). A border edge is an edge to exactly one polygon. A crease edge is an edge between two front-facing (or back-facing, respectively) polygons whose dihedral angle is above some threshold.'' [Section~4.1.2, p.~3--4:] ``Abrupt changes in the normal-buffer occur typically at crease edges... $0^{th}$ order discontinuities of the normal-buffer indicate crease edges and, furthermore, profile edges.''}
+  {Source: \texttt{Articles/NPR/Edge Enhancement.pdf} — physical PDF read. CONFIRMED. Key original sentences: [Abstract, p.~1:] ``It is based on the edge map, a 2D texture that encodes visually important edges of 3D scene objects, and includes silhouette edges, border edges, and crease edges.'' [§3, p.~3 — three edge type definitions confirmed verbatim.] [§3, p.~3:] ``In a typical 3D scene, abrupt changes in the z-buffer occur at silhouette edges and border edges.'' [§3, p.~3:] ``\textbf{Abrupt changes in the normal-buffer occur typically at crease edges.}'' \textbf{PRECISION FLAG RESOLVED:} The current thesis text at §4.3.3 already satisfies the precision requirement: it says ``G-buffer channels'' (plural, covering both z-buffer and normal buffer) and explicitly qualifies that crease edges are ``specifically recovered from the normal buffer.'' The text does NOT claim all three edge types come from the normal buffer alone. No revision needed.}
+
+%% ─────────────────────────────────────────────────────────────────────────────
+
+\citentry
+  {gonzalez2018 — Gonzalez \& Woods (2018)}
+  {§4.3.5 V4 Sobel — Sobel kernels and gradient magnitude}
+  {The horizontal and vertical gradient components $G_x$ and $G_y$ are estimated using the Sobel kernels defined in Equation~(2). Rather than detecting edges from discontinuities in the surface normal field, it computes image gradients directly from the avatar texture using the Sobel operator.}
+  {Reference to Gonzalez \& Woods for Sobel kernel values.}
+  {[p.~718:] ``Obtaining the gradient of an image requires computing the partial derivatives $\partial f/\partial x$ and $\partial f/\partial y$ at every pixel location in the image.'' [p.~719:] ``These kernels are called the \textit{Sobel operators} (Sobel [1970]).'' [p.~720:] ``Any of the pairs of kernels from Fig.~10.14 are convolved with an image to obtain the gradient components $g_x$ and $g_y$ at every pixel location. These two partial derivative arrays are then used to estimate edge strength and direction.''}
+  {Source: pp.~718--720. CONFIRMED. Same kernel definition confirmed as Entry~\#24 and \#33. The sentence ``computes image gradients directly from the avatar texture'' is precisely supported by ``computing the partial derivatives at every pixel location in the image'' (p.~718). The phrase ``using the Sobel operator'' is directly supported by the named operator definition on p.~719.}
+
+\citentry
+  {canny1986 — Canny (1986)}
+  {§4.3.5 V4 Sobel — gradient detectors require prior smoothing}
+  {V4.2 addresses this by pre-smoothing the texture input before differentiation, following Canny's established principle that gradient-based detectors require prior smoothing to suppress noise sensitivity.}
+  {Citation for the smoothing motivation.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — same source as Entry~\#34. No PDF available. Confirm Canny states this principle explicitly.]}}
+  {No PDF. The principle is standard; confirm Canny is the correct citation vs.\ Marr \& Hildreth (1980), who make the same argument.}
+
+\citentry
+  {marr1980 — Marr \& Hildreth (1980)}
+  {§4.3.6 V4.2 Gaussian Sobel — Gaussian is isotropic, no orientation bias}
+  {The Gaussian filter is the preferred smoothing choice because it is isotropic: it attenuates noise equally in all spatial directions without introducing an orientation bias that would systematically skew the distribution of detected edge directions.}
+  {Paraphrase of Marr \& Hildreth's justification for Gaussian pre-filtering.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — same source as Entry~\#25. No PDF. Confirm Marr \& Hildreth use the isotropy argument specifically.]}}
+  {No PDF. The thesis makes a specific claim about the isotropy argument. Verify this is from Marr \& Hildreth and not from another source such as Canny.}
+
+\citentry
+  {gonzalez2018 — Gonzalez \& Woods (2018)}
+  {§4.3.6 V4.2 Gaussian — classical $3\times3$ discrete approximation}
+  {The defaults follow the classical discrete $3\times3$ Gaussian approximation: centre $= 0.25$, cardinal $= 0.125$, diagonal $= 0.0625$.}
+  {Reference to Gonzalez \& Woods for the standard Gaussian kernel coefficients.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — same source as Entry~\#24. Confirm the $4/16$, $2/16$, $1/16$ Gaussian approximation appears in the textbook.]}}
+  {Same textbook. Locate the standard $3\times3$ Gaussian kernel approximation and confirm these coefficient values.}
+
+\citentry
+  {gonzalez2018 — Gonzalez \& Woods (2018)}
+  {§4.3.7 V6 Hierarchical — Roberts Cross}
+  {A colour layer applies the Roberts Cross operator to the diffuse texture to capture painted detail boundaries.}
+  {Citation for the Roberts Cross operator.}
+  {[p.~718, §10.2 ``Gradient Operators'':] ``The \textit{Roberts cross-gradient operators} (Roberts [1965]) are one of the earliest attempts to use 2-D kernels with a diagonal preference. Consider the $3\times3$ region in Fig.~10.14(a). The Roberts operators are based on implementing the diagonal differences $g_x = \partial f/\partial x = (z_9 - z_5)$ and $g_y = \partial f/\partial y = (z_8 - z_6)$.'' [Fig.~10.14(b) and (c) show the $2\times2$ diagonal kernels.]}
+  {Source: p.~718. CONFIRMED. The Roberts Cross is explicitly named in Gonzalez \& Woods with its $2\times2$ diagonal convolution form. The thesis Eq.~(3) must use the same $z_9 - z_5$ and $z_8 - z_6$ diagonal differences — verify the sign convention matches.}
+
+\citentry
+  {gonzalez2018 — Gonzalez \& Woods (2018)}
+  {§4.5 Avaturn Preprocessing — Gaussian blur attenuating illumination}
+  {A separable 1D Gaussian with $\sigma = 2.5$... attenuates high-frequency illumination variation in the photographic source, reducing the luminance gradient magnitude across smooth skin regions.}
+  {Citation for Gaussian blur as a pre-processing tool.}
+  {\textcolor{darkorange}{[No specific sentence needed — Gonzalez \& Woods is cited as the general source for Gaussian smoothing. Confirm this use of the citation is appropriate (it is standard knowledge from the textbook).]}}
+  {Same textbook. This use of the citation is for Gaussian smoothing as a preprocessing tool. No specific sentence needed; confirm the citation is appropriate as a general technique reference.}
+
+\citentry
+  {canales2024 — Canales et al.\ (2024)}
+  {§4.6 Platform Selection — photorealistic reference required}
+  {Canales et al.\ demonstrate that evaluating the effect of avatar stylisation on trust requires comparisons across the entire fidelity spectrum, with a photorealistic avatar serving as the reference condition.}
+  {Citation for the photorealistic baseline requirement in stylisation studies.}
+  {Style differences did not lead to any significant differences in the subjective trust scores... [the study used] three different doctors with three different style levels: realistic, caricature, and an in-between ``Mid'' level.}
+  {Source: \texttt{Articles/trust/Avatar\_Stylization\_and\_Trust\_IEEE\_VR\_2024.pdf}. CONFIRMED. Canales uses a photorealistic avatar as one of the three conditions. The specific claim about ``requiring a photorealistic reference'' is a thesis-level inference from Canales's design. Verify this is not over-stated.}
+
+\citentry
+  {mori1970 — Mori (1970)}
+  {§4.7 H1 Hypothesis}
+  {A photorealistic avatar at near-human fidelity occupies the most problematic region of the affinity curve, whereas stylised abstraction deliberately relocates the representation to the stable, comfortable slope below the valley.}
+  {Paraphrase of Mori's curve for H1 motivation.}
+  {I have noticed that, in climbing toward the goal of making robots appear human, our affinity for them increases until we come to a valley (Figure 1), which I call the uncanny valley.}
+  {CONFIRMED — same source as Entry~\#3. The specific claim about ``relocating to the stable slope'' is a thesis inference from the shape of Mori's curve, not a direct quote. This is an acceptable theoretical implication.}
+
+\citentry
+  {canales2024 — Canales et al.\ (2024)}
+  {§4.7 H2 Hypothesis}
+  {Canales et al., who found equivalent self-reported trust across three stylisation levels for a virtual doctor advisor.}
+  {Citation for the null H2 prediction.}
+  {Trust ratings are largely consistent across the style levels... Style differences did not lead to any significant differences in the subjective trust scores.}
+  {CONFIRMED — same source as Entry~\#19. Direct support for H2.}
+
+\citentry
+  {mcdonnell2012 — McDonnell et al.\ (2012)}
+  {§4.7 H3 Hypothesis}
+  {Even if NPR does not reduce trust relative to a photorealistic avatar, human speakers are expected to retain a trust advantage over computer-generated representations.}
+  {Citation for H3 — real human trust ceiling.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — same source as Entry~\#11. Locate the specific finding in McDonnell et al.\ that human stimuli received higher trust or affinity than CG conditions.]}}
+  {Same paper as Entry~\#11. Verify this specific claim about real humans retaining a trust advantage.}
+
+\citentry
+  {alipour2025 — Alipour et al.\ (2025)}
+  {§4.7 H4 Hypothesis}
+  {This hypothesis is supported by the systematic review of Alipour et al., who report a direct negative eeriness-to-trust relationship in the majority of studies that tested it.}
+  {Citation for the eeriness-to-trust negative relationship.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read pages 4+ of \texttt{Articles/trust/Alipor\_Would You Rely on an Eerie Agent?.pdf}. Locate the finding: `17 reported a direct negative effect' and `24 found the relationship conditional'.]}}
+  {Abstract confirms the review covered these studies. Body of paper needed for the specific count and percentage figures in the thesis.}
+
+\citentry
+  {bartneck2009 — Bartneck et al.\ (2009)}
+  {§4.7 Questionnaire — Parts C and D}
+  {Part~C assesses likeability using the five-item Godspeed Likeability subscale. Part~D assesses perceived human-likeness using the five-item Godspeed Anthropomorphism subscale.}
+  {Reference for Godspeed instrument items.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — confirm from \texttt{Articles/trust/Bartneck\_2009\_Measurement Instruments for the Anthropomorphism.pdf} that the Likeability subscale has exactly five items and the Anthropomorphism subscale has exactly five items, with the anchor labels as stated in the thesis.]}}
+  {PDF available. Confirm item counts and anchor labels (e.g., Dislike–Like, Unfriendly–Friendly, Machinelike–Humanlike, Artificial–Lifelike).}
+
+\citentry
+  {ho2010 — Ho \& MacDorman (2010)}
+  {§4.7 Questionnaire — Part B eeriness instrument}
+  {Part~B assesses eeriness using six items adapted from Ho and MacDorman, targeting strangeness, creepiness, unsettlingness, and perceptual discomfort; the instrument distinguishes eeriness from human-likeness as orthogonal perceptual dimensions.}
+  {Reference for the eeriness instrument item count and content.}
+  {Phase 2 of this study developed alternative indices... [items are] semantic differential items targeting the $y$-axis eeriness of Mori's graph.}
+  {Source: \texttt{Articles/trust/Ho2010UncannyValleyIndices.pdf}. PARTIALLY CONFIRMED. The six-item count and orthogonality are in the abstract. Confirm the specific item labels (strange/familiar, creepy/not creepy, etc.) by reading the item list in the paper (Table 3 or similar).}
+
+\citentry
+  {mayer1995 — Mayer et al.\ (1995)}
+  {§4.7 Questionnaire — Parts E, F, G trust battery}
+  {The eleven trust items are structured around the three-component Ability-Benevolence-Integrity (ABI) model of Mayer et al.}
+  {Reference for the ABI framework and trust battery structure.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Confirm the ABI model and the definition of trust as ``willingness to be vulnerable.'' Also confirm item counts: 4 Ability + 4 Benevolence + 3 Integrity = 11 total.]}}
+  {No PDF. The Canales (2024) paper (already read) confirms the Mayer model for trust (``ability, benevolence and integrity'') and cites Mayer et al.\ [24]. The 11-item count must be verified as consistent with Mayer's operationalisation.}
+
+\citentry
+  {mcknight2001 — McKnight \& Chervany (2001)}
+  {§4.7 Questionnaire — trusting-beliefs item wording}
+  {Operationalised within the trusting-beliefs framework of McKnight and Chervany. [Also:] Measuring the three components separately allows differential effects... a composite single score would mask such effects.}
+  {Reference for item wording source and rationale for separate subscales.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/trust/What Trust Means in E-Commerce Customer Relationships.pdf} and confirm it provides item-level wording for Competence, Benevolence, and Integrity scales.]}}
+  {PDF available. Confirm McKnight \& Chervany provide item templates, not just the theoretical framework. Verify the ``separate subscales'' rationale is stated in the paper.}
+
+\citentry
+  {gao2025 — Gao et al.\ (2025)}
+  {§4.7 Questionnaire — Part H warmth}
+  {H2 measures perceived warmth and approachability of the advisor. H2 is grounded in findings from Gao et al.\ that stylisation can affect perceived warmth independently of trust subscale ratings.}
+  {Citation for warmth as an independent stylisation-sensitive variable.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Locate Gao et al.\ (2025) and confirm the specific finding about warmth and stylisation.]}}
+  {No PDF. Verify this specific warmth-stylisation finding is in Gao et al.\ (2025) and not a different paper.}
+
+\citentry
+  {canales2024 — Canales et al.\ (2024)}
+  {§4.7 Post-Study — P1 behavioural measure paradigm}
+  {An advisor preference ranking question (P1)... adapted from the post-study advisor selection paradigm of Canales et al.; it captures implicit trust judgment that explicit Likert ratings may not fully reflect.}
+  {Citation for the behavioural selection paradigm design.}
+  {Participants then selected a single doctor for a second opinion, and also selected the doctor they would least prefer.}
+  {Source: \texttt{Articles/trust/Avatar\_Stylization\_and\_Trust\_IEEE\_VR\_2024.pdf}, §5.3 Procedure. CONFIRMED. The post-study forced-choice selection is confirmed as the paradigm source.}
+
+\citentry
+  {mayer1995 — Mayer et al.\ (1995)}
+  {§4.7 Post-Study — propensity to trust covariate}
+  {A propensity-to-trust item... following Mayer et al., who identify disposition to trust as a stable individual difference that should be controlled.}
+  {Citation for propensity to trust as a covariate.}
+  {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Confirm Mayer et al.\ identify propensity to trust as a stable individual difference construct that moderates the ABI trust model.]}}
+  {No PDF. The Mayer model includes propensity to trust as a construct. Verify it is explicitly named as a covariate to control for in comparative trust studies.}
 
 \end{document}

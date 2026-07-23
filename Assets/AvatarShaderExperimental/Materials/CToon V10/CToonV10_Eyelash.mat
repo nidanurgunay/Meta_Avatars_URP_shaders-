@@ -25,6 +25,7 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _DETAILMODE_DEPTH
   - _EDGEBLENDMODE_MAX
   m_InvalidKeywords:
   - _ALPHATEST_ON
@@ -98,6 +99,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ToonRamp:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -125,7 +130,11 @@ Material:
     - _Cull: 0
     - _Cutoff: 0.3
     - _DebugView: 0
+    - _DepthFar: 50
+    - _DepthNear: 5
     - _DetailAlbedoMapScale: 1
+    - _DetailBias: 0.5
+    - _DetailMode: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
@@ -157,6 +166,8 @@ Material:
     - _InnerLineBlur: 2
     - _InnerLineStrength: 1
     - _InnerLineThreshold: 0.03
+    - _LightSensitivity: 0.8
+    - _ManualDetail: 0.5
     - _Metallic: 0
     - _Mode: 3
     - _NormalEdgeSmoothness: 0.1
@@ -168,6 +179,7 @@ Material:
     - _Parallax: 0.02
     - _PowerCurve: 1.5
     - _QueueOffset: -9
+    - _RampSmoothing: 0.05
     - _ReceiveShadows: 1
     - _RimPower: 3
     - _ShadowStrength: 0.7
@@ -202,6 +214,6 @@ Material:
     - _InnerLineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OuterOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 0.5754717, g: 0.5754717, b: 0.5754717, a: 1}
+    - _ShadowColor: {r: 0.29999998, g: 0.29999998, b: 0.45, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
-  m_AllowLocking: 1

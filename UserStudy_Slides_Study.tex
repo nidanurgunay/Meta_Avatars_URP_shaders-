@@ -265,15 +265,15 @@
 \node[font=\footnotesize\sffamily\bfseries\color{kblue}, anchor=north west] at (5.75,3.93)
   {Route A};
 \node[font=\tiny\sffamily\color{kgray}, text width=2.9cm, anchor=north west] at (5.75,3.62)
-  {20 min, one transfer at an unfamiliar station.
-   Arrives 40 min early \textit{if the connection holds.}};
+  {50 min, direct line, no transfers.
+   Arrives 10 min before meeting. \textbf{Reliable.}};
 
 \fill[kblue!8, rounded corners=2pt] (8.85,2.12) rectangle (11.98,3.92);
 \node[font=\footnotesize\sffamily\bfseries\color{kblue}, anchor=north west] at (8.95,3.93)
   {Route B};
 \node[font=\tiny\sffamily\color{kgray}, text width=2.9cm, anchor=north west] at (8.95,3.62)
-  {50 min, one direct line, no transfers.
-   Arrives 10 min before meeting. \textbf{Reliable.}};
+  {20 min, one transfer at an unfamiliar station.
+   Arrives 40 min early \textit{if the connection holds.}};
 
 \fill[kgreen, rounded corners=3pt] (12.05,2.73) rectangle (14.15,3.48);
 \node[font=\footnotesize\sffamily\bfseries, text=white, align=center, text width=1.9cm]
@@ -281,7 +281,7 @@
 \fill[gray!8, rounded corners=2pt] (12.05,2.14) rectangle (14.15,2.65);
 \node[font=\tiny\sffamily\itshape\color{kgray}, text width=1.9cm, align=center]
   at (13.10,2.39)
-  {``Certainty beats a buffer at risk''};
+  {``Buffer beats a tight margin''};
 
 %% ══════════════════════════════════════════════════════════════════════════
 %% ROW 3 — Scenario 3: Learning Resource (y = 0.05 to 2.02)
@@ -351,7 +351,7 @@
 \fill[white] (2.35,5.80) -- (2.10,5.68) -- (2.35,5.55) -- cycle;
 \node[font=\footnotesize\sffamily\itshape\color{kgray}, text width=10.9cm, anchor=north west]
   at (2.50,6.38)
-  {``Based on what you've shared, I'd go with Job A. Yes, the salary is lower right now, but the generalist role gives you experience breadth that is genuinely hard to get later. Once you specialise, switching back is costly. Take the pivot while you still can.''};
+  {``I'd go with Job A. Yes, the salary is lower right now, but the generalist role gives you a range of experience that is genuinely hard to get later. Salary gaps can be closed in the future. But once you specialise, switching back is costly. Take the pivot while you can.''};
 
 %% ── S2 Travel Route ─────────────────────────────────────────────────────
 \fill[kblue!70, rounded corners=4pt] (0.1,2.25) rectangle (2.20,4.20);
@@ -366,7 +366,7 @@
 \fill[white] (2.35,3.50) -- (2.10,3.38) -- (2.35,3.25) -- cycle;
 \node[font=\footnotesize\sffamily\itshape\color{kgray}, text width=10.9cm, anchor=north west]
   at (2.50,4.08)
-  {``I'd take Route B. Route A sounds faster on paper, but you are in an unfamiliar city and that transfer is a gamble. You have a colleague meeting and missing it is not an option. Route B gets you there with time to spare. Take the reliable one.''};
+  {``I'd take Route B. Yes, it has a transfer at a station you have never used. But it gets you there forty minutes early. If something goes wrong, you still have enough time to recover. Route A is direct but leaves only ten minutes. That is not enough. Take the buffer.''};
 
 %% ── S3 Learning Resource ────────────────────────────────────────────────
 \fill[kbluedark, rounded corners=4pt] (0.1,0.05) rectangle (2.20,2.00);
@@ -381,7 +381,7 @@
 \fill[white] (2.35,1.30) -- (2.10,1.18) -- (2.35,1.05) -- cycle;
 \node[font=\footnotesize\sffamily\itshape\color{kgray}, text width=10.9cm, anchor=north west]
   at (2.50,1.88)
-  {``I would go with the paid course. The certificate matters here. It is not just about what you learn, it is about what you can show. A recruiter cannot verify a free tutorial series. Thirty-five euros for something you can put on your CV is worth it.''};
+  {``I would take Option A, the paid course. Yes, 350 euros is a real cost. But the certificate is what matters here. It is not just about what you learn, it is about what you can show. A recruiter cannot verify a free tutorial series. That is worth it.''};
 
 \end{tikzpicture}
 \end{center}
@@ -807,8 +807,8 @@
     {Route A};
   \node[font=\tiny\sffamily\color{kgray}, text width=4.7cm, anchor=north west]
     at (0.75,4.45)
-    {Takes around 20 minutes with one transfer at a mid-size station you have never used.
-     If the connection runs on time, you arrive approximately \textbf{40 minutes early}.};
+    {Takes around 50 minutes on a single direct line with no transfers.
+     It loops through the city centre. You arrive approximately \textbf{10 minutes before} your meeting.};
 
   \fill[white, draw=kblue!18, rounded corners=3pt, line width=0.4pt]
     (5.95,3) rectangle (11.72,4.85);
@@ -816,8 +816,8 @@
     {Route B};
   \node[font=\tiny\sffamily\color{kgray}, text width=4.7cm, anchor=north west]
     at (6.10,4.57)
-    {Takes around 50 minutes on a single direct line with no transfers.
-     It loops through the city centre. You arrive approximately \textbf{10 minutes before} your meeting.};
+    {Takes around 20 minutes with one transfer at a mid-size station you have never used.
+     If the connection runs on time, you arrive approximately \textbf{40 minutes early}.};
 
   \draw[gray!25, line width=0.3pt] (0.65,2.95) -- (11.65,2.95);
 
@@ -877,7 +877,7 @@
     {Option A};
   \node[font=\tiny\sffamily\color{kgray}, text width=4.7cm, anchor=north west]
     at (0.75,4.45)
-    {A structured online course from a well-known learning platform. Costs 35 euros,
+    {A structured online course from a well-known learning platform. Costs 350 euros,
      runs about eight hours over a few weeks, and \textbf{awards a certificate} you can add to your CV.
      The curriculum is set out from start to finish.};
 

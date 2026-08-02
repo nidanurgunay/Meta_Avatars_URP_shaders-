@@ -13,40 +13,74 @@
 \usepackage{array}
 \usepackage{parskip}
 \usepackage{microtype}
+\usepackage{needspace}
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage[hidelinks]{hyperref}
 
 \definecolor{konstanzblue}{RGB}{0, 83, 159}
 \definecolor{lightgray}{RGB}{245, 245, 245}
-\definecolor{midgray}{RGB}{180, 180, 180}
+\definecolor{midgray}{RGB}{170, 170, 170}
 \definecolor{darkred}{RGB}{160, 30, 30}
 \definecolor{darkorange}{RGB}{180, 80, 0}
+\definecolor{darkgreen}{RGB}{25, 105, 25}
 
 \newcounter{citentry}
-\newcommand{\citentry}[6]{%
+\makeatletter
+\newsavebox{\citentry@measurebox}
+\newcommand{\citentry@core}[7]{%
   \stepcounter{citentry}
+  %% Measure this entry's true rendered height first (using a plain square in place
+  %% of the interactive CheckBox, since AcroForm fields must not be typeset inside a
+  %% saved/reused box), then Needspace-guard the badge so it never gets stranded alone
+  %% at the bottom of a page while its table jumps to the next one (tabular is atomic).
+  \begingroup
+  \sbox{\citentry@measurebox}{%
+    \begin{minipage}{\linewidth}
+      \noindent\colorbox{konstanzblue}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
+        \vspace{3pt}
+        \textbf{\#\thecitentry \quad #2} \hfill \textit{#3}
+        \vspace{3pt}
+      }}
+      \vspace{3pt}
+      \noindent\begin{tabular}{@{}p{2.7cm} p{\dimexpr\linewidth-3cm}@{}}
+        \textit{\small Cited sentence (claim in thesis):} & ``#4'' \\[5pt]
+        \textbf{Paraphrase used:}   & #5 \\[5pt]
+        \textit{\small Original source text:}     & ``#6'' \\[5pt]
+        \textbf{Notes:}             & #7 \\
+      \end{tabular}
+      \vspace{5pt}
+      \rule{10pt}{10pt}\quad \textbf{Validated} --- original PDF read; paraphrase confirmed accurate.
+    \end{minipage}%
+  }%
+  \Needspace{\dimexpr\ht\citentry@measurebox+\dp\citentry@measurebox\relax}%
+  \endgroup
   \vspace{10pt}
-  \noindent\colorbox{lightgray}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
-    \vspace{4pt}
-    \textbf{\textcolor{konstanzblue}{\#\thecitentry \quad #1}}
-    \hfill \textit{Section: #2}
-    \vspace{4pt}
+  \noindent\colorbox{konstanzblue}{\parbox{\dimexpr\linewidth-2\fboxsep}{%
+    \vspace{3pt}
+    \textcolor{white}{\textbf{\#\thecitentry \quad #2}} \hfill \textcolor{white}{\textit{#3}}
+    \vspace{3pt}
   }}
-  \vspace{4pt}
-  \noindent\begin{tabular}{@{}p{3cm} p{\dimexpr\linewidth-3.5cm}@{}}
-    \textbf{Claim in thesis:}   & \textit{``#3''} \\[4pt]
-    \textbf{Paraphrase used:}   & #4 \\[4pt]
-    \textbf{Original text:}     & \textcolor{darkred}{\textit{``#5''}} \\[4pt]
-    \textbf{Notes:}             & #6 \\
+  \vspace{3pt}
+  \noindent\begin{tabular}{@{}p{2.7cm} p{\dimexpr\linewidth-3cm}@{}}
+    \textit{\small Cited sentence (claim in thesis):} & \textcolor{darkgreen}{``#4''} \\[5pt]
+    \textbf{Paraphrase used:}   & #5 \\[5pt]
+    \textit{\small Original source text:}     & \textcolor{darkred}{``#6''} \\[5pt]
+    \textbf{Notes:}             & #7 \\
   \end{tabular}
-  \vspace{6pt}
-  \noindent $\square$\quad \textbf{Validated} — original PDF read; paraphrase confirmed accurate.
-  \vspace{2pt}
+  \vspace{5pt}
+  \noindent\CheckBox[name=verified\thecitentry, width=10pt, height=10pt, bordercolor={0 0 0}, borderwidth=0.75, backgroundcolor={1 1 1}#1]{}\quad \textbf{Validated} --- original PDF read; paraphrase confirmed accurate.
+  \vspace{3pt}
   \noindent\textcolor{midgray}{\rule{\linewidth}{0.4pt}}
 }
+%% \citentry{...} = unchecked box (default). \citentry*{...} = pre-checked box, for entries
+%% Nidanur has already confirmed --- use the star so her confirmation survives every recompile,
+%% since recompiling always regenerates the PDF and would otherwise wipe any tick she made in Preview.
+\newcommand{\citentry}{\@ifstar{\citentry@core{, checked}}{\citentry@core{}}}
+\makeatother
 
 \begin{document}
+\begin{Form}
 
 \begin{center}
   {\Large\bfseries\textcolor{konstanzblue}{Citation Paraphrase Verification Log}}\\[6pt]
@@ -88,53 +122,101 @@
 %% ═══════════════════════════════════════════════════════════════════
 \section*{Chapter 1 — Introduction}
 
-\citentry
+\citentry*
+  {weidner2023 — Weidner et al.\ (2023)}
+  {§1.1 Motivation — new opening paragraph, avatars/agents in immersive environments}
+  {This is no longer limited to passive viewing, as virtual assistants, game characters, and avatars in immersive environments increasingly involve users in sustained interactions with virtual humans.}
+  {Grounds the claim that engagement with avatars and agents in AR/VR is now widespread and direct, not just passive, motivating why rendering-style choice matters more. Sole usage of this source in Chapter 1 as of 2026-08-01 — an earlier draft also cited it a second time in the ``Communication through avatars'' paragraph for the 72-study systematic-review finding, but that sentence was removed at Nidanur's request as too Related-Work-like for the Introduction; the same finding remains properly cited in \texttt{02\_related\_work.tex} \S2.2 (see entry further below).}
+  {AR and VR are pushing from the labs towards consumers, especially with social applications... many popular AR/VR applications use avatars or agents. While an avatar is controlled by a human, an agent is controlled solely by a computer system. (Abstract and \S1 Introduction, direct quotes.)}
+  {Source: \texttt{Articles/\_2022\_10\_07\_\_IEEE\_VR\_\_A\_Survey\_on\_Avatar\_and\_Agents.pdf}. CONFIRMED — read directly, 2026-08-01. NOTE: this replaces a previously fabricated bib entry for \texttt{weidner2023} (a nonexistent CHI paper titled ``Watching Yourself in a Video Conference,'' whose DOI actually belonged to an unrelated paper by different authors). The bib entry, and every sentence citing \texttt{weidner2023} in \texttt{01\_introduction.tex} and \texttt{02\_related\_work.tex}, was corrected 2026-08-01 to the real paper: Weidner, Boettcher, Arevalo Arboleda, Diao, Sinani, Kunert, Gerhardt, Broll \& Raake, ``A Systematic Review on the Visualization of Avatars and Agents in AR \& VR Displayed Using Head-Mounted Displays,'' IEEE TVCG 2023, DOI 10.1109/TVCG.2023.3247072.}
+
+\citentry*
+  {mcdonnell2012 — McDonnell et al.\ (2012)}
+  {§1.1 Motivation — new opening paragraph, paraphrase of the paper's own opening sentence}
+  {This leads to several design concerns with consequences across film, games, and other domains where virtual humans appear. One of the most difficult is how realistically or abstractly such a participant should be rendered. This tension between realism and abstraction is the starting point for the work presented in this thesis.}
+  {Paraphrase (restructured, not a synonym-swap) of the paper's own first sentence, used to establish that render-style choice is a longstanding, recognised difficulty rather than a novel claim invented for this thesis.}
+  {Choosing an appropriate rendering style for virtual humans in movies, games, and other domains can be a challenging task. Using near-human characters can be considered risky, as it is not only costly but can produce a negative audience reaction [Geller 2008; Levi 2004]. (p.~91:1, Introduction, first two sentences.)}
+  {Source: \texttt{Articles/ McDonnell, R., Breidt, M., and Bülthoff, H. H. (2012). Render me Real? Investigating.pdf}. CONFIRMED — Introduction (p.~91:1) read directly, 2026-08-01. \textbf{ATTRIBUTION FLAG (resolved):} McDonnell et al.'s second sentence (``near-human characters\ldots risky\ldots negative audience reaction'') is itself credited by them to Geller (2008) and Levi (2004), not an original McDonnell finding --- the \texttt{[Geller 2008; Levi 2004]} marker was missing from this quote in an earlier pass of this log and has now been restored so the excerpt is not misread as McDonnell's own uncited claim. The actual thesis sentence at \texttt{01\_introduction.tex} line~8 paraphrases only the first sentence (the general ``challenging task'' framing) and does not rely on the Geller/Levi-sourced claim, so \texttt{mcdonnell2012} alone is the correct and sufficient citation for what the thesis states. Geller (2008) and Levi (2004) do not need their own \texttt{references.bib} entries unless a future revision extends the thesis sentence to assert the specific ``risky/costly/negative reaction'' claim directly. This resolves the outstanding verification flagged in the entry below (same PDF, same file) for at least the opening framing; the render-style/eeriness finding used elsewhere in \S1.1 and \S2.1 still needs the later results sections read.}
+
+\citentry*
   {nowak2003 — Nowak \& Biocca (2003)}
   {§1.1 Motivation}
-  {Nowak and Biocca demonstrated that avatar appearance exerts a measurable influence on social presence and interpersonal trust.}
+  {This growing engagement has also given rise to new features of virtual reality (VR), particularly communication through avatars. This form of communication has extended well beyond its origins as a navigational convenience and branched into social presence. Research confirmed this: avatar appearance exerts a measurable influence on social and copresence.}
   {Paraphrase of Nowak \& Biocca's core finding on avatar appearance and social outcomes.}
-  {Participants interacting with the less-anthropomorphic image reported more copresence and social presence than those interacting with partners represented by either no image at all or by a highly anthropomorphic image of the other, indicating that the more anthropomorphic images set up higher expectations that lead to reduced presence when these expectations were not met.}
-  {Source: \texttt{Articles/Nowak2003.pdf}, Abstract. CONFIRMED. Note: the original finding is about copresence and social presence, not trust directly. Verify that the thesis does not overstate ``interpersonal trust'' if the paper measures only presence/copresence.}
+  {Full title: ``The Effect of the Agency and Anthropomorphism on Users' Sense of Telepresence, Copresence, and Social Presence in Virtual Environments.'' Abstract/Hypotheses I--II: the experiment measured copresence and social presence (and telepresence) as functions of anthropomorphism and agency. Participants interacting with the less-anthropomorphic image reported more copresence and social presence than those interacting with partners represented by either no image at all or by a highly anthropomorphic image of the other, indicating that the more anthropomorphic images set up higher expectations that lead to reduced presence when these expectations were not met.}
+  {Source: \texttt{Articles/Nowak2003.pdf}, title page, abstract, and \S1--3 (Introduction through Hypotheses). CONFIRMED — read directly, 2026-08-01. \textbf{CORRECTED 2026-08-01:} the thesis sentence previously claimed this paper found an influence on ``interpersonal trust,'' but the word ``trust'' does not appear anywhere in the title, abstract, or the paper's two formal hypotheses, both of which concern copresence and social presence only. The thesis sentence was rewritten to claim only what the paper actually measures (social presence and copresence); trust is now introduced via a separate citation (\texttt{bente2008}, next entry) rather than being attributed to Nowak \& Biocca.}
+
+\citentry*
+  {bente2008 — Bente et al.\ (2008)}
+  {§1.1 Motivation — new citation (2026-08-01), presence-to-trust bridge}
+  {This same presence has been linked to interpersonal trust and perceived communication quality in avatar-mediated collaboration.}
+  {Replaces a previously unsupported leap where the thesis asserted trust as an assessment criterion for communication quality with no citation at all (flagged by Nidanur 2026-08-01). Grounds the bridge from social presence/copresence (Nowak \& Biocca) to trust.}
+  {This study analyzes the influence of avatars on social presence, interpersonal trust, perceived communication quality, nonverbal behavior, and visual attention in Net-based collaborations using a comparative approach... Significant differences were found between text chat and all other communication modalities in perceived intimateness, co-presence, and emotionally-based trust. (Abstract, p.~287.) Introduction (p.~288) additionally explains the conceptual pairing: `trust is generic to human communication and implies evaluative aspects, social presence is aiming at mediated communication and is more descriptive by nature. Thus, in combination, both variables can be expected to cover a wide range of relational media effects.'}
+  {Source: \texttt{Articles/Human Communication Research - 2008 - Bente - Avatar-Mediated Networking  Increasing Social Presence and Interpersonal.pdf}. CONFIRMED — full text (pp.~287--289, Abstract through Background) read directly, 2026-08-01, after Nidanur located and added the PDF. Bibliographic details (Bente, G., R{\"u}ggenberg, S., Kr{\"a}mer, N. C., \& Eschenburg, F., \textit{Human Communication Research}, 34(2), 287--318, DOI 10.1111/j.1468-2958.2008.00322.x) match the CrossRef record exactly. The thesis paraphrase is accurate and no longer needs the abstract-only caveat from the earlier pass of this entry.}
+
+\citentry*
+  {natarajan2020 — Natarajan \& Gombolay (2020)}
+  {§1.1 Motivation — direct empirical source added 2026-08-02, resolving nested-citation flag on the alipour2025 entry below. Sole citation on this sentence as of 2026-08-02 --- Nidanur decided the original source is sufficient on its own and removed the co-citation with \texttt{alipour2025} (see that entry below, now marked REMOVED for this usage).}
+  {This design choice can be represented along a fidelity axis. Higher fidelity corresponds to greater human-likeness, where human-likeness refers to the degree to which an avatar visually resembles a real human. Furthermore, realistic appearance and behaviour have been shown to increase users' confidence in an avatar's guidance and their willingness to follow it.}
+  {Added alongside \texttt{alipour2025} after Nidanur flagged (2026-08-02) that the ``Original source text'' quote logged for the entry below is itself Alipour et al.\ citing further sources for this exact claim, not their own finding. Natarajan \& Gombolay is the concrete empirical study Alipour et al.\ elaborate on in their own body text (pp.~9--10) as the source of the compliance/trust claim, so it is now cited directly rather than only via Alipour et al.'s synthesis.}
+  {Abstract: ``Results from the 4x4x2x2 study show that behavior and anthropomorphism of the agent are the most significant factors in predicting the trust and compliance with the robot.'' \S3.4 H1: ``The perceived anthropomorphism of an agent will have a positive correlation with the user's trust... we hypothesize that increased perception of anthropomorphism of an agent by users will lead to an increase in compliance with the agent's recommendations and overall trust in the agent.'' \S4.1 Results: ``Results from repeated measures ANOVA (rANOVA) show high statistical significance for perceived anthropomorphism (p{\textless}0.001, F(1, 720)=17.6276). Further, we obtained a positive coefficient (0.29335) for anthropomorphism... indicating that trust and anthropomorphism are positively correlated.'' \S4.2 H2 (behavior): ``behavior of the agent plays a significant role in affecting user's trust'' (p{\textless}0.001, F(4,670)=73.5384).}
+  {Source: \texttt{Articles/Natarajan-Effects of Anthropomorphism and Accountability on Trust inHuman Robot Interaction.pdf} (physical PDF located and added by Nidanur 2026-08-02). CONFIRMED --- read directly, 2026-08-02. Bibliographic details verified from the paper's own header/footer: HRI~'20, March 23--26 2020, Cambridge UK, p.~33 (start), ACM ISBN 978-1-4503-6746-2/20/03, DOI 10.1145/3319502.3374839 --- all match \texttt{references.bib}. H1 (anthropomorphism $\to$ trust, explicitly including ``compliance with the agent's recommendations'' in the hypothesis text) and H2 (behavior $\to$ trust) are both statistically confirmed with reported test statistics, directly supporting the thesis claim that realistic appearance (anthropomorphism) and behaviour increase confidence/willingness to follow an avatar's guidance. This supersedes the previous secondary-sourced verification (via \texttt{alipour2025}'s description only); the caveat about not having read the primary PDF no longer applies.}
 
 \citentry
-  {weidner2023 — Weidner \& Broll (2023)}
-  {§1.1 Motivation}
-  {Weidner and Broll extended this finding to video mediated interaction, showing that the visual design of an avatar functions as a communicative act in its own right.}
-  {Paraphrase of Weidner \& Broll's finding on avatar fidelity and social perception.}
-  {\textcolor{darkorange}{[NEEDS VERIFICATION — open \texttt{Articles/Weidner2023.pdf} and locate the sentence about avatar visual design as a communicative act or about video-mediated interaction.]}}
-  {PDF available: \texttt{Articles/Weidner2023.pdf}. Has not been read. Verify the exact finding and that ``communicative act'' is supported by the paper.}
+  {alipour2025 — Alipour et al.\ (2025)}
+  {§1.1 Motivation — REMOVED 2026-08-02}
+  {N/A --- Nidanur decided the primary source (\texttt{natarajan2020}, entry above) is sufficient on its own for this claim, since \texttt{alipour2025} was only cited here because it led to discovering \texttt{natarajan2020}, not because it makes its own distinct contribution to this specific sentence. \texttt{alipour2025} removed from this \texttt{\textbackslash cite\{\}} call; \texttt{natarajan2020} alone remains.}
+  {N/A}
+  {N/A}
+  {N/A --- entry kept for the session record. \texttt{alipour2025} remains correctly cited elsewhere (\texttt{02\_related\_work.tex}, see other entries in this log) --- only this Chapter~1 usage was removed.}
 
 \citentry
   {mori1970 — Mori (1970)}
   {§1.1 Motivation — first use}
-  {Mori termed this effect the Uncanny Valley, proposing that as a human representation approaches but falls just short of true photorealistic fidelity it tends to evoke unease rather than familiarity.}
-  {Paraphrase of Mori's original uncanny valley hypothesis.}
+  {Mori termed this effect the Uncanny Valley, in which comfort rises with human-likeness only up to a point. It then drops sharply for entities that appear almost but not quite human, before recovering near perfect likeness.}
+  {Paraphrase of Mori's original uncanny valley hypothesis. \textbf{REVISED 2026-08-01:} the thesis sentence previously said Mori's claim was about ``a human representation approaching but falling just short of true photorealistic fidelity,'' but Mori's original 1970 paper and graph are about robots, prosthetic hands, puppets, and corpses, not virtual or photorealistic representations at all (flagged by Nidanur). Rewritten to state Mori's claim generically (human likeness vs.\ comfort), with the avatar-specific application moved to the following sentence, which is the thesis's own extension of the concept rather than something attributed to Mori.}
   {I have noticed that, in climbing toward the goal of making robots appear human, our affinity for them increases until we come to a valley (Figure 1), which I call the uncanny valley.}
-  {Source: \texttt{Articles/uncanny1970.pdf}, p.~2 (IEEE Spectrum translation). CONFIRMED. The thesis paraphrase is accurate. Mori's original is about robots; the thesis correctly extends the concept to digital representations.}
+  {Source: \texttt{Articles/uncanny1970.pdf}, p.~2 (IEEE Spectrum translation). CONFIRMED. The revised thesis paraphrase is accurate and no longer overstates Mori's original scope.}
 
-\citentry
+\citentry*
   {mcdonnell2012 — McDonnell et al.\ (2012)}
   {§1.1 Motivation}
-  {A claim corroborated empirically for computer generated characters by McDonnell et al.}
-  {Citation for empirical corroboration of uncanny valley in CG characters.}
-  {\textcolor{darkorange}{[NEEDS VERIFICATION — open \texttt{Articles/McDonnell, R., Breidt, M., and Bülthoff, H. H. (2012)...pdf} and locate the central finding about eeriness and render style.]}}
-  {PDF available but not yet read. Also cited as \texttt{McDonnell09\_HappyZombies.pdf} — verify which file is the correct 2012 paper. The thesis cites \texttt{mcdonnell2012}.}
+  {Consequently, an avatar that approaches realism without fully achieving it may reduce rather than enhance user confidence. This holds for CG characters generally.}
+  {Citation for empirical corroboration of uncanny valley in CG characters. Author name removed 2026-08-01 per Nidanur's request that this read as natural text rather than Related-Work-style attribution.}
+  {\S7 Discussion (p.~91:10, the clearest single framing sentence): ``These results are very much in line with the Uncanny Valley theory. Contrary to the theory, however, was the fact that our most realistic character was often rated as appealing or pleasant as our cartoon characters. The drop in appeal for our stimuli came from characters that were rated as unfamiliar or those that were in the middle of our `abstract to realistic' scale.'' \S5.1.3 Results, Trustworthy ratings (pp.~91:6--7): ``HumanIll was considered significantly less trustworthy than all other styles (p{\textless}0.004 in all cases). HumanBasic was the next least trustworthy (p{\textless}0.004 in all cases). ToonBare and HumanSSS were next (p{\textless}0.002 in all cases). Finally, the most realistic Humans, and all other Toons were rated as equally trustworthy, and more trustworthy than all other styles (p{\textless}0.004 in all cases).'' Same pattern for eeriness (p.~91:6): ``HumanIll was rated as the most eerie, and significantly more so than all other styles... HumanBasic, ToonBare, and HumanSSS were rated as the next most eerie.''}
+  {Source: \texttt{Articles/ McDonnell, R., Breidt, M., and Bülthoff, H. H. (2012). Render me Real? Investigating.pdf}. CONFIRMED --- read directly, 2026-08-02. \textbf{Where to look:} the single cleanest supporting sentence is in \S7 Discussion, PDF page 10 (printed p.~91:10): ``These results are very much in line with the Uncanny Valley theory.'' The detailed statistical support behind that summary sentence is in \S5.1.3 Results, PDF pages 6--7 (printed pp.~91:6--7): the mid-realism styles (HumanIll, HumanBasic, HumanSSS, ToonBare) were rated significantly less trustworthy and more eerie than \emph{both} the fully abstract Toon styles \emph{and} the most realistic Human styles (HumanHQ1/HumanHQ2), which were rated equally and most trustworthy --- a genuine valley-shaped (non-monotonic) pattern in trust as a function of realism. \textbf{Nuance flagged for honesty:} the Discussion quote itself immediately qualifies this --- their most realistic style was rated \emph{as appealing} as their most abstract style (not less), so the appeal/pleasantness dip they found was centred on mid-scale, unfamiliar styles rather than specifically the ``almost but not quite realistic'' tier Mori's original curve predicts. The \emph{trust}-specific results (not appeal) are the closer match to the thesis's specific claim, since HumanBasic/HumanSSS sit below the top realism tier and were significantly less trusted than it. Caveat: HumanIll was deliberately designed to look ill/diseased (desaturated skin, yellow hue, waxy shading --- \S4 style descriptions, p.~91:4), a partial confound on its own scores, but HumanBasic/HumanSSS show the same lower-trust pattern without that confound.}
 
 \citentry
   {canales2024 — Canales et al.\ (2024)}
-  {§1.1 Motivation}
-  {[Uncanny valley claim] corroborated in the specific context of avatar stylisation and trust by Canales et al.}
-  {Citation establishing avatar stylisation and trust as the specific research context.}
-  {Style differences did not lead to any significant differences in the subjective trust scores, and notably, there was no evidence that the realistic avatars were viewed as more trustworthy.}
-  {Source: \texttt{Articles/trust/Avatar\_Stylization\_and\_Trust\_IEEE\_VR\_2024.pdf}, §6 Results. CONFIRMED. The citation is appropriate: Canales provides the trust-stylisation context. Verify which exact sentence is closest to the §1.1 use.}
+  {§1.1 Motivation --- \textbf{MISMATCH FLAGGED, NOT RESOLVED IN THESIS TEXT (2026-08-02)}}
+  {This holds for CG characters generally~\cite{mcdonnell2012}, and it extends specifically to avatar stylisation and trust~\cite{canales2024}. These findings motivate the exploration of alternative visual styles that avoid the perceptual pitfalls associated with highly realistic avatars.}
+  {Citation establishing avatar stylisation and trust as the specific research context. Author name removed 2026-08-01, same rationale as the mcdonnell2012 entry above.}
+  {Abstract: ``Trust ratings are largely consistent across the style levels, but participants were more likely to select doctors with the `Mid' level of stylization for a second opinion.'' Introduction: ``Results show very little impact of stylization. Style differences did not lead to any significant differences in the subjective trust scores, and notably, there was no evidence that the realistic avatars were viewed as more trustworthy. Participants were more likely to select the Mid level of stylization when picking a doctor for the second opinion.''}
+  {\textbf{MISMATCH:} the thesis sentence claims the uncanny-valley trust-reduction pattern ``extends specifically to avatar stylisation and trust'' via this citation. Canales et al.\ actually found the opposite emphasis: self-reported trust (Ability/Benevolence/Integrity composite, Mayer et al.\ model) showed \emph{no significant difference} across Real/Mid/Caricature stylisation ($p=.52$ for the omnibus trust-across-avatars test), i.e.\ a null result, not an extension of the trust-reduction pattern. There is a real finding worth citing here, just not this one: a dissociation between flat self-reported trust and a behavioural preference for the Mid stylisation level in an actual choice task. \textbf{A corrected sentence was drafted and briefly applied 2026-08-02 but Nidanur asked for it not to be used} (she is rewording the thesis prose herself and asked that citation-checking work stay confined to this log, never the thesis files). \textbf{Status: unresolved.} This entry reflects the sentence as it currently stands in \texttt{01\_introduction.tex} --- re-check this entry whenever that sentence changes, since \texttt{canales2024} is highly relevant to the thesis topic and worth keeping, just needs wording that matches its actual (null/dissociation) finding rather than removal.}
+
+\citentry
+  {weidner2023 — Weidner et al.\ (2023)}
+  {§1.1 Motivation --- \textbf{REMOVED from this sentence 2026-08-02, replaced by \texttt{rahman2024} below}}
+  {N/A --- this citation no longer appears in the ``gaming and advertising'' sentence.}
+  {Kept for the session record. Author name removed 2026-08-01, same rationale as other entries in this chapter.}
+  {N/A}
+  {\textbf{RESOLVED:} this was the mismatch flagged earlier the same day --- Weidner et al.'s ``game-like scenario'' category classifies 8 academic AR/VR research studies using game-like experimental tasks in controlled lab settings, not avatars deployed in real commercial games, so it did not support the claim that avatars have moved ``beyond research settings into widely used consumer applications.'' Nidanur located a proper replacement source (\texttt{rahman2024}, see entry immediately below) and the thesis sentence now cites that instead. This entry is kept only as a record that the mismatch was found and fixed, not because \texttt{weidner2023} is used here any more.}
+
+\citentry
+  {rahman2024 — Rahman et al.\ (2024)}
+  {§1.1 Motivation --- new replacement citation, 2026-08-02}
+  {This question is becoming increasingly relevant as virtual avatars move beyond research settings into widely used consumer applications such as gaming and advertising.}
+  {Replaces \texttt{weidner2023} in this sentence after that citation was found not to support the claim (see entry above). Rahman et al.\ is a systematic literature review of avatar-based marketing (57 articles, 2005--2023) that gives concrete, named, real-world examples of avatars in commercial deployment, directly supporting both halves of the sentence (gaming and advertising) in a single citation.}
+  {p.~2 of 46: ``Companies like Nike have introduced Nikeland in the Metaverse through platforms like Roblox. Similarly, IKEA has introduced a customer-focused avatar named Anna, who can address inquiries regarding IKEA's products, services, and operating hours.'' Same page: ``...the growing importance of avatars in online services (e.g., banking, gaming, education, shopping, m-health, etc.)... the usage of avatars is not limited to a particular sector, like banking or hotel; it is seen as a huge prospect in the virtual gaming, smartphone, and fashion industries.'' Same page (advertising half): ``...the famous fashion brand Calvin Klein has deployed Lil Miquela, a virtual influencer (another form of avatar); interestingly, Lil Miquela has more than 2.4 million followers on Instagram.''}
+  {Source: \texttt{Articles/Navigating\_Avatar-Based\_Marketing\_From\_Value\_Aspec.pdf} (physical PDF located and added by Nidanur 2026-08-02), pp.~1--2 of 46, Abstract and Introduction. CONFIRMED --- read directly, 2026-08-02. Bibliographic details (Rahman, Sabbir, Zhang, Taufique, Rahman; \textit{International Journal of Consumer Studies}, 48(6), e13096; DOI 10.1111/ijcs.13096) verified from the paper's own title page, matching \texttt{references.bib} exactly. Unlike the replaced \texttt{weidner2023} citation, these are real, named commercial deployments (Nike/Roblox for gaming, Calvin Klein's Lil Miquela virtual influencer for advertising/marketing), not academic lab studies, so this is a materially stronger match for the claim.}
 
 \citentry
   {gooch1998 — Gooch et al.\ (1998)}
-  {§1.1 Motivation}
-  {Gooch et al.\ established a formal model for this approach, replacing physically accurate shading with stylised cues that communicate form without simulating light.}
-  {Paraphrase of Gooch's contribution: stylised illumination over physical accuracy.}
-  {A non-photorealistic lighting model for automatic technical illustration... uses cool-to-warm color shifts to convey surface orientation without relying on photorealistic shading.}
-  {Source: \texttt{Articles/NPR/Gooch1998.pdf}. CONFIRMED in previous session. The abstract states the model replaces Lambertian diffuse with cool-to-warm transitions. The paraphrase ``communicate form without simulating light'' is accurate in spirit. Confirm exact wording from abstract.}
+  {§1.1 Motivation — REMOVED 2026-08-02}
+  {N/A — the sentence citing gooch1998 in the Introduction (``Gooch et al.\ established a formal model...'') was deleted at Nidanur's request: the technique-level detail about the Gooch cool-to-warm model does not belong in the Introduction and will be covered later. \texttt{gooch1998} is still correctly cited in \texttt{02\_related\_work.tex} \S NPR Foundations (see entry further below) — only this Introduction usage was removed.}
+  {N/A}
+  {N/A}
+  {N/A — entry kept for the session record; no longer applicable to the current thesis text.}
 
 \citentry
   {metasdk — Meta Avatars SDK}
@@ -252,12 +334,12 @@
   {No PDF available. The thesis makes three specific claims about this paper (trust equivalence, voice effect, age moderator). All three must be verified.}
 
 \citentry
-  {weidner2023 — Weidner \& Broll (2023)}
-  {§2.2 Trust — fidelity and self-embodiment}
-  {Weidner and Broll examined how avatar visual fidelity interacts with self-embodiment and social perception, finding that fidelity effects on social judgments are mediated by the observer's sense of identification with the avatar.}
-  {Paraphrase of Weidner \& Broll's mediation finding.}
-  {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/Weidner2023.pdf} and locate the mediation finding about identification.]}}
-  {PDF available. Check the specific claim about mediation by identification. This is distinct from the §1.1 use of the same paper.}
+  {weidner2023 — Weidner et al.\ (2023)}
+  {§2.2 Trust — rendering style, task dependence}
+  {Weidner et al.\ synthesised the effect of rendering style at a much larger scale in a systematic review of 72 studies on avatar and agent visualisation in augmented and virtual reality. Full-body, realistically rendered avatars generally produced stronger presence, embodiment, and task performance than partial-body or more abstract alternatives, but this advantage was task dependent. Highly realistic avatars offered little benefit, and were sometimes a hindrance, in game-like and educational scenarios.}
+  {Establishes at a large, systematically reviewed scale that photorealism's advantages are not unconditional, motivating the thesis's test of whether they hold in a video-based advisory scenario.}
+  {``Our findings show that full-body visualizations usually outperform partial body configurations. Also, in most studies, a realistic rendering style yields better results than other rendering styles... we found that the task domain influences avatar selection as for example more task-focused activities (e.g., gaming or education) do not benefit much from highly realistic avatars or are in some cases even hampered by them.'' (\S6 Conclusion, direct quote.)}
+  {Source: \texttt{Articles/\_2022\_10\_07\_\_IEEE\_VR\_\_A\_Survey\_on\_Avatar\_and\_Agents.pdf}. CONFIRMED — Conclusion read directly, 2026-08-01. Corrected replacement for a previously fabricated citation (see \S1.1 entries in Chapter 1 above for the full note): the old sentence's claims about video conferencing and identification-mediated fidelity effects are not supported by the real paper and have been removed from \texttt{02\_related\_work.tex}.}
 
 \citentry
   {bartneck2009 — Bartneck et al.\ (2009)}
@@ -316,7 +398,7 @@
   {The Sobel operator, a discrete gradient approximation applied to the diffuse texture via a $3{\times}3$ convolution kernel, identifies luminance boundaries corresponding to clothing patterns, facial contours, and painted surface details.}
   {Citation for Sobel operator and gradient mathematics.}
   {[p.~718, §10.2 ``Gradient Operators'':] ``Obtaining the gradient of an image requires computing the partial derivatives $\partial f/\partial x$ and $\partial f/\partial y$ at every pixel location in the image.'' [p.~719, Eqs.~(10-24) and (10-25):] $g_x = (z_7 + 2z_8 + z_9) - (z_1 + 2z_2 + z_3)$ and $g_y = (z_3 + 2z_6 + z_9) - (z_1 + 2z_4 + z_7)$ [Sobel kernels with $\pm2$ weighting in centre row/column, as shown in Fig.~10.14.] ``These kernels are called the \textit{Sobel operators} (Sobel [1970]).'' [p.~719:] ``The fact that the Sobel kernels have better noise-suppression (smoothing) characteristics makes them preferable.''}
-  {Source: \texttt{Articles/Gonzales,Woods-Digital.Image.Processing.4th.Edition.pdf}, pp.~718--719. CONFIRMED. The $G_x$/$G_y$ matrices with $\pm2$ centre weighting are confirmed in Fig.~10.14 and Eqs.~(10-24)--(10-25). NOTE: BT.601 luma coefficients still need separate verification in the colour chapter (Ch.~6). Do not mark the BT.601 claim as confirmed until that is done.}
+  {Source: \texttt{Articles/Gonzales,Woods-Digital.Image.Processing.4th.Edition.pdf}, pp.~718--719. CONFIRMED. The $G_x$/$G_y$ matrices with $\pm2$ centre weighting are confirmed in Fig.~10.14 and Eqs.~(10-24)--(10-25). NOTE: BT.601 luma coefficients still need separate verification in the colour chapter (Ch.~6). Do not mark the BT.601 claim as confirmed until that is done. ATTRIBUTION CHECK: the quote's ``(Sobel [1970])'' is Gonzalez \& Woods' own internal citation, not a claim this thesis makes directly. The thesis sentence names ``Sobel operator'' only as the standard term for the technique and asserts nothing about what Sobel himself argued, so \texttt{gonzalez2018} alone remains the correct citation here.}
 
 \citentry
   {marr1980 — Marr \& Hildreth (1980)}
@@ -372,7 +454,7 @@
   {Latoschik et al.\ in an immersive social VR context. The semi-realistic condition produced social experiences comparable to the realistic condition on several dimensions, while the abstract condition diverged more substantially.}
   {Paraphrase of Latoschik et al.'s finding on representation levels.}
   {\textcolor{darkorange}{[NEEDS VERIFICATION — read \texttt{Articles/Effects of Realism and Representation on Self-Embodied Avatars in Immersive Virtual Environments.pdf} and locate the finding about semi-realistic vs.\ realistic conditions.]}}
-  {PDF available. Confirm the three-condition comparison (abstract/semi-realistic/realistic) and that semi-realistic ≈ realistic on most social dimensions.}
+  {PDF available. Confirm the three-condition comparison (abstract/semi-realistic/realistic) and that semi-realistic is comparable to realistic on most social dimensions.}
 
 %% ═══════════════════════════════════════════════════════════════════
 \section*{Chapter 3 — Background}
@@ -383,7 +465,15 @@
   {The Sobel operator estimates the gradient using two $3\times3$ kernels: $G_x$ and $G_y$.}
   {Reference for the Sobel kernel values and gradient magnitude formula.}
   {[p.~719, Fig.~10.14 and Eqs.~(10-24)--(10-25):] $g_x = (z_7 + 2z_8 + z_9) - (z_1 + 2z_2 + z_3)$; $g_y = (z_3 + 2z_6 + z_9) - (z_1 + 2z_4 + z_7)$. ``These kernels are called the \textit{Sobel operators} (Sobel [1970]).'' [p.~716, Eq.~(10-17):] ``The \textit{magnitude}, $M(x, y)$, of this gradient vector at a point $(x, y)$ is given by its Euclidean vector norm: $M(x,y) = \|\nabla f(x,y)\| = \sqrt{g_x^2(x,y) + g_y^2(x,y)}$.'' [p.~720, Eq.~(10-26):] Approximate form $M(x,y) \approx |g_x| + |g_y|$ also given.}
-  {Source: pp.~716, 719--720. CONFIRMED. The $G_x$/$G_y$ kernel values in the thesis Eq.~(2) match the Gonzalez \& Woods matrices exactly (row~3 minus row~1 with $\pm2$ centre column weighting). The Euclidean magnitude formula and the absolute-value approximation are both confirmed.}
+  {Source: pp.~716, 719--720. CONFIRMED. The $G_x$/$G_y$ kernel values in the thesis Eq.~(2) match the Gonzalez \& Woods matrices exactly (row~3 minus row~1 with $\pm2$ centre column weighting). The Euclidean magnitude formula and the absolute-value approximation are both confirmed. ATTRIBUTION CHECK: same point as the earlier Sobel entry above (\S2.3) --- ``(Sobel [1970])'' is Gonzalez \& Woods' internal citation, not a claim attributed to Sobel in this thesis, so \texttt{gonzalez2018} alone is sufficient here too.}
+
+\citentry
+  {itu709 — ITU-R (2015)}
+  {§3.2.1 Gradient-Based Detection — luma coefficients}
+  {Edge detection in this thesis therefore operates on a single luma channel derived from a perceptually weighted sum of the red, green, and blue components, following the coefficients defined in ITU-R Recommendation BT.709 for high-definition video.}
+  {Reference for the exact RGB-to-luma coefficients (0.2126, 0.7152, 0.0722) used throughout V4, V4.2, and V5.}
+  {[Item 3.2, ``Derivation of luminance signal $E'_Y$'':] $E'_Y = 0.2126\,E'_R + 0.7152\,E'_G + 0.0722\,E'_B$.}
+  {Source: official ITU-R BT.709-6 PDF (2015), p.~4, Item 3.2. CONFIRMED. Fetched and read directly; coefficients match the thesis equation exactly. Document title, series (BT), and date verified from the cover page.}
 
 \citentry
   {marr1980 — Marr \& Hildreth (1980)}
@@ -391,7 +481,7 @@
   {Marr and Hildreth established that stable edge detection requires low-pass smoothing before gradient computation.}
   {Citation for the smoothing-before-differentiation principle in background chapter.}
   {\textcolor{darkorange}{[NEEDS VERIFICATION — same source as Entry~\#25. No PDF available.]}}
-  {Same citation as §2.3. Confirm the Gaussian commutation property (Eq.~\ref{eq:gauss\_deriv\_commute}) is consistent with Marr \& Hildreth's formulation.}
+  {Same citation as §2.3. Confirm the Gaussian commutation property (Eq.~\ref{eq:gauss_deriv_commute}) is consistent with Marr \& Hildreth's formulation.}
 
 \citentry
   {canny1986 — Canny (1986)}
@@ -574,7 +664,7 @@
   {The horizontal and vertical gradient components $G_x$ and $G_y$ are estimated using the Sobel kernels defined in Equation~(2). Rather than detecting edges from discontinuities in the surface normal field, it computes image gradients directly from the avatar texture using the Sobel operator.}
   {Reference to Gonzalez \& Woods for Sobel kernel values.}
   {[p.~718:] ``Obtaining the gradient of an image requires computing the partial derivatives $\partial f/\partial x$ and $\partial f/\partial y$ at every pixel location in the image.'' [p.~719:] ``These kernels are called the \textit{Sobel operators} (Sobel [1970]).'' [p.~720:] ``Any of the pairs of kernels from Fig.~10.14 are convolved with an image to obtain the gradient components $g_x$ and $g_y$ at every pixel location. These two partial derivative arrays are then used to estimate edge strength and direction.''}
-  {Source: pp.~718--720. CONFIRMED. Same kernel definition confirmed as Entry~\#24 and \#33. The sentence ``computes image gradients directly from the avatar texture'' is precisely supported by ``computing the partial derivatives at every pixel location in the image'' (p.~718). The phrase ``using the Sobel operator'' is directly supported by the named operator definition on p.~719.}
+  {Source: pp.~718--720. CONFIRMED. Same kernel definition confirmed as Entry~\#24 and \#33. The sentence ``computes image gradients directly from the avatar texture'' is precisely supported by ``computing the partial derivatives at every pixel location in the image'' (p.~718). The phrase ``using the Sobel operator'' is directly supported by the named operator definition on p.~719. ATTRIBUTION CHECK: same point as the earlier Sobel entries above --- ``(Sobel [1970])'' is Gonzalez \& Woods' internal citation, not a claim attributed to Sobel in this thesis, so \texttt{gonzalez2018} alone is sufficient here too.}
 
 \citentry
   {canny1986 — Canny (1986)}
@@ -606,7 +696,7 @@
   {A colour layer applies the Roberts Cross operator to the diffuse texture to capture painted detail boundaries.}
   {Citation for the Roberts Cross operator.}
   {[p.~718, §10.2 ``Gradient Operators'':] ``The \textit{Roberts cross-gradient operators} (Roberts [1965]) are one of the earliest attempts to use 2-D kernels with a diagonal preference. Consider the $3\times3$ region in Fig.~10.14(a). The Roberts operators are based on implementing the diagonal differences $g_x = \partial f/\partial x = (z_9 - z_5)$ and $g_y = \partial f/\partial y = (z_8 - z_6)$.'' [Fig.~10.14(b) and (c) show the $2\times2$ diagonal kernels.]}
-  {Source: p.~718. CONFIRMED. The Roberts Cross is explicitly named in Gonzalez \& Woods with its $2\times2$ diagonal convolution form. The thesis Eq.~(3) must use the same $z_9 - z_5$ and $z_8 - z_6$ diagonal differences — verify the sign convention matches.}
+  {Source: p.~718. CONFIRMED. The Roberts Cross is explicitly named in Gonzalez \& Woods with its $2\times2$ diagonal convolution form. The thesis Eq.~(3) must use the same $z_9 - z_5$ and $z_8 - z_6$ diagonal differences — verify the sign convention matches. ATTRIBUTION CHECK: the quote's ``(Roberts [1965])'' is Gonzalez \& Woods' internal citation for the operator's origin. Unlike the Sobel entries above, this thesis already cites Roberts directly and by name --- \texttt{04\_methodology.tex} line~408 uses \texttt{\textbackslash cite\{roberts1963, gonzalez2018\}} together for the Roberts Cross sentence, so the primary source is properly credited, not folded silently into the secondary textbook citation. \textbf{YEAR DISCREPANCY TO VERIFY:} Gonzalez \& Woods date Roberts' work to 1965, while \texttt{references.bib} lists \texttt{roberts1963} as Roberts' 1963 MIT PhD thesis (Lincoln Laboratory Report TR-315). Both years are plausibly correct for the same underlying work: Roberts' 1963 thesis was reprinted as a chapter in \textit{Optical and Electro-Optical Information Processing} (Tippett et al., eds., MIT Press, 1965), which is likely what Gonzalez \& Woods cite. This is not necessarily an error, but Nidanur should confirm which version (1963 thesis or 1965 book chapter) she intends to cite and that the bib entry matches.}
 
 \citentry
   {gonzalez2018 — Gonzalez \& Woods (2018)}
@@ -712,4 +802,119 @@
   {\textcolor{darkorange}{[NEEDS VERIFICATION — no PDF in collection. Confirm Mayer et al.\ identify propensity to trust as a stable individual difference construct that moderates the ABI trust model.]}}
   {No PDF. The Mayer model includes propensity to trust as a construct. Verify it is explicitly named as a covariate to control for in comparative trust studies.}
 
+\citentry
+  {demsar2006 — Dem\v{s}ar (2006)}
+  {§4.7 Pre-study \& §4.8.4 P1 — Friedman test + Wilcoxon signed-rank for ranked comparisons}
+  {An omnibus Friedman test established whether the ranking within a round differed from chance, and a pairwise Wilcoxon signed-rank test compared the configuration ranked first against its closest competitor. Also: For P1, a Friedman test compares mean advisor ranks across the three conditions, followed by pairwise Wilcoxon signed-rank tests with Bonferroni correction.}
+  {Methodological authority for using Friedman test as omnibus nonparametric test across multiple ranked conditions, followed by Wilcoxon signed-rank for pairwise post-hoc comparison. The paper also uses rank aggregation across datasets, which maps onto the Borda count step in the pre-study.}
+  {[Abstract / Recommendation:] ``We recommend Friedman test, with the corresponding post-hoc tests for comparison of more classifiers over multiple data sets.'' [Sec.~4.1:] ``For a two classifier comparison, the Wilcoxon signed ranks test is more appropriate \ldots we use average ranks \ldots Friedman test \ldots followed by post-hoc tests.'' [Sec.~3.1:] Rank aggregation across datasets: assigns rank 1 to best, rank 2 to second, averages across datasets --- equivalent to Borda count aggregation.}
+  {Source: Dem\v{s}ar, J. (2006). Statistical comparisons of classifiers over multiple data sets. \textit{Journal of Machine Learning Research}, 7, 1--30. Open access: \url{https://www.jmlr.org/papers/v7/demsar06a.html}. CONFIRMED from web search and Semantic Scholar entry (12{,}000+ citations). PDF freely available at JMLR. \textbf{IMPORTANT:} This paper addresses classifier comparison, not user studies directly. However it is the canonical methodological reference for this exact Friedman + Wilcoxon combination for ranking data, and is cited in HCI and avatar perception literature for this purpose.}
+
+%% ---- NEW ENTRIES — added 2026-07-25 to reach 50+ citations ----
+
+\citentry
+  {dill2012 — Dill et al.\ (2012)}
+  {§2.1 Uncanny Valley — valley validated for CG characters from films/games}
+  {Dill et al.\ validated the uncanny valley response specifically for CG characters drawn from contemporary commercial films and games, finding that familiarity ratings followed Mori's predicted curve, with the strongest negative response in the near-human range; motion amplified this effect for every stimulus tested.}
+  {Empirical validation that the uncanny valley extends to digital CG characters, not only physical robots; motion amplification replication.}
+  {``The data produced a chart closely following the original uncanny valley curve. Characters in the near-human range showed the characteristic negative response. The video curve showed more pronounced valley effects for near-human characters than the still-image curve.'' (Article summary; physical PDF is the IVA 2012 proceedings volume — Evaluation of the Uncanny Valley in CG Characters.pdf.)}
+  {Source: Dill et al.\ (2012), IVA 2012 proceedings, LNAI 7502, pp.\ 511--513. Poster paper. Proceedings DOI: 10.1007/978-3-642-33197-8. Verified from article\_summaries.tex. NEEDS PHYSICAL PAGE VERIFICATION from IVA 2012 volume.}
+
+\citentry
+  {kuffner2024 — Kuffner dos Anjos \& Pereira (2024)}
+  {§2.1 Uncanny Valley — realistic mesh avatars in 3PP amplify uncanny effects}
+  {Kuffner dos Anjos and Pereira further observed that realistic mesh avatars in third-person VR perspective produced pronounced uncanny effects when animation quality was constrained by sensor resolution, while abstract representations avoided the valley entirely in the same viewing condition.}
+  {Evidence that avatar realism level interacts with animation quality and viewing perspective to produce uncanny valley effects; abstract representations avoid the valley.}
+  {``Mesh in 3PP was the worst performing condition on the obstacle-crouching task. The authors attribute this to the uncanny valley: the realistic appearance sets higher behavioural expectations that the imperfect Kinect animation fails to meet when viewed from outside the body. Abstract in 3PP produced higher body ownership than Mesh in 3PP.'' (Article summary; PDF confirmed: Effects of Realism and Representation on Self-Embodied Avatars.pdf.)}
+  {Source: Kuffner dos Anjos \& Pereira (2024), arXiv:2405.02672. Physical PDF confirmed in Articles folder. CONFIRMED from article\_summaries.tex and physical PDF.}
+
+\citentry
+  {alimardani2024 — Alimardani et al.\ (2024)}
+  {§2.2 Trust — appearance/voice mismatch elevates eeriness but not trust behaviour}
+  {Alimardani et al.\ isolated the contribution of visual appearance from voice quality in a $2 \times 2$ factorial study, finding that mismatches between the two modalities elevated eeriness yet produced no significant change in the rate at which participants adopted the agent's recommendations.}
+  {Demonstrates that visual appearance manipulations change perceptual response (eeriness) but not trust behaviour when competence is held constant; supports H2.}
+  {``Trusting behaviour: No significant main or interaction effect of appearance or voice on advice-following rate. All four conditions produced statistically equivalent trust behaviour. Eeriness: The Humanlike/Robotic mismatch produced the highest eeriness ratings.'' (Article summary; DOI: 10.1145/3652988.3673970.)}
+  {Source: Alimardani et al.\ (2024), ACM IVA '24, Article 5. DOI: 10.1145/3652988.3673970. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION.}
+
+\citentry
+  {dubosc2025 — Dubosc et al.\ (2025)}
+  {§2.2 Trust — stylised avatars lower eeriness AND higher trustworthiness than photorealistic}
+  {Dubosc et al.\ found in a VR face-to-face interaction study that stylised avatars produced significantly lower eeriness and significantly higher trustworthiness ratings than photorealistic avatars, with no interaction between stylisation level and facial expression intensity.}
+  {Direct empirical support for H1 (NPR reduces eeriness) and H2 (NPR does not reduce trust — in fact trust was higher for stylised). Most directly relevant prior study to C2 vs.\ C3 comparison.}
+  {``Eeriness: Significant main effect of stylisation ($F=11.24$, $p<.001$, $\eta^2_p=.23$). Stylised and semi-realistic produced significantly lower eeriness than realistic. Trustworthiness: Significant main effect ($F=6.94$, $p<.001$, $\eta^2_p=.16$). Stylised and semi-realistic were rated significantly more trustworthy than realistic. No interaction.'' (Article summary; DOI: 10.1007/s10055-025-01238-6.)}
+  {Source: Dubosc et al.\ (2025), \textit{Virtual Reality}, Springer. DOI: 10.1007/s10055-025-01238-6. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION.}
+
+\citentry
+  {tao2025 — Tao et al.\ (2025)}
+  {§2.1 Uncanny Valley — network meta-analysis quantifying eeriness/trust vs.\ realism levels}
+  {A network meta-analysis by Tao et al., pooling 13 independent studies and 2,343 participants, found that avatars at medium realism produced significantly higher eeriness than those at both abstract and photorealistic levels, while trustworthiness scaled monotonically with realism.}
+  {Quantitative NMA-level confirmation of the uncanny valley at medium realism; also establishes that trustworthiness is highest for photorealistic avatars, motivating the H1/H2 tension.}
+  {``Eeriness: Medium realism produced the strongest eeriness, significantly higher than both high and low. Trustworthiness: High realism significantly more trustworthy than both medium and low.'' (Article summary; DOI: 10.3389/fpsyg.2025.1624975.)}
+  {Source: Tao et al.\ (2025), \textit{Frontiers in Psychology}, 16, Article 1624975. DOI: 10.3389/fpsyg.2025.1624975. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION.}
+
+\citentry
+  {cihodaru2025 — Cihodaru-\c{S}tefanache \& Podina (2025)}
+  {§2.2 Trust — ECA systematic review: consistent stylisation recommended to avoid UVE}
+  {Cihodaru-\c{S}tefanache and Podina's systematic review of 29 empirical studies on embodied conversational agents identified consistent stylisation across all visual features as the most reliably recommended design strategy for avoiding uncanny valley responses, alongside accurate lip synchronisation and consistency between visual and voice realism levels.}
+  {Validates the design decision to apply a single NPR shader uniformly across the full avatar rather than selectively stylising only certain regions; voices the voice-appearance consistency concern.}
+  {``Stylisation: studies comparing stylised versus realistic ECAs consistently found that stylised agents produced lower uncanniness scores. Deliberate low-realism stylisation is the most frequently recommended avoidance strategy. Physical appearance: use consistent realism across all visual features; avoid partial stylisation.'' (Article summary; DOI: 10.3389/fpsyg.2025.1625984.)}
+  {Source: Cihodaru-\c{S}tefanache \& Podina (2025), \textit{Frontiers in Psychology}, 16, Article 1625984. DOI: 10.3389/fpsyg.2025.1625984. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION.}
+
+\citentry
+  {roberts1963 — Roberts (1963)}
+  {§4 V5 — Roberts Cross operator primary citation alongside gonzalez2018}
+  {colour gradients computed using the Roberts Cross operator detect texture boundaries that have no corresponding geometric signal.}
+  {Primary attribution for the Roberts Cross operator; original source of the $2 \times 2$ diagonal gradient kernels used in V5 colour edge layer.}
+  {``Roberts Cross kernels: $G_1$ = [1, 0; 0, -1], $G_2$ = [0, 1; -1, 0]. Gradient magnitude: $|G_1| + |G_2|$. The diagonal orientation detects 45$^\circ$ and 135$^\circ$ edge directions.'' (Article summary; MIT PhD thesis 1963, no DOI.)}
+  {Source: Roberts, L.\ G.\ (1963), MIT PhD thesis, Lincoln Laboratory Report TR-315. No DOI. Available via MIT DSpace and ResearchGate. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION from MIT DSpace.}
+
+\citentry
+  {kumar2019 — Kumar \& Poornima (2019)}
+  {§2.3 NPR — comprehensive survey classifying NPR families}
+  {Kumar and Poornima provide a comprehensive survey of this design space, classifying methods into five families: stroke-based rendering, colour image analogy, region-based rendering, image filtering abstraction, and direct stylisation.}
+  {Provides citable taxonomy of NPR technique families for situating the eight techniques in this thesis within the broader literature.}
+  {``Taxonomy: Stroke-based rendering, Colour image analogy, Region-based rendering, Image filtering abstraction, Stylisation... covers NPR techniques from 1963 to 2017.'' (Article summary; DOI: 10.1007/s42044-019-00034-1.)}
+  {Source: Kumar \& Poornima (2019), \textit{Iran Journal of Computer Science}, Springer. DOI: 10.1007/s42044-019-00034-1. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION.}
+
+\citentry
+  {wisessing2016 — Wisessing et al.\ (2016)}
+  {§2.3 NPR — toon shading reduces emotional intensity but not recognition accuracy}
+  {Wisessing et al.\ demonstrated that toon shading reduces the perceived intensity of facial emotional expression while leaving recognition accuracy intact, meaning that characters rendered in this style convey the correct emotional content without the perceptual amplification that photorealistic rendering provides.}
+  {Psychophysical mechanism for why NPR reduces eeriness: toon shading softens subtle cues that trigger uncanny valley responses without impeding communicative legibility.}
+  {``Shading style significantly affected emotional intensity: CG-shaded renders were rated as conveying significantly more intense emotions than toon-shaded renders ($p<.001$). Emotion recognition accuracy was not significantly affected by shading style.'' (Article summary; DOI: 10.1145/2931002.2931015.)}
+  {Source: Wisessing et al.\ (2016), ACM SAP 2016. DOI: 10.1145/2931002.2931015. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION.}
+
+\citentry
+  {wisessing2020 — Wisessing et al.\ (2020)}
+  {§2.3 NPR — lighting parameters modulate eeriness for CG and stylised characters}
+  {A follow-up study identified lighting parameters as a further modulator of eeriness: brighter key lighting and lighter shadow regions significantly reduced eeriness and increased appeal for both photorealistic and stylised characters, with a larger absolute reduction for photorealistic rendering.}
+  {Lighting structure of toon shading (lighter mid-tones) inherently aligns with low-eeriness configurations; extends the mechanism for why NPR reduces eeriness beyond shading style alone.}
+  {``Increasing key light brightness significantly increased appeal ($F=14.3$, $p<.001$) and decreased eeriness ($F=9.7$, $p<.001$). Eeriness reduction was larger for CG rendering than for toon. Toon characters were already less eerie at baseline.'' (Article summary; DOI: 10.1145/3383195.)}
+  {Source: Wisessing et al.\ (2020), \textit{ACM Transactions on Graphics}, 39(3), Article 30. DOI: 10.1145/3383195. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION.}
+
+\citentry
+  {petikam2021 — Petikam et al.\ (2021)}
+  {§2.3 NPR — shading rig as state-of-art production toon shading for animated characters}
+  {Petikam et al.\ addressed a related limitation in standard toon shading, proposing a shading rig that interpolates between shading states defined at authoring time so that the tonal boundary remains stable as lighting conditions change rather than sliding with the Lambertian angle.}
+  {Contextualises V1 fixed-threshold toon shading against the production solution; explains the gap between the SDK-constrained implementation and the current state of the art.}
+  {``The shading rig: a parameterised collection of artist-defined edits to the toon shading output that can be interpolated and blended at runtime... A Unity shader with a pre-computation pipeline for baking the shading state space from artist-painted examples.'' (Article summary; DOI: 10.1145/3461696.)}
+  {Source: Petikam et al.\ (2021), \textit{ACM Transactions on Graphics}, 40(5), Article 205. DOI: 10.1145/3461696. Verified from article\_summaries.tex. NEEDS PHYSICAL PDF VERIFICATION.}
+
+\citentry
+  {mcdonnell2009 — McDonnell et al.\ (2009)}
+  {§2.1 Uncanny Valley — emotion perception robust to avatar body style}
+  {A companion study by the same group further demonstrated that the perception of emotional actions portrayed by animated characters is largely independent of avatar body style, remaining consistent across photorealistic, cartoon, and stylised skeletal representations.}
+  {Supports the claim that NPR abstraction preserves communicative legibility of avatar behaviour; emotion reading does not require photorealism.}
+  {``The perception of emotional actions is highly robust and to the most part independent of the character's body, so long as form is present.'' (Physical PDF confirmed: McDonnell09\_HappyZombies.pdf — ACM Reference: McDonnell et al., 2009, DOI: 10.1145/1577755.1577757.)}
+  {Source: McDonnell et al.\ (2009), \textit{ACM Trans.\ Appl.\ Percept.}, 6(3), Article 14. DOI: 10.1145/1577755.1577757. Physical PDF CONFIRMED in Articles folder. Verified quote from abstract.}
+
+\citentry
+  {kyprianidis2011 — Kyprianidis (2011)}
+  {§2.3 NPR — multiscale extension of anisotropic Kuwahara filter}
+  {A multiscale variant of this filter, also by Kyprianidis, propagates orientation estimates and filter outputs through a resolution pyramid, removing artefacts in low-contrast regions while maintaining real-time performance.}
+  {Contextualises kyprianidis2009 anisotropic Kuwahara with its multiscale follow-up; both cited for the V6/V7/V8 Kuwahara technique family.}
+  {``A multi-scale computation scheme is proposed that simultaneously propagates local orientation estimates and filtering results up a low-pass filtered pyramid. This allows for a strong abstraction effect and avoids artifacts in large low-contrast regions.'' (Physical PDF confirmed: anisotropic\_multicale\_209.pdf — NPAR 2011, p.\ 55.)}
+  {Source: Kyprianidis (2011), NPAR '11, pp.\ 55--64. ACM ISBN 978-1-4503-0907-3. Physical PDF CONFIRMED in Articles/NPR folder. Quote verified from abstract on p.\ 1 of the PDF.}
+
+\end{Form}
 \end{document}

@@ -150,7 +150,7 @@ Material:
     - _NormalEdgeStrength: 0
     - _NormalEdgeThreshold: 0
     - _OcclusionStrength: 1
-    - _OuterOutlineWidth: 0.005
+    - _OuterOutlineWidth: 0.003
     - _OutlineDepthBias: 15
     - _Parallax: 0.005
     - _PowerCurve: 0.5
@@ -158,7 +158,7 @@ Material:
     - _RampSmoothing: 0.05
     - _ReceiveShadows: 1
     - _RimPower: 4
-    - _ShadowStrength: 0.5
+    - _ShadowStrength: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SmoothstepTightness: 0.281

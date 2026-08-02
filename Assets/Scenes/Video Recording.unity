@@ -4395,12 +4395,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eae26c2934a844020a50581e2faf751d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  csvFile: {fileID: 4900000, guid: 0cb96d60c795f42679e9bae2f3aa8765, type: 3}
+  csvFile: {fileID: 4900000, guid: 888647ea852bc4e3785486c95269c6ae, type: 3}
   recordingFps: 30
   loop: 0
   smoothing: 0.5
   blendShapeStrength: 0.007
-  audioClip: {fileID: 8300000, guid: 92ba3b45cb7af4a3baf9cf8e59633a0c, type: 3}
+  audioClip: {fileID: 8300000, guid: 43aa1cc646331491b92130b724c64ab4, type: 3}
   volume: 1
   driveHeadBone: 1
   headBoneName: Head

@@ -5845,63 +5845,6 @@ Custom/V3_SobelEdgeDetection,Hair,kuw sobel,float,_RimPower,4
 Custom/V3_SobelEdgeDetection,Hair,kuw sobel,color,_AmbientColor,0.3|0.3|0.3|1
 Custom/V3_SobelEdgeDetection,Hair,kuw sobel,float,_EnableAlphaTest,1
 Custom/V3_SobelEdgeDetection,Hair,kuw sobel,float,_AlphaCutoff,0.1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseDebugDefaults,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DebugView,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_Color,1|1|1|1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_TextureIntensity,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_BumpScale,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_LightSensitivity,0.5
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_RampSmoothing,0.05
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_ShadowColor,0.3|0.3|0.45|1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_ShadowStrength,0.5
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DetailMode,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DetailBias,0.5
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DepthNear,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DepthFar,50
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_ManualDetail,0.013
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableOuterOutline,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_OuterOutlineWidth,0.005
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_OuterOutlineColor,0|0|0|1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseOutlineDepthOffset,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_OutlineDepthBias,15
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableTextureSobel,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableNormalEdges,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableFresnelEdge,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseLightFiltering,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseModerateFiltering,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseAggressiveFiltering,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_InnerLineColor,0|0|0|1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_InnerLineThreshold,0.01
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_InnerLineBlur,0.2
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_InnerLineStrength,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableGaussianBlur,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_BlurRadiusMultiplier,10
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_GaussianCenterWeight,0.46
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_GaussianCardinalWeight,0.309
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_GaussianDiagonalWeight,0.25
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableThreshold,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_ThresholdMinMultiplier,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_ThresholdMaxMultiplier,2.6
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePass1,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePass2,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePass3,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePass4,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_SmoothstepTightness,0.281
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePowerCurve,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_PowerCurve,0.5
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_NormalEdgeThreshold,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_NormalEdgeStrength,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_NormalEdgeSmoothness,0.01
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_FresnelEdgeThreshold,0.3
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_FresnelEdgeStrength,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_EdgeColor,0|0|0|1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EdgeBlendMode,0
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableRim,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_RimColor,0.408|0.408|0.408|1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_RimPower,4
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_AmbientColor,0.35|0.35|0.35|1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableAlphaTest,1
-Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_AlphaCutoff,0.1
 Custom/V4_GaussianPreFilteredSobel,Look,AutoSave_Look,float,_UseDebugDefaults,0
 Custom/V4_GaussianPreFilteredSobel,Look,AutoSave_Look,float,_DebugView,0
 Custom/V4_GaussianPreFilteredSobel,Look,AutoSave_Look,color,_Color,1|1|1|1
@@ -5959,3 +5902,117 @@ Custom/V4_GaussianPreFilteredSobel,Look,AutoSave_Look,float,_RimPower,4
 Custom/V4_GaussianPreFilteredSobel,Look,AutoSave_Look,color,_AmbientColor,0.35|0.35|0.35|1
 Custom/V4_GaussianPreFilteredSobel,Look,AutoSave_Look,float,_EnableAlphaTest,1
 Custom/V4_GaussianPreFilteredSobel,Look,AutoSave_Look,float,_AlphaCutoff,0.1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_UseDebugDefaults,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_DebugView,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,color,_Color,1|1|1|1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_TextureIntensity,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_BumpScale,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_LightSensitivity,0.5
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_RampSmoothing,0.05
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,color,_ShadowColor,0.3|0.3|0.45|1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_ShadowStrength,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_DetailMode,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_DetailBias,0.5
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_DepthNear,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_DepthFar,50
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_ManualDetail,0.013
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnableOuterOutline,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_OuterOutlineWidth,0.003
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,color,_OuterOutlineColor,0|0|0|1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_UseOutlineDepthOffset,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_OutlineDepthBias,15
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnableTextureSobel,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnableNormalEdges,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnableFresnelEdge,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_UseLightFiltering,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_UseModerateFiltering,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_UseAggressiveFiltering,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,color,_InnerLineColor,0|0|0|1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_InnerLineThreshold,0.05
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_InnerLineBlur,0.2
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_InnerLineStrength,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnableGaussianBlur,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_BlurRadiusMultiplier,10
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_GaussianCenterWeight,0.46
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_GaussianCardinalWeight,0.309
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_GaussianDiagonalWeight,0.25
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnableThreshold,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_ThresholdMinMultiplier,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_ThresholdMaxMultiplier,2.6
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnablePass1,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnablePass2,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnablePass3,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnablePass4,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_SmoothstepTightness,0.281
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnablePowerCurve,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_PowerCurve,0.5
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_NormalEdgeThreshold,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_NormalEdgeStrength,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_NormalEdgeSmoothness,0.01
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_FresnelEdgeThreshold,0.3
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_FresnelEdgeStrength,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,color,_EdgeColor,0|0|0|1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EdgeBlendMode,0
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnableRim,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,color,_RimColor,0.408|0.408|0.408|1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_RimPower,4
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,color,_AmbientColor,0.35|0.35|0.35|1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_EnableAlphaTest,1
+Custom/V4_GaussianPreFilteredSobel,Head,final conf,float,_AlphaCutoff,0.1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseDebugDefaults,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DebugView,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_Color,1|1|1|1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_TextureIntensity,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_BumpScale,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_LightSensitivity,0.5
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_RampSmoothing,0.05
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_ShadowColor,0.3|0.3|0.45|1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_ShadowStrength,0.5
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DetailMode,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DetailBias,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DepthNear,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_DepthFar,50
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_ManualDetail,0.013
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableOuterOutline,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_OuterOutlineWidth,0.003
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_OuterOutlineColor,0|0|0|1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseOutlineDepthOffset,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_OutlineDepthBias,15
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableTextureSobel,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableNormalEdges,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableFresnelEdge,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseLightFiltering,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseModerateFiltering,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_UseAggressiveFiltering,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_InnerLineColor,0|0|0|1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_InnerLineThreshold,0.05
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_InnerLineBlur,0.2
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_InnerLineStrength,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableGaussianBlur,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_BlurRadiusMultiplier,10
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_GaussianCenterWeight,0.46
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_GaussianCardinalWeight,0.309
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_GaussianDiagonalWeight,0.25
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableThreshold,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_ThresholdMinMultiplier,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_ThresholdMaxMultiplier,2.6
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePass1,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePass2,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePass3,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePass4,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_SmoothstepTightness,0.281
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnablePowerCurve,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_PowerCurve,0.5
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_NormalEdgeThreshold,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_NormalEdgeStrength,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_NormalEdgeSmoothness,0.01
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_FresnelEdgeThreshold,0.3
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_FresnelEdgeStrength,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_EdgeColor,0|0|0|1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EdgeBlendMode,0
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableRim,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_RimColor,0.408|0.408|0.408|1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_RimPower,4
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,color,_AmbientColor,0.35|0.35|0.35|1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_EnableAlphaTest,1
+Custom/V4_GaussianPreFilteredSobel,Head,AutoSave_Head,float,_AlphaCutoff,0.1

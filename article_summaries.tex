@@ -238,6 +238,40 @@ CFA on the final 19-item set: $\chi^2 = 1229.29$, $df = 146$, CFI $= .97$, NFI $
 \textbf{Relevance to this thesis.} McDonnell et al.\ provide direct empirical precedent for a non-linear relationship between rendering style and trust-related perceptions. Their finding that both abstract and photorealistic styles receive higher trustworthiness ratings than mid-range styles is the clearest published evidence that NPR stylisation does not reduce trust relative to photorealistic rendering. This directly motivates H2. The finding that motion amplifies the valley for unappealing styles also supports the choice to use video stimuli.
 
 \vspace{8pt}
+\subsection{McDonnell et al.\ (2009) --- Body Shape and the Perception of Emotion}
+
+\begin{refbox}
+\textbf{Full reference:} McDonnell, R., J\"{o}rg, S., McHugh, J., Newell, F. N., \& O'Sullivan, C. (2009). Investigating the role of body shape on the perception of emotion. \textit{ACM Transactions on Applied Perception}, 6(3), Article~14.\\[4pt]
+\textbf{DOI:} \texttt{10.1145/1577755.1577757}\\[4pt]
+\textbf{Physical PDF:} \texttt{McDonnell09\_HappyZombies.pdf} in Articles folder. Verified.
+\end{refbox}
+
+\textbf{Research question.} Are real and virtual characters moving with the same biological motion perceived to be exhibiting the same emotions? Specifically, does the visual representation of the character's body (photorealistic, stylised, cartoon, or nonhuman) change how emotional content is recognised and experienced?
+
+\textbf{Stimuli.} A video of a real actor performing six basic emotions (sadness, happiness, surprise, fear, anger, disgust) served as the motion source. The same motion-captured performance was applied to five virtual body types:
+\begin{itemize}[leftmargin=2em]
+  \item \textit{High-resolution virtual male} --- a detailed realistic mesh counterpart of the actor
+  \item \textit{Low-resolution virtual male} --- the same mesh with reduced polygon count
+  \item \textit{Cartoon character} --- an anthropomorphic but clearly non-human toon figure (blue, simplified proportions)
+  \item \textit{Wooden mannequin} --- a geometrically neutral, non-expressive body
+  \item \textit{Zombie-like character} --- a visually disturbing near-human figure placed deliberately in the uncanny zone
+\end{itemize}
+Faces and hands were blurred in all conditions to remove confounding facial and gestural cues. A second experiment used point-light displays (luminance dots at joints, no body form) to test whether motion alone conveys emotional information.
+
+\textbf{Procedure.} Participants rated each performance across all character types on a list of 41 complex emotion descriptors. The key measure was whether the dominant perceived emotion matched the actor's intended emotion. A point-of-light experiment then isolated the contribution of body form from motion.
+
+\textbf{Key findings.}
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Body representation had little or no effect on emotion recognition.} Participants correctly identified the intended emotion at comparable rates across all body types: real video, high-resolution virtual human, low-resolution virtual human, cartoon character, wooden mannequin, and zombie. The authors conclude that ``captured body motion is as effective at depicting emotional body language regardless of character appearance.''
+  \item \textbf{Emotion perception is highly robust and largely independent of body shape,} so long as any form at all is present. No significant difference emerged between the zombie rendering and the photorealistic condition for recognition accuracy.
+  \item \textbf{Emotion intensity was lower for point-light displays.} When motion alone was presented without body form, emotions were perceived as less intense than in all form-present conditions. Body geometry contributes to perceived emotional strength even when it does not determine which emotion is identified.
+\end{itemize}
+
+\textbf{Interpretation.} Biological motion carries the emotional signal independently of rendering style or mesh complexity. The visual body can vary from photorealistic to cartoon to zombie without disrupting emotion recognition. Only the complete removal of body form (point-light) noticeably reduces perceived emotional intensity.
+
+\textbf{Relevance to this thesis.} This paper establishes that NPR stylisation does not impair the emotional communicative function of a virtual character, even when the stylisation is as extreme as a cartoon or zombie body. This supports the design assumption underlying the C3 (NPR) condition: applying an NPR shader to the Avaturn avatar is not expected to reduce the advisor's communicative clarity. Any differences in trust ratings between C2 and C3 are therefore unlikely to be driven by reduced comprehension of the avatar's body language. The paper also provides an empirical parallel to Mori's prediction: even a zombie-like body, which sits in the uncanny valley for visual appearance, conveys emotion as clearly as a photorealistic avatar, suggesting that emotional legibility and eeriness operate on separate perceptual channels.
+
+\vspace{8pt}
 \subsection{Dill et al.\ (2012) --- Evaluation of the Uncanny Valley in CG Characters}
 
 \begin{refbox}
@@ -1283,6 +1317,38 @@ where $q = 8$. This assigns higher weight to sectors with lower standard deviati
 \textbf{Relevance to this thesis.} Kyprianidis et al.\ (2009) provide the theoretical basis for the Kuwahara painterly filter implemented as V6 in the Meta Avatar shader pipeline (\texttt{NPREffect\_Kuwahara2.cginc}) and the corresponding shaders for Avaturn and Jody. The thesis implements the isotropic variant of Kuwahara (classical rectangular sub-regions, not the anisotropic elliptical variant) because the fragment shader hook does not permit the separate structure tensor render pass required by the full anisotropic version. This limitation is explicitly documented: the anisotropic filter would provide better edge-aligned strokes but requires a multi-pass pipeline that exceeds the SDK's single-pass constraint.
 
 \vspace{8pt}
+\subsection{Kyprianidis (2011) --- Multi-Scale Anisotropic Kuwahara Filtering}
+
+\begin{refbox}
+\textbf{Full reference:} Kyprianidis, J. E. (2011). Image and video abstraction by multi-scale anisotropic Kuwahara filtering. In \textit{Proceedings of the 8th International Symposium on Non-Photorealistic Animation and Rendering (NPAR '11)}, pp.\ 55--64. ACM.\\[4pt]
+\textbf{Note:} Article DOI not confirmed; verified from physical PDF \texttt{anisotropic\_multicale\_209.pdf} in the NPR Articles folder. Cite by ISBN: 978-1-4503-0907-3.
+\end{refbox}
+
+\textbf{Context.} This paper extends the anisotropic Kuwahara filter of Kyprianidis et al.\ (2009) to address two remaining limitations. The first is that the weighted sector voting scheme becomes unstable when sector weights fall near zero in noise-corrupted regions, producing visible block artifacts. The second is that the level of abstraction is governed by the filter radius: larger radii produce stronger abstraction but also increase computational cost quadratically and introduce artifacts in large uniform areas. Neither problem can be resolved simply by increasing the radius.
+
+\textbf{Contribution 1 --- Stabilised weighting.} A small floor value $\varepsilon$ is added to the standard deviation denominator in the weighting function:
+\[
+  \alpha_i = \frac{1}{(\varepsilon + s_i)^q}
+\]
+where $\varepsilon > 0$ prevents division by near-zero values in noise-corrupted regions. This eliminates instability without changing the filter's edge-preserving behaviour where genuine structure is present.
+
+\textbf{Contribution 2 --- Multi-scale computation scheme.} A Gaussian image pyramid is built from the input. Processing proceeds coarse-to-fine:
+\begin{enumerate}[leftmargin=2.5em]
+  \item At the coarsest level: compute the local orientation and anisotropy via the structure tensor; apply the anisotropic Kuwahara filter.
+  \item Upsample the filter result and the smoothed structure tensor to the next finer level.
+  \item At each finer level: merge the upsampled coarse-level structure tensor with the structure tensor computed at the current resolution; apply the anisotropic Kuwahara filter using this merged tensor.
+  \item Repeat until the finest level is reached.
+\end{enumerate}
+
+Propagating orientation estimates coarse-to-fine means the filter at each fine level has access to low-frequency orientation context from a wider image neighbourhood than any single-scale filter of equivalent radius. This produces a stronger and more coherent abstraction effect without the artifacts that a large-radius single-scale filter would generate in low-contrast regions.
+
+\textbf{GPU suitability.} The paper was presented at NPAR 2011 and explicitly targets real-time processing. Lanczos3 resampling is used for pyramid downsampling because it preserves local extrema and rejects high-frequency ringing better than bilinear or Catmull-Rom filters. Temporal coherence on video sequences improves because coarse-level orientation estimates change more gradually between frames than per-pixel fine-level estimates.
+
+\textbf{Relationship to the 2009 paper.} The 2009 anisotropic Kuwahara paper introduced the structure tensor, elliptical filter shape, and weighted sector voting. This 2011 paper retains all of those mechanisms and adds the stabilising floor term and the multi-scale propagation scheme. Both papers are by the same first author (Kyprianidis) and should be cited together when the anisotropic filter is discussed.
+
+\textbf{Relevance to this thesis.} The isotropic Kuwahara variant implemented as V6 in the Meta Avatar shader pipeline uses classical rectangular sub-regions, not the anisotropic elliptical sectors of the 2009 paper and not the multi-scale propagation of this 2011 paper. The multi-scale scheme is not implementable within the single-pass fragment hook because it requires an explicit image pyramid across multiple render passes. This paper and its 2009 predecessor together document exactly what the V6 implementation sacrifices relative to the state of the art: the anisotropic multi-scale variant would produce superior stroke coherence and stronger abstraction in low-contrast areas without block artifacts. Citing this 2011 paper alongside the 2009 paper allows the thesis to characterise the V6 limitation precisely and to indicate the direction in which a future multi-pass implementation could improve.
+
+\vspace{8pt}
 \subsection{Praun et al.\ (2001) --- Real-Time Hatching}
 
 \begin{refbox}
@@ -1600,6 +1666,6 @@ Stylisation & Direct transformation of shading, colour mapping, and tone, typica
 
 \vspace{20pt}
 \noindent\color{konstanzblue}\rule{\linewidth}{0.5pt}\\[4pt]
-\noindent{\small\sffamily Summaries sourced from detailed reading of referenced articles and written by Nidanur G\"{u}nay, University of Konstanz, June 2026. \textbf{Uncanny Valley} section covers Mori (1970), MacDorman \& Ishiguro (2006), Ho \& MacDorman (2010), McDonnell et al.\ (2012), Dill et al.\ (2012), and Seymour et al.\ (2021). \textbf{Trust and Avatar Perception} section covers McKnight \& Chervany (2001), Mayer et al.\ (1995), Bartneck et al.\ (2009), Canales et al.\ (2024), Alipour et al.\ (2025), Nowak \& Biocca (2003), Nowak \& Rauh (2005), Weidner et al.\ (2023), Kuffner dos Anjos \& Pereira (2024), Alimardani et al.\ (2024), Dubosc et al.\ (2025), Tao et al.\ (2025), Cihodaru-\c{S}tefanache \& Podina (2025), and Wallraven et al.\ (2008). \textbf{NPR} section covers Gooch et al.\ (1998), Lake et al.\ (2000), Isenberg et al.\ (2003), Gonzalez \& Woods (2018), Marr \& Hildreth (1980), Canny (1986), Barla et al.\ (2006), Kyprianidis et al.\ (2009), Praun et al.\ (2001), Roberts (1963), Kumar \& Poornima (2019), Wisessing et al.\ (2016), Wisessing et al.\ (2020), Petikam et al.\ (2021), Riefard et al.\ (2024), Zell et al.\ (2015), Roshaan (2026, preprint), [Author et al.]\ (2024, VR Rehabilitation), and [Microsoft Research Authors]\ (2025, MR Longitudinal).}
+\noindent{\small\sffamily Summaries sourced from detailed reading of referenced articles and written by Nidanur G\"{u}nay, University of Konstanz, June--July 2026. \textbf{Uncanny Valley} section covers Mori (1970), MacDorman \& Ishiguro (2006), Ho \& MacDorman (2010), McDonnell et al.\ (2012), McDonnell et al.\ (2009), Dill et al.\ (2012), and Seymour et al.\ (2021). \textbf{Trust and Avatar Perception} section covers McKnight \& Chervany (2001), Mayer et al.\ (1995), Bartneck et al.\ (2009), Canales et al.\ (2024), Alipour et al.\ (2025), Nowak \& Biocca (2003), Nowak \& Rauh (2005), Weidner et al.\ (2023), Kuffner dos Anjos \& Pereira (2024), Alimardani et al.\ (2024), Dubosc et al.\ (2025), Tao et al.\ (2025), Cihodaru-\c{S}tefanache \& Podina (2025), and Wallraven et al.\ (2008). \textbf{NPR} section covers Gooch et al.\ (1998), Lake et al.\ (2000), Isenberg et al.\ (2003), Gonzalez \& Woods (2018), Marr \& Hildreth (1980), Canny (1986), Barla et al.\ (2006), Kyprianidis et al.\ (2009), Kyprianidis (2011), Praun et al.\ (2001), Roberts (1963), Kumar \& Poornima (2019), Wisessing et al.\ (2016), Wisessing et al.\ (2020), Petikam et al.\ (2021), Riefard et al.\ (2024), Zell et al.\ (2015), Roshaan (2026, preprint), [Author et al.]\ (2024, VR Rehabilitation), and [Microsoft Research Authors]\ (2025, MR Longitudinal).}
 
 \end{document}

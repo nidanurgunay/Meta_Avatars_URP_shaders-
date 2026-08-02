@@ -4,7 +4,7 @@
 %% ============================================
 
 \documentclass[
-  11pt,
+  10pt,
   a4paper,
   twoside,
   openany,
@@ -19,9 +19,9 @@
 \usepackage{csquotes}
 
 %% ---- Typography ----
-% Body: Palatino serif (mathpazo); headings: Helvetica (\sffamily via helvet)
-\usepackage{mathpazo}                % Palatino for body + math
-\usepackage[scaled=0.90]{helvet}     % Helvetica for \sffamily headings
+% Body: New TX Text (Times-like serif, matches Fink thesis); headings: Source Sans Pro
+\usepackage{newtxtext,newtxmath}     % Times-like body + matching math symbols
+\usepackage{sourcesanspro}           % Source Sans Pro for \sffamily headings (matches Fink)
 \usepackage{setspace}
 \setstretch{1.15}
 \usepackage{microtype}
@@ -69,6 +69,9 @@
 \ofoot[\pagemark]{\pagemark}
 
 %% ---- Math ----
+% Clear newtxmath conflicts before loading AMS packages
+\let\Bbbk\relax
+\let\openbox\relax
 \usepackage{amsmath, amssymb, amsthm}
 \usepackage{mathtools}
 
@@ -80,6 +83,8 @@
 \captionsetup{labelfont=bf, font=small, labelsep=colon, format=hang}
 \usepackage{wrapfig}
 \usepackage[section]{placeins} % auto FloatBarrier before every \section
+\usepackage{mdframed}
+\usepackage{pdfpages}
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
@@ -106,6 +111,7 @@
   backgroundcolor=\color{backcolour},
   commentstyle=\color{codegreen},
   keywordstyle=\color{codeblue}\bfseries,
+  morekeywords={float2,float3,float4,float2x2,float3x3,float4x4,half,half2,half3,half4},
   numberstyle=\tiny\color{codegray},
   stringstyle=\color{codepurple},
   basicstyle=\ttfamily\small,
@@ -172,6 +178,11 @@
 \usepackage{todonotes}
 \usepackage{cleveref}
 
+%% KOMA's \frontmatter/\mainmatter always call \cleardoubleoddpage in twoside
+%% mode, ignoring the openany option (which only gates \backmatter and \chapter).
+%% Redefine it to \clearpage so these transitions don't force blank pages.
+\renewcommand*{\cleardoubleoddpage}{\clearpage}
+
 %% ========================================================
 \begin{document}
 
@@ -199,9 +210,11 @@
 \include{chapters/07_conclusion}
 
 %% ---- Back Matter ----
-\backmatter
-\printbibliography[heading=bibintoc]
+\printbibliography[heading=bibintoc, title=Literature]
+
+%% ---- Appendices ----
 \appendix
 \include{appendix/appendix_a}
+\include{appendix/appendix_b}
 
 \end{document}

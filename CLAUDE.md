@@ -17,6 +17,7 @@ These are permanent instructions for this workspace. Follow them exactly in ever
 | Supervisor (1st reviewer) | Prof. Dr. Oliver Deussen |
 | Co-supervisor (2nd reviewer) | Prof. Dr. Tiare Feuchtner |
 | Year | 2026 |
+| Submission deadline | 2026-08-20 |
 
 ---
 
@@ -125,13 +126,13 @@ Avaturn shader versions in `Assets/Shaders/AvaturnNPRShaders/`:
 | `V2_NormalEdgeDetection.shader` | Screen-space normal derivatives |
 | `V3_SobelEdgeDetection.shader` | Sobel colour edges |
 | `V4_GaussianPreFilteredSobel.shader` | Gaussian pre-smoothing + Sobel |
-| `V5_HierarchicalGaussian.shader` | Depth + normal + Roberts Cross |
+| `V5_HierarchicalGaussian.shader` | Forward material shader, currently assigned to the live V5 materials. **Not what the thesis describes** — see §3.5a. |
 | `V6_ChromaticEdge.shader` | Chromatic edge |
 | `V8_QuantizedSobel.shader` | Quantized Sobel |
 | `AnisotropicKuwahara.shader` | Kuwahara painterly filter |
 | `XToon_2DRamp.shader` | XToon 2D ramp abstraction |
 | `SobelEdgeDetection.shader` | Standalone Sobel |
-| `HierarchicalEdgeDetection.shader` | Standalone hierarchical |
+| `HierarchicalEdgeDetection.shader` | **The real V5 implementation** — URP Renderer Feature post-process. See §3.5a. |
 | `Cel-Avatar-NPR-Sobel.shader` | Cel + Sobel combination |
 
 Normal-map decoding for Avaturn GLB: use `sample.rgb * 2.0 - 1.0`. Never use `UnpackNormalScale`. GLTFast bypasses the Unity importer, so DXT5nm decoding causes a grey artifact.
@@ -162,13 +163,31 @@ Jody shader files in `Assets/AvatarShaderExperimental/Shaders/`:
 | `V2_NormalEdgeDetection.shader` | Normal edge |
 | `V3_SobelEdgeDetection.shader` | Sobel |
 | `V4_GaussianPreFilteredSobel.shader` | Gaussian Sobel |
-| `V5_HierarchicalGaussian.shader` | Hierarchical |
+| `V5_HierarchicalGaussian.shader` | Forward material shader, currently assigned to the live V5 materials. **Not what the thesis describes** — see §3.5a. |
 | `XToon_2DRamp.shader` | XToon |
 | `AnisotropicKuwahara.shader` | Kuwahara |
-| `HierarchicalEdgeDetection.shader` | Hierarchical standalone |
+| `HierarchicalEdgeDetection.shader` | **The real V5 implementation** — URP Renderer Feature post-process. See §3.5a. |
 | `SobelEdgeDetection.shader` | Sobel standalone |
 
 Mixamo animation import setting: use **Feet** rig + level **-0.5** in the FBX import settings. Without this the animation sinks below the ground plane.
+
+---
+
+### 3.5a V5 (Hierarchical Edge Detection) — Two Shader Files, Only One Is Correct
+
+**This is a trap. Two files both relate to "V5 Hierarchical" on Mixamo/Jade and Avaturn, and they are architecturally unrelated. Always verify against `HierarchicalEdgeDetection.shader`, never against `V5_HierarchicalGaussian.shader`, when writing about V5 in the thesis.**
+
+| Aspect | `HierarchicalEdgeDetection.shader` (correct) | `V5_HierarchicalGaussian.shader` (wrong for thesis purposes) |
+| --- | --- | --- |
+| Architecture | URP Renderer Feature, full-screen post-process Blit shader (`Shader "Hidden/PostProcess/..."`, uses `_BlitTexture`, `SAMPLE_TEXTURE2D_X_LOD`, `SampleSceneDepth`, `SampleSceneNormals`) | Ordinary forward material shader assigned directly to mesh materials, same category as V1–V4.2 |
+| Depth layer | Roberts Cross on the real URP scene depth texture (`GetLinearEyeDepth` via `SampleSceneDepth`) | `ddx`/`ddy` of world-space camera-distance proxy (same technique as Meta SDK) |
+| Normal layer | Roberts Cross on the real scene normals texture (`SampleSceneNormals`) | `ddx`/`ddy` of world-space normal (same technique as Meta SDK / V3) |
+| Colour layer | Roberts Cross on luminance **plus** a chromatic term (`chromaEdge`, raw RGB diagonal difference) that catches colour-only boundaries with no luminance difference | XDoG (difference of Gaussians), no Roberts Cross at all — same technique as Meta SDK |
+| Adaptive gain | `adaptiveFactor` (inverse-brightness lerp) applied fully to depth and colour layers, half-strength to normal | AHEAD-style gain applied only to the normal layer (same as Meta SDK) |
+| Avatar isolation | Dedicated `_AvatarMask` texture gates the composite (needed because it's full-screen) | Not applicable — a per-fragment mesh shader only ever runs on the avatar's own geometry |
+| Live status | Renderer Feature (`HierarchicalEdgeDetectionRendererFeature`) is registered in `Assets/URP_QUEST_Renderer.asset` but **`m_Active: 0` (disabled)** and its C# script **no longer exists in the project** (orphaned GUID `b9fbcf26af19645eb90f8e2e64f086e2`). Not configured at all in the Mixamo-specific `Mobile_Renderer.asset`/`PC_Renderer.asset`. | Currently the shader actually referenced by the live V5 materials (`V5_body.mat`, etc., confirmed via `m_Shader` GUID match) |
+
+**Why describe a disabled/orphaned feature in the thesis:** this post-process version is what was actually used to produce the V5 results and figures referenced in Methodology (confirmed 2026-07-28). The current project state reflects a later, unrelated replacement attempt, not a correction of the thesis-relevant implementation. When writing Implementation text for V5, ground every claim in `HierarchicalEdgeDetection.shader`, not in whatever shader the live material happens to point to.
 
 ---
 
@@ -235,10 +254,13 @@ pdftoppm -r 150 main.pdf /tmp/page && sips -s format jpeg /tmp/page-1.ppm --out 
 - Always act directly: edit files, compile, verify. Do not just report findings or ask first unless genuinely ambiguous.
 - When writing thesis text, write it immediately in the file — professional, academic English — regardless of how casually the prompt was phrased.
 - Before writing any thesis section, read the relevant section of `NidanurGunay_Project_Report.pdf` first. Extract content and citation numbers from it. Verify bib keys match.
+- **Prompt interpretation step — MANDATORY.** Nidanur does not consider herself skilled at writing prompts, so before executing any request: (1) silently restate the request in precise terms — the concrete task, the target file(s) or chapter(s), and the scope of the change; (2) if that restatement leaves a genuine gap needed to do the task correctly (which chapter, which technique, which version, whether to also compile, etc.), ask a short clarifying question before touching any file; (3) if the restatement is unambiguous, do not ask, just state the interpreted task in one line and proceed immediately per the "act directly" rule above. This step must never become an excuse to ask permission for routine, obvious tasks — it exists only to catch missing information, not to add a confirmation gate.
 
 ### 4.4 Language and Style Rules
 
 **No Fresnel in the thesis.** The Fresnel effect was removed from the design. Do not mention it.
+
+**Abbreviation consistency — MANDATORY (confirmed 2026-08-02).** The first time a term is used anywhere in the thesis, spell it out in full with the abbreviation in parentheses (e.g. "Computer-generated (CG)," "Non-Photorealistic Rendering (NPR)," "virtual reality (VR)"). After that first introduction, always use the abbreviation, never the full term again, anywhere later in the thesis (not just within the same chapter). Before finalising a section, check whether a term already has an established abbreviation earlier in the document and swap any full-term recurrence for the abbreviation.
 
 **STRICT RULE — Hyphenated compound words.** Hyphenated words are a common signal of AI-generated text and must be minimised. However, two categories of hyphens are permitted and must be retained:
 
@@ -263,24 +285,25 @@ For all other compound adjectives, find an alternative phrasing without a hyphen
 | cross-avatar tuning | avoid — ad hoc modifier | rephrase: "tuning across avatar platforms" |
 | edge-sharpening pipeline | avoid — ad hoc modifier | edge sharpening pipeline |
 
-Keep the language as natural and human as possible. Write in a clear academic register without AI-signature phrasing.
+**General principle.** Whenever a hyphenated compound can be replaced with a short phrase without loss of precision, use the phrase. Reserve hyphens for established academic or scientific terms where the hyphenated form is the standard usage in the relevant literature. When in doubt, rephrase rather than hyphenate.
 
-**Academic register — human-written tone.** Use formal vocabulary and precise causal connectors, but keep the prose natural. Specific rules:
+**Academic register — human-written tone.** Keep the language natural and human: formal vocabulary and precise causal connectors, no AI-signature phrasing. Specific rules:
 
-- Prefer `given that` or `since` over `because` when opening a causal clause mid-sentence
+- Prefer `since` over `because` when opening a causal clause mid-sentence; avoid `given that` as a mid-sentence connector
+- For within-sentence cause-effect chains, causal verbs following "and this" are preferred: "X leads to Z," "X results in Z," "X gives rise to Z," "X produces Z." Example: "H2 predicts equivalence, and this leads to a non-significant result providing insufficient evidence." This is more direct than "because" or "given that."
 - Prefer `meaning that` or `consequently` over `so` for causal conclusions
 - Prefer `progressing to` or `undertaking` over weak passive constructions such as `are addressed`
 - Active voice for decisions and findings; passive only for established technical processes (`was implemented`, `were computed`)
 - Avoid over-formal constructions: never use `owing to the fact that`, `it is evident that`, `it should be noted that`, or `it can be seen that`
-- Avoid opening a sentence with "Rather than X, Y." This construction delays the subject and feels formulaic. Move the main action first and place the contrast at the end. Example: avoid "Rather than using the normal field, V4 applies the operator to the albedo"; write "V4 applies the operator to the albedo rather than the surface normal field." Using "rather than" inside or at the end of a sentence is acceptable.
-- Opening a sentence with a subordinating conjunction such as "Although," "Since," "While," or "Even though" is valid academic style and preferred over splitting the clause into two sentences. Do not break apart a correct "Although X, Y" or "Since X, Y" construction. This rule applies only to subordinating conjunctions; the "Rather than X, Y" rule applies separately.
+- **Default to normal subject-verb sentence order — GENERAL RULE.** State the actor and the action first; add qualification, method, manner, setting, or platform afterward, either mid-sentence, at the end, or folded into a coordinate clause. Never open a sentence with a fronted phrase that delays the main subject and verb, regardless of its surface form: this covers gerund/infinitive method phrases ("Rather than X, Y," "By doing X, Y," "Using X, Y," "In order to X, Y"), prepositional setting phrases ("In a VR study, they found…"), and prepositional scope phrases ("On Avaturn, the operator responds…"). Treat these as one underlying problem, not a checklist of individually banned phrases, and apply the same fix to any new fronted-phrase pattern that has the same shape even if it is not listed here. Fronted platform names are acceptable only inside an explicit parallel per-platform comparison already established in the surrounding prose (e.g. a Mixamo/Meta/Avaturn list), not as an ordinary sentence opener. Example: avoid "Rather than using the normal field, V4 applies the operator to the albedo"; write "V4 applies the operator to the albedo rather than the surface normal field." Example: avoid "In a VR study, they found that X"; write "They conducted a VR study and found that X." These phrases remain acceptable mid-sentence or at the end of a sentence, just not as the opening words. The one exception is a true subordinating conjunction ("Although," "Since," "While," "Even though") — opening a sentence with one of these is valid academic style and should not be split apart or otherwise avoided.
 - Every sentence should read as if a careful human writer produced it without assistance
 
 **Sentence linking and cohesion — MANDATORY.** Academic paragraphs must form a logical chain, not a list of isolated sentences. Every sentence must connect explicitly to the one before it through at least one of the following devices:
 
-- **Thematic pickup:** open the new sentence by repeating or echoing a key noun or concept from the end of the previous sentence. Example: "…rendering internally." → "This internal rendering architecture, however, prevents…"
+- **Thematic pickup:** open the new sentence by repeating or echoing a key noun or concept from the end of the previous sentence. Example: "…rendering internally." → "This internal rendering architecture prevents…"
 - **Pronoun reference:** use "It," "This," "These," or "They" to carry the subject forward when the referent is unambiguous. Example: "…cannot be added." → "It must instead be injected…"
 - **Pivot connectors:** use "however," "consequently," "furthermore," or "nonetheless" when the sentence contrasts with or builds on the previous one.
+- **Pivot connector placement — MANDATORY.** A pivot or contrast connector ("however," "by contrast," "on the contrary," "nevertheless," "nonetheless," "conversely," "in contrast") belongs at the **start** of the sentence, not inserted medially after the subject. Write "By contrast, trustworthiness scaled monotonically with realism." Do not write "Trustworthiness, by contrast, scaled monotonically with realism." The medial, comma-wrapped placement is a common AI-signature pattern and must be avoided; front-load the connector instead.
 - **Never open a sentence with a subject that has not been mentioned or clearly implied in the preceding sentence.** This is the most common violation: jumping to a new topic without a bridge word or lexical echo.
 
 Before finalising any paragraph, read it aloud and check that each sentence picks up a thread from the one before it.
@@ -299,30 +322,28 @@ Before finalising any paragraph, read it aloud and check that each sentence pick
 
 **No repeated phrases across adjacent sentences.** Beyond word roots, avoid repeating the same multi-word phrase in consecutive sentences. Rephrase one occurrence using a synonym construction. Example: "without requiring" appearing in two consecutive sentences must be varied — rewrite one as "eliminating the need for" or "independent of."
 
-**Conjunction variety — MANDATORY.** The same conjunction or transitional phrase must not appear in consecutive paragraphs, and must not be overused within a section. The authoritative reference is `Academic_Conjunctions.pdf` in the project root. Before finalising any section, check that "however," "consequently," and "furthermore" do not each appear more than once across two consecutive paragraphs. If they do, replace one occurrence with an equivalent from the tables below.
+**Conjunction variety — MANDATORY.** The same conjunction or transitional phrase must not appear in consecutive paragraphs, and must not be overused within a section. The authoritative reference is `Academic_Conjunctions.pdf` in the project root. Before finalising any section, check that "however," "consequently," and "furthermore" do not each appear more than once across two consecutive paragraphs. If they do, swap one occurrence for an alternate below.
 
-Preferred formal interchangeable pairs (all from the PDF):
-
-| Role | Primary | Swap with |
+| Role | Preferred | Alternates |
 |---|---|---|
 | Contrast / limitation | however | nevertheless, nonetheless, yet, conversely |
 | Addition | furthermore | moreover, equally, in addition |
-| Consequence | consequently | therefore, thus, accordingly, hence |
-| Cause | since | given that, as, in view of |
+| Consequence | consequently; meaning that (for results) | therefore, thus, accordingly, hence; **causal verbs** after "and this": leads to, results in, gives rise to, produces |
+| Cause | since (over *because* and *given that*) | as, in view of, stems from |
 | Summary | taken together | in summary, overall (neutral) |
 | Sequence | subsequently | thereafter, ultimately |
 
-Thesis-specific defaults from the PDF (bold = preferred):
-- **however** to pivot to a limitation; **nevertheless / nonetheless** as alternates
-- **furthermore** to add a supporting point; **moreover** as the primary alternate
-- **since / given that** over *because* for causal clauses
-- **consequently / meaning that** over *so* for results
-- Never use: *owing to the fact that*, *it is evident that*, *it should be noted that*
-- *due to* is semi-formal — prefer *given* or *since* where possible
+**Same-conjunction-per-subsection — MANDATORY (confirmed 2026-08-01).** No conjunction or connective word may be reused anywhere within the same subsection (e.g., not twice within §1.1 Motivation), even across non-consecutive paragraphs — this is stricter than the consecutive-paragraph check above. Before finalising a subsection, scan every paragraph in it and list which connector each one uses. If a connector would repeat, swap it for a different alternate from the table above rather than reusing the word.
+
+Never use: *owing to the fact that*, *it is evident that*, *it should be noted that*. *Due to* is semi-formal — prefer *given* or *since*.
 
 **No em-dashes.** Em-dashes look AI-generated. Use commas, colons, or semicolons instead.
 
-**Minimise semicolons.** Eliminate semicolons wherever possible without introducing a grammatical error. Prefer splitting into two sentences, or using a comma with a conjunction. Semicolons are only acceptable to separate items in a complex list or when the conjunction "therefore" or "however" follows immediately (e.g., "...; therefore, ..."). Never use a semicolon simply to join two independent clauses that could stand as separate sentences.
+**No semicolons — MANDATORY, no exceptions.** Semicolons read as unacademic in this thesis's target style; avoid them everywhere, not only between independent clauses. Split every semicolon-joined pair of independent clauses into two sentences, linked by thematic pickup, a pronoun reference ("It," "This," "These"), or a connector from the table above. Never write "X; Y" when X and Y could each stand alone. For a list whose items themselves contain internal commas, do not fall back on semicolon separators either: restructure as commas if the items are short (e.g. "(H1), (H2), and (H3)"), or break the list into an enumerated/itemised list environment, or split into separate sentences, whichever preserves clarity. The one narrow exception is a semicolon immediately before "therefore" or "however" (e.g., "…; therefore, …"), and even there, prefer splitting into two sentences unless the two clauses are unusually short and tightly linked. When in doubt, split rather than use a semicolon.
+
+**Sentence length cap — MANDATORY.** A single sentence must not chain more than two clauses or ideas together, whether joined by commas, a colon, or "and." A common violation is a colon-introduced explanation that then continues with an "and"-joined second clause ("This does X: A happens, and B also happens"). Split these into two or three shorter sentences instead, connected via a conjunction, pronoun reference, or thematic pickup from the table above. Before finalising any sentence longer than roughly 25-30 words, check whether it is really two ideas stitched together and split it if so.
+
+**Prefer two short sentences over one joined by "and" for reason-result pairs.** When a sentence states a cause and then its effect, default to splitting them into two sentences rather than joining them mid-sentence with "and." The second sentence should open with a connector that makes the reason-result relationship explicit: "This results in...", "This leads to...", "Thus,", "Consequently,", "Due to that,", or similar from the connector table above. A two-sentence result construction like this is fine and preferred over a single long sentence — it is not the same violation as the sentence-length cap above, which targets sentences that stitch multiple ideas into one clause rather than two short linked sentences.
 
 **Conjunction-linked sentences over participial phrases — MANDATORY.** When two ideas are connected by cause, consequence, or addition, express the link with an explicit coordinating conjunction ("and," "but," "yet") rather than a participial phrase ("-ing" construction appended to the preceding clause). Participial phrases compress two ideas into one clause and make the logical link implicit; a conjunction makes the connection visible and keeps each sentence to one main idea.
 
@@ -332,7 +353,11 @@ Thesis-specific defaults from the PDF (bold = preferred):
 | "…incorporates spatial averaging to suppress noise" | "…incorporates spatial averaging, and this reduces noise sensitivity." |
 | "…incorporates the ramp, allowing finer control" | "…incorporates the ramp, and this allows finer control over the tonal distribution." |
 
-When a sentence contains more than one participial phrase, split it and join the parts with a conjunction. This also applies to relative clauses introduced by "which": prefer "This Y" or "and Y" as a follow-on sentence over "…X, which Y."
+When a sentence contains more than one participial phrase, split it and join the parts with a conjunction. This also applies to relative clauses introduced by "which": split the sentence rather than leaving the clause attached — end the first sentence before the clause, then start a new sentence with "This," "It," or a repeated noun, or join the two ideas with an explicit conjunction ("and"). Do not treat swapping "which" for "that" as a fix on its own: it removes the missing-comma problem but still compresses two ideas into one clause. Only use "that" when the clause is genuinely restrictive (it narrows down which specific noun is meant), not as a shortcut around splitting.
+
+Occasionally leaving a "which" clause or a participial phrase unsplit is fine and deliberate for sentence-structure variety, the same way the "Vary the fix pattern" rule below asks for rotation across fix constructions rather than one template applied everywhere. Default to splitting, but do not mechanically flag and split every single instance in a section — some should be left as-is so the passage does not read as a repeated template.
+
+**Vary the fix pattern — MANDATORY.** When multiple participial phrases or "which" clauses are corrected within the same section, do not apply the identical replacement template to every instance. Rotate across different constructions: a new sentence starting with "This" followed by a verb, a new sentence starting with "It" followed by a verb, a coordinating conjunction plus a finite verb ("...and it reveals..."), or a colon introducing a coordinated pair of finite clauses. Applying the same fix (e.g. "This X" every time) across several consecutive fixes is itself a detectable, repetitive AI-signature pattern and should be treated as a violation in its own right.
 
 ---
 
@@ -438,6 +463,8 @@ Target style: papers published in ACM TOG, IEEE VR, IEEE TVCG, CHI, and Eurograp
 
 The thesis uses **IEEE numeric citations** (`style=ieee, sorting=none` in biblatex). Citations compile as bracketed numbers, e.g. `[1]`, `[6]`, `[9]`. Numbers are assigned in the order citations first appear in the text and will shift if text is added before them. Always refer to citations by their **bib key** (e.g. `barla2006`, `lake2000`) in source and discussion, not by number, since numbers are unstable. The compiled number for a given key can be confirmed by building the PDF.
 
+**Never present a citation as raw key text — MANDATORY (confirmed 2026-08-02).** A citation must always render as a bracketed number in the compiled PDF, never as the literal bib key (e.g. `natarajan2020`) appearing as visible text next to or instead of the number. If a compiled page shows a raw key instead of `[N]`, this means the bibliography build failed or is stale (e.g. a broken biber run, a race condition from a concurrent edit) — the fix is to rebuild cleanly (biber + pdflatex ×2) and re-verify, not to edit the `\cite{}` source, which is very likely already correct. Before reporting a citation-related task as done, confirm from the rendered PDF that every citation in the affected section shows as `[N]`, not as key text.
+
 ### 5.1 Placement Rules
 
 1. **One sentence, one citation.** Never place two citations for the same claim back to back. If two papers support the same sentence, combine them: `\cite{a,b}`.
@@ -499,11 +526,38 @@ Each log entry must include:
 
 Do not skip this log even for well-known sources. The log is used for pre-submission verification.
 
+### 5.4a Citation Verification PDF — the only citation checklist, MANDATORY
+
+There is exactly one citation verification document: `citation_check.tex` / `citation_check.pdf` (project root). Do not create a second citation-checklist PDF derived from `thesis/citation_sources.md` — one was tried (2026-08-01) and removed because it duplicated `citation_check.tex` with less rigour (many entries had no actual quoted source excerpt, only bibliographic metadata). Nidanur reviews `citation_check.pdf`, not the raw markdown.
+
+`citation_check.tex` uses a numbered blue header badge per entry, a green-highlighted box for the exact thesis sentence, a red-highlighted box for the original source excerpt, and a real interactive AcroForm checkbox footer (`\CheckBox`, not a static `$\square$` glyph — confirmed 2026-08-01 to produce genuine `/FT/Btn` widgets). Whenever a new citation is added anywhere in the thesis, add a matching `\citentry{...}` block immediately (see the MANDATORY workflow rule at the top of that file) and recompile:
+```
+pdflatex -interaction=nonstopmode citation_check.tex
+```
+**Recompiling regenerates the whole PDF from scratch and wipes every checkbox Nidanur has ticked in Preview** — pdflatex has no memory of a previously-saved PDF's form data. Nidanur initially (2026-08-01) said she'd accept re-ticking after each recompile, but after losing ticks on entries she'd already confirmed, asked for those specific ones to persist. Fix implemented the same day: `\citentry{...}` (no star) renders its checkbox unchecked as before; `\citentry*{...}` (starred) renders it pre-checked (`/V/Yes /AS/Yes` in the AcroForm, confirmed via direct PDF-object inspection). **Whenever Nidanur tells you an entry is confirmed/validated, add the star to that specific `\citentry` call site** so the tick survives every future recompile automatically — do not just leave it to her to re-tick in Preview. Only recompile this file when a citation is actually added or corrected, and if new entries were added, tell her which ones are new so she can review and tell you to star them once confirmed.
+`thesis/citation_sources.md` remains the mandatory raw bibliographic log per §5.4 above, but it is a working data file, not something Nidanur reviews directly — do not build a second PDF from it.
+
 ---
 
-## 6. Section Ownership — Methodology vs Implementation
+## 6. Section Ownership — Chapter Purposes
 
-This separation is strict. Cross-contamination is a writing error.
+Each chapter has one job. Content belongs in the chapter whose job it matches, not the chapter where it is convenient to write it.
+
+### 6.1 Chapter Purpose Table
+
+| Chapter | Purpose | Contains | Does NOT contain |
+|---|---|---|---|
+| 01 Introduction | Motivate the problem, state the contribution | Problem statement, research questions, contributions, thesis outline | Technique detail, literature detail, results |
+| 02 Related Work | Situate the thesis against prior work | Prior NPR techniques, prior uncanny valley/trust studies, the gap each leaves open | Our design decisions, our implementation, our results |
+| 03 Background | Give the conceptual and technical grounding the later chapters assume | Rendering pipeline basics, shader/HLSL concepts, the math behind Sobel/Gaussian/Kuwahara etc., trust and uncanny valley theory | Project-specific design decisions, our shader files, our results |
+| 04 Methodology | Explain why the work was designed this way | Why a technique was chosen, what problem it solves, conceptual algorithm description, design rationale, formulas, "this motivates V_N" transitions, user study design rationale | Shader file names, hook/API names, HLSL signatures, tuned parameter values, results |
+| 05 Implementation | Document what was built and how | Shader file names, Unity hook names and API calls, HLSL function signatures, material and platform integration, tuned parameter values, empirical development observations | Motivation sentences ("this approach solves X"), citations justifying a design choice, interpretation of results |
+| 06 Evaluation | Present and interpret the user study outcome | Study execution, participant data, statistical results, H1–H5 outcomes, result figures/tables, discussion of what the results mean | Study design rationale (→ Methodology), technique or shader description, new literature used to justify design choices (only cite to interpret a result) |
+| 07 Conclusion | Summarize and reflect | Summary of findings, answers to RQ1–RQ3, limitations, future work | New results, new citations, new technique description |
+
+### 6.2 Methodology vs Implementation (strict)
+
+This is the split most often violated. Cross-contamination is a writing error.
 
 | Content type | Correct section |
 |---|---|
@@ -556,16 +610,16 @@ Photorealistic Meta Avatars can trigger the uncanny valley. NPR abstraction can 
 
 ### Iterative development narrative (for Implementation chapter)
 
-The techniques were developed in `Assets/AvatarShaderExperimental/` first, then ported to the Meta Avatar pipeline. Each technique was motivated by a specific limitation of the previous one:
+The techniques were developed in `Assets/AvatarShaderExperimental/` first, then ported to the Meta Avatar pipeline. Each technique was motivated by a specific limitation of the previous one. There are eight techniques in total: six main versions (V1–V6) plus two decimal variants (V2.2, V4.2). **V7 and V8 do not exist in the thesis** — an earlier plan included a Kuwahara+Sobel combination and a three-way Kuwahara+Gauss+Hierarchical composite, but these were dropped before the Methodology chapter was finalised and must not appear anywhere in the thesis text.
 
-- V1 (geometry outline): stable silhouette, but no interior detail
-- V2 (normal edge / derivative): zero extra samples, catches creases, misses colour boundaries
-- V3 (Sobel): catches colour edges, but UV seam spikes and skin over-edging — fixed with dual HSV saturation threshold and seam rejection
-- V4 (Gaussian Sobel): pre-smoothing removes aliasing, 72 sample cost, still misses depth breaks
-- V5 (Hierarchical): depth proxy + normal + Roberts Cross colour, AHEAD-inspired, best silhouette
-- V6 (Kuwahara): painterly abstraction of texture, not edge-based, isotropic (single pass constraint)
-- V7 (Kuwahara + Sobel): painterly fill and ink lines, comic-book aesthetic
-- V8 (Kuwahara + Gauss + Hier): three-phase composite, most comprehensive, highest cost
+- V1 (inverted hull outline): stable silhouette via geometry expansion, but no interior detail
+- V2 (toon shading): quantised diffuse ramp, no interior edge information
+- V2.2 (X-Toon): 2D ramp lookup driven by lighting and a separate abstraction axis (depth/curvature/manual), still shading-only
+- V3 (screen-space normal edge detection): zero extra samples, catches creases, misses colour boundaries, edge thickness scales with viewing distance
+- V4 (Sobel): catches colour edges, but noisy on photographic textures (baked illumination, UV seams) — fixed with threshold calibration and seam rejection on the Meta SDK, and Avaturn head texture preprocessing
+- V4.2 (Gaussian prefiltered Sobel): pre-smoothing reduces noise, up to 72 sample cost, insufficient gain once texture preprocessing was applied — not carried into the final composite
+- V5 (Hierarchical multi-cue): depth proxy + normal + Roberts Cross colour, AHEAD-inspired adaptive gain on Meta SDK, best boundary coverage but facial segment boundaries remain unclear — excluded from the final composite after the parameter adjustment study
+- V6 (Kuwahara): painterly abstraction of texture, not edge-based, anisotropic on Mixamo/Avaturn, forced isotropic-like on Meta SDK (no blur pass for the structure tensor) — excluded from the final composite after the parameter adjustment study
 
 ### Key technical constraints
 
@@ -575,51 +629,21 @@ The techniques were developed in `Assets/AvatarShaderExperimental/` first, then 
 - Skin vs clothing thresholding — solved by HSV saturation cutoff (`_SkinSaturationCutoff`)
 - Isotropic Kuwahara only — anisotropic requires structure tensor and a separate render texture pass, which is not possible in the fragment hook
 
-### Citation keys confirmed in references.bib
+### Citation Keys
 
-`mori1970`, `nowak2003`, `gooch1998`, `weidner2023`, `schlick1994`
-
-Still to add: AHEAD, XToon (barla2006), Kuwahara (kyprianidis2009), Isenberg (isenberg2003), MacDorman (macdorman2006), Gonzalez-Woods (gonzalez2018), Lake et al. (lake2000), Nowak and Biocca
-
----
-
-## 10. User Study Design
-
-### 10.1 Study Parameters
-
-| Parameter | Value |
-|---|---|
-| Modality | Video only — no VR headset, no real time interaction |
-| Design | Within subjects (all participants see all three conditions) |
-| Conditions | 3 (see below) |
-
-### 10.2 Study Conditions
-
-| # | Label | Description |
-|---|---|---|
-| C1 | Real | Video recording of a real person (ground truth baseline) |
-| C2 | Avaturn Realistic | Video of an Avaturn avatar rendered photorealistically, no NPR |
-| C3 | Avaturn NPR | Video of the same Avaturn avatar rendered with the selected NPR shader pipeline |
-
-The avatar platform is held constant between C2 and C3. This isolates the perceptual effect of NPR stylisation from any platform variation. The Meta Avatars SDK work is the technical contribution; the user study evaluates the stylisation effect using the Avaturn avatar.
-
-### 10.3 STRICT RULE — No Real Time VR Performance Literature
-
-**The study is video based. It does not involve a VR headset, real time rendering, or Quest hardware.**
-
-Do not cite, reference, or use as motivation any literature about:
-
-- Real time VR rendering performance or throughput
-- Quest hardware budgets, frame rate constraints, or latency targets
-- VR presence requirements tied to rendering speed or frame pacing
-
-This rule applies to the Related Work chapter, Methodology chapter, and Evaluation chapter. The single pass fragment hook constraint in the NPR shader pipeline is a Unity and SDK engineering fact; it must not be framed as a user study requirement or cited alongside perceptual or trust literature.
+Do not assume a key is missing from a memorized list — that list goes stale as the thesis progresses. Verify directly:
+```
+grep -oE '@\w+\{[a-zA-Z0-9_]+,' thesis/references.bib
+```
+(Confirmed present as of 2026-07-25: all keys in the §5.3 mapping table, including `barla2006`, `kyprianidis2009`, `isenberg2003`, `macdorman2006`, `gonzalez2018`, `lake2000`, `mori1970`, `nowak2003`, `gooch1998`, `weidner2023`, `schlick1994`, and `roshaan2026` for AHEAD.)
 
 ---
 
 ## 9. Reference Articles
 
 **MANDATORY — Check the original PDF before attributing any claim.** Article summaries can paraphrase or omit nuance. Before writing any sentence that attributes a specific finding or argument to an author, read the relevant passage in the original PDF. The summaries are a starting point; the original source is authoritative. If a claim cannot be found in the original PDF, do not attribute it to that author.
+
+**MANDATORY — If the primary PDF is not available, stop and ask Nidanur to get it. Never settle for secondary-source verification alone.** Confirmed 2026-08-02: when a citation is added or checked and the primary source PDF is not in `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/` (or any subfolder), do not mark the citation "CONFIRMED" based only on a secondary source's description of it (e.g. how another paper's review/introduction cites and summarises it), and do not silently proceed with just a DOI/CrossRef cross-check as if that were sufficient. Instead, stop and tell Nidanur exactly which article is missing — full title, authors, venue, year, and DOI — and ask her to download it and either drop the PDF into the Articles folder or paste the full article text into the chat. Only mark the citation entry CONFIRMED once the primary PDF has actually been read. A secondary-source paraphrase or a bibliographic cross-check (CrossRef, Semantic Scholar, etc.) can support a `references.bib` entry's bibliographic accuracy (author/title/venue/year/DOI), but it does not substitute for reading the primary source to verify the actual claim.
 
 **Physical article PDFs are stored at:** `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/`
 
@@ -666,6 +690,40 @@ Physical PDFs in `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/`:
 
 ---
 
+## 10. User Study Design
+
+### 10.1 Study Parameters
+
+| Parameter | Value |
+|---|---|
+| Modality | Video only — no VR headset, no real time interaction |
+| Design | Within subjects (all participants see all three conditions) |
+| Conditions | 3 (see below) |
+
+### 10.2 Study Conditions
+
+| # | Label | Description |
+|---|---|---|
+| C1 | Real | Video recording of a real person (ground truth baseline) |
+| C2 | Avaturn Realistic | Video of an Avaturn avatar rendered photorealistically, no NPR |
+| C3 | Avaturn NPR | Video of the same Avaturn avatar rendered with the selected NPR shader pipeline |
+
+The avatar platform is held constant between C2 and C3. This isolates the perceptual effect of NPR stylisation from any platform variation. The Meta Avatars SDK work is the technical contribution; the user study evaluates the stylisation effect using the Avaturn avatar.
+
+### 10.3 STRICT RULE — No Real Time VR Performance Literature
+
+**The study is video based. It does not involve a VR headset, real time rendering, or Quest hardware.**
+
+Do not cite, reference, or use as motivation any literature about:
+
+- Real time VR rendering performance or throughput
+- Quest hardware budgets, frame rate constraints, or latency targets
+- VR presence requirements tied to rendering speed or frame pacing
+
+This rule applies to the Related Work chapter, Methodology chapter, and Evaluation chapter. The single pass fragment hook constraint in the NPR shader pipeline is a Unity and SDK engineering fact; it must not be framed as a user study requirement or cited alongside perceptual or trust literature.
+
+---
+
 ## 11. User Study Presentation
 
 ### 11.1 Presentation File
@@ -705,8 +763,8 @@ These six papers form the measurement foundation of the user study. Know this ta
 | Mori (1970) — Uncanny Valley | Core motivation: NPR moves avatars out of the uncanny zone |
 | Canales, Roble & Neff (2024) — Trust + Avatar Stylisation | Study paradigm (video, scripted advisor), trust battery, forced-choice behavioral task |
 | McKnight & Chervany (2001) — Trust Typology | Theoretical framework: Competence / Benevolence / Integrity as independent dimensions |
-| Bartneck et al. (2009) — Godspeed Questionnaire | Anthropomorphism subscale (Part D) + Likeability subscale (Part C), 5-point semantic differential |
-| Ho & MacDorman (2010) — Eeriness Instrument | Eeriness subscale (Part B): 6 semantic differential items, 5-point scale |
+| Bartneck et al. (2009) — Godspeed Questionnaire | Likeability subscale (Part B) + Anthropomorphism subscale (Part C), 5-point semantic differential |
+| Ho & MacDorman (2010) — Eeriness Instrument | Eeriness subscale (Part D): 8 semantic differential items, 5-point scale |
 | Alipour, Hartmann & Alimardani (2025) — Systematic Review | Design rationale: dynamic video stimuli + multi-component trust measurement + behavioral indicator |
 
 **Key finding from Canales et al. (2024):** Self-reported trust was broadly equivalent across stylisation levels, but the semi-realistic (stylised) condition attracted the highest rate of behavioral selection. This dissociation motivates H2 (NPR does not reduce trust) and justifies including a forced-choice measure alongside self-report scales.
@@ -719,12 +777,12 @@ The questionnaire runs once per video block (3 blocks total). Parts and their so
 | --- | --- | --- | --- | --- |
 | Pre-video | Baseline preference | 1 | Multiple choice | Exploratory secondary measure |
 | A | Comprehension check | 1 | Multiple choice | Exclusion criterion |
-| C | Likeability | 5 | Sem. diff. 1–5 | Bartneck et al. (2009) — Godspeed |
-| D | Human-Likeness / Anthropomorphism | 5 | Sem. diff. 1–5 | Bartneck et al. (2009) — Godspeed |
-| B | Eeriness | 6 | Sem. diff. 1–5 | Ho & MacDorman (2010) |
-| E | Trust: Competence | 4 | Likert 1–7 | Canales et al. (2024); McKnight & Chervany (2001) |
-| F | Trust: Benevolence | 4 | Likert 1–7 | Canales et al. (2024); McKnight & Chervany (2001) |
-| G | Trust: Integrity | 3 | Likert 1–7 | Canales et al. (2024); McKnight & Chervany (2001) |
+| B | Likeability | 5 | Sem. diff. 1–5 | Bartneck et al. (2009) — Godspeed |
+| C | Human-Likeness / Anthropomorphism | 5 | Sem. diff. 1–5 | Bartneck et al. (2009) — Godspeed |
+| D | Eeriness | 8 | Sem. diff. 1–5 | Ho & MacDorman (2010) |
+| E | Trust: Competence | 3 | Likert 1–7 | Mayer et al. (1995); McKnight & Chervany (2001) |
+| F | Trust: Benevolence | 3 | Likert 1–7 | Mayer et al. (1995); McKnight & Chervany (2001) |
+| G | Trust: Integrity | 3 | Likert 1–7 | Mayer et al. (1995); McKnight & Chervany (2001) |
 | H | Recommendation agreement + appearance influence + warmth | 3 | Likert 1–7 | Custom; H3 grounded in Gao et al. (2025) |
 | I | Visual style check (manipulation check, 2 items) | 2 | Likert 1–7 | Custom |
 | J | Open question (Block 2 only) | 1 | Free text | Custom |
@@ -732,11 +790,11 @@ The questionnaire runs once per video block (3 blocks total). Parts and their so
 
 **Scale note:** Parts B–D use 5-point semantic differential. Parts E–I use 7-point Likert (1 = Strongly Disagree, 7 = Strongly Agree). The scale change is marked with a separator in Qualtrics.
 
-**Presentation order within 5-point block:** C → D → B (likeability and anthropomorphism before eeriness, to avoid priming toward uncanniness before trust ratings).
+**Presentation order within 5-point block:** B → C → D (likeability and anthropomorphism before eeriness, to avoid priming toward uncanniness before trust ratings).
 
 **Demographics Q9 (propensity to trust):** Added as a 7-point Likert covariate — "In general, I tend to trust people I meet for the first time." Per Mayer et al. (1995).
 
-**Power analysis (documented in report §Sample Size):** At η²p = 0.06, α = 0.05, power 0.90 requires ~38 participants. Target n = 48 (8 per Latin Square group) exceeds this threshold and accounts for attrition.
+**Power analysis (documented in report §Sample Size):** At η²p = 0.06, α = 0.05, power 0.90 requires ~38 participants. Target n = 48 (16 per study version, 3 versions) exceeds this threshold and accounts for attrition.
 
 ### 11.5 Three Scenario Vignettes (full text)
 
@@ -788,16 +846,20 @@ Advisor spoken recommendation (~22 s): *"I would take Option A. Yes, 350 euros i
 
 ### 11.6 Counterbalancing
 
-Balanced Latin Square with 6 groups (G1–G6). Each participant sees all three conditions paired with different scenarios. Minimum recommended n = 48 (8 per group) for power ≥ 0.90 at medium effect size. Data mapping: each participant's "Video 1/2/3" response must be remapped to condition (C1/C2/C3) using their group assignment before aggregating.
+3×3 Latin square with 3 study versions (labeled A/B/C — verify against `tab:latin_square` in `04_methodology.tex`, not a fixed list, since this has changed before). Scenario order is held constant (Career=Video 1, Travel=Video 2, Learning=Video 3); the three conditions rotate across those fixed video slots by study version. Recruitment target n = 48 (16 per study version) for power ≥ 0.90 at medium effect size. Data mapping: each participant's "Video 1/2/3" response must be remapped to condition (C1/C2/C3) using their study-version assignment before aggregating.
 
 ### 11.7 Primary Hypothesis Summary
 
-| Hypothesis | Prediction |
-| --- | --- |
-| H1 | NPR (C3) produces lower eeriness than photorealistic avatar (C2) |
-| H2 | NPR (C3) does NOT produce significantly lower trust than C2 (null expected) |
-| H3 | Both avatar conditions (C2, C3) produce lower trust than real person (C1) |
-| H4 | Eeriness negatively predicts trust across all conditions |
-| H5 | Anthropomorphism mediates the condition → eeriness path (exploratory) |
+**As finalized in `04_methodology.tex` §Objective and Hypotheses and `06_evaluation.tex` §Hypothesis Tests (confirmed 2026-07-31): exactly three confirmatory hypotheses.** C1 (real person) comparisons are an exploratory/incidental baseline, never a formally numbered hypothesis — do not write "H4" or "H5" anywhere in the thesis text.
+
+| Hypothesis | Prediction | Test |
+| --- | --- | --- |
+| H1 | NPR (C3) produces lower eeriness than photorealistic avatar (C2) | Repeated-measures MANOVA across subscale composites, univariate ANOVA + Bonferroni pairwise on the eeriness composite, C2 vs C3 |
+| H2 | NPR (C3) does NOT produce significantly lower trust than C2 (null expected) | Same MANOVA framework, univariate ANOVA + Bonferroni pairwise on Competence/Benevolence/Integrity composites, C2 vs C3 |
+| H3 | Eeriness negatively predicts trust across all conditions | Person-centred (within-participant) multilevel regression, eeriness composite predicting each trust subscale, random intercept per participant — NOT a simple pooled/raw correlation across conditions, which conflates within- and between-condition variance |
+
+C1 (real person) is an incidental/exploratory comparison layered on top of the same MANOVA and the P1/trustworthiness/unsettlingness rankings (Friedman + Wilcoxon, Bonferroni-corrected), reported but not treated as hypothesis-confirming or disconfirming.
 
 **Critical comparison for the thesis:** C2 vs C3. This is the only pair where animation is held constant and only the NPR shader changes. All other pairs confound rendering with animation naturalness.
+
+**Known inconsistency (2026-07-31):** `UserStudy_Complete_Report.tex` still contains an older draft with five hypotheses (H1–H5, including a real-vs-avatar hypothesis and an anthropomorphism-mediation hypothesis) and tells the reader to pre-register "the five hypotheses (H1–H5)" on OSF. That report has not been reconciled with the finalized 3-hypothesis version in the actual chapters. Do not pre-register or cite the 5-hypothesis version without first updating that report to match §11.7 above.

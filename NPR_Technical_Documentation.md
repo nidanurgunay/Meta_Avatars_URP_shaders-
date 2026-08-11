@@ -240,6 +240,8 @@ An adaptive sensitivity term scales all layers down in dark areas, avoiding over
 
 Single-scale anisotropic Kuwahara filter based on Kyprianidis (NPAR 2011 §3.3). The former isotropic 4-quadrant design was removed in favour of this structure-tensor-guided 8-sector elliptical filter which produces visually superior direction-aware brushstrokes with no perceptible difference in Quest 3 performance.
 
+**Patch — BT.709 luma weights (2026-08-09):** `lum = dot(color.rgb, float3(0.299, 0.587, 0.114))` was replaced with `dot(color.rgb, float3(0.2126, 0.7152, 0.0722))`. The old weights were the BT.601/Rec.601 luma coefficients, a leftover from before the project-wide BT.601→BT.709 migration (see V4 Sobel, which already used BT.709). This was the only remaining spot using BT.601-style weights: Avaturn's and Mixamo/Jade's `AnisotropicKuwahara.shader` structure-tensor luminance already used BT.709 correctly, so the Meta SDK path was the sole outlier. No visible artefact was reported; this brings the structure-tensor orientation estimate onto the same luma definition as every other technique in the pipeline. Thesis `05_implementation.tex` §V6 Meta Avatars SDK listing updated to match.
+
 **Step 1 — Structure tensor:** Hardware `ddx`/`ddy` of the shaded luminance gives `gx`, `gy`. The 2×2 structure tensor `J = [[E,F],[F,G]]` = `[[gx²,gx·gy],[gx·gy,gy²]]` encodes local gradient structure. Eigenanalysis yields:
 - `φ` — dominant orientation angle (direction of minimum change, i.e. along the feature): `φ = ½ arctan(2F / (E−G)) + π/2`
 - `A` — anisotropy `(λ₁−λ₂)/(λ₁+λ₂)`, range 0–1

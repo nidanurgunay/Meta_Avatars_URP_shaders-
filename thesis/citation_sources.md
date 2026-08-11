@@ -135,9 +135,9 @@ This document tracks every citation added to `references.bib` that was not sourc
 - **Verification level:** CONFIRMED — full text read, superseding the earlier abstract-only pass. Bibliographic details match the CrossRef record exactly.
 - **Abstract (p. 287, verbatim):** "This study analyzes the influence of avatars on social presence, interpersonal trust, perceived communication quality, nonverbal behavior, and visual attention in Net-based collaborations using a comparative approach... Significant differences were found between text chat and all other communication modalities in perceived intimateness, co-presence, and emotionally-based trust. Microanalyses of nonverbal activity and visual attention point to similarities between video and avatar modes, both showing higher levels of exposure to the virtual other and visual attention, in particular in the initial phase of interaction as compared to text and audio."
 - **Introduction (p. 288, verbatim) — conceptual justification for the presence/trust pairing:** "interpersonal trust (Kanawattanachai & Yoo, 2002; McAllister, 1995), and social presence (Bente, Rüggenberg, & Krämer, 2004; Daft & Lengel, 1984; Gunawardena & Zittle, 1997). The latter two concepts are of particular interest for the current approach as they are complementary to each other: Whereas trust is generic to human communication and implies evaluative aspects, social presence is aiming at mediated communication and is more descriptive by nature. Thus, in combination, both variables can be expected to cover a wide range of relational media effects."
-- **Used in:** `01_introduction.tex` §Motivation, "This growing engagement..." paragraph
-- **Cited sentence:** "This same presence has been linked to interpersonal trust and perceived communication quality in avatar-mediated collaboration~\cite{bente2008}."
-- **Relevance:** Grounds the paragraph's bridge from social presence/copresence (Nowak \& Biocca) to trust, replacing an earlier unsupported leap that asserted trust as an assessment criterion without any citation. Bente et al. explicitly measure social presence, interpersonal trust, and perceived communication quality together, and their own Introduction gives the theoretical rationale for treating presence and trust as complementary constructs.
+- **Used in:** NOT CURRENTLY CITED ANYWHERE (2026-08-04). Was used in `01_introduction.tex` §Motivation, "This growing engagement..." paragraph, but that whole paragraph was replaced with a shorter, uncited transition sentence at Nidanur's request. No other section cites bente2008. The verification below remains valid if this citation is reinstated elsewhere (e.g. Related Work's trust/social-presence discussion).
+- **Former cited sentence (removed):** "This same presence has been linked to interpersonal trust and perceived communication quality in avatar-mediated collaboration~\cite{bente2008}."
+- **Relevance:** Grounds a bridge from social presence/copresence (Nowak \& Biocca) to trust. Bente et al. explicitly measure social presence, interpersonal trust, and perceived communication quality together, and their own Introduction gives the theoretical rationale for treating presence and trust as complementary constructs.
 
 ```bibtex
 @article{bente2008,
@@ -155,6 +155,7 @@ This document tracks every citation added to `references.bib` that was not sourc
 ### `gooch1998`
 - **Physical file:** `Gooch1998.pdf`
 - **DOI:** 10.1145/280814.280950
+- **REMOVED FROM THESIS 2026-08-11:** the cool-to-warm model paragraph in `02_related_work.tex` §2.3 was dropped when that section was reordered around Kumar and Poornima's four-category taxonomy plus a corrected toon-shading/silhouette-rendering narrative. Confirmed via full-text grep across `thesis/chapters/*.tex` that `gooch1998` is no longer cited anywhere in the thesis. Entry kept here for reference only; not currently used.
 
 ```bibtex
 @inproceedings{gooch1998,
@@ -176,7 +177,7 @@ This document tracks every citation added to `references.bib` that was not sourc
 - **DOI:** 10.1109/TVCG.2023.3247072
 - **Summary:** Systematic review (PRISMA method) of 72 papers (2015–2022) on avatar and agent visualisation in AR/VR displayed via HMDs. Classifies studies by rendering style (abstract, stickman, hybrid, robot, cartoon, stylized, video, point cloud, translucent, generic/personalized/scanned realistic) and by visible body part configuration, across five task domains (physical activity, hand interaction, communication, game-like scenarios, education/training). Conclusion: full-body visualisations usually outperform partial-body configurations; a realistic rendering style yields better results than other styles in most studies; but task-focused activities (e.g. gaming, education) do not benefit much from highly realistic avatars and are sometimes hampered by them; personalized avatars that resemble the actual user tend to perform even better than generic realistic ones.
 - **Used in:** `01_introduction.tex` §Motivation, opening paragraph (abstract/intro's "AR/VR pushing from labs towards consumers... avatars or agents" framing); `02_related_work.tex` §2.2 Trust (task-dependence of photorealism's advantage, the Conclusion's task-domain-dependence finding). **Note (2026-08-01):** an earlier draft also cited this source a second time in the Introduction's "Communication through avatars" paragraph for the 72-study systematic-review finding; that sentence was removed as too Related-Work-like for the Introduction. The finding remains properly cited, once, in Related Work.
-- **Cited sentences:** "This is no longer limited to passive viewing, as virtual assistants, game characters, and avatars in immersive environments increasingly involve users in sustained interactions with synthetic humans~\cite{weidner2023}." / (Related Work) "Weidner et al.\ synthesised the effect of rendering style at a much larger scale in a systematic review of 72 studies on avatar and agent visualisation in augmented and virtual reality~\cite{weidner2023}."
+- **Cited sentences:** "As virtual assistants, game characters, and avatars in immersive environments increasingly involve users in sustained interactions with virtual humans, users are no longer limited to passive viewing~\cite{weidner2023}." / (Related Work) "Weidner et al.\ synthesised the effect of rendering style at a much larger scale in a systematic review of 72 studies on avatar and agent visualisation in augmented and virtual reality~\cite{weidner2023}."
 - **Relevance:** Corroborates, at a much larger systematically-reviewed scale, that avatar/agent rendering style has measurable perceptual and behavioural consequences, and that photorealism's advantages are task-dependent rather than unconditional — directly relevant to testing whether they transfer to this thesis's video-based advisory scenario.
 
 ```bibtex
@@ -193,7 +194,8 @@ This document tracks every citation added to `references.bib` that was not sourc
 ### `mcdonnell2012`
 - **Physical file:** ` McDonnell, R., Breidt, M., and Bülthoff, H. H. (2012). Render me Real? Investigating.pdf`
 - **DOI:** 10.1145/2185520.2185587
-- **Used in:** `01_introduction.tex` (Motivation, opening paragraph: paraphrase of the paper's own opening sentence, on the difficulty of the render-style decision; Motivation, "corroborated this claim empirically for computer-generated characters"; Problem Statement: "controlled rendering studies such as McDonnell et al."), `02_related_work.tex` (paragraph on render style and perceived eeriness/appeal)
+- **Used in:** `01_introduction.tex` (Motivation, opening paragraph: paraphrase of the paper's own opening sentence, on the difficulty of the render-style decision; Motivation, "This holds for CG characters generally"), `02_related_work.tex` §2.1 (paragraph on render style, appeal, reassurance, and trustworthiness). **No longer used in the Problem Statement** — the §1.2 sentence pairing this with `isenberg2003` was removed 2026-08-04 since `mcdonnell2012` is a perceptual/uncanny-valley study, not NPR-technique literature, and Nidanur asked that paragraph to cite NPR papers only.
+- **CORRECTED 2026-08-09 (`02_related_work.tex` §2.1):** the sentence previously said participants were exposed to "six distinct styles" and that photorealistic rendering scored significantly worse than stylised conditions on eeriness and appeal, with NPR styles "consistently" doing better. Both were wrong: the paper used **11** render styles (10 in the stills block); "six" is the number of statistically distinct realism levels a post-hoc analysis grouped those styles into. And the actual finding is the valley-shaped pattern described in the Summary below — both the most abstract and the most realistic styles scored best on appeal, reassurance, and trustworthiness, with the mid-realism styles (including one Toon/NPR style, ToonBare) scoring worst. Corrected sentence: "Participants were exposed to video stimuli of the same animated character, rendered across eleven distinct styles spanning the range from photorealistic to fully stylised. The results showed a valley-shaped pattern across appeal, reassurance, and trustworthiness alike: styles at the most abstract and the most realistic ends of the range scored significantly higher on all three measures than styles in the mid-realism range."
 - **Summary:** Two motion-captured actors were rendered in 11 styles spanning a continuum from highly abstract (ToonPencil, flat outlines, no shading) to near-photorealistic (HumanHQ2, ray-traced lighting, subsurface scattering, dynamic wrinkle maps). Participants rated each style on appeal, reassurance, familiarity, friendliness, and trustworthiness. Both the most abstract and the most realistic styles received the highest appeal and trustworthiness ratings, with mid-range styles receiving significantly lower ratings on both measures, directly replicating the dip Mori's Uncanny Valley predicts. A second experiment showed that realistic styles tolerate motion artefacts far worse than stylised ones, and a third found that render style does not bias implicit lie-detection judgements despite shaping explicit trust ratings.
 - **Relevance:** Provides direct empirical evidence that a non-linear (valley-shaped) relationship between render style and both appeal and trustworthiness exists for animated virtual humans, and that stylised rendering does not carry a trust penalty relative to photorealistic rendering. Grounds the Motivation section's claim that near-realism can undermine trust, and grounds the Problem Statement's characterisation of prior controlled rendering studies as relying on custom, fully authored render pipelines rather than a closed production SDK.
 - **Opening-sentence paraphrase (2026-08-01):** The paper's own first sentence reads: "Choosing an appropriate rendering style for virtual humans in movies, games, and other domains can be a challenging task." This is paraphrased (not quoted) as the closing sentences of the Introduction's opening paragraph: "This leads to several design concerns with consequences across film, games, and other domains where synthetic humans appear. One of the most difficult is how realistically or abstractly such a participant should be rendered~\cite{mcdonnell2012}. This tension between realism and abstraction is the starting point for the work presented in this thesis." Restructured into a different sentence architecture (split across two sentences, with an embedded WH-question as the subject of the second), and deliberately uses "synthetic humans" rather than the source's own "virtual humans" term to keep the paraphrase in the thesis's own established vocabulary rather than echoing the source's title term.
@@ -211,7 +213,13 @@ This document tracks every citation added to `references.bib` that was not sourc
 ```
 
 ### `macdorman2006`
-- **Physical file:** `MacDorman2006AndroidScience.pdf`
+- **Physical file:** `MacDorman2006AndroidScience.pdf` (42 pages)
+- **Used in:** `02_related_work.tex` §2.1, paragraph on androids as controllable research stimuli.
+- **Summary:** Argues that androids (robots built to be indistinguishable from humans in appearance and behaviour) provide a uniquely controllable experimental apparatus for cognitive and social science research, since their human-likeness can be positioned precisely along a continuum in a way a human confederate cannot.
+- **Confirmed excerpt:** p.~297 abstract: "The development of robots that closely resemble human beings can contribute to cognitive research. An android provides an experimental apparatus that has the potential to be controlled more precisely than any human actor." p.~298: android defined as "an artificial system designed with the ultimate goal of being indistinguishable from humans in its external appearance and behavior" (MacDorman & Ishiguro, 2005).
+- **REMOVED CLAIMS (2026-08-09):** two claims previously attributed to this paper were removed from `02_related_work.tex` §2.1 after a full-text search (`pdftotext` + grep across all 42 pages) found no support:
+  1. "They proposed semantic differential instruments to quantify eeriness and strangeness as measurable affective dimensions" — zero hits for "semantic differential" anywhere in the paper. This methodological contribution actually belongs to `ho2010` (Ho & MacDorman 2010's validated two-subscale eeriness instrument), already correctly cited for this in §2.2.
+  2. "They identified the mechanism underlying the valley effect as categorical perception... When an android occupies an ambiguous position between the human and nonhuman categories, this produces a conflict in the human brain" — zero hits for "categorical perception" anywhere in the paper's body text (the only "categorical" match is an unrelated 1997 reference in the bibliography). No source for this specific mechanistic claim was located; it was not replaced with an alternative citation, since none has been verified. The surrounding sentence was rewritten to instead draw on `mori1970` (already cited earlier in the same section), which does support the general point that ambiguous human-likeness sits in the region of steepest comfort drop.
 
 ```bibtex
 @inproceedings{macdorman2006,
@@ -226,6 +234,13 @@ This document tracks every citation added to `references.bib` that was not sourc
 ### `isenberg2003`
 - **Physical file:** `Isenberg_2003_ADG.pdf`
 - **DOI:** 10.1109/MCG.2003.1210862
+- **Used in:** `01_introduction.tex` (Problem Statement: "Likewise, classical NPR techniques are typically demonstrated in rendering environments where developers have direct control over rendering operations and asset creation~\cite{isenberg2003}." — revised 2026-08-04, no longer paired with `mcdonnell2012`); `02_related_work.tex` §2.3 (silhouette-rendering paragraph, added 2026-08-11 — see cited sentence and excerpt below); also used repeatedly in `04_methodology.tex` (V1 inverted hull / shell method design rationale, image-space/object-space/hybrid classification), not re-verified as part of this update.
+- **Summary:** A developer-facing survey and decision guide for silhouette detection algorithms on polygonal models, classifying methods as image-space (operate on rendered buffers such as the z-buffer or normal buffer), object-space (operate on the mesh directly), or hybrid (both, requiring two or more rendering passes). Table 1 gives requirement-to-algorithm recommendations. The example algorithms throughout (Figures 1-2) are demonstrated on simple custom test geometry (a nut, a cross) built specifically to illustrate the technique, not production or captured assets.
+- **Relevance:** Supports the Problem Statement's claim that classical NPR technique papers are typically demonstrated in rendering environments where the developer has direct control over rendering operations (inserting extra passes, reading/writing the z-buffer and normal buffer directly) and over asset creation (custom test geometry built for the demonstration). This grounds the technical gap: production avatar SDKs do not offer this level of pipeline or asset control.
+- **Verified excerpt (2026-08-04):** p.~28, "This article provides a guideline for developers who need to choose one of these algorithms for his or her application." p.~30, "Hybrid algorithms are characterized by operations in object space that are followed by rendering the modified polygons in a more or less ordinary way using the z-buffer. This usually requires two or more rendering passes." Figures 1-2 (pp.~29-30) show the surveyed algorithms applied to a simple nut model and a cross-shaped model, both evidently built as test geometry rather than adapted from a production or photogrammetric source.
+- **CORRECTED 2026-08-11 (`02_related_work.tex` §2.3):** an earlier draft attributed the paraphrase "geometry-based methods are robust and distance-independent but structurally incapable of detecting internal surface detail" to this paper. On rereading the full PDF, no sentence stating "robust and distance-independent" was found, and the paper's real classification is image-space/object-space/hybrid, not a "geometry-based" category. The corrected sentence instead uses the paper's own definitional framework, its explicit distinction between silhouette edges (an object's outer boundary) and feature lines (creases, borders, self-intersections, i.e.\ interior detail). This framing is directly supported by the paper's terminology section.
+- **Cited sentence (new, §2.3):** "Moreover, Isenberg et al.\ provided a systematic survey of silhouette detection algorithms. They distinguish silhouette edges from feature lines such as creases, borders, and self-intersections~\cite{isenberg2003}."
+- **Verified excerpt (2026-08-11):** p.~28-29, the paper defines silhouette edges as marking the outer boundary of an object as seen from the current viewpoint, and separately defines feature lines (creases, borders, self-intersections) as a distinct category of interior edges that a silhouette-only algorithm does not detect. Confirmed against `Isenberg_2003_ADG.pdf` in full, not a secondary paraphrase.
 
 ```bibtex
 @article{isenberg2003,
@@ -338,6 +353,11 @@ This document tracks every citation added to `references.bib` that was not sourc
 
 ### `lake2000`
 - **DOI:** 10.1145/340916.340918
+- **Physical file:** `lake et al Stylized rendering.pdf` (also present, encrypted, as `npar2000_lake_et_al.pdf`)
+- **Used in:** `02_related_work.tex` §2.3 (toon-shading definition, corrected 2026-08-11); `04_methodology.tex` (V2 toon shading design rationale and formula, two citations)
+- **CORRECTED 2026-08-11 (`02_related_work.tex` §2.3):** an earlier draft attributed an "inverted hull" outline technique to this paper ("expands back-facing polygons along vertex normals by a small offset, creating a slightly enlarged shell of the mesh"). A full read of the primary PDF found no such description anywhere in the paper. Lake et al.\ describe silhouette edge detection (SED) via front/back-facing polygon classification, not backface-normal expansion, and the paper's own text states that outline width is measured in screen pixels and therefore varies with distance, directly contradicting the "remains consistent regardless of camera distance" claim that had been attached to it. The inverted hull citation was replaced with `raskar1999`, the paper that actually describes that mechanism (see below). `lake2000` was kept for a claim it does support: §3.1 "Cartoon Shading" describes basic toon shading as quantising the diffuse lighting term into a small texture (1-2 texels) to produce hard-edged shading bands, which matches the corrected thesis sentence.
+- **Cited sentence (new, §2.3):** "Toon shading is one strand of this tradition. It quantises the continuous diffuse lighting term into a small number of discrete bands~\cite{lake2000}."
+- **Verified excerpt (2026-08-11):** §3.1 "Cartoon Shading" describes computing a 1D lighting value and using it to index a small 1-2 texel gradient texture, producing a small number of discrete, hard-edged tonal bands rather than a continuous Lambertian ramp.
 
 ```bibtex
 @inproceedings{lake2000,
@@ -347,6 +367,27 @@ This document tracks every citation added to `references.bib` that was not sourc
   year      = {2000},
   pages     = {13--20},
   doi       = {10.1145/340916.340918},
+}
+```
+
+### `raskar1999`
+- **Physical file:** `raskar_cohen_real.pdf` (author's own copy, downloaded from `web.media.mit.edu/~raskar/UNC/NPR/sil-i3d99.pdf`; a Semantic-Scholar-cached PDF found first, `raskar_cohen_1999.pdf`, turned out to be a third-party student summary slide deck by "Melanie Coggan," not the primary paper, and was discarded)
+- **DOI:** 10.1145/300523.300539
+- **Used in:** `02_related_work.tex` §2.3 (silhouette-rendering paragraph, added 2026-08-11)
+- **Summary:** Introduces two related image-precision silhouette techniques computed by rendering the mesh twice from the same viewpoint. §3.2 "Translated Back-facing Polygons" draws front-facing polygons normally, then draws back-facing polygons translated towards the camera by a fixed or depth-scaled offset, so that a rim of the translated back-facing geometry protrudes in front of the occluding front-facing surface and forms the visible outline. §3.3 additionally describes a view-dependent variant that "fattens" polygon edges outward in proportion to distance from the camera.
+- **Relevance:** Provides the verified, primary-source-grounded description of the two-render back-facing-polygon silhouette technique that an earlier thesis draft had incorrectly attributed to `lake2000`. This paper is cited by Isenberg et al.\ (`isenberg2003`), whose Figure 3 ("Enlargement of a back-facing polygon to achieve wide silhouette lines") is credited "Courtesy of Ramesh Raskar and Michael Cohen (c) 1999 ACM," which is how this source was located.
+- **Cited sentence:** "Raskar and Cohen proposed processing the mesh twice from the same viewpoint~\cite{raskar1999}. Initially, it draws the front-facing polygons in the usual way. The back-facing polygons are then rendered and translated towards the camera."
+- **Verified excerpt (2026-08-11):** §3.2 "Translated Back-facing Polygons": the front-facing polygons are rendered as normal, then the back-facing polygons are rendered a second time, translated toward the viewer by a fixed amount $t$ or a depth-scaled amount $k \cdot z$, so that the translated back-facing geometry is visible in front of the front-facing surface along silhouette boundaries. Read in full, not from a secondary summary.
+
+```bibtex
+@inproceedings{raskar1999,
+  author    = {Raskar, Ramesh and Cohen, Michael},
+  title     = {Image Precision Silhouette Edges},
+  booktitle = {Proceedings of the 1999 Symposium on Interactive 3D Graphics},
+  year      = {1999},
+  pages     = {135--140},
+  doi       = {10.1145/300523.300539},
+  publisher = {ACM},
 }
 ```
 
@@ -574,8 +615,9 @@ This document tracks every citation added to `references.bib` that was not sourc
 - **DOI:** 10.1145/1278760.1278764
 - **Physical file:** `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/NPR/Evaluating the perceptual realism of animated facial expressions. .pdf`
 - **What the paper argues:** Three psychophysical experiments measuring recognition, intensity, sincerity, and typicality of CG animated facial expressions benchmarked against real video. Key findings: motion is the dominant channel (removing head motion dropped recognition from 65.5% to 44.2%); shape blurring does not impair recognition when motion is intact but does reduce perceived intensity and sincerity; adding eyes raised recognition by ~5% and significantly increased intensity and sincerity ratings.
-- **Used in:** Thesis sentence about excessive stylisation undermining expressive readability
-- **Exact cited sentence:** §4 Summary, p. 23:19 — "In addition, in Experiment 2, we found clear effects of shape blurring on both intensity and sincerity judgments. This demonstrates that, even though reduced shape information does not affect recognition, it does influence the perceived quality of the expression."
+- **Used in:** `01_introduction.tex` §1.2 Problem Statement (paired with `zell2015`), and separately `04_methodology.tex` §4.3 NPR Technique Design (paired with `zell2015`, different wording — see that section's own log entry).
+- **Exact cited sentence (01_introduction.tex, corrected 2026-08-08):** "This is because stronger abstraction typically reduces the perceived intensity of facial expressions, even where basic recognition is preserved~\cite{zell2015,wallraven2008}." **CORRECTION NOTE:** the previous wording said "reduces the legibility of interior features such as facial expressions," but this paper explicitly found shape blurring does *not* significantly affect recognition, only intensity/sincerity judgments. "Legibility" maps most naturally to recognition, which this source says is preserved, not reduced. Wording corrected to match the actual finding.
+- **Original excerpt supporting this claim:** §4 Summary, p. 23:19 — "In addition, in Experiment 2, we found clear effects of shape blurring on both intensity and sincerity judgments. This demonstrates that, even though reduced shape information does not affect recognition, it does influence the perceived quality of the expression."
 
 ```bibtex
 @article{wallraven2008,
@@ -601,8 +643,9 @@ This document tracks every citation added to `references.bib` that was not sourc
 - **DOI:** 10.1145/2816795.2818126
 - **Physical file:** `/Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/NPR/To Stylize or not to Stylize?_Zell.pdf`
 - **What the paper argues:** Factorial perceptual study crossing 3-5 levels of shape stylisation with 3-5 levels of material stylisation on CG faces (male and female actors). Core finding: shape governs perceived realism and expression intensity; material governs appeal, eeriness, and attractiveness. Realism is a bad predictor for appeal. Mismatched shape/material raises eeriness. Moderate texture blurring increases appeal without degrading realism. Expression intensity decreases as shape becomes more stylised (less realistic).
-- **Used in:** Thesis sentence about excessive stylisation undermining expressive readability
-- **Exact cited sentence:** Main Findings list, p. 184:2 — "The perceived intensity of expressions decreases with realism of shape, but is nearly independent of material stylization." (Interpretation: as shape stylisation increases and realism decreases, perceived intensity also decreases.)
+- **Used in:** `01_introduction.tex` §1.2 Problem Statement (paired with `wallraven2008`), and separately `04_methodology.tex` §4.3 NPR Technique Design (paired with `wallraven2008`, different wording — see that section's own log entry).
+- **Exact cited sentence (01_introduction.tex, corrected 2026-08-08):** "This is because stronger abstraction typically reduces the perceived intensity of facial expressions, even where basic recognition is preserved~\cite{zell2015,wallraven2008}." **CORRECTION NOTE:** the previous wording said "reduces the legibility of interior features such as facial expressions," but this paper measures perceived *intensity*, not legibility/recognisability. Wording corrected to match the actual finding.
+- **Original excerpt supporting this claim:** Main Findings list, p. 184:2 — "The perceived intensity of expressions decreases with realism of shape, but is nearly independent of material stylization." (Interpretation: as shape stylisation increases and realism decreases, perceived intensity also decreases.)
 
 ```bibtex
 @article{zell2015,
@@ -894,7 +937,8 @@ This document tracks every citation added to `references.bib` that was not sourc
 - **Year:** 2021
 - **DOI:** 10.1145/3461696
 - **Physical PDF:** Not confirmed in Articles folder; available via ACM DL DOI.
-- **Used in:** `02_related_work.tex` §NPR Techniques — Silhouette and Outline Methods, paragraph on toon shading limitations
+- **REMOVED FROM THESIS 2026-08-11:** dropped from `02_related_work.tex` §2.3 during the same reorganisation that removed `gooch1998` (toon-shading/silhouette-rendering narrative rewritten around Kumar and Poornima's taxonomy). Confirmed via full-text grep across `thesis/chapters/*.tex` that `petikam2021` is no longer cited anywhere in the thesis. Entry kept here for reference only; not currently used. This citation was also never confirmed against a physical PDF (see note above), so it should not be reintroduced without first locating and reading the primary source.
+- **Used in (historical, no longer current):** `02_related_work.tex` §NPR Techniques — Silhouette and Outline Methods, paragraph on toon shading limitations
 - **Cited sentence:** "Petikam et al.\ addressed a related limitation in this style of shading, proposing a shading rig that interpolates between shading states defined at authoring time so that the tonal boundary remains stable as lighting conditions change rather than sliding with the Lambertian angle~\cite{petikam2021}."
 - **What the paper argues:** Proposes a shading rig system that allows artists to define target shading appearances at key lighting angles, with interpolation between these defined states during rendering. The core limitation addressed is that Lambertian-based toon quantisation produces a tonal boundary that slides as lighting direction changes, undermining artistic intent. The rig fixes boundary positions relative to authored states. Demonstrated on animated characters in production pipelines.
 - **Relevance:** Identifies the tonal boundary instability problem that motivates the lighting-independent toon approach in V1. Provides peer-reviewed context for the design decision to use a fixed quantisation threshold rather than a Lambertian ramp.
@@ -1197,3 +1241,20 @@ This document tracks every citation added to `references.bib` that was not sourc
   doi       = {10.1111/ijcs.13096},
 }
 ```
+
+---
+
+## Added in Session: Background §3.2 Edge Detection — Image/Pixel and Edge Definitions (2026-08-09)
+
+### `gonzalez2018` — additional usage in §3.2 Edge Detection (chapter opening)
+
+**§3.2 Edge Detection, opening paragraph, sentences 1–2 (single citation covering both)**
+- Claim 1: a digital image is a discrete grid of pixels, each storing an intensity value
+- Supporting passage (p.18, §1.1 "What Is Digital Image Processing?"): "Note that a digital image is composed of a finite number of elements, each of which has a particular location and value. These elements are called picture elements, image elements, pels, and pixels."
+- Supporting passage (p.66, Ch.2, Eq. 2-9–2-10): the image is formally represented as an M×N array f(x,y), and "[e]ach element of this array is called an image element, picture element, pixel, or pel."
+- Claim 2: an edge is conventionally defined as a location where image intensity changes rapidly
+- Supporting passage (p.702, §10.2 "Point, Line, and Edge Detection"): "Edge pixels are pixels at which the intensity of an image changes abruptly, and edges (or edge segments) are sets of connected edge pixels."
+- Note: this is a near-verbatim match (source: "changes abruptly"; thesis: "changes rapidly" — same meaning).
+- Used as: single `~\cite{gonzalez2018}` at the end of sentence 2 only: "A digital image consists of a grid of pixels and each stores an intensity value. And an edge in an image is conventionally defined as a location where this intensity changes rapidly~\cite{gonzalez2018}." Sentence 1 is left uncited since both sentences are basic definitions from the same source functioning as one two-sentence unit; a second inline citation on sentence 1 was judged redundant.
+
+**Verification:** Physical PDF read directly (`Articles/Gonzales,Woods-Digital.Image.Processing.4th.Edition.pdf`, pp. 18, 66, 702), 2026-08-09. Both claims CONFIRMED against the primary source. Logged in `citation_check.tex` §Chapter 3 — Background as a single unstarred entry covering both sentences (pending Nidanur's review).

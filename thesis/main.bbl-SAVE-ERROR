@@ -19,6 +19,824 @@
 
 \refsection{0}
   \datalist[entry]{none/global//global/global/global}
+    \entry{weidner2023}{article}{}{}
+      \name{author}{9}{}{%
+        {{hash=7745ad4e7f74bddc90207643e8d65b03}{%
+           family={Weidner},
+           familyi={W\bibinitperiod},
+           given={Florian},
+           giveni={F\bibinitperiod}}}%
+        {{hash=88b55980603f157df61cba552bafb6c5}{%
+           family={Boettcher},
+           familyi={B\bibinitperiod},
+           given={Gerd},
+           giveni={G\bibinitperiod}}}%
+        {{hash=b21b051d53ef9aa5fca4478a343ee09a}{%
+           family={Arboleda},
+           familyi={A\bibinitperiod},
+           given={Stephanie\bibnamedelima Arevalo},
+           giveni={S\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=08b457c987df0f4984977e578708f68e}{%
+           family={Diao},
+           familyi={D\bibinitperiod},
+           given={Chenyao},
+           giveni={C\bibinitperiod}}}%
+        {{hash=11cc407c60322cf4e0dffd0b2d07fc0c}{%
+           family={Sinani},
+           familyi={S\bibinitperiod},
+           given={Luljeta},
+           giveni={L\bibinitperiod}}}%
+        {{hash=242a2a988ead7ac7c3be6314901f4fc3}{%
+           family={Kunert},
+           familyi={K\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+        {{hash=7b0a56db10677843da01c51bf8ce893e}{%
+           family={Gerhardt},
+           familyi={G\bibinitperiod},
+           given={Christoph},
+           giveni={C\bibinitperiod}}}%
+        {{hash=d1213355904537623e55c22e5033c88e}{%
+           family={Broll},
+           familyi={B\bibinitperiod},
+           given={Wolfgang},
+           giveni={W\bibinitperiod}}}%
+        {{hash=2ce4c604978ac9c6ebe8ba1ccfbc5115}{%
+           family={Raake},
+           familyi={R\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{7d342fb6f4a554a4f3016ef75f286ec6}
+      \strng{fullhash}{e6e3615ff53de71655dc0780031dcf28}
+      \strng{fullhashraw}{e6e3615ff53de71655dc0780031dcf28}
+      \strng{bibnamehash}{e6e3615ff53de71655dc0780031dcf28}
+      \strng{authorbibnamehash}{e6e3615ff53de71655dc0780031dcf28}
+      \strng{authornamehash}{7d342fb6f4a554a4f3016ef75f286ec6}
+      \strng{authorfullhash}{e6e3615ff53de71655dc0780031dcf28}
+      \strng{authorfullhashraw}{e6e3615ff53de71655dc0780031dcf28}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Visualization and Computer Graphics}
+      \field{note}{Presented at IEEE VR 2023}
+      \field{title}{A Systematic Review on the Visualization of Avatars and Agents in {AR} \& {VR} Displayed Using Head-Mounted Displays}
+      \field{year}{2023}
+      \verb{doi}
+      \verb 10.1109/TVCG.2023.3247072
+      \endverb
+    \endentry
+    \entry{mcdonnell2012}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=fa67074fbf8bd8e4d04a3589825d366c}{%
+           family={McDonnell},
+           familyi={M\bibinitperiod},
+           given={Rachel},
+           giveni={R\bibinitperiod}}}%
+        {{hash=3834a868851d6ffce8a95673512e4e1c}{%
+           family={Breidt},
+           familyi={B\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=b5bfea27864db1c0ed528a3bf391f860}{%
+           family={Bülthoff},
+           familyi={B\bibinitperiod},
+           given={Heinrich\bibnamedelima H.},
+           giveni={H\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{270df516b3ba5ef6fb2f17cd3864c0ef}
+      \strng{fullhash}{af6965063e6035d5e6a2f0875c90503e}
+      \strng{fullhashraw}{af6965063e6035d5e6a2f0875c90503e}
+      \strng{bibnamehash}{af6965063e6035d5e6a2f0875c90503e}
+      \strng{authorbibnamehash}{af6965063e6035d5e6a2f0875c90503e}
+      \strng{authornamehash}{270df516b3ba5ef6fb2f17cd3864c0ef}
+      \strng{authorfullhash}{af6965063e6035d5e6a2f0875c90503e}
+      \strng{authorfullhashraw}{af6965063e6035d5e6a2f0875c90503e}
+      \field{extraname}{1}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{ACM SIGGRAPH 2012 Papers}
+      \field{title}{Render Me Real? {I}nvestigating the Effect of Render Style on the Perception of Animated Virtual Humans}
+      \field{year}{2012}
+      \field{pages}{91:1\bibrangedash 91:11}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1145/2185520.2185587
+      \endverb
+    \endentry
+    \entry{natarajan2020}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=cea6d7ba58b4e57c981a8b00bcc5d5ca}{%
+           family={Natarajan},
+           familyi={N\bibinitperiod},
+           given={Manisha},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0e061bb551a46233d42c979986e435d5}{%
+           family={Gombolay},
+           familyi={G\bibinitperiod},
+           given={Matthew},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Cambridge, United Kingdom}%
+      }
+      \strng{namehash}{0157c32c2df0b2cf41d28c139d0f6a61}
+      \strng{fullhash}{0157c32c2df0b2cf41d28c139d0f6a61}
+      \strng{fullhashraw}{0157c32c2df0b2cf41d28c139d0f6a61}
+      \strng{bibnamehash}{0157c32c2df0b2cf41d28c139d0f6a61}
+      \strng{authorbibnamehash}{0157c32c2df0b2cf41d28c139d0f6a61}
+      \strng{authornamehash}{0157c32c2df0b2cf41d28c139d0f6a61}
+      \strng{authorfullhash}{0157c32c2df0b2cf41d28c139d0f6a61}
+      \strng{authorfullhashraw}{0157c32c2df0b2cf41d28c139d0f6a61}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 2020 {ACM/IEEE} International Conference on Human-Robot Interaction}
+      \field{series}{{HRI} '20}
+      \field{title}{Effects of Anthropomorphism and Accountability on Trust in Human Robot Interaction}
+      \field{year}{2020}
+      \field{pages}{33\bibrangedash 42}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/3319502.3374839
+      \endverb
+    \endentry
+    \entry{mori1970}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=5ed01159856f6b9f10979530bd1a9f31}{%
+           family={Mori},
+           familyi={M\bibinitperiod},
+           given={Masahiro},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{5ed01159856f6b9f10979530bd1a9f31}
+      \strng{fullhash}{5ed01159856f6b9f10979530bd1a9f31}
+      \strng{fullhashraw}{5ed01159856f6b9f10979530bd1a9f31}
+      \strng{bibnamehash}{5ed01159856f6b9f10979530bd1a9f31}
+      \strng{authorbibnamehash}{5ed01159856f6b9f10979530bd1a9f31}
+      \strng{authornamehash}{5ed01159856f6b9f10979530bd1a9f31}
+      \strng{authorfullhash}{5ed01159856f6b9f10979530bd1a9f31}
+      \strng{authorfullhashraw}{5ed01159856f6b9f10979530bd1a9f31}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Energy}
+      \field{note}{Translated by Karl F. MacDorman and Norri Kageki}
+      \field{number}{4}
+      \field{title}{The Uncanny Valley}
+      \field{volume}{7}
+      \field{year}{1970}
+      \field{pages}{33\bibrangedash 35}
+      \range{pages}{3}
+    \endentry
+    \entry{canales2024}{inproceedings}{}{}
+      \name{author}{3}{}{%
+        {{hash=58f6f18b5b9bdc0e5c1c08b9437ffd87}{%
+           family={Canales},
+           familyi={C\bibinitperiod},
+           given={Ryan},
+           giveni={R\bibinitperiod}}}%
+        {{hash=4e73aa6edf7df9b578f3da07dd8cf940}{%
+           family={Roble},
+           familyi={R\bibinitperiod},
+           given={Doug},
+           giveni={D\bibinitperiod}}}%
+        {{hash=3504f3951905fd98d701c7f3e9486e4d}{%
+           family={Neff},
+           familyi={N\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{f7805472a23ed5a884419649c5da756f}
+      \strng{fullhash}{473b92296bd7b644853fc499620c5a6a}
+      \strng{fullhashraw}{473b92296bd7b644853fc499620c5a6a}
+      \strng{bibnamehash}{473b92296bd7b644853fc499620c5a6a}
+      \strng{authorbibnamehash}{473b92296bd7b644853fc499620c5a6a}
+      \strng{authornamehash}{f7805472a23ed5a884419649c5da756f}
+      \strng{authorfullhash}{473b92296bd7b644853fc499620c5a6a}
+      \strng{authorfullhashraw}{473b92296bd7b644853fc499620c5a6a}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2024 {IEEE} Conference on Virtual Reality and {3D} User Interfaces ({VR})}
+      \field{title}{The Impact of Avatar Stylization on Trust}
+      \field{year}{2024}
+      \field{pages}{418\bibrangedash 428}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1109/VR58804.2024.00063
+      \endverb
+    \endentry
+    \entry{rahman2024}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=602380cc6e91220bfc1f4f72d1e2fae7}{%
+           family={Rahman},
+           familyi={R\bibinitperiod},
+           given={Md.\bibnamedelimi Shahinur},
+           giveni={M\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=2449a63ae3cc6fcae5a33152c1c0ca88}{%
+           family={Sabbir},
+           familyi={S\bibinitperiod},
+           given={Md.\bibnamedelimi Mahiuddin},
+           giveni={M\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=948f26b38fba102b6f820808e554bc53}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Jing},
+           giveni={J\bibinitperiod}}}%
+        {{hash=b80d785b3928e70579b6f10f9e6b9bad}{%
+           family={Taufique},
+           familyi={T\bibinitperiod},
+           given={Khan\bibnamedelimb Md.\bibnamedelimi Raziuddin},
+           giveni={K\bibinitperiod\bibinitdelim M\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=ef24d84061d2ee1680682f642aa46a11}{%
+           family={Rahman},
+           familyi={R\bibinitperiod},
+           given={Md.\bibnamedelimi Masudur},
+           giveni={M\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{95791383abdd9c28243924fd194a48f9}
+      \strng{fullhash}{f5b6a970a3373b4cc5ab290511cf0578}
+      \strng{fullhashraw}{f5b6a970a3373b4cc5ab290511cf0578}
+      \strng{bibnamehash}{f5b6a970a3373b4cc5ab290511cf0578}
+      \strng{authorbibnamehash}{f5b6a970a3373b4cc5ab290511cf0578}
+      \strng{authornamehash}{95791383abdd9c28243924fd194a48f9}
+      \strng{authorfullhash}{f5b6a970a3373b4cc5ab290511cf0578}
+      \strng{authorfullhashraw}{f5b6a970a3373b4cc5ab290511cf0578}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Consumer Studies}
+      \field{number}{6}
+      \field{title}{Navigating Avatar-Based Marketing From Value Aspects: A Systematic Literature Review and Forward-Looking Research Agenda}
+      \field{volume}{48}
+      \field{year}{2024}
+      \field{pages}{e13096}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1111/ijcs.13096
+      \endverb
+    \endentry
+    \entry{isenberg2003}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=1f980758856350b3e536e3581ce77885}{%
+           family={Isenberg},
+           familyi={I\bibinitperiod},
+           given={Tobias},
+           giveni={T\bibinitperiod}}}%
+        {{hash=0431793ecbaf5c207a5cc9e7a42372a9}{%
+           family={Freudenberg},
+           familyi={F\bibinitperiod},
+           given={Bert},
+           giveni={B\bibinitperiod}}}%
+        {{hash=0a2614274e11cd2a05cae1815f5c683e}{%
+           family={Halper},
+           familyi={H\bibinitperiod},
+           given={Nick},
+           giveni={N\bibinitperiod}}}%
+        {{hash=39a074a6fff55045227473786bd9835e}{%
+           family={Schlechtweg},
+           familyi={S\bibinitperiod},
+           given={Stephan},
+           giveni={S\bibinitperiod}}}%
+        {{hash=09fb68ef76b6d57545878ff675c0ad3d}{%
+           family={Strothotte},
+           familyi={S\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod}}}%
+      }
+      \strng{namehash}{abdc980b339b0b3378aeb6e922547aa9}
+      \strng{fullhash}{549b188f638e20638974ea4abc44cc44}
+      \strng{fullhashraw}{549b188f638e20638974ea4abc44cc44}
+      \strng{bibnamehash}{549b188f638e20638974ea4abc44cc44}
+      \strng{authorbibnamehash}{549b188f638e20638974ea4abc44cc44}
+      \strng{authornamehash}{abdc980b339b0b3378aeb6e922547aa9}
+      \strng{authorfullhash}{549b188f638e20638974ea4abc44cc44}
+      \strng{authorfullhashraw}{549b188f638e20638974ea4abc44cc44}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{{IEEE} Computer Graphics and Applications}
+      \field{number}{4}
+      \field{title}{A Developer's Guide to Silhouette Algorithms for Polygonal Models}
+      \field{volume}{23}
+      \field{year}{2003}
+      \field{pages}{28\bibrangedash 37}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1109/MCG.2003.1210862
+      \endverb
+    \endentry
+    \entry{zell2015}{article}{}{}
+      \name{author}{7}{}{%
+        {{hash=d0b00c7a62f7bf38b4b437ee87286e0b}{%
+           family={Zell},
+           familyi={Z\bibinitperiod},
+           given={Eduard},
+           giveni={E\bibinitperiod}}}%
+        {{hash=fb7f0be1cb7a7ce24bb14a815ac918ae}{%
+           family={Aliaga},
+           familyi={A\bibinitperiod},
+           given={Carlos},
+           giveni={C\bibinitperiod}}}%
+        {{hash=ce1b349afdae8f86208ee9352d1e953a}{%
+           family={Jarabo},
+           familyi={J\bibinitperiod},
+           given={Adrian},
+           giveni={A\bibinitperiod}}}%
+        {{hash=e9e7e4b505fa908a0f260a61796e62c4}{%
+           family={Zibrek},
+           familyi={Z\bibinitperiod},
+           given={Katja},
+           giveni={K\bibinitperiod}}}%
+        {{hash=33c53b426dd5f4e09c50675cceb5e7ba}{%
+           family={Gutierrez},
+           familyi={G\bibinitperiod},
+           given={Diego},
+           giveni={D\bibinitperiod}}}%
+        {{hash=fa67074fbf8bd8e4d04a3589825d366c}{%
+           family={McDonnell},
+           familyi={M\bibinitperiod},
+           given={Rachel},
+           giveni={R\bibinitperiod}}}%
+        {{hash=a0765e06ad46483a64643f0c7a324057}{%
+           family={Botsch},
+           familyi={B\bibinitperiod},
+           given={Mario},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{3dd7c9eb0f4409883a5f6904d1c40123}
+      \strng{fullhash}{31f8ff0351aca19621aef9ae14d190b3}
+      \strng{fullhashraw}{31f8ff0351aca19621aef9ae14d190b3}
+      \strng{bibnamehash}{31f8ff0351aca19621aef9ae14d190b3}
+      \strng{authorbibnamehash}{31f8ff0351aca19621aef9ae14d190b3}
+      \strng{authornamehash}{3dd7c9eb0f4409883a5f6904d1c40123}
+      \strng{authorfullhash}{31f8ff0351aca19621aef9ae14d190b3}
+      \strng{authorfullhashraw}{31f8ff0351aca19621aef9ae14d190b3}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ACM Transactions on Graphics}
+      \field{number}{6}
+      \field{title}{To Stylize or Not to Stylize? {The} Effect of Shape and Material Stylization on the Perception of Computer-Generated Faces}
+      \field{volume}{34}
+      \field{year}{2015}
+      \field{pages}{184:1\bibrangedash 184:12}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1145/2816795.2818126
+      \endverb
+    \endentry
+    \entry{wallraven2008}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=134ac679a1681304bfc0c010f8975b11}{%
+           family={Wallraven},
+           familyi={W\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
+        {{hash=3834a868851d6ffce8a95673512e4e1c}{%
+           family={Breidt},
+           familyi={B\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=3f60aa533e3a63ca6a2421e6836c2a43}{%
+           family={Cunningham},
+           familyi={C\bibinitperiod},
+           given={Douglas\bibnamedelima W.},
+           giveni={D\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=b5bfea27864db1c0ed528a3bf391f860}{%
+           family={Bülthoff},
+           familyi={B\bibinitperiod},
+           given={Heinrich\bibnamedelima H.},
+           giveni={H\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{9a1d68ec110696ce937e17f68c444dff}
+      \strng{fullhash}{5477974ca68848fc2748b56523264129}
+      \strng{fullhashraw}{5477974ca68848fc2748b56523264129}
+      \strng{bibnamehash}{5477974ca68848fc2748b56523264129}
+      \strng{authorbibnamehash}{5477974ca68848fc2748b56523264129}
+      \strng{authornamehash}{9a1d68ec110696ce937e17f68c444dff}
+      \strng{authorfullhash}{5477974ca68848fc2748b56523264129}
+      \strng{authorfullhashraw}{5477974ca68848fc2748b56523264129}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ACM Transactions on Applied Perception}
+      \field{number}{4}
+      \field{title}{Evaluating the Perceptual Realism of Animated Facial Expressions}
+      \field{volume}{4}
+      \field{year}{2008}
+      \field{pages}{23:1\bibrangedash 23:20}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1145/1278760.1278764
+      \endverb
+    \endentry
+    \entry{macdorman2006}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=463759a71ddd24632c948bebedd03fd9}{%
+           family={MacDorman},
+           familyi={M\bibinitperiod},
+           given={Karl\bibnamedelima F.},
+           giveni={K\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=65969149151d8c3a46cb3adda3d7d701}{%
+           family={Ishiguro},
+           familyi={I\bibinitperiod},
+           given={Hiroshi},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a300c6e233c0ac9f787967dcb57318b}
+      \strng{fullhash}{9a300c6e233c0ac9f787967dcb57318b}
+      \strng{fullhashraw}{9a300c6e233c0ac9f787967dcb57318b}
+      \strng{bibnamehash}{9a300c6e233c0ac9f787967dcb57318b}
+      \strng{authorbibnamehash}{9a300c6e233c0ac9f787967dcb57318b}
+      \strng{authornamehash}{9a300c6e233c0ac9f787967dcb57318b}
+      \strng{authorfullhash}{9a300c6e233c0ac9f787967dcb57318b}
+      \strng{authorfullhashraw}{9a300c6e233c0ac9f787967dcb57318b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the {ICDL-2006} Workshop on Android Science}
+      \field{title}{The Uncanny Advantage of Using Androids in Cognitive and Social Science Research}
+      \field{year}{2006}
+      \field{pages}{1\bibrangedash 9}
+      \range{pages}{9}
+    \endentry
+    \entry{mcdonnell2009}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=311befbf09efb09a85b94d65292d3f61}{%
+           family={McDonnell},
+           familyi={M\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+        {{hash=162f6e744c63a144c6e0d9dd942b0409}{%
+           family={Jörg},
+           familyi={J\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=224c6420b84aca5a40944eb4d41af545}{%
+           family={McHugh},
+           familyi={M\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=cf462da6111f34ed47485f1d8d2ec736}{%
+           family={Newell},
+           familyi={N\bibinitperiod},
+           given={F.\bibnamedelimi N.},
+           giveni={F\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=0dac67ae3edf4ab2d265fff71361e805}{%
+           family={O'Sullivan},
+           familyi={O\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+      }
+      \strng{namehash}{21695ff127252306d92ffd8b9f953ce7}
+      \strng{fullhash}{de94d9ae6ee74a71e72e1e7b9effd2ad}
+      \strng{fullhashraw}{de94d9ae6ee74a71e72e1e7b9effd2ad}
+      \strng{bibnamehash}{de94d9ae6ee74a71e72e1e7b9effd2ad}
+      \strng{authorbibnamehash}{de94d9ae6ee74a71e72e1e7b9effd2ad}
+      \strng{authornamehash}{21695ff127252306d92ffd8b9f953ce7}
+      \strng{authorfullhash}{de94d9ae6ee74a71e72e1e7b9effd2ad}
+      \strng{authorfullhashraw}{de94d9ae6ee74a71e72e1e7b9effd2ad}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{{ACM} Transactions on Applied Perception}
+      \field{number}{3}
+      \field{title}{Investigating the Role of Body Shape on the Perception of Emotion}
+      \field{volume}{6}
+      \field{year}{2009}
+      \verb{doi}
+      \verb 10.1145/1577755.1577757
+      \endverb
+    \endentry
+    \entry{dill2012}{inproceedings}{}{}
+      \name{author}{6}{}{%
+        {{hash=2015bb23bb0a7768967ac5a2e6ba72eb}{%
+           family={Dill},
+           familyi={D\bibinitperiod},
+           given={V.},
+           giveni={V\bibinitperiod}}}%
+        {{hash=4967c94942614f50ace67b3d40b8e23c}{%
+           family={Flach},
+           familyi={F\bibinitperiod},
+           given={L.\bibnamedelimi M.},
+           giveni={L\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=01e07c6eea0188b6a53731c4b487e7e6}{%
+           family={Hocevar},
+           familyi={H\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+        {{hash=6956b1f1c08034aa273a6e168ed6778d}{%
+           family={Lykawka},
+           familyi={L\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=bc5000a77c65a16d9b2d01cc0e6996c4}{%
+           family={Musse},
+           familyi={M\bibinitperiod},
+           given={S.\bibnamedelimi R.},
+           giveni={S\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=58e3fa8f0d63c9dd1ffdda35d3cc779b}{%
+           family={Pinho},
+           familyi={P\bibinitperiod},
+           given={M.\bibnamedelimi S.},
+           giveni={M\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Heidelberg}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{648cb7e6769bba48506d1e599a15fd38}
+      \strng{fullhash}{2d8167784c0df9176a69f872660f8892}
+      \strng{fullhashraw}{2d8167784c0df9176a69f872660f8892}
+      \strng{bibnamehash}{2d8167784c0df9176a69f872660f8892}
+      \strng{authorbibnamehash}{2d8167784c0df9176a69f872660f8892}
+      \strng{authornamehash}{648cb7e6769bba48506d1e599a15fd38}
+      \strng{authorfullhash}{2d8167784c0df9176a69f872660f8892}
+      \strng{authorfullhashraw}{2d8167784c0df9176a69f872660f8892}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Intelligent Virtual Agents: 12th International Conference, {IVA} 2012}
+      \field{note}{Poster paper. Proceedings DOI: 10.1007/978-3-642-33197-8}
+      \field{series}{Lecture Notes in Artificial Intelligence}
+      \field{title}{Evaluation of the Uncanny Valley in {CG} Characters}
+      \field{volume}{7502}
+      \field{year}{2012}
+      \field{pages}{511\bibrangedash 513}
+      \range{pages}{3}
+    \endentry
+    \entry{seymour2021}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=a094b6f147e690a1e20d66f378729153}{%
+           family={Seymour},
+           familyi={S\bibinitperiod},
+           given={Mike},
+           giveni={M\bibinitperiod}}}%
+        {{hash=a410a2fe55192dc5b9eb78ad145f7a42}{%
+           family={Yuan},
+           familyi={Y\bibinitperiod},
+           given={Lingyao},
+           giveni={L\bibinitperiod}}}%
+        {{hash=d85db5c8d364ad26ab0d1dfccef7caef}{%
+           family={Dennis},
+           familyi={D\bibinitperiod},
+           given={Alan\bibnamedelima R.},
+           giveni={A\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=b0d9cb861d116e07dadbcadd73a2e5ed}{%
+           family={Riemer},
+           familyi={R\bibinitperiod},
+           given={Kai},
+           giveni={K\bibinitperiod}}}%
+      }
+      \strng{namehash}{2f7af7fa569e04ca435f26d9ae456d9e}
+      \strng{fullhash}{adc2c00d28817a185f4675e71bc67ca5}
+      \strng{fullhashraw}{adc2c00d28817a185f4675e71bc67ca5}
+      \strng{bibnamehash}{adc2c00d28817a185f4675e71bc67ca5}
+      \strng{authorbibnamehash}{adc2c00d28817a185f4675e71bc67ca5}
+      \strng{authornamehash}{2f7af7fa569e04ca435f26d9ae456d9e}
+      \strng{authorfullhash}{adc2c00d28817a185f4675e71bc67ca5}
+      \strng{authorfullhashraw}{adc2c00d28817a185f4675e71bc67ca5}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of the Association for Information Systems}
+      \field{number}{3}
+      \field{title}{Have We Crossed the Uncanny Valley? {U}nderstanding Affinity, Trustworthiness, and Preference for Realistic Digital Humans in Immersive Environments}
+      \field{volume}{22}
+      \field{year}{2021}
+      \field{pages}{591\bibrangedash 617}
+      \range{pages}{27}
+      \verb{urlraw}
+      \verb https://aisel.aisnet.org/jais/vol22/iss3/9/
+      \endverb
+      \verb{url}
+      \verb https://aisel.aisnet.org/jais/vol22/iss3/9/
+      \endverb
+    \endentry
+    \entry{kuffner2024}{misc}{}{}
+      \name{author}{2}{}{%
+        {{hash=91069c4e46c4fd76540f597499ea655d}{%
+           family={Kuffner\bibnamedelimb dos\bibnamedelima Anjos},
+           familyi={K\bibinitperiod\bibinitdelim d\bibinitperiod\bibinitdelim A\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+        {{hash=34b55bbf20fb27dc365b8972bd836cf2}{%
+           family={Madeiras\bibnamedelima Pereira},
+           familyi={M\bibinitperiod\bibinitdelim P\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{d7dde1067743b1d03f56d1bcdb8f9987}
+      \strng{fullhash}{d7dde1067743b1d03f56d1bcdb8f9987}
+      \strng{fullhashraw}{d7dde1067743b1d03f56d1bcdb8f9987}
+      \strng{bibnamehash}{d7dde1067743b1d03f56d1bcdb8f9987}
+      \strng{authorbibnamehash}{d7dde1067743b1d03f56d1bcdb8f9987}
+      \strng{authornamehash}{d7dde1067743b1d03f56d1bcdb8f9987}
+      \strng{authorfullhash}{d7dde1067743b1d03f56d1bcdb8f9987}
+      \strng{authorfullhashraw}{d7dde1067743b1d03f56d1bcdb8f9987}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{arXiv preprint}
+      \field{note}{arXiv:2405.02672}
+      \field{title}{Effects of Realism and Representation on Self-Embodied Avatars in Immersive Virtual Environments}
+      \field{year}{2024}
+    \endentry
+    \entry{tao2025}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=4e3287c858a606821f16669012d32c99}{%
+           family={Tao},
+           familyi={T\bibinitperiod},
+           given={Z.},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=ce084360cc68e7db4fe6cae1287b3adf}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=e4f3291bbc758e1db81ce75a6f66fc68}{%
+           family={Qiu},
+           familyi={Q\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=0ee6724aae227dcac2949962d898b300}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{4b562b37cf412f796d547bb99c90cdce}
+      \strng{fullhash}{81f67bae195ec4f35f78a6211addd773}
+      \strng{fullhashraw}{81f67bae195ec4f35f78a6211addd773}
+      \strng{bibnamehash}{81f67bae195ec4f35f78a6211addd773}
+      \strng{authorbibnamehash}{81f67bae195ec4f35f78a6211addd773}
+      \strng{authornamehash}{4b562b37cf412f796d547bb99c90cdce}
+      \strng{authorfullhash}{81f67bae195ec4f35f78a6211addd773}
+      \strng{authorfullhashraw}{81f67bae195ec4f35f78a6211addd773}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Frontiers in Psychology}
+      \field{title}{Impact of Virtual Avatar Appearance Realism on Perceptual Interaction Experience: A Network Meta-Analysis}
+      \field{volume}{16}
+      \field{year}{2025}
+      \field{pages}{1624975}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.3389/fpsyg.2025.1624975
+      \endverb
+    \endentry
+    \entry{mayer1995}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=4efa6a713adc3c017e0753397c7d3a0c}{%
+           family={Mayer},
+           familyi={M\bibinitperiod},
+           given={Roger\bibnamedelima C.},
+           giveni={R\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=5ff3db10743ecc659b843838b6855341}{%
+           family={Davis},
+           familyi={D\bibinitperiod},
+           given={James\bibnamedelima H.},
+           giveni={J\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=936d09e58d77de485db25d667c18f0c6}{%
+           family={Schoorman},
+           familyi={S\bibinitperiod},
+           given={F.\bibnamedelimi David},
+           giveni={F\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{11e9e2d619c40e2bd2f08f3d06b8d916}
+      \strng{fullhash}{0fae7bfed61fc624d8dd6d3933ac7aeb}
+      \strng{fullhashraw}{0fae7bfed61fc624d8dd6d3933ac7aeb}
+      \strng{bibnamehash}{0fae7bfed61fc624d8dd6d3933ac7aeb}
+      \strng{authorbibnamehash}{0fae7bfed61fc624d8dd6d3933ac7aeb}
+      \strng{authornamehash}{11e9e2d619c40e2bd2f08f3d06b8d916}
+      \strng{authorfullhash}{0fae7bfed61fc624d8dd6d3933ac7aeb}
+      \strng{authorfullhashraw}{0fae7bfed61fc624d8dd6d3933ac7aeb}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Academy of Management Review}
+      \field{number}{3}
+      \field{title}{An Integrative Model of Organizational Trust}
+      \field{volume}{20}
+      \field{year}{1995}
+      \field{pages}{709\bibrangedash 734}
+      \range{pages}{26}
+      \verb{doi}
+      \verb 10.5465/amr.1995.9508080335
+      \endverb
+    \endentry
+    \entry{mcknight2001}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9688b4b771782bc1605d4844de0cc22f}{%
+           family={McKnight},
+           familyi={M\bibinitperiod},
+           given={D.\bibnamedelimi Harrison},
+           giveni={D\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=fa23f676024f589be911c2a30f8771f9}{%
+           family={Chervany},
+           familyi={C\bibinitperiod},
+           given={Norman\bibnamedelima L.},
+           giveni={N\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{c7778994974996572cb13f3f05117050}
+      \strng{fullhash}{c7778994974996572cb13f3f05117050}
+      \strng{fullhashraw}{c7778994974996572cb13f3f05117050}
+      \strng{bibnamehash}{c7778994974996572cb13f3f05117050}
+      \strng{authorbibnamehash}{c7778994974996572cb13f3f05117050}
+      \strng{authornamehash}{c7778994974996572cb13f3f05117050}
+      \strng{authorfullhash}{c7778994974996572cb13f3f05117050}
+      \strng{authorfullhashraw}{c7778994974996572cb13f3f05117050}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Electronic Commerce}
+      \field{number}{2}
+      \field{title}{What Trust Means in {E-Commerce} Customer Relationships: An Interdisciplinary Conceptual Typology}
+      \field{volume}{6}
+      \field{year}{2001}
+      \field{pages}{35\bibrangedash 59}
+      \range{pages}{25}
+      \verb{doi}
+      \verb 10.1080/10864415.2001.11044235
+      \endverb
+    \endentry
+    \entry{alipour2025}{misc}{}{}
+      \name{author}{3}{}{%
+        {{hash=059bc60df4686e0e3946fa00cc09f8ce}{%
+           family={Alipour},
+           familyi={A\bibinitperiod},
+           given={Ahdiyeh},
+           giveni={A\bibinitperiod}}}%
+        {{hash=f37147d066d77453e3cc5481ff1d4d66}{%
+           family={Hartmann},
+           familyi={H\bibinitperiod},
+           given={Tilo},
+           giveni={T\bibinitperiod}}}%
+        {{hash=1abc9a99314edfb28130823b9e6e80ab}{%
+           family={Alimardani},
+           familyi={A\bibinitperiod},
+           given={Maryam},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{2627bd296edc830f75056dfb49acde66}
+      \strng{fullhash}{59a5cfde05fe12386d119d1bf94ed55d}
+      \strng{fullhashraw}{59a5cfde05fe12386d119d1bf94ed55d}
+      \strng{bibnamehash}{59a5cfde05fe12386d119d1bf94ed55d}
+      \strng{authorbibnamehash}{59a5cfde05fe12386d119d1bf94ed55d}
+      \strng{authornamehash}{2627bd296edc830f75056dfb49acde66}
+      \strng{authorfullhash}{59a5cfde05fe12386d119d1bf94ed55d}
+      \strng{authorfullhashraw}{59a5cfde05fe12386d119d1bf94ed55d}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{eprintclass}{cs.HC}
+      \field{eprinttype}{arXiv}
+      \field{title}{Would You Rely on an Eerie Agent? {A} Systematic Review of the Impact of the Uncanny Valley Effect on Trust in Human--Agent Interaction}
+      \field{year}{2025}
+      \verb{eprint}
+      \verb 2505.05543
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2505.05543
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2505.05543
+      \endverb
+    \endentry
     \entry{nowak2003}{article}{}{}
       \name{author}{2}{}{%
         {{hash=e580c411d70fa4867b4cae2e8af69337}{%
@@ -40,8 +858,8 @@
       \strng{authornamehash}{a76907ab62c96bf0247e7eca73c8c81d}
       \strng{authorfullhash}{a76907ab62c96bf0247e7eca73c8c81d}
       \strng{authorfullhashraw}{a76907ab62c96bf0247e7eca73c8c81d}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Presence: Teleoperators and Virtual Environments}
@@ -55,66 +873,347 @@
       \verb 10.1162/105474603322761289
       \endverb
     \endentry
-    \entry{weidner2023}{inproceedings}{}{}
+    \entry{nowak2005}{article}{}{}
       \name{author}{2}{}{%
-        {{hash=7745ad4e7f74bddc90207643e8d65b03}{%
-           family={Weidner},
-           familyi={W\bibinitperiod},
-           given={Florian},
-           giveni={F\bibinitperiod}}}%
-        {{hash=d1213355904537623e55c22e5033c88e}{%
-           family={Broll},
-           familyi={B\bibinitperiod},
-           given={Wolfgang},
-           giveni={W\bibinitperiod}}}%
+        {{hash=e580c411d70fa4867b4cae2e8af69337}{%
+           family={Nowak},
+           familyi={N\bibinitperiod},
+           given={Kristine\bibnamedelima L.},
+           giveni={K\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=cc3c35bfbea2f9f0bb51d54199963be6}{%
+           family={Rauh},
+           familyi={R\bibinitperiod},
+           given={Christian},
+           giveni={C\bibinitperiod}}}%
       }
-      \strng{namehash}{20906c7a327b895136ffde00839aeaca}
-      \strng{fullhash}{20906c7a327b895136ffde00839aeaca}
-      \strng{fullhashraw}{20906c7a327b895136ffde00839aeaca}
-      \strng{bibnamehash}{20906c7a327b895136ffde00839aeaca}
-      \strng{authorbibnamehash}{20906c7a327b895136ffde00839aeaca}
-      \strng{authornamehash}{20906c7a327b895136ffde00839aeaca}
-      \strng{authorfullhash}{20906c7a327b895136ffde00839aeaca}
-      \strng{authorfullhashraw}{20906c7a327b895136ffde00839aeaca}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \strng{namehash}{18914c738a45cc813bc4faacf151f4cd}
+      \strng{fullhash}{18914c738a45cc813bc4faacf151f4cd}
+      \strng{fullhashraw}{18914c738a45cc813bc4faacf151f4cd}
+      \strng{bibnamehash}{18914c738a45cc813bc4faacf151f4cd}
+      \strng{authorbibnamehash}{18914c738a45cc813bc4faacf151f4cd}
+      \strng{authornamehash}{18914c738a45cc813bc4faacf151f4cd}
+      \strng{authorfullhash}{18914c738a45cc813bc4faacf151f4cd}
+      \strng{authorfullhashraw}{18914c738a45cc813bc4faacf151f4cd}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{booktitle}{Proceedings of the ACM CHI Conference on Human Factors in Computing Systems}
-      \field{title}{Watching Yourself in a Video Conference: The Role of Perspective and Avatar Embodiment}
-      \field{year}{2023}
+      \field{journaltitle}{Journal of Computer-Mediated Communication}
+      \field{number}{1}
+      \field{title}{The Influence of the Avatar on Online Perceptions of Anthropomorphism, Androgyny, Credibility, Homophily, and Attraction}
+      \field{volume}{11}
+      \field{year}{2005}
+      \field{pages}{153\bibrangedash 178}
+      \range{pages}{26}
       \verb{doi}
-      \verb 10.1145/3544548.3581551
+      \verb 10.1111/j.1083-6101.2006.tb00308.x
       \endverb
     \endentry
-    \entry{mori1970}{article}{}{}
-      \name{author}{1}{}{%
-        {{hash=5ed01159856f6b9f10979530bd1a9f31}{%
-           family={Mori},
+    \entry{gao2025}{article}{}{}
+      \name{author}{7}{}{%
+        {{hash=887dda75d37d73f919129d14fd2e94cb}{%
+           family={Gao},
+           familyi={G\bibinitperiod},
+           given={Yue},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=f59ef2d4288d687c75882fd75c94cd09}{%
+           family={Dai},
+           familyi={D\bibinitperiod},
+           given={Yi},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=fab23daf187e47fc3fcccc216f6ea60f}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Guanyu},
+           giveni={G\bibinitperiod}}}%
+        {{hash=12e5c129575811b74e80a4662971e0b0}{%
+           family={Guo},
+           familyi={G\bibinitperiod},
+           given={Hao},
+           giveni={H\bibinitperiod}}}%
+        {{hash=815e687f93464b487fc68a6060871de4}{%
+           family={Mostajeran},
            familyi={M\bibinitperiod},
-           given={Masahiro},
-           giveni={M\bibinitperiod}}}%
+           given={Farbod},
+           giveni={F\bibinitperiod}}}%
+        {{hash=cd8f75ba6fb515ea6ee28d885bd92e4b}{%
+           family={Zheng},
+           familyi={Z\bibinitperiod},
+           given={Bo},
+           giveni={B\bibinitperiod}}}%
+        {{hash=029e13df6653c0383fb4a789fb44273f}{%
+           family={Yu},
+           familyi={Y\bibinitperiod},
+           given={Tianshu},
+           giveni={T\bibinitperiod}}}%
       }
-      \strng{namehash}{5ed01159856f6b9f10979530bd1a9f31}
-      \strng{fullhash}{5ed01159856f6b9f10979530bd1a9f31}
-      \strng{fullhashraw}{5ed01159856f6b9f10979530bd1a9f31}
-      \strng{bibnamehash}{5ed01159856f6b9f10979530bd1a9f31}
-      \strng{authorbibnamehash}{5ed01159856f6b9f10979530bd1a9f31}
-      \strng{authornamehash}{5ed01159856f6b9f10979530bd1a9f31}
-      \strng{authorfullhash}{5ed01159856f6b9f10979530bd1a9f31}
-      \strng{authorfullhashraw}{5ed01159856f6b9f10979530bd1a9f31}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \strng{namehash}{290e33c4ebfca07a8a489bcb8b15a598}
+      \strng{fullhash}{ec34e3201c6fe2a004234b602fae7555}
+      \strng{fullhashraw}{ec34e3201c6fe2a004234b602fae7555}
+      \strng{bibnamehash}{ec34e3201c6fe2a004234b602fae7555}
+      \strng{authorbibnamehash}{ec34e3201c6fe2a004234b602fae7555}
+      \strng{authornamehash}{290e33c4ebfca07a8a489bcb8b15a598}
+      \strng{authorfullhash}{ec34e3201c6fe2a004234b602fae7555}
+      \strng{authorfullhashraw}{ec34e3201c6fe2a004234b602fae7555}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Energy}
-      \field{note}{Translated by Karl F. MacDorman and Norri Kageki}
-      \field{number}{4}
-      \field{title}{The Uncanny Valley}
-      \field{volume}{7}
-      \field{year}{1970}
-      \field{pages}{33\bibrangedash 35}
-      \range{pages}{3}
+      \field{journaltitle}{{IEEE} Transactions on Visualization and Computer Graphics}
+      \field{number}{5}
+      \field{title}{Trust in Virtual Agents: Exploring the Role of Stylization and Voice}
+      \field{volume}{31}
+      \field{year}{2025}
+      \field{pages}{3623\bibrangedash 3633}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1109/TVCG.2025.3549566
+      \endverb
+    \endentry
+    \entry{alimardani2024}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=4adb834b8a496119f2cd44dab5b8a022}{%
+           family={Alimardani},
+           familyi={A\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=f48c0b211c46a3bb7fb57d95dc3e2e9e}{%
+           family={Roode},
+           familyi={R\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod},
+           prefix={de},
+           prefixi={d\bibinitperiod}}}%
+        {{hash=15e32e54c5f30085e5653144ee36c9b5}{%
+           family={Vaitonytė},
+           familyi={V\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=91a348f9e9ab9c3db452548bd98aa99b}{%
+           family={Louwerse},
+           familyi={L\bibinitperiod},
+           given={M.\bibnamedelimi M.},
+           giveni={M\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{08ecefa719afdf010a9d6e3fa1fa1df1}
+      \strng{fullhash}{4d7539d8a51b504630868c38735c8d0f}
+      \strng{fullhashraw}{4d7539d8a51b504630868c38735c8d0f}
+      \strng{bibnamehash}{4d7539d8a51b504630868c38735c8d0f}
+      \strng{authorbibnamehash}{4d7539d8a51b504630868c38735c8d0f}
+      \strng{authornamehash}{08ecefa719afdf010a9d6e3fa1fa1df1}
+      \strng{authorfullhash}{4d7539d8a51b504630868c38735c8d0f}
+      \strng{authorfullhashraw}{4d7539d8a51b504630868c38735c8d0f}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 24th {ACM} International Conference on Intelligent Virtual Agents}
+      \field{series}{{IVA} '24}
+      \field{title}{Effect of a Virtual Agent's Appearance and Voice on Uncanny Valley and Trust in Human-Agent Collaboration}
+      \field{year}{2024}
+      \verb{doi}
+      \verb 10.1145/3652988.3673970
+      \endverb
+    \endentry
+    \entry{dubosc2025}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=b1533a5dd921f882d72da3582683ce90}{%
+           family={Dubosc},
+           familyi={D\bibinitperiod},
+           given={C.},
+           giveni={C\bibinitperiod}}}%
+        {{hash=6638352ae865676015f01cac2bc89777}{%
+           family={Gorisse},
+           familyi={G\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=6f7d9d1e7a81c84e6471b7d0396eb713}{%
+           family={Lefrou},
+           familyi={L\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+        {{hash=47000138e1ec555e45db06f7e2c4d45e}{%
+           family={Richir},
+           familyi={R\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=b63074249ed0468c3a698ef10934c51c}{%
+           family={Christmann},
+           familyi={C\bibinitperiod},
+           given={O.},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{6db32b54976466c18cadd4760de097ee}
+      \strng{fullhash}{a20ab37caeeb15008a0b3706654f1fd6}
+      \strng{fullhashraw}{a20ab37caeeb15008a0b3706654f1fd6}
+      \strng{bibnamehash}{a20ab37caeeb15008a0b3706654f1fd6}
+      \strng{authorbibnamehash}{a20ab37caeeb15008a0b3706654f1fd6}
+      \strng{authornamehash}{6db32b54976466c18cadd4760de097ee}
+      \strng{authorfullhash}{a20ab37caeeb15008a0b3706654f1fd6}
+      \strng{authorfullhashraw}{a20ab37caeeb15008a0b3706654f1fd6}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Virtual Reality}
+      \field{note}{Published online 8 October 2025, Springer Nature.}
+      \field{title}{Effect of Avatar Stylization and Facial Expression Intensity in Virtual Interactions}
+      \field{year}{2025}
+      \verb{doi}
+      \verb 10.1007/s10055-025-01238-6
+      \endverb
+    \endentry
+    \entry{cihodaru2025}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=829be04ad40f47b8d92b40555c419621}{%
+           family={Cihodaru-Ştefanache},
+           familyi={C\bibinithyphendelim Ş\bibinitperiod},
+           given={Ş.},
+           giveni={Ş\bibinitperiod}}}%
+        {{hash=faeae6f57d8d181ae1dcef9137d1cb77}{%
+           family={Podina},
+           familyi={P\bibinitperiod},
+           given={I.\bibnamedelimi R.},
+           giveni={I\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{2a75ef8fc9af606ea0e1fdf126e00653}
+      \strng{fullhash}{2a75ef8fc9af606ea0e1fdf126e00653}
+      \strng{fullhashraw}{2a75ef8fc9af606ea0e1fdf126e00653}
+      \strng{bibnamehash}{2a75ef8fc9af606ea0e1fdf126e00653}
+      \strng{authorbibnamehash}{2a75ef8fc9af606ea0e1fdf126e00653}
+      \strng{authornamehash}{2a75ef8fc9af606ea0e1fdf126e00653}
+      \strng{authorfullhash}{2a75ef8fc9af606ea0e1fdf126e00653}
+      \strng{authorfullhashraw}{2a75ef8fc9af606ea0e1fdf126e00653}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Frontiers in Psychology}
+      \field{title}{The Uncanny Valley Effect in Embodied Conversational Agents: A Critical Systematic Review of Attractiveness, Anthropomorphism, and Uncanniness}
+      \field{volume}{16}
+      \field{year}{2025}
+      \field{pages}{1625984}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.3389/fpsyg.2025.1625984
+      \endverb
+    \endentry
+    \entry{bartneck2009}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=915cdb538b6f54be1e2555eb214cffb2}{%
+           family={Bartneck},
+           familyi={B\bibinitperiod},
+           given={Christoph},
+           giveni={C\bibinitperiod}}}%
+        {{hash=7be8ae2de32e6e154dd5dd61d19d2bdb}{%
+           family={Kulić},
+           familyi={K\bibinitperiod},
+           given={Dana},
+           giveni={D\bibinitperiod}}}%
+        {{hash=3841da038a2b8cb17b82a23427eb5fc6}{%
+           family={Croft},
+           familyi={C\bibinitperiod},
+           given={Elizabeth},
+           giveni={E\bibinitperiod}}}%
+        {{hash=8df3577393b5ad8ff8f6659d04fb5283}{%
+           family={Zoghbi},
+           familyi={Z\bibinitperiod},
+           given={Sonja},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{15ff32e9a563369971750b8008589ffb}
+      \strng{fullhash}{6889e8f2d3c05d31c00a0d1930367561}
+      \strng{fullhashraw}{6889e8f2d3c05d31c00a0d1930367561}
+      \strng{bibnamehash}{6889e8f2d3c05d31c00a0d1930367561}
+      \strng{authorbibnamehash}{6889e8f2d3c05d31c00a0d1930367561}
+      \strng{authornamehash}{15ff32e9a563369971750b8008589ffb}
+      \strng{authorfullhash}{6889e8f2d3c05d31c00a0d1930367561}
+      \strng{authorfullhashraw}{6889e8f2d3c05d31c00a0d1930367561}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{International Journal of Social Robotics}
+      \field{number}{1}
+      \field{title}{Measurement Instruments for the Anthropomorphism, Animacy, Likeability, Perceived Intelligence, and Perceived Safety of Robots}
+      \field{volume}{1}
+      \field{year}{2009}
+      \field{pages}{71\bibrangedash 81}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1007/s12369-008-0001-3
+      \endverb
+    \endentry
+    \entry{ho2010}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=c0c208608c132f397b51bb53b13e859c}{%
+           family={Ho},
+           familyi={H\bibinitperiod},
+           given={Chin-Chang},
+           giveni={C\bibinithyphendelim C\bibinitperiod}}}%
+        {{hash=463759a71ddd24632c948bebedd03fd9}{%
+           family={MacDorman},
+           familyi={M\bibinitperiod},
+           given={Karl\bibnamedelima F.},
+           giveni={K\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \strng{namehash}{bd48f04fbfdbdc053cca809083d7b2d0}
+      \strng{fullhash}{bd48f04fbfdbdc053cca809083d7b2d0}
+      \strng{fullhashraw}{bd48f04fbfdbdc053cca809083d7b2d0}
+      \strng{bibnamehash}{bd48f04fbfdbdc053cca809083d7b2d0}
+      \strng{authorbibnamehash}{bd48f04fbfdbdc053cca809083d7b2d0}
+      \strng{authornamehash}{bd48f04fbfdbdc053cca809083d7b2d0}
+      \strng{authorfullhash}{bd48f04fbfdbdc053cca809083d7b2d0}
+      \strng{authorfullhashraw}{bd48f04fbfdbdc053cca809083d7b2d0}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Computers in Human Behavior}
+      \field{number}{6}
+      \field{title}{Revisiting the Uncanny Valley Theory: Developing and Validating an Alternative to the {Godspeed} Indices}
+      \field{volume}{26}
+      \field{year}{2010}
+      \field{pages}{1508\bibrangedash 1518}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1016/j.chb.2010.05.015
+      \endverb
+    \endentry
+    \entry{kumar2019}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=24c5ad1fd87405708bd68c7dc1b0088b}{%
+           family={Kumar},
+           familyi={K\bibinitperiod},
+           given={T.},
+           giveni={T\bibinitperiod}}}%
+        {{hash=21a7d06bebdc525b40b0107cb15f17ff}{%
+           family={Poornima},
+           familyi={P\bibinitperiod},
+           given={B.\bibnamedelimi G.},
+           giveni={B\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \strng{namehash}{e10a119926761dc13e0262fb0216f3cb}
+      \strng{fullhash}{e10a119926761dc13e0262fb0216f3cb}
+      \strng{fullhashraw}{e10a119926761dc13e0262fb0216f3cb}
+      \strng{bibnamehash}{e10a119926761dc13e0262fb0216f3cb}
+      \strng{authorbibnamehash}{e10a119926761dc13e0262fb0216f3cb}
+      \strng{authornamehash}{e10a119926761dc13e0262fb0216f3cb}
+      \strng{authorfullhash}{e10a119926761dc13e0262fb0216f3cb}
+      \strng{authorfullhashraw}{e10a119926761dc13e0262fb0216f3cb}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Iran Journal of Computer Science}
+      \field{title}{A Comprehensive Survey on Non-Photorealistic Rendering and Benchmark Developments for Image Abstraction and Stylization}
+      \field{year}{2019}
+      \verb{doi}
+      \verb 10.1007/s42044-019-00034-1
+      \endverb
     \endentry
     \entry{gooch1998}{inproceedings}{}{}
       \name{author}{4}{}{%
@@ -147,8 +1246,8 @@
       \strng{authornamehash}{bba2cd7aab3f11aa626ecd1eb3e214cf}
       \strng{authorfullhash}{ea10c38b46825bfac5944fd22c062e3b}
       \strng{authorfullhashraw}{ea10c38b46825bfac5944fd22c062e3b}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of SIGGRAPH}
@@ -204,55 +1303,43 @@
       \verb 10.1145/340916.340918
       \endverb
     \endentry
-    \entry{isenberg2003}{article}{}{}
-      \name{author}{5}{}{%
-        {{hash=1f980758856350b3e536e3581ce77885}{%
-           family={Isenberg},
-           familyi={I\bibinitperiod},
-           given={Tobias},
-           giveni={T\bibinitperiod}}}%
-        {{hash=0431793ecbaf5c207a5cc9e7a42372a9}{%
-           family={Freudenberg},
-           familyi={F\bibinitperiod},
-           given={Bert},
-           giveni={B\bibinitperiod}}}%
-        {{hash=0a2614274e11cd2a05cae1815f5c683e}{%
-           family={Halper},
-           familyi={H\bibinitperiod},
-           given={Nick},
-           giveni={N\bibinitperiod}}}%
-        {{hash=39a074a6fff55045227473786bd9835e}{%
-           family={Schlechtweg},
-           familyi={S\bibinitperiod},
-           given={Stephan},
-           giveni={S\bibinitperiod}}}%
-        {{hash=09fb68ef76b6d57545878ff675c0ad3d}{%
-           family={Strothotte},
-           familyi={S\bibinitperiod},
-           given={Thomas},
+    \entry{petikam2021}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=1d31f0259b5b7ba0e12d8922a5216ebf}{%
+           family={Petikam},
+           familyi={P\bibinitperiod},
+           given={L.},
+           giveni={L\bibinitperiod}}}%
+        {{hash=059bd09154a15f23a0bef468e49c3712}{%
+           family={Anjyo},
+           familyi={A\bibinitperiod},
+           given={K.},
+           giveni={K\bibinitperiod}}}%
+        {{hash=b768d00e8d64a36d8ba461e5d46a1d9a}{%
+           family={Rhee},
+           familyi={R\bibinitperiod},
+           given={T.},
            giveni={T\bibinitperiod}}}%
       }
-      \strng{namehash}{abdc980b339b0b3378aeb6e922547aa9}
-      \strng{fullhash}{549b188f638e20638974ea4abc44cc44}
-      \strng{fullhashraw}{549b188f638e20638974ea4abc44cc44}
-      \strng{bibnamehash}{549b188f638e20638974ea4abc44cc44}
-      \strng{authorbibnamehash}{549b188f638e20638974ea4abc44cc44}
-      \strng{authornamehash}{abdc980b339b0b3378aeb6e922547aa9}
-      \strng{authorfullhash}{549b188f638e20638974ea4abc44cc44}
-      \strng{authorfullhashraw}{549b188f638e20638974ea4abc44cc44}
-      \field{sortinit}{6}
-      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \strng{namehash}{0861a7ecf4f0e094ed7d2551467694d7}
+      \strng{fullhash}{3cea8b6361d1cb654f5ea31e54d7dcde}
+      \strng{fullhashraw}{3cea8b6361d1cb654f5ea31e54d7dcde}
+      \strng{bibnamehash}{3cea8b6361d1cb654f5ea31e54d7dcde}
+      \strng{authorbibnamehash}{3cea8b6361d1cb654f5ea31e54d7dcde}
+      \strng{authornamehash}{0861a7ecf4f0e094ed7d2551467694d7}
+      \strng{authorfullhash}{3cea8b6361d1cb654f5ea31e54d7dcde}
+      \strng{authorfullhashraw}{3cea8b6361d1cb654f5ea31e54d7dcde}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{{IEEE} Computer Graphics and Applications}
-      \field{number}{4}
-      \field{title}{A Developer's Guide to Silhouette Algorithms for Polygonal Models}
-      \field{volume}{23}
-      \field{year}{2003}
-      \field{pages}{28\bibrangedash 37}
-      \range{pages}{10}
+      \field{journaltitle}{{ACM} Transactions on Graphics}
+      \field{number}{5}
+      \field{title}{Shading Rig: Dynamic Art-Directable Stylised Shading for {3D} Characters}
+      \field{volume}{40}
+      \field{year}{2021}
       \verb{doi}
-      \verb 10.1109/MCG.2003.1210862
+      \verb 10.1145/3461696
       \endverb
     \endentry
     \entry{gonzalez2018}{book}{}{}
@@ -279,45 +1366,14 @@
       \strng{authornamehash}{629c2754a63b62c1f205866b8ab085f9}
       \strng{authorfullhash}{629c2754a63b62c1f205866b8ab085f9}
       \strng{authorfullhashraw}{629c2754a63b62c1f205866b8ab085f9}
-      \field{sortinit}{7}
-      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{edition}{4th}
       \field{isbn}{9780133356724}
       \field{title}{Digital Image Processing}
       \field{year}{2018}
-    \endentry
-    \entry{canny1986}{article}{}{}
-      \name{author}{1}{}{%
-        {{hash=fa344b67077711bfaa0525254de2977a}{%
-           family={Canny},
-           familyi={C\bibinitperiod},
-           given={John},
-           giveni={J\bibinitperiod}}}%
-      }
-      \strng{namehash}{fa344b67077711bfaa0525254de2977a}
-      \strng{fullhash}{fa344b67077711bfaa0525254de2977a}
-      \strng{fullhashraw}{fa344b67077711bfaa0525254de2977a}
-      \strng{bibnamehash}{fa344b67077711bfaa0525254de2977a}
-      \strng{authorbibnamehash}{fa344b67077711bfaa0525254de2977a}
-      \strng{authornamehash}{fa344b67077711bfaa0525254de2977a}
-      \strng{authorfullhash}{fa344b67077711bfaa0525254de2977a}
-      \strng{authorfullhashraw}{fa344b67077711bfaa0525254de2977a}
-      \field{sortinit}{8}
-      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{journaltitle}{{IEEE} Transactions on Pattern Analysis and Machine Intelligence}
-      \field{number}{6}
-      \field{title}{A Computational Approach to Edge Detection}
-      \field{volume}{PAMI-8}
-      \field{year}{1986}
-      \field{pages}{679\bibrangedash 698}
-      \range{pages}{20}
-      \verb{doi}
-      \verb 10.1109/TPAMI.1986.4767851
-      \endverb
     \endentry
     \entry{marr1980}{article}{}{}
       \name{author}{2}{}{%
@@ -340,8 +1396,8 @@
       \strng{authornamehash}{206b14fb8d646b33d665226f22f43407}
       \strng{authorfullhash}{206b14fb8d646b33d665226f22f43407}
       \strng{authorfullhashraw}{206b14fb8d646b33d665226f22f43407}
-      \field{sortinit}{9}
-      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Proceedings of the Royal Society of London. Series~B, Biological Sciences}
@@ -381,8 +1437,8 @@
       \strng{authornamehash}{44ac4625f60e49e24069a53f3e909981}
       \strng{authorfullhash}{8da97b439fd3b73c9ebb433a5144ca30}
       \strng{authorfullhashraw}{8da97b439fd3b73c9ebb433a5144ca30}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the 4th International Symposium on Non-Photorealistic Animation and Rendering (NPAR)}
@@ -420,8 +1476,8 @@
       \strng{authornamehash}{c320db7b25d61554927dedd5116cbece}
       \strng{authorfullhash}{d297bf47fa5a26dfa7e6a6ca6fb309cb}
       \strng{authorfullhashraw}{d297bf47fa5a26dfa7e6a6ca6fb309cb}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Computer Graphics Forum}
@@ -434,6 +1490,38 @@
       \verb{doi}
       \verb 10.1111/j.1467-8659.2009.01574.x
       \endverb
+    \endentry
+    \entry{kyprianidis2011}{inproceedings}{}{}
+      \name{author}{1}{}{%
+        {{hash=910d83885d51de87adf745e48736b10a}{%
+           family={Kyprianidis},
+           familyi={K\bibinitperiod},
+           given={J.\bibnamedelimi E.},
+           giveni={J\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{910d83885d51de87adf745e48736b10a}
+      \strng{fullhash}{910d83885d51de87adf745e48736b10a}
+      \strng{fullhashraw}{910d83885d51de87adf745e48736b10a}
+      \strng{bibnamehash}{910d83885d51de87adf745e48736b10a}
+      \strng{authorbibnamehash}{910d83885d51de87adf745e48736b10a}
+      \strng{authornamehash}{910d83885d51de87adf745e48736b10a}
+      \strng{authorfullhash}{910d83885d51de87adf745e48736b10a}
+      \strng{authorfullhashraw}{910d83885d51de87adf745e48736b10a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 8th International Symposium on Non-Photorealistic Animation and Rendering}
+      \field{isbn}{978-1-4503-0907-3}
+      \field{note}{Verified from physical PDF (anisotropic\_multicale\_209.pdf). Article DOI not confirmed; cite by ISBN.}
+      \field{series}{{NPAR} '11}
+      \field{title}{Image and Video Abstraction by Multi-Scale Anisotropic {Kuwahara} Filtering}
+      \field{year}{2011}
+      \field{pages}{55\bibrangedash 64}
+      \range{pages}{10}
     \endentry
     \entry{praun2001}{inproceedings}{}{}
       \name{author}{4}{}{%
@@ -466,8 +1554,8 @@
       \strng{authornamehash}{05a489814d28b488403a698f4bad4567}
       \strng{authorfullhash}{c3de3dd8b112ab0af8d29f439fdc5780}
       \strng{authorfullhashraw}{c3de3dd8b112ab0af8d29f439fdc5780}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the 28th Annual Conference on Computer Graphics and Interactive Techniques (SIGGRAPH)}
@@ -479,75 +1567,174 @@
       \verb 10.1145/383259.383328
       \endverb
     \endentry
-    \entry{canales2024}{inproceedings}{}{}
+    \entry{wisessing2016}{inproceedings}{}{}
       \name{author}{3}{}{%
-        {{hash=58f6f18b5b9bdc0e5c1c08b9437ffd87}{%
-           family={Canales},
-           familyi={C\bibinitperiod},
-           given={Ryan},
+        {{hash=dced82a1c4c8fd6fbccb2acff629a5b4}{%
+           family={Wisessing},
+           familyi={W\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+        {{hash=7b69416d0a98876b1932f2cc3acc3109}{%
+           family={Dingliana},
+           familyi={D\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=311befbf09efb09a85b94d65292d3f61}{%
+           family={McDonnell},
+           familyi={M\bibinitperiod},
+           given={R.},
            giveni={R\bibinitperiod}}}%
-        {{hash=4e73aa6edf7df9b578f3da07dd8cf940}{%
-           family={Roble},
-           familyi={R\bibinitperiod},
-           given={Doug},
-           giveni={D\bibinitperiod}}}%
-        {{hash=3504f3951905fd98d701c7f3e9486e4d}{%
-           family={Neff},
-           familyi={N\bibinitperiod},
-           given={Michael},
-           giveni={M\bibinitperiod}}}%
       }
-      \strng{namehash}{f7805472a23ed5a884419649c5da756f}
-      \strng{fullhash}{473b92296bd7b644853fc499620c5a6a}
-      \strng{fullhashraw}{473b92296bd7b644853fc499620c5a6a}
-      \strng{bibnamehash}{473b92296bd7b644853fc499620c5a6a}
-      \strng{authorbibnamehash}{473b92296bd7b644853fc499620c5a6a}
-      \strng{authornamehash}{f7805472a23ed5a884419649c5da756f}
-      \strng{authorfullhash}{473b92296bd7b644853fc499620c5a6a}
-      \strng{authorfullhashraw}{473b92296bd7b644853fc499620c5a6a}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{a11bdd033aac8b6adcaa2c333ab2cba0}
+      \strng{fullhash}{798bcb66bb73b584c8b7eb20d4fb62fc}
+      \strng{fullhashraw}{798bcb66bb73b584c8b7eb20d4fb62fc}
+      \strng{bibnamehash}{798bcb66bb73b584c8b7eb20d4fb62fc}
+      \strng{authorbibnamehash}{798bcb66bb73b584c8b7eb20d4fb62fc}
+      \strng{authornamehash}{a11bdd033aac8b6adcaa2c333ab2cba0}
+      \strng{authorfullhash}{798bcb66bb73b584c8b7eb20d4fb62fc}
+      \strng{authorfullhashraw}{798bcb66bb73b584c8b7eb20d4fb62fc}
+      \field{extraname}{1}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{booktitle}{2024 {IEEE} Conference on Virtual Reality and {3D} User Interfaces ({VR})}
-      \field{title}{The Impact of Avatar Stylization on Trust}
-      \field{year}{2024}
-      \field{pages}{418\bibrangedash 428}
-      \range{pages}{11}
+      \field{booktitle}{Proceedings of the {ACM} Symposium on Applied Perception}
+      \field{title}{Perception of Lighting and Shading for Animated Virtual Characters}
+      \field{year}{2016}
       \verb{doi}
-      \verb 10.1109/VR58804.2024.00063
+      \verb 10.1145/2931002.2931015
       \endverb
     \endentry
-    \entry{macdorman2006}{inproceedings}{}{}
-      \name{author}{2}{}{%
-        {{hash=463759a71ddd24632c948bebedd03fd9}{%
-           family={MacDorman},
+    \entry{wisessing2020}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=dced82a1c4c8fd6fbccb2acff629a5b4}{%
+           family={Wisessing},
+           familyi={W\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+        {{hash=2a6ae3a84c5a1bdaa0d7ada48947fc38}{%
+           family={Zibrek},
+           familyi={Z\bibinitperiod},
+           given={K.},
+           giveni={K\bibinitperiod}}}%
+        {{hash=c8004f70412b09eef660ef7fde781a1a}{%
+           family={Cunningham},
+           familyi={C\bibinitperiod},
+           given={D.\bibnamedelimi W.},
+           giveni={D\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=7b69416d0a98876b1932f2cc3acc3109}{%
+           family={Dingliana},
+           familyi={D\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=311befbf09efb09a85b94d65292d3f61}{%
+           family={McDonnell},
            familyi={M\bibinitperiod},
-           given={Karl\bibnamedelima F.},
-           giveni={K\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
-        {{hash=65969149151d8c3a46cb3adda3d7d701}{%
-           family={Ishiguro},
-           familyi={I\bibinitperiod},
-           given={Hiroshi},
-           giveni={H\bibinitperiod}}}%
+           given={R.},
+           giveni={R\bibinitperiod}}}%
       }
-      \strng{namehash}{9a300c6e233c0ac9f787967dcb57318b}
-      \strng{fullhash}{9a300c6e233c0ac9f787967dcb57318b}
-      \strng{fullhashraw}{9a300c6e233c0ac9f787967dcb57318b}
-      \strng{bibnamehash}{9a300c6e233c0ac9f787967dcb57318b}
-      \strng{authorbibnamehash}{9a300c6e233c0ac9f787967dcb57318b}
-      \strng{authornamehash}{9a300c6e233c0ac9f787967dcb57318b}
-      \strng{authorfullhash}{9a300c6e233c0ac9f787967dcb57318b}
-      \strng{authorfullhashraw}{9a300c6e233c0ac9f787967dcb57318b}
-      \field{sortinit}{1}
-      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \strng{namehash}{a11bdd033aac8b6adcaa2c333ab2cba0}
+      \strng{fullhash}{6d76fb01cb459c9c43d21b7a06c67d74}
+      \strng{fullhashraw}{6d76fb01cb459c9c43d21b7a06c67d74}
+      \strng{bibnamehash}{6d76fb01cb459c9c43d21b7a06c67d74}
+      \strng{authorbibnamehash}{6d76fb01cb459c9c43d21b7a06c67d74}
+      \strng{authornamehash}{a11bdd033aac8b6adcaa2c333ab2cba0}
+      \strng{authorfullhash}{6d76fb01cb459c9c43d21b7a06c67d74}
+      \strng{authorfullhashraw}{6d76fb01cb459c9c43d21b7a06c67d74}
+      \field{extraname}{2}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{booktitle}{Proceedings of the {ICDL-2006} Workshop on Android Science}
-      \field{title}{The Uncanny Advantage of Using Androids in Cognitive and Social Science Research}
-      \field{year}{2006}
-      \field{pages}{1\bibrangedash 9}
-      \range{pages}{9}
+      \field{journaltitle}{{ACM} Transactions on Graphics}
+      \field{number}{3}
+      \field{title}{Enlighten Me: Importance of Brightness and Shadow for Character Emotion and Appeal}
+      \field{volume}{39}
+      \field{year}{2020}
+      \verb{doi}
+      \verb 10.1145/3383195
+      \endverb
+    \endentry
+    \entry{zibrek2019tap}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=e9e7e4b505fa908a0f260a61796e62c4}{%
+           family={Zibrek},
+           familyi={Z\bibinitperiod},
+           given={Katja},
+           giveni={K\bibinitperiod}}}%
+        {{hash=ea8924abd09350ac7a9820fb6796e171}{%
+           family={Martin},
+           familyi={M\bibinitperiod},
+           given={Sean},
+           giveni={S\bibinitperiod}}}%
+        {{hash=fa67074fbf8bd8e4d04a3589825d366c}{%
+           family={McDonnell},
+           familyi={M\bibinitperiod},
+           given={Rachel},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{40579c0e93ad48bdf058b610eaa8ad80}
+      \strng{fullhash}{226adfdb2dafcbdc667594702699fffd}
+      \strng{fullhashraw}{226adfdb2dafcbdc667594702699fffd}
+      \strng{bibnamehash}{226adfdb2dafcbdc667594702699fffd}
+      \strng{authorbibnamehash}{226adfdb2dafcbdc667594702699fffd}
+      \strng{authornamehash}{40579c0e93ad48bdf058b610eaa8ad80}
+      \strng{authorfullhash}{226adfdb2dafcbdc667594702699fffd}
+      \strng{authorfullhashraw}{226adfdb2dafcbdc667594702699fffd}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ACM Transactions on Applied Perception}
+      \field{number}{3}
+      \field{title}{Is Photorealism Important for Perception of Expressive Virtual Humans in Virtual Reality?}
+      \field{volume}{16}
+      \field{year}{2019}
+      \field{pages}{14:1\bibrangedash 14:19}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1145/3349609
+      \endverb
+    \endentry
+    \entry{zibrek2019mig}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=e9e7e4b505fa908a0f260a61796e62c4}{%
+           family={Zibrek},
+           familyi={Z\bibinitperiod},
+           given={Katja},
+           giveni={K\bibinitperiod}}}%
+        {{hash=fa67074fbf8bd8e4d04a3589825d366c}{%
+           family={McDonnell},
+           familyi={M\bibinitperiod},
+           given={Rachel},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {ACM}%
+      }
+      \strng{namehash}{a9f022337cb2a5fd19418e76e131233e}
+      \strng{fullhash}{a9f022337cb2a5fd19418e76e131233e}
+      \strng{fullhashraw}{a9f022337cb2a5fd19418e76e131233e}
+      \strng{bibnamehash}{a9f022337cb2a5fd19418e76e131233e}
+      \strng{authorbibnamehash}{a9f022337cb2a5fd19418e76e131233e}
+      \strng{authornamehash}{a9f022337cb2a5fd19418e76e131233e}
+      \strng{authorfullhash}{a9f022337cb2a5fd19418e76e131233e}
+      \strng{authorfullhashraw}{a9f022337cb2a5fd19418e76e131233e}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the 12th ACM SIGGRAPH Conference on Motion, Interaction and Games (MIG)}
+      \field{title}{Social Presence and Place Illusion are Affected by Photorealism in Embodied {VR}}
+      \field{year}{2019}
+      \field{pages}{1\bibrangedash 7}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1145/3359566.3360064
+      \endverb
     \endentry
     \entry{latoschik2017}{inproceedings}{}{}
       \name{author}{6}{}{%
@@ -593,8 +1780,8 @@
       \strng{authornamehash}{c9a44a5193eef62ba313337522608cd8}
       \strng{authorfullhash}{2310266ce0e0500b9720cb9ddb29119f}
       \strng{authorfullhashraw}{2310266ce0e0500b9720cb9ddb29119f}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{booktitle}{Proceedings of the 23rd {ACM} Symposium on Virtual Reality Software and Technology ({VRST})}
@@ -602,6 +1789,63 @@
       \field{year}{2017}
       \verb{doi}
       \verb 10.1145/3139131.3139156
+      \endverb
+    \endentry
+    \entry{itu709}{report}{}{}
+      \name{author}{1}{}{%
+        {{hash=f7339316d332d79fe4d713fa3545f096}{%
+           family={{International Telecommunication Union, Radiocommunication Sector}},
+           familyi={I\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {International Telecommunication Union}%
+      }
+      \strng{namehash}{f7339316d332d79fe4d713fa3545f096}
+      \strng{fullhash}{f7339316d332d79fe4d713fa3545f096}
+      \strng{fullhashraw}{f7339316d332d79fe4d713fa3545f096}
+      \strng{bibnamehash}{f7339316d332d79fe4d713fa3545f096}
+      \strng{authorbibnamehash}{f7339316d332d79fe4d713fa3545f096}
+      \strng{authornamehash}{f7339316d332d79fe4d713fa3545f096}
+      \strng{authorfullhash}{f7339316d332d79fe4d713fa3545f096}
+      \strng{authorfullhashraw}{f7339316d332d79fe4d713fa3545f096}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Available at \url{https://www.itu.int/dms_pubrec/itu-r/rec/bt/R-REC-BT.709-6-201506-I!!PDF-E.pdf}}
+      \field{title}{Recommendation {ITU-R} {BT.709-6}: Parameter Values for the {HDTV} Standards for Production and International Programme Exchange}
+      \field{type}{techreport}
+      \field{year}{2015}
+    \endentry
+    \entry{canny1986}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=fa344b67077711bfaa0525254de2977a}{%
+           family={Canny},
+           familyi={C\bibinitperiod},
+           given={John},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{fa344b67077711bfaa0525254de2977a}
+      \strng{fullhash}{fa344b67077711bfaa0525254de2977a}
+      \strng{fullhashraw}{fa344b67077711bfaa0525254de2977a}
+      \strng{bibnamehash}{fa344b67077711bfaa0525254de2977a}
+      \strng{authorbibnamehash}{fa344b67077711bfaa0525254de2977a}
+      \strng{authornamehash}{fa344b67077711bfaa0525254de2977a}
+      \strng{authorfullhash}{fa344b67077711bfaa0525254de2977a}
+      \strng{authorfullhashraw}{fa344b67077711bfaa0525254de2977a}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{{IEEE} Transactions on Pattern Analysis and Machine Intelligence}
+      \field{number}{6}
+      \field{title}{A Computational Approach to Edge Detection}
+      \field{volume}{PAMI-8}
+      \field{year}{1986}
+      \field{pages}{679\bibrangedash 698}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1109/TPAMI.1986.4767851
       \endverb
     \endentry
     \entry{yee2007}{article}{}{}
@@ -625,8 +1869,8 @@
       \strng{authornamehash}{b1b5ca88d88e71ae1e1f70ad5e3e2f01}
       \strng{authorfullhash}{b1b5ca88d88e71ae1e1f70ad5e3e2f01}
       \strng{authorfullhashraw}{b1b5ca88d88e71ae1e1f70ad5e3e2f01}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{8}
+      \field{sortinithash}{a231b008ebf0ecbe0b4d96dcc159445f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{journaltitle}{Human Communication Research}
@@ -654,8 +1898,8 @@
       \strng{authornamehash}{87b1f1a2683664234447aa1f094fdf88}
       \strng{authorfullhash}{87b1f1a2683664234447aa1f094fdf88}
       \strng{authorfullhashraw}{87b1f1a2683664234447aa1f094fdf88}
-      \field{sortinit}{2}
-      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{note}{Online service for rigged humanoid character export}
@@ -676,8 +1920,8 @@
       \strng{authornamehash}{350a86b0327152e3a50596538f38a5db}
       \strng{authorfullhash}{350a86b0327152e3a50596538f38a5db}
       \strng{authorfullhashraw}{350a86b0327152e3a50596538f38a5db}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{howpublished}{\url{https://developer.oculus.com/documentation/unity/meta-avatars-overview/}}
@@ -685,91 +1929,275 @@
       \field{title}{Meta Avatars {SDK} Documentation}
       \field{year}{2024}
     \endentry
-    \entry{gltfast}{misc}{}{}
+    \entry{avaturn}{misc}{}{}
       \name{author}{1}{}{%
-        {{hash=82353470754b77b239a3cae4f7641fbf}{%
-           family={Atteneder},
-           familyi={A\bibinitperiod},
-           given={Andreas},
-           giveni={A\bibinitperiod}}}%
+        {{hash=68d16774ae1e875a16a128b97536012f}{%
+           family={{Avaturn}},
+           familyi={A\bibinitperiod}}}%
       }
-      \strng{namehash}{82353470754b77b239a3cae4f7641fbf}
-      \strng{fullhash}{82353470754b77b239a3cae4f7641fbf}
-      \strng{fullhashraw}{82353470754b77b239a3cae4f7641fbf}
-      \strng{bibnamehash}{82353470754b77b239a3cae4f7641fbf}
-      \strng{authorbibnamehash}{82353470754b77b239a3cae4f7641fbf}
-      \strng{authornamehash}{82353470754b77b239a3cae4f7641fbf}
-      \strng{authorfullhash}{82353470754b77b239a3cae4f7641fbf}
-      \strng{authorfullhashraw}{82353470754b77b239a3cae4f7641fbf}
-      \field{sortinit}{3}
-      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \strng{namehash}{68d16774ae1e875a16a128b97536012f}
+      \strng{fullhash}{68d16774ae1e875a16a128b97536012f}
+      \strng{fullhashraw}{68d16774ae1e875a16a128b97536012f}
+      \strng{bibnamehash}{68d16774ae1e875a16a128b97536012f}
+      \strng{authorbibnamehash}{68d16774ae1e875a16a128b97536012f}
+      \strng{authornamehash}{68d16774ae1e875a16a128b97536012f}
+      \strng{authorfullhash}{68d16774ae1e875a16a128b97536012f}
+      \strng{authorfullhashraw}{68d16774ae1e875a16a128b97536012f}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{note}{Open-source package for runtime glTF~2.0 loading in Unity}
-      \field{title}{{glTFast}: A Runtime {glTF} Loader for {Unity}}
-      \field{year}{2023}
+      \field{howpublished}{\url{https://docs.avaturn.me/docs/what-is-avaturn/}}
+      \field{note}{Developer documentation for the Avaturn avatar creation service}
+      \field{title}{What is {Avaturn}?}
+      \field{year}{2024}
     \endentry
-    \entry{schlick1994}{article}{}{}
+    \entry{gltf2}{report}{}{}
       \name{author}{1}{}{%
-        {{hash=27b7ac8ef63c002a84435f03ea7b9c33}{%
-           family={Schlick},
+        {{hash=364378d45b69f33fd50d5d62ae518626}{%
+           family={{Khronos Group}},
+           familyi={K\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {The Khronos Group}%
+      }
+      \strng{namehash}{364378d45b69f33fd50d5d62ae518626}
+      \strng{fullhash}{364378d45b69f33fd50d5d62ae518626}
+      \strng{fullhashraw}{364378d45b69f33fd50d5d62ae518626}
+      \strng{bibnamehash}{364378d45b69f33fd50d5d62ae518626}
+      \strng{authorbibnamehash}{364378d45b69f33fd50d5d62ae518626}
+      \strng{authornamehash}{364378d45b69f33fd50d5d62ae518626}
+      \strng{authorfullhash}{364378d45b69f33fd50d5d62ae518626}
+      \strng{authorfullhashraw}{364378d45b69f33fd50d5d62ae518626}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Available at \url{https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html}}
+      \field{title}{{glTF} 2.0 Specification}
+      \field{type}{techreport}
+      \field{year}{2017}
+    \endentry
+    \entry{saitotakahashi1990}{inproceedings}{}{}
+      \name{author}{2}{}{%
+        {{hash=87cc8857710e8cfe08e51f9fb753cf53}{%
+           family={Saito},
            familyi={S\bibinitperiod},
-           given={Christophe},
-           giveni={C\bibinitperiod}}}%
+           given={Takafumi},
+           giveni={T\bibinitperiod}}}%
+        {{hash=8da096cf8968cddc408d332ec7522d06}{%
+           family={Takahashi},
+           familyi={T\bibinitperiod},
+           given={Tokiichiro},
+           giveni={T\bibinitperiod}}}%
       }
       \list{publisher}{1}{%
-        {Blackwell Publishing}%
+        {ACM}%
       }
-      \strng{namehash}{27b7ac8ef63c002a84435f03ea7b9c33}
-      \strng{fullhash}{27b7ac8ef63c002a84435f03ea7b9c33}
-      \strng{fullhashraw}{27b7ac8ef63c002a84435f03ea7b9c33}
-      \strng{bibnamehash}{27b7ac8ef63c002a84435f03ea7b9c33}
-      \strng{authorbibnamehash}{27b7ac8ef63c002a84435f03ea7b9c33}
-      \strng{authornamehash}{27b7ac8ef63c002a84435f03ea7b9c33}
-      \strng{authorfullhash}{27b7ac8ef63c002a84435f03ea7b9c33}
-      \strng{authorfullhashraw}{27b7ac8ef63c002a84435f03ea7b9c33}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \strng{namehash}{b0f07e2cb97c7edfc3d351e189ab8ec6}
+      \strng{fullhash}{b0f07e2cb97c7edfc3d351e189ab8ec6}
+      \strng{fullhashraw}{b0f07e2cb97c7edfc3d351e189ab8ec6}
+      \strng{bibnamehash}{b0f07e2cb97c7edfc3d351e189ab8ec6}
+      \strng{authorbibnamehash}{b0f07e2cb97c7edfc3d351e189ab8ec6}
+      \strng{authornamehash}{b0f07e2cb97c7edfc3d351e189ab8ec6}
+      \strng{authorfullhash}{b0f07e2cb97c7edfc3d351e189ab8ec6}
+      \strng{authorfullhashraw}{b0f07e2cb97c7edfc3d351e189ab8ec6}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{journaltitle}{Computer Graphics Forum}
-      \field{number}{3}
-      \field{title}{An Inexpensive {BRDF} Model for Physically-Based Rendering}
-      \field{volume}{13}
-      \field{year}{1994}
-      \field{pages}{233\bibrangedash 246}
-      \range{pages}{14}
+      \field{booktitle}{Proceedings of the 17th Annual Conference on Computer Graphics and Interactive Techniques ({SIGGRAPH})}
+      \field{title}{Comprehensible Rendering of 3-{D} Shapes}
+      \field{year}{1990}
+      \field{pages}{197\bibrangedash 206}
+      \range{pages}{10}
       \verb{doi}
-      \verb 10.1111/1467-8659.1330233
+      \verb 10.1145/97880.97901
       \endverb
     \endentry
-    \entry{blinn1977}{inproceedings}{}{}
-      \name{author}{1}{}{%
-        {{hash=31eca65cd9b9caf20488019e2dcda23a}{%
-           family={Blinn},
-           familyi={B\bibinitperiod},
-           given={James\bibnamedelima F.},
-           giveni={J\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+    \entry{nienhaus2003}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=8dcbfcb5f11853fd4de206324e5b8fc9}{%
+           family={Nienhaus},
+           familyi={N\bibinitperiod},
+           given={Marc},
+           giveni={M\bibinitperiod}}}%
+        {{hash=1ec8ac5337a378a1fedf2b1ec33d2051}{%
+           family={Döllner},
+           familyi={D\bibinitperiod},
+           given={Jürgen},
+           giveni={J\bibinitperiod}}}%
       }
-      \strng{namehash}{31eca65cd9b9caf20488019e2dcda23a}
-      \strng{fullhash}{31eca65cd9b9caf20488019e2dcda23a}
-      \strng{fullhashraw}{31eca65cd9b9caf20488019e2dcda23a}
-      \strng{bibnamehash}{31eca65cd9b9caf20488019e2dcda23a}
-      \strng{authorbibnamehash}{31eca65cd9b9caf20488019e2dcda23a}
-      \strng{authornamehash}{31eca65cd9b9caf20488019e2dcda23a}
-      \strng{authorfullhash}{31eca65cd9b9caf20488019e2dcda23a}
-      \strng{authorfullhashraw}{31eca65cd9b9caf20488019e2dcda23a}
-      \field{sortinit}{4}
-      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \strng{namehash}{24589d75187c46926d706d49c9c908a4}
+      \strng{fullhash}{24589d75187c46926d706d49c9c908a4}
+      \strng{fullhashraw}{24589d75187c46926d706d49c9c908a4}
+      \strng{bibnamehash}{24589d75187c46926d706d49c9c908a4}
+      \strng{authorbibnamehash}{24589d75187c46926d706d49c9c908a4}
+      \strng{authornamehash}{24589d75187c46926d706d49c9c908a4}
+      \strng{authorfullhash}{24589d75187c46926d706d49c9c908a4}
+      \strng{authorfullhashraw}{24589d75187c46926d706d49c9c908a4}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{booktitle}{Proceedings of the 4th Annual Conference on Computer Graphics and Interactive Techniques (SIGGRAPH)}
-      \field{title}{Models of Light Reflection for Computer Synthesized Pictures}
-      \field{year}{1977}
-      \field{pages}{192\bibrangedash 198}
-      \range{pages}{7}
+      \field{journaltitle}{Journal of {WSCG}}
+      \field{note}{11th International Conference in Central Europe on Computer Graphics, Visualization and Computer Vision, ISSN 1213-6972. No DOI available.}
+      \field{number}{1}
+      \field{title}{Edge-Enhancement: An Algorithm for Real-Time Non-Photorealistic Rendering}
+      \field{volume}{11}
+      \field{year}{2003}
+      \field{pages}{346\bibrangedash 353}
+      \range{pages}{8}
+    \endentry
+    \entry{roshaan2026}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=862a00ca91fc61fa6dac649bf510250b}{%
+           family={Roshaan},
+           familyi={R\bibinitperiod},
+           given={M.\bibnamedelimi K.\bibnamedelimi L.},
+           giveni={M\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{862a00ca91fc61fa6dac649bf510250b}
+      \strng{fullhash}{862a00ca91fc61fa6dac649bf510250b}
+      \strng{fullhashraw}{862a00ca91fc61fa6dac649bf510250b}
+      \strng{bibnamehash}{862a00ca91fc61fa6dac649bf510250b}
+      \strng{authorbibnamehash}{862a00ca91fc61fa6dac649bf510250b}
+      \strng{authornamehash}{862a00ca91fc61fa6dac649bf510250b}
+      \strng{authorfullhash}{862a00ca91fc61fa6dac649bf510250b}
+      \strng{authorfullhashraw}{862a00ca91fc61fa6dac649bf510250b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Research Square preprint, Article rs-8849147/v1}
+      \field{month}{2}
+      \field{note}{Available at: \url{https://www.researchsquare.com/article/rs-8849147/v1}}
+      \field{title}{{AHEAD}: Adaptive Hierarchical Edge Detection for Real-Time Artistic Stylization}
+      \field{year}{2026}
+    \endentry
+    \entry{roberts1963}{thesis}{}{}
+      \name{author}{1}{}{%
+        {{hash=ea22b056218be5897d058496f127e9f6}{%
+           family={Roberts},
+           familyi={R\bibinitperiod},
+           given={L.\bibnamedelimi G.},
+           giveni={L\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Massachusetts Institute of Technology}%
+      }
+      \strng{namehash}{ea22b056218be5897d058496f127e9f6}
+      \strng{fullhash}{ea22b056218be5897d058496f127e9f6}
+      \strng{fullhashraw}{ea22b056218be5897d058496f127e9f6}
+      \strng{bibnamehash}{ea22b056218be5897d058496f127e9f6}
+      \strng{authorbibnamehash}{ea22b056218be5897d058496f127e9f6}
+      \strng{authornamehash}{ea22b056218be5897d058496f127e9f6}
+      \strng{authorfullhash}{ea22b056218be5897d058496f127e9f6}
+      \strng{authorfullhashraw}{ea22b056218be5897d058496f127e9f6}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Lincoln Laboratory Report TR-315. Available via MIT DSpace and ResearchGate.}
+      \field{title}{Machine Perception of Three-Dimensional Solids}
+      \field{type}{phdthesis}
+      \field{year}{1963}
+    \endentry
+    \entry{kuwahara1976}{incollection}{}{}
+      \name{author}{4}{}{%
+        {{hash=beb78ac615f73b8b0f5385048a1c803d}{%
+           family={Kuwahara},
+           familyi={K\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=6b4882440cba61d714359f5d1016ebb6}{%
+           family={Hachimura},
+           familyi={H\bibinitperiod},
+           given={K.},
+           giveni={K\bibinitperiod}}}%
+        {{hash=1eacfcc7f05d81dcbae3aed9979d7bec}{%
+           family={Eiho},
+           familyi={E\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=7f8399524ec722040d8040fc22ad232d}{%
+           family={Kinoshita},
+           familyi={K\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+      }
+      \name{editor}{2}{}{%
+        {{hash=044b491ac68bb40288cf347ecac4c139}{%
+           family={Preston},
+           familyi={P\bibinitperiod},
+           given={Kendall},
+           giveni={K\bibinitperiod}}}%
+        {{hash=2139ce2bdafd1265b7d48a6fab31ccbf}{%
+           family={Onoe},
+           familyi={O\bibinitperiod},
+           given={Morio},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Plenum Press}%
+      }
+      \strng{namehash}{7677be869c8448602d0e2d792a8a05b8}
+      \strng{fullhash}{b2a55a7cfbf66da05cf1bda0a91d4978}
+      \strng{fullhashraw}{b2a55a7cfbf66da05cf1bda0a91d4978}
+      \strng{bibnamehash}{b2a55a7cfbf66da05cf1bda0a91d4978}
+      \strng{authorbibnamehash}{b2a55a7cfbf66da05cf1bda0a91d4978}
+      \strng{authornamehash}{7677be869c8448602d0e2d792a8a05b8}
+      \strng{authorfullhash}{b2a55a7cfbf66da05cf1bda0a91d4978}
+      \strng{authorfullhashraw}{b2a55a7cfbf66da05cf1bda0a91d4978}
+      \strng{editorbibnamehash}{63721e2c0507b83813a7f69835bb3958}
+      \strng{editornamehash}{63721e2c0507b83813a7f69835bb3958}
+      \strng{editorfullhash}{63721e2c0507b83813a7f69835bb3958}
+      \strng{editorfullhashraw}{63721e2c0507b83813a7f69835bb3958}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Digital Processing of Biomedical Images}
+      \field{note}{Fourth author name: citation key [KHEK76] in Kyprianidis (2009) confirms initial K; Kinoshita is used here, but verify against physical book copy.}
+      \field{title}{Processing of {RI}-Angiocardiographic Images}
+      \field{year}{1976}
+      \field{pages}{187\bibrangedash 203}
+      \range{pages}{17}
       \verb{doi}
-      \verb 10.1145/965141.563893
+      \verb 10.1007/978-1-4684-0769-3_13
+      \endverb
+    \endentry
+    \entry{demsar2006}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=4f1562f6c926af2ba7e34e919ea14f1d}{%
+           family={Demšar},
+           familyi={D\bibinitperiod},
+           given={Janez},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{4f1562f6c926af2ba7e34e919ea14f1d}
+      \strng{fullhash}{4f1562f6c926af2ba7e34e919ea14f1d}
+      \strng{fullhashraw}{4f1562f6c926af2ba7e34e919ea14f1d}
+      \strng{bibnamehash}{4f1562f6c926af2ba7e34e919ea14f1d}
+      \strng{authorbibnamehash}{4f1562f6c926af2ba7e34e919ea14f1d}
+      \strng{authornamehash}{4f1562f6c926af2ba7e34e919ea14f1d}
+      \strng{authorfullhash}{4f1562f6c926af2ba7e34e919ea14f1d}
+      \strng{authorfullhashraw}{4f1562f6c926af2ba7e34e919ea14f1d}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Machine Learning Research}
+      \field{title}{Statistical Comparisons of Classifiers over Multiple Data Sets}
+      \field{volume}{7}
+      \field{year}{2006}
+      \field{pages}{1\bibrangedash 30}
+      \range{pages}{30}
+      \verb{urlraw}
+      \verb https://www.jmlr.org/papers/v7/demsar06a.html
+      \endverb
+      \verb{url}
+      \verb https://www.jmlr.org/papers/v7/demsar06a.html
       \endverb
     \endentry
   \enddatalist

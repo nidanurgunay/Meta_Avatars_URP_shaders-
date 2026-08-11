@@ -54,7 +54,7 @@ float4 ApplyNPREffect(float4 color, float2 uv, half3 worldNormal, half3 worldVie
     // ── Structure tensor from shaded-colour luminance derivatives ─────────────
     // ddx/ddy give the per-pixel gradient of the final lit colour in screen space.
     // On smooth avatar surfaces this reliably reflects local feature orientation.
-    float lum = dot(color.rgb, float3(0.299, 0.587, 0.114));
+    float lum = dot(color.rgb, float3(0.2126, 0.7152, 0.0722)); // BT.709 luma weights
     float gx  = ddx(lum);
     float gy  = ddy(lum);
     float E   = gx * gx;

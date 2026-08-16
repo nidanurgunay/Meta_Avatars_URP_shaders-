@@ -87,7 +87,7 @@ def bracket(ax, x1, x2, y, h, label, lw=1.0):
     ax.text((x1 + x2) / 2, y + h, label, ha="center", va="bottom", fontsize=9.5)
 
 
-def bar_panel(ax, means, sems, n, ylim, ylabel, title, pairwise=None, bracket_top=None):
+def bar_panel(ax, means, sems, n, ylim, ylabel, title, pairwise=None, bracket_top=None, show_n=True):
     x = np.arange(3)
     bars = ax.bar(x, [means[c] for c in ORDER], yerr=[sems[c] for c in ORDER],
                    color=[COLORS[c] for c in ORDER], edgecolor="#0b0b0b", linewidth=0.8,
@@ -97,7 +97,7 @@ def bar_panel(ax, means, sems, n, ylim, ylabel, title, pairwise=None, bracket_to
     ax.set_xticklabels([LABELS[c] for c in ORDER], fontsize=9.5)
     ax.set_ylim(*ylim)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"{title}  (n={n})", fontsize=11, pad=8)
+    ax.set_title(f"{title}  (n={n})" if show_n else title, fontsize=11, pad=8)
     for b, c in zip(bars, ORDER):
         ax.text(b.get_x() + b.get_width() / 2, means[c] + sems[c] + 0.02 * (ylim[1] - ylim[0]),
                  f"{means[c]:.2f}", ha="center", va="bottom", fontsize=8.5, color="#52514e")
@@ -116,8 +116,8 @@ def bar_panel(ax, means, sems, n, ylim, ylabel, title, pairwise=None, bracket_to
 # ---------------------------------------------------------------------------
 # Load data
 # ---------------------------------------------------------------------------
-long_df = pd.read_csv(DATA_DIR / "long_format_scores.csv")
-wide = pd.read_csv(DATA_DIR / "wide_format_participant.csv")
+long_df = pd.read_csv(DATA_DIR / "long_format_scores_clean.csv")
+wide = pd.read_csv(DATA_DIR / "wide_format_participant_clean.csv")
 long_df["Trust_score"] = long_df[["E_score", "F_score", "G_score"]].mean(axis=1)
 
 
@@ -149,8 +149,8 @@ means, sems, n, _ = cousineau_morey(styl_long, "participant", "condition", "styl
 pw = get_pairwise(styl_long.rename(columns={"stylisation": "styl"}), "styl")
 
 fig, ax = plt.subplots(figsize=(4.6, 4.2))
-bar_panel(ax, means, sems, n, (1, 7.6), "Stylisation rating (1=realistic, 7=stylised)",
-          "Manipulation check", pairwise=pw, bracket_top=6.7)
+bar_panel(ax, means, sems, n, (1, 7.6), "Stylisation rating",
+          "Manipulation check", pairwise=pw, bracket_top=6.7, show_n=False)
 fig.tight_layout()
 save(fig, "fig_manipulation_check")
 
@@ -175,7 +175,7 @@ axes[-1].axis("off")
 handles = [plt.Rectangle((0, 0), 1, 1, color=COLORS[c]) for c in ORDER]
 axes[-1].legend(handles, [LABELS[c].replace("\n", " ") for c in ORDER],
                  loc="center", frameon=False, fontsize=11, title="Condition")
-fig.suptitle("Per-block subscale ratings by condition (Bonferroni-corrected pairwise: * p<.05, ** p<.01, *** p<.001, ns = not significant)",
+fig.suptitle("Per-block subscale ratings by condition (Holm-corrected pairwise: * p<.05, ** p<.01, *** p<.001, ns = not significant)",
              fontsize=10.5, y=1.01)
 fig.tight_layout()
 save(fig, "fig_subscales_grid")
@@ -183,12 +183,21 @@ save(fig, "fig_subscales_grid")
 # ---------------------------------------------------------------------------
 # Figure 3: H3 -- person-centred eeriness vs trust subscales
 # ---------------------------------------------------------------------------
+import statsmodels.formula.api as smf
+
 h3_df = long_df.dropna(subset=["D_score", "E_score", "F_score", "G_score"]).copy()
 h3_df["D_c"] = h3_df["D_score"] - h3_df.groupby("participant")["D_score"].transform("mean")
 
+h3_slopes = {}
+for col in ["E_score", "F_score", "G_score"]:
+    fit = smf.mixedlm(f"{col} ~ D_c", data=h3_df, groups=h3_df["participant"]).fit(reml=True)
+    h3_slopes[col] = fit.params["D_c"]
+
 fig, axes = plt.subplots(1, 3, figsize=(11.5, 3.8), sharex=True, sharey=True)
 for ax, (col, label, b) in zip(axes, [
-    ("E_score", "Competence", -1.10), ("F_score", "Benevolence", -1.09), ("G_score", "Integrity", -1.02)
+    ("E_score", "Competence", h3_slopes["E_score"]),
+    ("F_score", "Benevolence", h3_slopes["F_score"]),
+    ("G_score", "Integrity", h3_slopes["G_score"]),
 ]):
     y_c = h3_df[col] - h3_df.groupby("participant")[col].transform("mean")
     ax.scatter(h3_df["D_c"], y_c, s=16, alpha=0.5, color="#2a78d6", edgecolor="none")

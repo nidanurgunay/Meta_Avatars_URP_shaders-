@@ -1079,6 +1079,22 @@ This document tracks every citation added to `references.bib` that was not sourc
 
 ---
 
+## Added in Session: Equivalence Testing Citation (2026-08-14)
+
+### `lakens2017` — Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses
+
+**§4.8.4 Analysis Plan (TOST procedure and the d = 0.3 equivalence bound)**
+- Claim: the TOST procedure provides positive evidence for the absence of a meaningful effect, and its bound is set from the smallest effect size of interest (SESOI), conventionally d = 0.3.
+- Supporting passage (Abstract): "Scientists should be able to provide support for the absence of a meaningful effect. Currently, researchers often incorrectly conclude an effect is absent based a nonsignificant result. A widely recommended approach within a frequentist framework is to test for equivalence. In equivalence tests, such as the two one-sided tests (TOST) procedure discussed in this article, an upper and lower equivalence bound is specified based on the smallest effect size of interest."
+- Supporting passage (p. 356, left column): "A very simple equivalence testing approach is the 'two one-sided tests' (TOST) procedure (Schuirmann, 1987). In the TOST procedure, an upper (Δ_U) and lower (Δ_L) equivalence bound is specified based on the smallest effect size of interest (SESOI; e.g., a positive or negative difference of d = .3)."
+- Full reference: Lakens, D. (2017). Equivalence Tests: A Practical Primer for t Tests, Correlations, and Meta-Analyses. *Social Psychological and Personality Science*, 8(4), 355–362.
+- DOI: 10.1177/1948550617697177 (bibliographic fields cross-checked against CrossRef)
+- Physical PDF: `Articles/Lakens -equivalence Test.pdf` — primary source read 2026-08-14
+- Used as: `~\cite{lakens2017}` at end of the TOST sentence in §4.8.4 Analysis Plan
+- Relevance to this thesis: the source explicitly names d = 0.3 as its worked SESOI example, so the pre-specified bound is not an arbitrary choice. It also supplies the methodological basis for the critique of inferring an absent effect from a non-significant result, which is the inference Canales et al. (2024) make about stylisation and trust and which H2/H4 avoid by testing equivalence directly.
+
+---
+
 ## Added in Session: BT.709 Luma Coefficient Citation (2026-07-28)
 
 ### `itu709`
@@ -1258,3 +1274,327 @@ This document tracks every citation added to `references.bib` that was not sourc
 - Used as: single `~\cite{gonzalez2018}` at the end of sentence 2 only: "A digital image consists of a grid of pixels and each stores an intensity value. And an edge in an image is conventionally defined as a location where this intensity changes rapidly~\cite{gonzalez2018}." Sentence 1 is left uncited since both sentences are basic definitions from the same source functioning as one two-sentence unit; a second inline citation on sentence 1 was judged redundant.
 
 **Verification:** Physical PDF read directly (`Articles/Gonzales,Woods-Digital.Image.Processing.4th.Edition.pdf`, pp. 18, 66, 702), 2026-08-09. Both claims CONFIRMED against the primary source. Logged in `citation_check.tex` §Chapter 3 — Background as a single unstarred entry covering both sentences (pending Nidanur's review).
+
+---
+
+## Added in Session: Background Chapter Rewrite (2026-08-11)
+
+Chapter 3 was restructured. A new §3.2 (Real-Time Rendering Foundations) was inserted, so section
+numbering shifted: Edge Detection §3.2 → §3.3, Kuwahara §3.3 → §3.4, Avatars §3.4 → §3.5, Trust
+§3.5 → §3.6. Instrument descriptions moved from §2.2 into §3.6 by decision of 2026-08-11, so that
+Related Work carries empirical findings and Background carries constructs and instruments.
+
+### `alipour2025` — REMOVED from Chapter 3 (three unsupported claims)
+
+The Background §3.5 paragraph citing `alipour2025` was deleted. All three of its claims were checked
+against the primary PDF (`Articles/alipour Would you rely on an eerie agent?.pdf`) and all three failed:
+
+1. **"42 empirical studies"** — the review covers **53**. Direct quote: "This left a total of 53 papers
+   that met all the inclusion/exclusion criteria and were included in the review." The number 42 appears
+   only as a subcount ("42 out of 53 studies examined indirect interactions"; "42 out of 53 employed a
+   quantitative research approach"). `02_related_work.tex` §2.2 already stated 53 correctly, so the two
+   chapters contradicted each other.
+2. **"a consistent negative association ... independent of whether trust is measured with cognitive or
+   affective instruments"** — the opposite of the paper's finding. The review reports the relationship as
+   *inconsistent*: some studies found a direct negative effect, others none. `02_related_work.tex` §2.2
+   already stated this correctly.
+3. **"the association is strongest when stimuli are presented as dynamic video clips rather than static
+   images. This finding motivates the use of video stimuli in this thesis."** — not a finding in the paper.
+   What the paper says is that "nearly 80% of the studies relied on indirect encounters, where participants
+   passively viewed static images or videos rather than engaging in dynamic, real-world interactions" and
+   presents this as **a limitation to ecological validity**, recommending more real-time interaction. It
+   cannot be used to justify a video-based stimulus design.
+
+`alipour2025` remains correctly cited in `02_related_work.tex` §2.2 and `04_methodology.tex` §Post-Study
+Section. **Open item:** the video-only stimulus decision now has no citation supporting it in Chapter 3.
+If a citation is wanted, a source that actually compares dynamic and static stimuli is required.
+
+### `ho2010` — CORRECTION: eeriness index has eight items, not six
+
+**Previous thesis wording (§3.5):** "a separate eeriness instrument consisting of six semantic differential
+items". **Corrected to:** "retaining eight semantic differential items for eeriness alongside six for
+perceived humanness".
+
+- Supporting passage (§3.3.2 Eeriness index): "Therefore, the final version of the eeriness index would
+  retain eight items that explained 62.04% of the variance and held an overall internal reliability of .74."
+- Supporting passage (§3.3.1 Humanness index): "Therefore, the final version of the humanness index would
+  retain six items."
+- Orthogonality figure re-confirmed (Abstract): "nonsignificant correlations (p > .05) between the proposed
+  y-axis eeriness and x-axis perceived humanness (r = .02)."
+- **Six was the humanness index, not the eeriness index.** `04_methodology.tex` §Per-Block Questionnaire
+  already stated eight items, so the thesis was internally inconsistent.
+- **This also supersedes the stale note in the earlier `ho2010` entry of this log** which claimed "The
+  correct scale has 8 items total; this thesis uses 6 of them." The thesis uses all eight.
+
+**Verification:** Primary PDF read directly (`Articles/Revisiting the Uncanny Valley Theory- Developing and
+validating an alternative to the Godspeed indices.pdf`), 2026-08-11. CONFIRMED.
+
+### `bartneck2009` — first log entry (was cited but never logged)
+
+- **Full title:** Measurement Instruments for the Anthropomorphism, Animacy, Likeability, Perceived
+  Intelligence, and Perceived Safety of Robots
+- **Authors:** Christoph Bartneck, Dana Kulić, Elizabeth Croft, Susana Zoghbi
+- **Journal:** International Journal of Social Robotics, Vol. 1, No. 1, pp. 71–81
+- **Year:** 2009
+- **DOI:** 10.1007/s12369-008-0001-3
+- **Physical PDF:** `Articles/Measurement Instruments for the Anthropomorphism, Animacy, Likeability,
+  Perceived Intelligence, and Perceived Safety of Robots.pdf`
+- **What the paper argues:** A literature review of five key concepts in human-robot interaction
+  (anthropomorphism, animacy, likeability, perceived intelligence, perceived safety) distilled into five
+  standardised questionnaires using semantic differential scales, with reported reliability and validity
+  indicators. Likert items found in the source literature were deliberately converted to semantic
+  differential format so that a single response format applies throughout.
+- **Supporting passage (Abstract):** "The results have been distilled into five consistent questionnaires
+  using semantic differential scales."
+- **Supporting passage (§2):** "In semantic differential scales the respondent is asked to indicate his or
+  her position on a scale between two bipolar words, the anchors... a semantic differential format may
+  effectively reduce acquiescence bias without lowering psychometric quality." Figure 1 shows a five point
+  scale ("Strong 1 2 3 4 5 Weak").
+- **Item counts (5 anthropomorphism, 6 animacy, 5 likeability, 5 perceived intelligence, 3 perceived
+  safety, 24 total):** taken from Ho & MacDorman (2010) §2.1.2, who administered the instrument directly.
+  **PARTIAL — confirm against Bartneck's own Table 3 before starring.**
+- **Used in:** `03_background.tex` §3.6 (instrument structure, item counts, scale format);
+  `02_related_work.tex` §2.2 (existence and adaptation to avatar studies); `02_related_work.tex` §2.4.
+- **Note on a corrected sentence:** §2.4 previously read "It combines the Godspeed likeability and
+  anthropomorphism subscales." The anthropomorphism subscale was removed from the final questionnaire, as
+  `04_methodology.tex` §Per-Block Questionnaire states explicitly. Corrected to the likeability subscale only.
+
+**Verification:** Primary PDF read directly, 2026-08-11. Abstract, §2, and Figure 1 CONFIRMED.
+
+### `kuwahara1976` — new usage in §3.4 (original source now credited at first use)
+
+- **Cited sentence:** "Kuwahara et al. introduced it to smooth angiocardiographic images without losing the
+  boundaries between anatomical regions~\cite{kuwahara1976}."
+- **Why added:** Background previously defined the Kuwahara filter citing only `kyprianidis2009`, the
+  anisotropic extension. The original 1976 chapter was already cited in `04_methodology.tex` §V6, so the
+  original source is now credited where the filter is first defined, per the cite-on-first-use rule.
+- **NOT VERIFIED — primary source unavailable.** No PDF or scan of the chapter is in `Articles/`. Needed:
+  M. Kuwahara, K. Hachimura, S. Eiho, M. Kinoshita, "Processing of RI-Angiocardiographic Images," in
+  *Digital Processing of Biomedical Images*, Preston & Onoe (eds.), Plenum Press, 1976, pp. 187–203,
+  DOI 10.1007/978-1-4684-0769-3_13. A scan would also settle the open fourth-author name question already
+  recorded in the `references.bib` note field.
+
+### `roberts1963` — new usage in §3.3.1 (Roberts Cross kernels, previously uncited)
+
+- **Cited sentence:** "A smaller alternative is the Roberts Cross operator, which differentiates along the
+  two diagonals of a 2×2 neighbourhood~\cite{roberts1963}."
+- **Why added:** the Roberts Cross kernels were stated in Background with **no citation at all**, even though
+  `roberts1963` was already cited for the same operator in `04_methodology.tex` §V5.
+- **`gonzalez2018` half CONFIRMED:** the 2×2 diagonal kernels and the absolute-value magnitude
+  approximation M ≈ |g_x| + |g_y| are both in Gonzalez & Woods (pp. 718, 720), read directly.
+- **NOT VERIFIED — primary source unavailable.** No PDF of Roberts (1963) in `Articles/`. Needed:
+  L. G. Roberts, *Machine Perception of Three-Dimensional Solids*, PhD thesis, MIT, 1963 (Lincoln
+  Laboratory Report TR-315), available via MIT DSpace.
+
+### `blinn1977` — reinstated (log said "used", but it was not cited anywhere)
+
+- **Cited sentence:** "Specular reflection is modelled separately, commonly through the half-vector
+  formulation of Blinn, which concentrates a highlight around the direction that mirrors the light towards
+  the viewer~\cite{blinn1977}." (`03_background.tex` §3.2.2)
+- **Correction to the earlier log entry:** that entry records `blinn1977` as used in `04_methodology.tex`
+  §V2 X-Toon and in an `05_implementation.tex` listing caption. A full-text grep on 2026-08-11 found **no**
+  `\cite{blinn1977}` anywhere in the thesis, so those sentences had been removed without the log being
+  updated. The key is now genuinely used once, in the new §3.2.2.
+- **NOT VERIFIED — primary source unavailable.** Needed: J. F. Blinn, "Models of Light Reflection for
+  Computer Synthesized Pictures," SIGGRAPH 1977, pp. 192–198, DOI 10.1145/965141.563893.
+
+### `gonzalez2018` — two further usages in §3.1 and §3.3.1
+
+**§3.1 Notation and Conventions — declared axis convention.** The thesis uses x horizontal and y vertical
+(the shader convention, matching `ddx`/`ddy`), which is the **transpose** of Gonzalez & Woods' own
+convention, where g_x = (z7 + 2z8 + z9) − (z1 + 2z2 + z3) differentiates down the rows (p. 719). Previously
+the Sobel kernels were cited to Gonzalez & Woods with the axis labels silently swapped. The difference is
+now declared explicitly in §3.1 rather than left implicit. CONFIRMED, read directly.
+
+**§3.3.1 — Sobel versus Prewitt weighting.** New sentence explaining what the Prewitt operator is, since the
+previous wording named it without definition.
+- Supporting passage (p. 719): "It can be demonstrated (see Problem 10.12) that using a 2 in the center
+  location provides image smoothing."
+- Supporting passage (pp. 719–720): "The Prewitt kernels are simpler to implement than the Sobel kernels,
+  but the slight computational difference between them typically is not an issue. The fact that the Sobel
+  kernels have better noise-suppression (smoothing) characteristics makes them preferable..."
+- CONFIRMED, read directly.
+
+**§3.3.1 — notation fix (no new citation).** The gradient magnitude was written M = √(G_x² + G_y²), which
+reused the kernel symbols as scalars. It now reads M = √((G_x * I)² + (G_y * I)²), matching the source's
+meaning that g_x and g_y are the filtered responses, not the kernels. The same fix was applied to the
+Roberts Cross magnitude.
+
+### `kyprianidis2009` — structure tensor now defined, not just referenced
+
+The structure tensor is used in `02_related_work.tex`, `04_methodology.tex` §V6, and `05_implementation.tex`
+without ever being defined. §3.4 now defines it.
+- Supporting passage (§3.1 "Orientation and Anisotropy Estimation"): "We calculate the structure tensor
+  directly from the RGB values of the input... The structure tensor of f is then defined as" the matrix of
+  pairwise dot products f_x·f_x, f_x·f_y, f_y·f_y; "Local orientation and a measure for the anisotropy are
+  then derived from the eigenvalues and eigenvectors of the smoothed structure tensor."
+- **Verification:** `Articles/NPR/anisotropic_kuwahara.pdf`, Abstract and §3.1, read directly 2026-08-11.
+  CONFIRMED — dot products over colour channels, Gaussian smoothing per component, orientation and
+  anisotropy from eigenvectors and eigenvalues.
+
+### `blinn1977` — REVERTED: not used after all (2026-08-11, same session)
+
+The §3.2.2 shading-model paragraph that reinstated `blinn1977` was removed the same day, when the
+Background rendering section was cut back to render passes and albedo textures only. `\cite{blinn1977}`
+appears nowhere in the thesis. The key stays in `references.bib` uncited, together with `bente2008`,
+`gltfast`, `gooch1998`, `kong2023`, `nienhaus2005`, `petikam2021`, `rapp2025`, `schlick1994` and
+`szeliski2022`. No primary-source verification is needed unless it is used again.
+
+**Also dropped in the same cut, with no citation consequences:** the Lambertian term $s = \max(0,
+\mathbf{N} \cdot \mathbf{L})$, the normal/roughness/metallic map descriptions, the forward versus
+deferred rendering contrast, the object-space versus image-space distinction, the rasterisation stage
+walkthrough, and the linear/sRGB note. All were uncited textbook material. Consequence to note: the
+"surface lighting response $s$" in `04_methodology.tex` Eq. (toon quantisation) is again introduced
+without a prior definition in Background.
+
+---
+
+## Added in Session: Background §3.2 Rendering Concepts — five new citations (2026-08-12)
+
+§3.2 previously carried **no citations at all**. Five sources were added. Bibliographic details for all
+five were verified against publisher records, DBLP, or the ACM DL. **Claim-level verification is
+outstanding for four of them**, since no copy is held in `Articles/`. Do not star those entries in
+`citation_check.tex` until the primary sources have been read.
+
+### `akenine2018` — Real-Time Rendering, 4th edition
+- **Authors:** Tomas Akenine-Möller, Eric Haines, Naty Hoffman, Angelo Pesce, Michał Iwanicki, Sébastien Hillaire
+- **Publisher:** A K Peters/CRC Press, 2018. **ISBN:** 978-1-138-62700-0
+- **Cited in:** §3.2 for (a) the render pass and render target definitions, (b) material properties stored
+  as separate texture maps under PBR.
+- **Bibliographic verification:** Routledge/Taylor & Francis catalogue entry plus the publisher's own
+  table-of-contents PDF at realtimerendering.com. CONFIRMED.
+- **Claim verification:** OUTSTANDING — no copy available. Needed to quote the pass/render-target
+  definition and the PBR texture map description with page numbers.
+
+### `unityurp` — Unity Technologies, URP renderer feature documentation
+- **Title:** Inject a Render Pass with a Scriptable Renderer Feature in URP (Unity 6 / 6000.0 manual)
+- **Cited in:** §3.2 for the renderer feature as URP's pass injection mechanism.
+- **Supporting quote:** "Use the `ScriptableRenderFeature` API to insert a Scriptable Render Pass into the
+  Universal Render Pipeline (URP) frame rendering loop." Also: "Use the `EnqueuePass` API to inject the
+  Scriptable Render Pass into the frame rendering loop."
+- **Verification:** CONFIRMED 2026-08-12, page read directly. This is developer documentation, so the web
+  page *is* the primary source. Entry starred in `citation_check.tex`.
+
+### `luebke2003` — Level of Detail for 3D Graphics
+- **Authors:** David Luebke, Martin Reddy, Jonathan D. Cohen, Amitabh Varshney, Benjamin Watson, Robert Huebner
+- **Publisher:** Morgan Kaufmann, 2003. **ISBN:** 978-1-55860-838-2
+- **Cited in:** §3.2 for LOD mesh substitution with viewing distance.
+- **Scope note:** the citation sits only on the mesh-substitution claim. The following sentence about
+  implementations swapping the *material* is deliberately uncited, being renderer-specific behaviour
+  rather than a claim from this book.
+- **Bibliographic verification:** publisher listing and the companion site lodbook.com. CONFIRMED.
+- **Claim verification:** OUTSTANDING — no copy available.
+
+### `magnenat1988` — Joint-Dependent Local Deformations for Hand Animation and Object Grasping
+- **Authors:** Nadia Magnenat-Thalmann, Richard Laperrière, Daniel Thalmann
+- **Venue:** Proceedings of Graphics Interface '88, pp. 26–33. ACM DL id 10.5555/102313.102317
+- **Cited in:** §3.2 for skeletal skinning and per-vertex bone weights (linear blend skinning originates here).
+- **Bibliographic verification:** ACM DL record and the Graphics Interface 1988 proceedings listing. CONFIRMED.
+- **Claim verification:** OUTSTANDING — not in `Articles/`.
+
+### `lewis2014` — Practice and Theory of Blendshape Facial Models
+- **Authors:** John P. Lewis, Ken Anjyo, Taehyun Rhee, Mengjie Zhang, Frédéric H. Pighin, Zhigang Deng
+- **Venue:** Eurographics 2014 — State of the Art Reports, pp. 199–218. **DOI:** 10.2312/egst.20141042
+- **Cited in:** §3.2 for the blendshape representation as stored alternative vertex positions.
+- **Bibliographic verification:** DBLP record `conf/eurographics/LewisARZPD14`. CONFIRMED.
+- **Claim verification:** OUTSTANDING — freely available from graphics.cs.uh.edu, not yet downloaded.
+
+### Technical correction recorded while adding these
+An earlier draft of the §3.2 animation paragraph attributed **both** body and facial animation to
+blendshapes. That is wrong. The body is deformed by the skeleton through per-vertex bone weights
+(`magnenat1988`), and blendshapes drive facial expression (`lewis2014`). The distinction is load-bearing
+for `04_methodology.tex` §4.3, which excludes Mixamo from the user study precisely because its exports
+carry a skeleton but no facial rig.
+
+### Chapter 3 shortened and re-merged (2026-08-12)
+
+Background was cut for length. Final structure: §3.1 Notation, §3.2 Rendering Concepts, §3.3 Edge
+Detection, §3.4 Structure-Preserving Filtering, §3.5 Avatars, Trust, and Eeriness. The former separate
+Avatars and Trust sections were merged into §3.5 and cut from 848 words to 235; §3.4 went from 346 to 222.
+
+**`yee2007` — REMOVED, now uncited.** The Proteus effect paragraph was dropped. It concerns
+self-representation by an embodied user, whereas this study uses observers watching prerecorded video.
+The thesis text had itself conceded this ("Their finding concerns self-representation and therefore
+applies to embodied use rather than to the observer perspective adopted here"), which is a sign the
+paragraph was carrying a caveat rather than an argument. The key stays in `references.bib`, uncited,
+alongside `bente2008`, `blinn1977`, `gltfast`, `gooch1998`, `kong2023`, `nienhaus2005`, `petikam2021`,
+`rapp2025`, `schlick1994` and `szeliski2022`.
+
+**`nowak2003` and `mori1970` — removed from Chapter 3 only.** The trust-versus-social-presence paragraph
+was cut, since social presence is never measured in the study. Both keys remain correctly cited in
+Chapter 2, so no bibliography change is needed.
+
+**Cut without citation consequences:** the anthropomorphism/visual-fidelity axis definitions (already
+defined in `02_related_work.tex` §2.2 and `01_introduction.tex` §1.1), the "three components are
+separable" justification (duplicated `02_related_work.tex` §2.2), the "competence takes the role of
+ability" mapping (duplicated in the Canales paragraph of §2.2), the per-index Godspeed enumeration, the
+acquiescence-bias rationale, and the closing "taken together" summary paragraph.
+
+**Quoted sentences in `citation_check.tex` were updated to match** for `mayer1995`, `mcknight2001`,
+`bartneck2009` and `ho2010`, so the checklist still quotes the thesis verbatim. All four remain unstarred
+and awaiting their primary PDFs.
+
+---
+
+## citation_check.tex REGENERATED FROM THE THESIS (2026-08-12)
+
+The checklist had drifted badly. An audit found **34 of 106 entries quoting thesis text that no longer
+existed** — sentences reworded or deleted during the Background rewrite and the Chapter 2/3 reorganisation.
+Five cited keys had no entry at all (`avaturn`, `gltf2`, `metasdk`, `mixamo`, `roshaan2026`), and one entry
+survived for a key no longer cited (`gooch1998`).
+
+Rather than patch entry by entry, `citation_check.tex` is now **generated from the thesis source**, so every
+green box quotes live text by construction and drift of this kind cannot recur silently. Regenerate the file
+whenever citations change.
+
+**New state:** 154 entries covering all 142 citation instances across 57 distinct sources, in reading order
+Ch.1 → Ch.7. 111 entries carry a source passage read from the original. 22 have the PDF available but the
+supporting passage not yet quoted. 21 cannot be checked at all because the source is missing. 8 entries
+Nidanur had already validated keep their ticks; the rest were reset, since their sentences changed.
+
+Row labels were rewritten for clarity: *Sentence in thesis* / *Usage* / *Original source* / *How to check*.
+Each entry now names the exact file under `Articles/` so the source can be opened directly.
+
+### Sources still missing from the Articles folder (14)
+
+| Key | Reference needed |
+| --- | --- |
+| `akenine2018` | Akenine-Möller et al., *Real-Time Rendering*, 4th ed., A K Peters/CRC Press 2018, ISBN 978-1-138-62700-0 |
+| `canny1986` | J. Canny, "A Computational Approach to Edge Detection," *IEEE TPAMI* 8(6), 1986, 679–698, DOI 10.1109/TPAMI.1986.4767851 |
+| `kuwahara1976` | M. Kuwahara et al., "Processing of RI-Angiocardiographic Images," in *Digital Processing of Biomedical Images*, Plenum Press 1976, 187–203, DOI 10.1007/978-1-4684-0769-3_13 |
+| `latoschik2017` | M. E. Latoschik et al., "The Effect of Avatar Realism in Immersive Social Virtual Realities," *ACM VRST* 2017, DOI 10.1145/3139131.3139156 |
+| `lewis2014` | J. P. Lewis et al., "Practice and Theory of Blendshape Facial Models," *Eurographics 2014 STARs*, 199–218, DOI 10.2312/egst.20141042 — free at graphics.cs.uh.edu |
+| `luebke2003` | D. Luebke et al., *Level of Detail for 3D Graphics*, Morgan Kaufmann 2003, ISBN 978-1-55860-838-2 |
+| `magnenat1988` | N. Magnenat-Thalmann, R. Laperrière, D. Thalmann, "Joint-Dependent Local Deformations for Hand Animation and Object Grasping," *Graphics Interface '88*, 26–33 |
+| `marr1980` | D. Marr and E. Hildreth, "Theory of Edge Detection," *Proc. R. Soc. Lond. B* 207, 1980, 187–217, DOI 10.1098/rspb.1980.0020 |
+| `roberts1963` | L. G. Roberts, *Machine Perception of Three-Dimensional Solids*, PhD thesis, MIT 1963 (Lincoln Lab TR-315), MIT DSpace |
+| `tao2025` | Z. Tao et al., network meta-analysis of avatar realism, eeriness and trust |
+| `wisessing2016` | P. Wisessing et al., "Perception of Lighting and Shading for Animated Virtual Characters," *ACM SAP* 2016 |
+| `wisessing2020` | P. Wisessing et al., "Enlighten Me: Importance of Brightness and Shadow for Character Emotion and Appeal," *ACM TOG* 39(3), 2020 |
+| `zibrek2019tap` | K. Zibrek, S. Martin, R. McDonnell, "Is Photorealism Important for Perception of Expressive Virtual Humans in VR?," *ACM TAP* 16(3), 2019 |
+| `zibrek2019mig` | K. Zibrek and R. McDonnell, "Social Presence and Place Illusion Are Affected by Photorealism in Embodied VR," *ACM MIG* 2019 |
+
+Note: `gao2025` was previously thought missing but is present as `IEEE_VR25_TVCG.pdf`, and `barla2006` is
+present as `NPR/x-toon.pdf`, `demsar2006` as `demsar06a.pdf`, `cihodaru2025` as
+`The_uncanny_valley_effect_in_embodied_conversation.pdf`. Filenames do not carry author names, which is why
+they read as absent at first.
+
+## zibrek2019mig — Zibrek & McDonnell (2019)
+
+- **Full reference:** Katja Zibrek and Rachel McDonnell. "Social presence and place illusion are affected by photorealism in embodied VR." In *Motion, Interaction and Games (MIG '19)*, Newcastle upon Tyne, UK. ACM, 7 pages.
+- **DOI:** 10.1145/3359566.3360064
+- **Primary PDF:** `Articles/02_trust_and_avatar_perception/3359566.3360064.pdf` (filed under its DOI, which is why earlier filename searches missed it)
+- **Used in:** Related Work §3.3 (NPR for Virtual Humans); Evaluation §6.3.5 (The Video-Based Setting)
+
+**What the paper does.** Within-subjects VR study, n = 19 embodied participants. Two render styles of the same character and environment were compared: *realistic* (highest photorealism) and *simple* (photorealistic render effects removed), **with shape and animation held constant**. Measures: Concerned (empathy), Body Ownership, Place Illusion, Social Presence, plus a behavioural proximity measure (minimum passing distance).
+
+**Findings.**
+- Social Presence: significantly higher for the realistic character, t(18) = 2.45, p = 0.025, d = 0.56.
+- Place Illusion: significantly higher for the realistic room, Wilcoxon Z = 2.02, p = 0.04, r = 0.46.
+- Empathetic concern: depended on condition order.
+- Behavioural proximity: **not** affected by render style.
+- Order-effect check: social presence and place illusion were not affected by condition order.
+
+**Relevance to this thesis.** The design is the closest published parallel to the C2-vs-C3 contrast: same character, shape and animation held constant, only render style varied. It is cited in Evaluation §6.3.5 to support the argument that a rendering difference which does not register on flat, non-interactive video may register once the viewer is embodied and shares space with the avatar. The paper's own framing reinforces this, quoting Slater: "Place illusion is created when the user interacts with the environment and receives an appropriate response" — interaction the video study did not provide.
+
+**Discrepancy found (flagged, thesis text not edited).** Related Work §3.3 states that photorealism "had a weaker and less consistent effect on social presence." The paper reports the opposite: social presence was significantly increased (p = 0.025, d = 0.56). The no-effect-on-social-presence result belongs to the earlier study `zibrek2019tap`, against which this paper explicitly contrasts itself ("Our previous study … found that place illusion was higher in the photorealistic condition, while social presence and empathetic concern were not affected. Our new results show an increase in self-reported social presence"). The two Zibrek findings appear to have been conflated. The only measure not affected by render style here was the behavioural proximity measure.

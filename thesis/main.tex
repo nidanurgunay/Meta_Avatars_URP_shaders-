@@ -23,11 +23,13 @@
 \usepackage{newtxtext,newtxmath}     % Times-like body + matching math symbols
 \usepackage{sourcesanspro}           % Source Sans Pro for \sffamily headings (matches Fink)
 \usepackage{setspace}
-\setstretch{1.15}
+\setstretch{1.10}
 \usepackage{microtype}
 
 %% ---- Paragraph style handled by parskip=half in \documentclass ----
 \raggedbottom   % prevent vertical stretch on short pages (avoids big inter-paragraph gaps)
+\clubpenalty=10000   % forbid a paragraph's opening 1-2 lines from being stranded at a page bottom
+\widowpenalty=10000  % forbid a paragraph's closing 1-2 lines from being stranded at a page top
 
 %% ---- Float placement parameters (allow large figures alongside short text blocks) ----
 \renewcommand{\topfraction}{0.95}       % up to 95% of page may be top floats
@@ -39,9 +41,9 @@
 \usepackage[
   a4paper,
   inner=3cm,
-  outer=2.5cm,
+  outer=2.2cm,
   top=2.5cm,
-  bottom=2.5cm,
+  bottom=2.2cm,
   bindingoffset=5mm,
 ]{geometry}
 
@@ -80,6 +82,7 @@
 \graphicspath{{figures/}}
 \usepackage{float}
 \usepackage{subcaption}
+\usepackage{needspace}
 \captionsetup{labelfont=bf, font=small, labelsep=colon, format=hang}
 \usepackage{wrapfig}
 \usepackage[section]{placeins} % auto FloatBarrier before every \section
@@ -177,6 +180,12 @@
 \usepackage{lipsum}   % placeholder text — remove when writing
 \usepackage{todonotes}
 \usepackage{cleveref}
+\crefname{appendix}{appendix}{appendices}
+\Crefname{appendix}{Appendix}{Appendices}
+
+%% Table of contents lists chapters and sections only (matches the reference thesis;
+%% subsections and subsubsections still appear in the document body).
+\setcounter{tocdepth}{1}
 
 %% KOMA's \frontmatter/\mainmatter always call \cleardoubleoddpage in twoside
 %% mode, ignoring the openany option (which only gates \backmatter and \chapter).
@@ -202,18 +211,19 @@
 %% ---- Main Matter ----
 \mainmatter
 \include{chapters/01_introduction}
-\include{chapters/02_related_work}
 \include{chapters/03_background}
+\include{chapters/02_related_work}
 \include{chapters/04_methodology}
 \include{chapters/05_implementation}
 \include{chapters/06_evaluation}
 \include{chapters/07_conclusion}
 
 %% ---- Back Matter ----
-\printbibliography[heading=bibintoc, title=Literature]
+\printbibliography[heading=bibnumbered, title=Literature]
 
-%% ---- Appendices ----
+%% ---- Appendix ----
 \appendix
+\crefalias{chapter}{appendix}
 \include{appendix/appendix_a}
 \include{appendix/appendix_b}
 

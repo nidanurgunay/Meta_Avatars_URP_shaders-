@@ -98,16 +98,26 @@ for version, fname in FILES.items():
                 for i, v in enumerate(integ_items):
                     item_rows.append(dict(participant=pid, condition=ROUND_CONDITION[version][rnd], subscale="Integrity", item=f"G{i+1}", value=v))
 
-long_df = pd.DataFrame(long_rows)
-item_df = pd.DataFrame(item_rows)
+long_df_raw = pd.DataFrame(long_rows)
+item_df_raw = pd.DataFrame(item_rows)
 
-print(f"Total participants: {long_df['participant'].nunique()}")
-print(f"Total participant-rounds: {len(long_df)}, valid blocks: {long_df['block_valid'].sum()} / {len(long_df)}")
-print(long_df.groupby("condition")["block_valid"].agg(["sum", "count"]))
+print(f"Total participants enrolled: {long_df_raw['participant'].nunique()}")
+print(f"Total participant-rounds: {len(long_df_raw)}, valid blocks: {long_df_raw['block_valid'].sum()} / {len(long_df_raw)}")
 
-long_df.to_csv(DATA_DIR / "long_format_scores.csv", index=False)
-item_df.to_csv(DATA_DIR / "long_format_items.csv", index=False)
-print("\nSaved long_format_scores.csv and long_format_items.csv")
+# Whole-participant exclusion (per 04_methodology.tex Part A): a participant who
+# fails any gating check (comprehension or attention) in any block is dropped
+# entirely, not just for that block, since the checks are not present
+# identically across all three blocks (no attention item in Round 2).
+valid_counts = long_df_raw.groupby("participant")["block_valid"].sum()
+clean_ids = set(valid_counts[valid_counts == 3].index)
+print(f"Clean participants (3/3 valid blocks): {len(clean_ids)} of {long_df_raw['participant'].nunique()}")
+
+long_df = long_df_raw[long_df_raw["participant"].isin(clean_ids)].copy()
+item_df = item_df_raw[item_df_raw["participant"].isin(clean_ids)].copy()
+
+long_df.to_csv(DATA_DIR / "long_format_scores_clean.csv", index=False)
+item_df.to_csv(DATA_DIR / "long_format_items_clean.csv", index=False)
+print("\nSaved long_format_scores_clean.csv and long_format_items_clean.csv")
 
 # ---------------------------------------------------------------------------
 # 2. Reliability check (Cronbach's alpha) per subscale, overall and per condition
@@ -163,8 +173,9 @@ for col in poststudy.columns:
         poststudy[col] = pd.to_numeric(poststudy[col], errors="coerce")
 
 wide = wide_scores.merge(poststudy, on="participant", how="left")
-wide.to_csv(DATA_DIR / "wide_format_participant.csv", index=False)
-print(f"Wide-format participant table: {wide.shape[0]} rows, {wide.shape[1]} cols. Saved wide_format_participant.csv")
+wide = wide[wide["participant"].isin(clean_ids)].copy()
+wide.to_csv(DATA_DIR / "wide_format_participant_clean.csv", index=False)
+print(f"Wide-format participant table (clean): {wide.shape[0]} rows, {wide.shape[1]} cols. Saved wide_format_participant_clean.csv")
 
 # Manipulation check: stylisation rating, one-way RM-ANOVA across conditions
 styl_long = wide.melt(id_vars="participant",

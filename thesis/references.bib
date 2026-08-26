@@ -74,7 +74,7 @@
 }
 
 @article{isenberg2003,
-  author    = {Isenberg, Tobias and Freudenberg, Bert and Halper, Nick and Schlechtweg, Stephan and Strothotte, Thomas},
+  author    = {Isenberg, Tobias and Freudenberg, Bert and Halper, Nick and Schlechtweg, Stefan and Strothotte, Thomas},
   title     = {A Developer's Guide to Silhouette Algorithms for Polygonal Models},
   journal   = {{IEEE} Computer Graphics and Applications},
   year      = {2003},
@@ -124,12 +124,15 @@
   doi       = {10.1098/rspb.1980.0020},
 }
 
-@inproceedings{macdorman2006,
+@article{macdorman2006,
   author    = {MacDorman, Karl F. and Ishiguro, Hiroshi},
   title     = {The Uncanny Advantage of Using Androids in Cognitive and Social Science Research},
-  booktitle = {Proceedings of the {ICDL-2006} Workshop on Android Science},
+  journal   = {Interaction Studies},
   year      = {2006},
-  pages     = {1--9},
+  volume    = {7},
+  number    = {3},
+  pages     = {297--337},
+  publisher = {John Benjamins},
 }
 
 @inproceedings{barla2006,
@@ -152,6 +155,33 @@
   doi       = {10.1111/j.1467-8659.2009.01574.x},
 }
 
+@article{winnemoller2006,
+  author  = {Winnem\"{o}ller, Holger and Olsen, Sven C. and Gooch, Bruce},
+  title   = {Real-Time Video Abstraction},
+  journal = {ACM Transactions on Graphics},
+  volume  = {25},
+  number  = {3},
+  pages   = {1221--1226},
+  year    = {2006},
+  doi     = {10.1145/1141911.1142018},
+  %% Primary held: Articles/videoabstraction.pdf (author version, no DOI or page numbers printed on it).
+  %% Authors, title and affiliation read from that PDF. Venue, volume, issue, pages and DOI cross-checked
+  %% against CrossRef and against the reference list of winnemoller2012, which agree exactly.
+  %% Origin of tau and phi_e: this paper's Sec. 3.2, Eq. 4 --- the parameters the thesis shader uses as
+  %% _XDoGTau and _XDoGPhi. The 2012 paper renames the operator XDoG and replaces tau with p.
+}
+
+@article{winnemoller2012,
+  author    = {Winnem\"{o}ller, Holger and Kyprianidis, Jan Eric and Olsen, Sven C.},
+  title     = {{XDoG}: An {eXtended} Difference-of-{Gaussians} Compendium Including Advanced Image Stylization},
+  journal   = {Computers \& Graphics},
+  year      = {2012},
+  volume    = {36},
+  number    = {6},
+  pages     = {740--753},
+  doi       = {10.1016/j.cag.2012.03.004},
+}
+
 @inproceedings{praun2001,
   author    = {Praun, Emil and Hoppe, Hugues and Webb, Matthew and Finkelstein, Adam},
   title     = {Real-Time Hatching},
@@ -165,7 +195,7 @@
   author    = {{Meta Platforms, Inc.}},
   title     = {Meta Avatars {SDK} Documentation},
   year      = {2024},
-  howpublished = {\url{https://developer.oculus.com/documentation/unity/meta-avatars-overview/}},
+  howpublished = {\url{https://developers.meta.com/horizon/documentation/unity/meta-avatars-overview/}},
   note      = {Accessed: 2025-01-10},
 }
 
@@ -182,7 +212,7 @@
 }
 
 @inproceedings{latoschik2017,
-  author    = {Latoschik, Marc Erich and Roth, Daniel and Gall, Daniel and Achenbach, Jascha and Waltemate, Thomas and Botsch, Mario},
+  author    = {Latoschik, Marc Erich and Roth, Daniel and Gall, Dominik and Achenbach, Jascha and Waltemate, Thomas and Botsch, Mario},
   title     = {The Effect of Avatar Realism in Immersive Social Virtual Realities},
   booktitle = {Proceedings of the 23rd {ACM} Symposium on Virtual Reality Software and Technology ({VRST})},
   year      = {2017},
@@ -202,10 +232,13 @@
 }
 
 @article{weidner2023,
-  author    = {Weidner, Florian and Boettcher, Gerd and Arboleda, Stephanie Arevalo and Diao, Chenyao and Sinani, Luljeta and Kunert, Christian and Gerhardt, Christoph and Broll, Wolfgang and Raake, Alexander},
+  author    = {Weidner, Florian and Boettcher, Gerd and {Arevalo Arboleda}, Stephanie and Diao, Chenyao and Sinani, Luljeta and Kunert, Christian and Gerhardt, Christoph and Broll, Wolfgang and Raake, Alexander},
   title     = {A Systematic Review on the Visualization of Avatars and Agents in {AR} \& {VR} Displayed Using Head-Mounted Displays},
   journal   = {IEEE Transactions on Visualization and Computer Graphics},
   year      = {2023},
+  volume    = {29},
+  number    = {5},
+  pages     = {2596--2606},
   doi       = {10.1109/TVCG.2023.3247072},
   note      = {Presented at IEEE VR 2023},
 }
@@ -234,7 +267,8 @@
   author       = {{Adobe Inc.}},
   title        = {Mixamo: 3D Character Rigging and Animation Service},
   year         = {2024},
-  note         = {Online service for rigged humanoid character export},
+  howpublished = {\url{https://www.mixamo.com/}},
+  note         = {Accessed: 2026-08-17},
 }
 
 @misc{gltfast,
@@ -282,11 +316,14 @@
 
 %% --- Papers added for Related Work (empirical trust / perception literature) ---
 
-@inproceedings{mcdonnell2012,
+@article{mcdonnell2012,
   author    = {McDonnell, Rachel and Breidt, Martin and B{\"u}lthoff, Heinrich H.},
   title     = {Render Me Real? {I}nvestigating the Effect of Render Style on the Perception of Animated Virtual Humans},
-  booktitle = {ACM SIGGRAPH 2012 Papers},
+  journal   = {{ACM} Transactions on Graphics},
   year      = {2012},
+  volume    = {31},
+  number    = {4},
+  articleno = {91},
   pages     = {91:1--91:11},
   doi       = {10.1145/2185520.2185587},
   publisher = {ACM},
@@ -322,10 +359,11 @@
   number    = {3},
   pages     = {591--617},
   url       = {https://aisel.aisnet.org/jais/vol22/iss3/9/},
+  doi       = {10.17705/1jais.00491},
 }
 
 @article{gao2025,
-  author    = {Gao, Yue and Dai, Yi and Zhang, Guanyu and Guo, Hao and Mostajeran, Farbod and Zheng, Bo and Yu, Tianshu},
+  author    = {Gao, Yang and Dai, Yangbin and Zhang, Guangtao and Guo, Honglei and Mostajeran, Fariba and Zheng, Binge and Yu, Tao},
   title     = {Trust in Virtual Agents: Exploring the Role of Stylization and Voice},
   journal   = {{IEEE} Transactions on Visualization and Computer Graphics},
   year      = {2025},
@@ -389,15 +427,16 @@
   doi       = {10.1145/3319502.3374839},
 }
 
-@article{wallraven2008,
-  author    = {Wallraven, Christian and Breidt, Martin and Cunningham, Douglas W. and B{\"u}lthoff, Heinrich H.},
-  title     = {Evaluating the Perceptual Realism of Animated Facial Expressions},
+@article{wallraven2007,
+  author    = {Wallraven, Christian and B{\"u}lthoff, Heinrich H. and Cunningham, Douglas W. and Fischer, Jan and Bartz, Dirk},
+  title     = {Evaluation of Real-World and Computer-Generated Stylized Facial Expressions},
   journal   = {ACM Transactions on Applied Perception},
-  year      = {2008},
+  year      = {2007},
   volume    = {4},
-  number    = {4},
-  pages     = {23:1--23:20},
-  doi       = {10.1145/1278760.1278764},
+  number    = {3},
+  articleno = {16},
+  pages     = {16:1--16:24},
+  doi       = {10.1145/1278387.1278390},
   publisher = {ACM},
 }
 
@@ -444,7 +483,8 @@
   volume    = {11},
   number    = {1},
   pages     = {346--353},
-  note      = {11th International Conference in Central Europe on Computer Graphics, Visualization and Computer Vision, ISSN 1213-6972. No DOI available.},
+  note      = {11th International Conference in Central Europe on Computer Graphics, Visualization and Computer Vision, ISSN 1213-6972},
+  %% working note: no DOI available for this article
 }
 
 @incollection{nienhaus2005,
@@ -455,7 +495,7 @@
   publisher = {Addison-Wesley},
   year      = {2005},
   chapter   = {15},
-  note      = {Pages to verify from physical copy},
+  %% working note: pages to verify from physical copy
 }
 
 @article{kong2023,
@@ -499,16 +539,28 @@
   year      = {1976},
   pages     = {187--203},
   doi       = {10.1007/978-1-4684-0769-3_13},
-  note      = {Fourth author name: citation key [KHEK76] in Kyprianidis (2009) confirms initial K; Kinoshita is used here, but verify against physical book copy.},
+  %% working note (updated 2026-08-25): no primary copy held, and confirmed unobtainable
+  %% (Plenum Press chapter, paywalled, no free copy). Fields corroborated across BOTH
+  %% Kyprianidis reference lists, which agree on publisher, year and pages 187-203:
+  %%   2011: "Kuwahara, M., Hachimura, K., Ehiu, S., and Kinoshita, M. 1976. Processing of
+  %%          ri-angiocardiographic images. In Digital processing of biomedical images,
+  %%          K. Preston and M. Onoe, Eds. Plenum Press, 187-203."   <- chapter title, editors
+  %%   2009: "[KHEK76] Kuwahara M., Hachimura K., Eiho S., Kinoshita M.: Digital processing
+  %%          of biomedical images. Plenum Press, 1976, pp. 187-203." <- author spelling
+  %% Third author: "Eiho" (2009) is correct; "Ehiu" (2011) is a typo in that bibliography.
+  %% Attribution basis: Kyprianidis 2011 S2 attaches the inline credit [Kuwahara et al. 1976]
+  %% directly to the four-subregion / one-pixel-overlap description, so citing this key for
+  %% that structure follows the origin rule. Co-cited with kyprianidis2011 for the description.
 }
 
 @misc{roshaan2026,
-  author       = {Roshaan, M. K. L.},
+  author       = {{Lino Roshaan M.K.}},
   title        = {{AHEAD}: Adaptive Hierarchical Edge Detection for Real-Time Artistic Stylization},
-  howpublished = {Research Square preprint, Article rs-8849147/v1},
+  howpublished = {Research Square preprint},
   year         = {2026},
   month        = feb,
-  note         = {Available at: \url{https://www.researchsquare.com/article/rs-8849147/v1}},
+  doi          = {10.21203/rs.3.rs-8849147/v1},
+  note         = {Posted 18 February 2026},
 }
 
 %% ---- NEW ENTRIES (added 2026-07-24 to reach 50+ citations) ----
@@ -586,15 +638,18 @@
   title  = {Machine Perception of Three-Dimensional Solids},
   school = {Massachusetts Institute of Technology},
   year   = {1963},
-  note   = {Lincoln Laboratory Report TR-315. Available via MIT DSpace and ResearchGate.},
+  note   = {Lincoln Laboratory Report TR-315},
+  %% working note: available via MIT DSpace and ResearchGate
 }
 
 %% NPR comprehensive survey covering toon, Sobel, Kuwahara (Iran J. Comp. Sci. 2019)
 @article{kumar2019,
-  author  = {Kumar, T. and Poornima, B. G.},
+  author  = {{Pavan Kumar}, M. P. and Poornima, B. and Nagendraswamy, H. S. and Manjunath, C.},
   title   = {A Comprehensive Survey on Non-Photorealistic Rendering and Benchmark Developments for Image Abstraction and Stylization},
   journal = {Iran Journal of Computer Science},
   year    = {2019},
+  volume  = {2},
+  pages   = {131--165},
   doi     = {10.1007/s42044-019-00034-1},
 }
 
@@ -605,6 +660,7 @@
   booktitle = {Proceedings of the {ACM} Symposium on Applied Perception},
   publisher = {ACM},
   year      = {2016},
+  pages     = {25--29},
   doi       = {10.1145/2931002.2931015},
 }
 
@@ -615,8 +671,9 @@
   journal   = {{ACM} Transactions on Graphics},
   volume    = {39},
   number    = {3},
-  articleno = {30},
+  articleno = {19},
   year      = {2020},
+  pages     = {19:1--19:12},
   doi       = {10.1145/3383195},
 }
 
@@ -648,13 +705,14 @@
 @inproceedings{kyprianidis2011,
   author    = {Kyprianidis, J. E.},
   title     = {Image and Video Abstraction by Multi-Scale Anisotropic {Kuwahara} Filtering},
-  booktitle = {Proceedings of the 8th International Symposium on Non-Photorealistic Animation and Rendering},
+  booktitle = {Proceedings of the 9th International Symposium on Non-Photorealistic Animation and Rendering},
   series    = {{NPAR} '11},
   pages     = {55--64},
   publisher = {ACM},
   year      = {2011},
   isbn      = {978-1-4503-0907-3},
-  note      = {Verified from physical PDF (anisotropic\_multicale\_209.pdf). Article DOI not confirmed; cite by ISBN.},
+  %% working note: verified from physical PDF (anisotropic_multicale_209.pdf).
+  %% Article DOI not confirmed; cited by ISBN.
 }
 
 @inproceedings{raskar1999,
@@ -667,7 +725,22 @@
   year      = {1999},
   publisher = {ACM},
   doi       = {10.1145/300523.300539},
-  note      = {Verified from primary PDF (author's own copy, web.media.mit.edu/~raskar/UNC/NPR/sil-i3d99.pdf).},
+  %% working note: verified from primary PDF (author's own copy,
+  %% web.media.mit.edu/~raskar/UNC/NPR/sil-i3d99.pdf)
+}
+
+@incollection{card2002,
+  author    = {Card, Drew and Mitchell, Jason L.},
+  title     = {Non-Photorealistic Rendering with Pixel and Vertex Shaders},
+  booktitle = {Direct3D ShaderX: Vertex and Pixel Shader Tips and Tricks},
+  editor    = {Engel, Wolfgang F.},
+  publisher = {Wordware Publishing},
+  address   = {Plano, TX},
+  year      = {2002},
+  pages     = {319--333},
+  isbn      = {1-55622-041-3},
+  %% working note: verified from primary PDF
+  %% (Direct3D.ShaderX.Vertex.and.Pixel.Shader.Tips.and.Tricks_Wolfgang.F.Engel_Wordware.Pub_2002.pdf)
 }
 
 %% ---- Background §3.2 Rendering Concepts (added 2026-08-12) ----
@@ -713,4 +786,13 @@
   year         = {2026},
   howpublished = {\url{https://docs.unity3d.com/6000.0/Documentation/Manual/urp/renderer-features/scriptable-renderer-features/inject-a-pass-using-a-scriptable-renderer-feature.html}},
   note         = {Unity 6 Universal Render Pipeline manual},
+}
+
+@online{hlsl,
+  author       = {{Microsoft}},
+  title        = {ddx ({HLSL} Reference)},
+  year         = {2018},
+  url          = {https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-ddx},
+  urldate      = {2026-08-25},
+  organization = {Microsoft Learn, Win32 apps},
 }

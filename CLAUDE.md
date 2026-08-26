@@ -17,7 +17,7 @@ These are permanent instructions for this workspace. Follow them exactly in ever
 | Supervisor (1st reviewer) | Prof. Dr. Oliver Deussen |
 | Co-supervisor (2nd reviewer) | Prof. Dr. Tiare Feuchtner |
 | Year | 2026 |
-| Submission deadline | 2026-08-20 |
+| Submission deadline | 2026-08-27 |
 
 ---
 
@@ -44,7 +44,7 @@ The Mixamo avatar (character name: **Jody**) and its related scenes live in a se
 | Frontmatter | `thesis/frontmatter/` |
 | Figures | `thesis/figures/` |
 | Bibliography | `thesis/references.bib` |
-| Citation source log | `thesis/citation_sources.md` |
+| Citation source record | `citation_sources.tex` / `citation_sources.pdf` (project root, generated) |
 | Konstanz logo | `thesis/UniKonstanz_Logo_Minimum_sRGB.jpg` |
 | Style reference | `thesis/Daniel_Fink_Master_Thesis.pdf` |
 | Content reference | `thesis/NidanurGunay_Project_Report.pdf` |
@@ -311,6 +311,17 @@ For all other compound adjectives, find an alternative phrasing without a hyphen
 
 Before finalising any paragraph, read it aloud and check that each sentence picks up a thread from the one before it.
 
+**Hedging and certainty — MANDATORY (added 2026-08-26).** Strong academic writing rarely makes absolute claims unless they rest on irrefutable mathematical proof. Match the strength of the phrasing to the strength of the evidence, and prefer a hedged formulation whenever the claim is an inference from data rather than a demonstrated fact. This is the concrete phrase bank for the general principle already stated in §4.6 ("Qualify statements appropriately").
+
+| Certainty | Use |
+| --- | --- |
+| High probability | "The results strongly suggest that…" · "There is a clear correlation between…" · "It is highly probable that the observed variance stems from…" |
+| Moderate probability (hedging) | "This discrepancy may be attributed to…" · "The data implies a potential underlying mechanism where…" · "These findings point toward…" |
+
+Apply this especially in Evaluation, where a statistical result supports an inference rather than proving it, and in Discussion passages that interpret why a result came out as it did. A non-significant result never licenses "X has no effect"; it licenses "the data provide insufficient evidence that X has an effect".
+
+**Note on `robust`:** the original phrasing of the high-probability row was "There is a robust correlation between…". *Robust* is on the §4.6 words-to-avoid list, so the row uses *clear* instead. If *robust* is ever wanted in its precise statistical sense (an estimator or test insensitive to assumption violations), that is a factually justified use and the §4.6 exemption applies.
+
 **Tense consistency — MANDATORY.** Use tense deliberately and consistently across all chapters:
 
 - **Present tense** for platform and tool descriptions (what they are, what they do), established facts, general truths, and what the thesis contains ("Chapter 4 describes…").
@@ -332,13 +343,15 @@ Before finalising any paragraph, read it aloud and check that each sentence pick
 | Contrast / limitation | however | nevertheless, nonetheless, yet, conversely |
 | Addition | furthermore | moreover, equally, in addition |
 | Consequence | consequently; meaning that (for results) | therefore, thus, accordingly, hence; **causal verbs** after "and this": leads to, results in, gives rise to, produces |
-| Cause | since (over *because* and *given that*) | as, in view of, stems from |
+| Cause | since **and** because, used in roughly equal measure (avoid *given that*) | as, in view of, stems from |
 | Summary | taken together | in summary, overall (neutral) |
 | Sequence | subsequently | thereafter, ultimately |
 
-**Same-conjunction-per-subsection — MANDATORY (confirmed 2026-08-01).** No conjunction or connective word may be reused anywhere within the same subsection (e.g., not twice within §1.1 Motivation), even across non-consecutive paragraphs — this is stricter than the consecutive-paragraph check above. Before finalising a subsection, scan every paragraph in it and list which connector each one uses. If a connector would repeat, swap it for a different alternate from the table above rather than reusing the word.
+**Same-conjunction-per-subsection — MANDATORY (confirmed 2026-08-01, amended 2026-08-16).** No conjunction or connective word may be reused anywhere within the same subsection (e.g., not twice within §1.1 Motivation), even across non-consecutive paragraphs. Before finalising a subsection, scan every paragraph in it and list which connector each one uses. If a connector would repeat, swap it for a different alternate from the table above rather than reusing the word.
 
-Never use: *owing to the fact that*, *it is evident that*, *it should be noted that*. *Due to* is semi-formal — prefer *given* or *since*.
+**Exemption for the two workhorse connectors (added 2026-08-16).** *However* and *furthermore* are exempt from the subsection rule and are capped only at the paragraph level: neither may appear twice in the same paragraph, but either may recur across different paragraphs of the same subsection. The reason is empirical. A corpus check against three comparable master's theses (Fink 2020 Konstanz, House 2010 DigiPen, and a DiVA VR thesis) measured *however* at 12.5–19.3 per 10,000 words and *furthermore* at up to 20.1, against 7.8 and 2.1 in this thesis. Real academic prose concentrates on a few connectors used often rather than spreading thinly across many. Applying the subsection rule to these two was pushing the text towards rare formal alternates (*accordingly* at 6.6 per 10,000 words here versus 0.0 in two of the three comparators, and *consequently* at 9.0 versus 0.0–0.4), which is itself a detectable signature. Prefer *however* and *furthermore* first for contrast and addition, and reach for *nevertheless*, *nonetheless*, *conversely*, *moreover*, or *in addition* when the same paragraph already uses the primary form. The subsection rule continues to apply in full to every other connector.
+
+Never use: *owing to the fact that*, *it is evident that*, *it should be noted that*. *Due to* is semi-formal — prefer *given*, *since*, or *because*.
 
 **No em-dashes.** Em-dashes look AI-generated. Use commas, colons, or semicolons instead.
 
@@ -367,6 +380,8 @@ Occasionally leaving a "which" clause or a participial phrase unsplit is fine an
 ### 4.5 Project Report Prose Style — Reference Patterns
 
 `NidanurGunay_Project_Report.pdf` is the canonical writing style reference for related work and methodology prose. Before writing any section, identify the matching paragraph type below and apply the same construction.
+
+**Multi-sentence source discussion — MANDATORY (confirmed 2026-08-23).** When one source is discussed across more than one sentence, name the authors once and then carry the thread with pronoun signals and transitional phrasing rather than repeating the surname in every sentence. Use constructions such as "The authors found…", "Their methodology involved…", "This study demonstrated…", "They report…". Repeating "Zell et al." or "Isenberg et al." at the head of three consecutive sentences reads as mechanical and is a common AI-signature pattern. The citation itself still goes at the end of the sentence making the specific claim, per §5.1.
 
 **Attribution pattern.** Name the authors first, then the verb, then the finding, then the citation. Never open with the paper title.
 - Correct: "Lake et al. showed that this strategy is well suited for real-time animation~\cite{lake2000}."
@@ -515,30 +530,58 @@ The thesis uses **IEEE numeric citations** (`style=ieee, sorting=none` in biblat
 | Godspeed questionnaire | `macdorman2006` |
 | Roberts Cross operator | `gonzalez2018` |
 
-### 5.4 Citation Source Log — MANDATORY
+### 5.3a Cite the work a claim originates from, not the work you read it in — MANDATORY
 
-Every new citation added to `references.bib` must be logged in `thesis/citation_sources.md`.
+Confirmed 2026-08-25, after this was found to have happened repeatedly.
 
-Each log entry must include:
+Surveys, compendia and later treatments routinely restate an earlier result and credit it inline. When the
+thesis uses the *result*, the citation belongs to the work that produced it, not to the paper the passage was
+read in. Reading a supporting passage is therefore only half of a citation check; the other half is reading
+what that passage itself cites.
 
-- The section and sentence where the citation is used
-- The DOI
-- Full bibliographic details (author, title, journal/conference, year, volume, pages)
-- A detailed summary of what the article argues or demonstrates
-- Any methodology or technique in the article that is relevant to this thesis
+Follow this for every citation, without exception:
 
-Do not skip this log even for well-known sources. The log is used for pre-submission verification.
+1. Locate the supporting passage in the source on file.
+2. Check whether that passage carries an inline reference of its own.
+3. If it does, work out which the thesis sentence actually uses: the original result, or the later author's
+   framing, naming, comparison or reparameterisation of it.
+4. Cite whichever the sentence uses. If it uses both, cite both, and record in `citation_check.tex` which half
+   each key carries.
+5. If the originating work is not in the Articles folder, name it in the entry and ask for it, exactly as §9
+   requires. Never quietly keep the intermediary in its place.
+
+**Worked example, found 2026-08-25.** §2.3 credited the tau-weighted difference of Gaussians to
+`winnemoller2012`. That compendium describes the variant and credits its own reference [7]: Winnemoeller,
+Olsen and Gooch, *Real-Time Video Abstraction*, ACM TOG 25(3), 2006, whose §3.2 and Equation 4 define tau.
+The originating paper was already held, as `Articles/videoabstraction.pdf`. The compendium stays correct
+wherever the thesis uses the name *XDoG* or the 2012 reparameterisation, since both are its own contribution.
+
+### 5.4 Citation Source Record — GENERATED, do not hand-edit
+
+`thesis/citation_sources.md` no longer exists. It was replaced on 2026-08-21 by `citation_sources.tex` / `citation_sources.pdf` in the project root. The markdown was organised by *which session added a citation*, so it drifted badly from the thesis and still described text (Fresnel rim lighting) that had been cut. A backup sits at `/tmp/citation_sources.md.bak`.
+
+`citation_sources.pdf` holds **one record per cited source, in thesis document order**. Each record carries:
+
+- Verified bibliographic fields, taken from `references.bib`
+- DOI, URL or ISBN
+- The path to the local copy under the Articles folder
+- Every chapter and section of the thesis where the source is cited
+- A summary of what the source contains, **only where it has actually been read**
+
+**It is generated, not hand-edited.** Rebuild it from `references.bib` plus the thesis chapters rather than editing entries in place, for the same reason `citation_check.tex` is generated (see §5.4a): hand-inserted entries drift out of alignment with the thesis and become untrustworthy.
+
+**Never write a summary for a source that has not been read at primary-source depth.** Records for unread sources carry bibliographic fields plus an explicit "content summary not yet written" marker. An invented summary is worse than an absent one.
 
 ### 5.4a Citation Verification PDF — the only citation checklist, MANDATORY
 
-There is exactly one citation verification document: `citation_check.tex` / `citation_check.pdf` (project root). Do not create a second citation-checklist PDF derived from `thesis/citation_sources.md` — one was tried (2026-08-01) and removed because it duplicated `citation_check.tex` with less rigour (many entries had no actual quoted source excerpt, only bibliographic metadata). Nidanur reviews `citation_check.pdf`, not the raw markdown.
+There is exactly one citation *verification checklist*: `citation_check.tex` / `citation_check.pdf` (project root). Do not create a second checklist alongside it — one was tried (2026-08-01) and removed because it duplicated `citation_check.tex` with less rigour (many entries had no actual quoted source excerpt, only bibliographic metadata). This does not forbid `citation_sources.pdf` (§5.4), which is a per-source provenance record rather than a checklist; see the note at the end of this section.
 
 `citation_check.tex` uses a numbered blue header badge per entry, a green-highlighted box for the exact thesis sentence, a red-highlighted box for the original source excerpt, and a real interactive AcroForm checkbox footer (`\CheckBox`, not a static `$\square$` glyph — confirmed 2026-08-01 to produce genuine `/FT/Btn` widgets). Whenever a new citation is added anywhere in the thesis, add a matching `\citentry{...}` block immediately (see the MANDATORY workflow rule at the top of that file) and recompile:
 ```
 pdflatex -interaction=nonstopmode citation_check.tex
 ```
 **Recompiling regenerates the whole PDF from scratch and wipes every checkbox Nidanur has ticked in Preview** — pdflatex has no memory of a previously-saved PDF's form data. Nidanur initially (2026-08-01) said she'd accept re-ticking after each recompile, but after losing ticks on entries she'd already confirmed, asked for those specific ones to persist. Fix implemented the same day: `\citentry{...}` (no star) renders its checkbox unchecked as before; `\citentry*{...}` (starred) renders it pre-checked (`/V/Yes /AS/Yes` in the AcroForm, confirmed via direct PDF-object inspection). **Whenever Nidanur tells you an entry is confirmed/validated, add the star to that specific `\citentry` call site** so the tick survives every future recompile automatically — do not just leave it to her to re-tick in Preview. Only recompile this file when a citation is actually added or corrected, and if new entries were added, tell her which ones are new so she can review and tell you to star them once confirmed.
-`thesis/citation_sources.md` remains the mandatory raw bibliographic log per §5.4 above, but it is a working data file, not something Nidanur reviews directly — do not build a second PDF from it.
+**The two citation documents and how they differ.** `citation_check.pdf` asks *does this sentence match its source* — one tickable entry per citation instance, with the thesis sentence and the source excerpt side by side. `citation_sources.pdf` (§5.4) asks *what is this source and where did it come from* — one record per source, with bibliography, DOI, local path and usage. They are complementary, not duplicates. The 2026-08-01 attempt that was removed failed because it restated the checklist with less rigour, which is a different thing from a per-source provenance record. Keep the distinction stated in both documents' headers so nobody re-litigates it.
 
 **MANDATORY — independent re-check before starring, every time (confirmed 2026-08-06).** When Nidanur says an entry is "validated," do not just add the star. First do one more independent check yourself: re-read the relevant thesis sentence fresh (it drifts often), and re-examine the citation against the primary source with a critical eye for anything not yet caught, not just re-confirming what a previous note already said. Then tell her explicitly what you checked and whether you found any abnormality, before or alongside starring the entry. If you find something (e.g. a sentence over-generalising from a single-paper citation, a stale quote, a duplicate entry), report it plainly rather than silently starring anyway. This surfaced a real, still-open issue the same day it was introduced: `citation_check.tex` §1.2's `canales2024` entry ("Existing work on avatar stylisation has primarily focused on...") turned out to over-generalise from one paper, the same pattern already fixed for the neighbouring `isenberg2003` entry, and a second duplicate entry for the same usage was also caught and deleted this way.
 
@@ -557,8 +600,8 @@ Each chapter has one job. Content belongs in the chapter whose job it matches, n
 | 03 Background | Give the conceptual and technical grounding the later chapters assume | Rendering pipeline basics, shader/HLSL concepts, the math behind Sobel/Gaussian/Kuwahara etc., trust and uncanny valley theory | Project-specific design decisions, our shader files, our results |
 | 04 Methodology | Explain why the work was designed this way | Why a technique was chosen, what problem it solves, conceptual algorithm description, design rationale, formulas, "this motivates V_N" transitions, user study design rationale | Shader file names, hook/API names, HLSL signatures, tuned parameter values, results |
 | 05 Implementation | Document what was built and how | Shader file names, Unity hook names and API calls, HLSL function signatures, material and platform integration, tuned parameter values, empirical development observations | Motivation sentences ("this approach solves X"), citations justifying a design choice, interpretation of results |
-| 06 Evaluation | Present and interpret the user study outcome | Study execution, participant data, statistical results, H1–H5 outcomes, result figures/tables, discussion of what the results mean | Study design rationale (→ Methodology), technique or shader description, new literature used to justify design choices (only cite to interpret a result) |
-| 07 Conclusion | Summarize and reflect | Summary of findings, answers to RQ1–RQ4, limitations, future work | New results, new citations, new technique description |
+| 06 Evaluation | Present and interpret the user study outcome | Study execution, participant data, statistical results, H1–H4 outcomes, result figures/tables, discussion of what the results mean, **and the Limitations section (moved here from Conclusion, confirmed 2026-08-18)** | Study design rationale (→ Methodology), technique or shader description, new literature used to justify design choices (only cite to interpret a result) |
+| 07 Conclusion | Summarize and reflect | Summary of findings, answers to RQ1–RQ3, future work. Limitations now live in Evaluation §6.4, not here | New results, new citations, new technique description |
 
 ### 6.2 Methodology vs Implementation (strict)
 
@@ -609,9 +652,9 @@ Photorealistic Meta Avatars can trigger the uncanny valley. NPR abstraction can 
 
 ### Research questions
 
-- RQ1: Can NPR be integrated into the Meta Avatars SDK without breaking the pipeline?
-- RQ2: Which NPR technique gives the best visual quality and performance trade-off for a user study?
-- RQ3: How does abstraction level affect perceived trust in VR avatars?
+- RQ1: How can NPR stylisation techniques be adapted to avatar platforms with different rendering architectures and what capabilities and limitations does each platform impose?
+- RQ2: Which NPR technique or combination of techniques best balances visual abstraction against facial and expressive legibility under production rendering constraints?
+- RQ3: How does NPR stylisation affect perceived eeriness and trustworthiness and can an NPR avatar reach the trustworthiness of a photorealistic avatar and of a real human speaker?
 
 ### Iterative development narrative (for Implementation chapter)
 
@@ -630,7 +673,7 @@ The techniques were developed in `Assets/AvatarShaderExperimental/` first, then 
 
 - No extra render passes allowed (Quest performance budget)
 - SDK LOD switching reverts materials — solved by periodic re-apply coroutine in AvatarShaderSwapper
-- UV seam artifacts in screen-space Sobel — solved by luminance range check (`_SeamRangeLimit`)
+- UV seam artifacts in screen-space Sobel — Meta SDK only, solved by a luminance range check (`_SobelSeamLimit`). Absent on Mixamo and Avaturn, which sample the pre-lighting albedo where a seam carries no colour difference; their Sobel shaders contain no seam handling at all.
 - Skin vs clothing thresholding — solved by HSV saturation cutoff (`_SkinSaturationCutoff`)
 - Isotropic Kuwahara only — anisotropic requires structure tensor and a separate render texture pass, which is not possible in the fragment hook
 
@@ -855,7 +898,7 @@ Advisor spoken recommendation (~22 s): *"I would take Option A. Yes, 350 euros i
 
 ### 11.7 Primary Hypothesis Summary
 
-**Updated 2026-08-04: exactly four confirmatory hypotheses (H1–H4), confirmed by Nidanur directly and cross-checked against `04_methodology.tex` §Objective and Hypotheses and `06_evaluation.tex` §Hypothesis Tests, where H4 is as fully developed as H2 (own subsection, own TOST equivalence test).** This supersedes the previous "exactly three hypotheses, C1 always exploratory" rule (confirmed 2026-07-31) — that rule is no longer correct. The thesis also now has four research questions (RQ1–RQ4, not RQ1–RQ3): a new RQ2 was inserted ("Which NPR technique or combination of techniques best balances visual abstraction against facial and expressive legibility under production rendering constraints?"), pushing the former RQ2/RQ3 to RQ3/RQ4. RQ4 ("Can an NPR avatar match the perceived trustworthiness of a real human speaker?") is what H4 formally answers.
+**Updated 2026-08-04: exactly four confirmatory hypotheses (H1–H4), confirmed by Nidanur directly and cross-checked against `04_methodology.tex` §Objective and Hypotheses and `06_evaluation.tex` §Hypothesis Tests, where H4 is as fully developed as H2 (own subsection, own TOST equivalence test).** This supersedes the previous "exactly three hypotheses, C1 always exploratory" rule (confirmed 2026-07-31) — that rule is no longer correct. **Research questions: RQ1–RQ3, corrected 2026-08-18.** An earlier note here claimed four (RQ1–RQ4); that is wrong. The thesis has three, consistent across Introduction §1.3, Methodology §4.1, Related Work §3.4 and Conclusion §7.1. RQ2 is "Which NPR technique or combination of techniques best balances visual abstraction against facial and expressive legibility under production rendering constraints?" and RQ3 combines both perceptual questions: "How does NPR stylisation affect perceived eeriness and trustworthiness and can an NPR avatar reach the trustworthiness of a real human speaker?" The four hypotheses H1–H4 still hold; RQ3 is what H1 and H4 jointly answer.
 
 | Hypothesis | Prediction | Test |
 | --- | --- | --- |

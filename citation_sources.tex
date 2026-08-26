@@ -1,0 +1,525 @@
+%% Citation Sources — bibliographic and provenance record
+%% Thesis: Abstraction Mechanisms for Virtual Avatars
+%% Nidanur Günay, University of Konstanz, 2026
+%% GENERATED from thesis/references.bib + the thesis chapters. Do not hand-edit entries.
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=2.2cm,top=2.0cm,bottom=2.0cm]{geometry}
+\usepackage{helvet}\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}\usepackage{graphicx}\usepackage[obeyspaces,hyphens]{url}\usepackage{needspace}
+\usepackage{array}
+\usepackage{amssymb}\usepackage{amsmath}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\definecolor{kb}{HTML}{00539F}
+\definecolor{okg}{HTML}{1B6B30}
+\definecolor{amb}{HTML}{8A6212}
+\definecolor{soft}{HTML}{F2F5F9}
+\pagestyle{fancy}\fancyhf{}
+\lhead{\footnotesize\textcolor{kb}{Citation Sources — Abstraction Mechanisms for Virtual Avatars}}
+\rhead{\footnotesize\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\setlength{\parindent}{0pt}\setlength{\parskip}{4pt}
+\newcommand{\vfound}{\textcolor{okg}{$\checkmark$}~}
+\newcommand{\vpend}{\textcolor{amb}{$\circ$}~}
+\newcounter{srcn}
+\newcommand{\srcentry}[7]{%
+  \stepcounter{srcn}%
+  \Needspace{5\baselineskip}%
+  \vspace{9pt}%
+  \noindent\colorbox{kb}{\parbox{\dimexpr\linewidth-2\fboxsep}{\vspace{2pt}%
+    \textcolor{white}{\textbf{\thesrcn\quad\texttt{#1}}}\vspace{2pt}}}%
+  \vspace{3pt}\\
+  \noindent\colorbox{soft}{\parbox{\dimexpr\linewidth-2\fboxsep}{\vspace{3pt}\small #2\vspace{3pt}}}\\[4pt]
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.3cm}p{\dimexpr\linewidth-2.6cm}@{}}
+    \small\textit{DOI / URL} & \small #3 \\[2pt]
+    \small\textit{Local copy} & \small #4 \\[2pt]
+    \small\textit{Cited in}   & \small #5 \\
+  \end{tabular}\\[5pt]
+  \small #6 \\[4pt]
+  \small #7
+  \vspace{4pt}\hrule
+}
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries Citation Sources}\\[4pt]
+  {\large Bibliographic and provenance record}\\[10pt]
+  {\normalsize Abstraction Mechanisms for Virtual Avatars}\\[2pt]
+  {\small Nidanur Günay \textperiodcentered\ University of Konstanz \textperiodcentered\ 2026}
+\end{center}
+\vspace{6pt}
+\noindent\colorbox{soft}{\parbox{\dimexpr\linewidth-2\fboxsep}{\vspace{4pt}\small
+\textbf{What this document is.} One record per source cited in the thesis, ordered by first appearance.
+Each gives the verified bibliographic fields, the DOI or URL, the path to the local copy, and every place
+in the thesis where the source is cited.
+
+\textbf{What it is not.} It is not the verification checklist. Sentence-by-sentence checking of every
+citation against its source lives in \texttt{citation\_check.pdf}, which carries one tickable entry per
+citation instance. This document answers \emph{what is this source and where did it come from}; that one
+answers \emph{does this sentence match it}.
+
+\textbf{Reading the status line.} \vfound marks a source read at primary-source depth during the
+citation audit of 21 August 2026, where the summary states what the paper actually contains.
+\vpend marks a source whose bibliographic fields are verified but whose content summary has not been
+written; nothing is asserted about its contents here.
+\vspace{4pt}}}
+\vspace{10pt}
+\srcentry{weidner2023}{Weidner, Florian, Boettcher, Gerd, {Arevalo Arboleda}, Stephanie, Diao, Chenyao, Sinani, Luljeta, Kunert, Christian, Gerhardt, Christoph, Broll, Wolfgang, Raake, Alexander. \emph{A Systematic Review on the Visualization of Avatars and Agents in {AR} \& {VR} Displayed Using Head-Mounted Displays}. IEEE Transactions on Visualization and Computer Graphics. vol.~29, no.~5, pp.~2596--2606. 2023.}
+{\path{https://doi.org/10.1109/TVCG.2023.3247072}}
+{\path{02_trust_and_avatar_perception/Weidner2023.pdf}}
+{Ch.1 Introduction → Motivation \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{mcdonnell2012}{McDonnell, Rachel, Breidt, Martin, B{\"u}lthoff, Heinrich H.. \emph{Render Me Real? {I}nvestigating the Effect of Render Style on the Perception of Animated Virtual Humans}. {ACM} Transactions on Graphics. vol.~31, no.~4, art.~91, pp.~91:1--91:11. ACM. 2012.}
+{\path{https://doi.org/10.1145/2185520.2185587}}
+{\path{01_uncanny_valley/ McDonnell, R., Breidt, M., and Bülthoff, H. H. (2012). Render me Real? Investigating.pdf}}
+{Ch.1 Introduction → Motivation \quad Ch.3 Related Work → Research Gap \quad Ch.3 Related Work → The Uncanny Valley and Avatar Realism \quad Ch.4 Methodology → NPR Technique Design \quad Ch.4 Methodology → User Study Design \hfill (5 citations)}
+{\textbf{What it is.} Ten render styles spanning photorealistic to fully abstract, applied to identical geometry and motion, rated on realism, appeal, re-assurance, friendliness and trustworthiness, for still images and video separately.
+
+\textbf{What it establishes.} A valley-shaped pattern: four of the most abstract styles and the two most realistic ones scored highest on appeal, re-assurance and trustworthiness alike. But the authors hedge twice. They ``cannot say that all abstract cartoon characters are considered appealing'' and name ToonBare as their counter-example, and they report ``our most realistic character was often rated as appealing or pleasant as our cartoon characters'', which they call ``contrary to the theory''. Their practitioner take-away is a reassurance about realism, not an endorsement of stylisation.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{natarajan2020}{Natarajan, Manisha, Gombolay, Matthew. \emph{Effects of Anthropomorphism and Accountability on Trust in Human Robot Interaction}. In: Proceedings of the 2020 {ACM/IEEE} International Conference on Human-Robot Interaction. pp.~33--42. 2020.}
+{\path{https://doi.org/10.1145/3319502.3374839}}
+{\path{02_trust_and_avatar_perception/Natarajan-Effects of Anthropomorphism and Accountability on Trust inHuman Robot Interaction.pdf}}
+{Ch.1 Introduction → Motivation \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{mori1970}{Mori, Masahiro. \emph{The Uncanny Valley}. Energy. vol.~7, no.~4, pp.~33--35. 1970.}
+{\textit{none recorded}}
+{\path{01_uncanny_valley/The Uncanny Valley- The Original Essay by Masahiro Mori.pdf}}
+{Ch.1 Introduction → Motivation \quad Ch.3 Related Work → The Uncanny Valley and Avatar Realism \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.4 Methodology → Research Questions \quad Ch.4 Methodology → User Study Design \hfill (5 citations)}
+{\textbf{What it is.} The founding essay. Mori proposes that affinity (\emph{shinwakan}) rises with human likeness up to a point, drops sharply for entities that are almost but not quite human, then recovers near full likeness. He plots separate curves for still and moving figures, the moving curve descending far deeper. His reference points inside the valley are a prosthetic hand, a corpse and the living dead.
+
+\textbf{What it establishes.} Crucially, the eerie response is \emph{delayed}: ``we cannot distinguish at a glance a prosthetic hand from a real one'' (PDF p.\,2), and the sensation arrives only ``when we realize the hand\ldots is in fact artificial'' or during a handshake (p.\,3). He also names several flaws, not one. A myoelectric hand that moves ``could make healthy people feel uneasy'' (p.\,3), which is his own motion example.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{canales2024}{Canales, Ryan, Roble, Doug, Neff, Michael. \emph{The Impact of Avatar Stylization on Trust}. In: 2024 {IEEE} Conference on Virtual Reality and {3D} User Interfaces ({VR}). pp.~418--428. 2024.}
+{\path{https://doi.org/10.1109/VR58804.2024.00063}}
+{\path{02_trust_and_avatar_perception/Avatar_Stylization_and_Trust_IEEE_VR_2024.pdf}}
+{Ch.1 Introduction → Motivation \quad Ch.1 Introduction → Problem Statement \quad Ch.3 Related Work → NPR for Virtual Humans \quad Ch.3 Related Work → Research Gap \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.4 Methodology → User Study Design \quad Ch.6 Evaluation → User Study Results \hfill (7 citations)}
+{\textbf{What it is.} VR study, $n=66$. Participants imagine a possible cancer diagnosis and interview three doctors, each a different identity (AF, AM, CM) at a different stylisation level (Real, Mid, Caricature), so identity is crossed with stylisation. Stylisation varied sculpted geometry and authored textures; all levels rendered through the same Unreal default material.
+
+\textbf{What it establishes.} Measured after \emph{each} doctor: Ability, Benevolence, Integrity and a direct Trust block, 7-point Likert; propensity to trust once at the start; a forced doctor choice at the end. Linear mixed-effects models. ``Style generally had no impact on ratings, with one partial exception for benevolence'' ($p=.034$, post-hocs unresolved, Real trending lowest). Behaviourally the Mid style was chosen 48\,\% of the time versus 26\,\% each for the others.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{rahman2024}{Rahman, Md. Shahinur, Sabbir, Md. Mahiuddin, Zhang, Jing, Taufique, Khan Md. Raziuddin, Rahman, Md. Masudur. \emph{Navigating Avatar-Based Marketing From Value Aspects: A Systematic Literature Review and Forward-Looking Research Agenda}. International Journal of Consumer Studies. vol.~48, no.~6, pp.~e13096. 2024.}
+{\path{https://doi.org/10.1111/ijcs.13096}}
+{\path{02_trust_and_avatar_perception/Navigating_Avatar-Based_Marketing_From_Value_Aspec.pdf}}
+{Ch.1 Introduction → Motivation \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{isenberg2003}{Isenberg, Tobias, Freudenberg, Bert, Halper, Nick, Schlechtweg, Stefan, Strothotte, Thomas. \emph{A Developer's Guide to Silhouette Algorithms for Polygonal Models}. {IEEE} Computer Graphics and Applications. vol.~23, no.~4, pp.~28--37. 2003.}
+{\path{https://doi.org/10.1109/MCG.2003.1210862}}
+{\path{03_npr_rendering/Isenberg_2003_ADG.pdf}}
+{Ch.1 Introduction → Problem Statement \quad Ch.3 Related Work → NPR for Virtual Humans \quad Ch.4 Methodology → NPR Technique Design \hfill (3 citations)}
+{\textbf{What it is.} Practitioner survey (``Survey'' banner on p.\,1) guiding developers in choosing a silhouette algorithm. Explicitly restricted to polygonal models.
+
+\textbf{What it establishes.} Organising idea: every silhouette algorithm must solve detection and then visibility culling. Classes: image-space, hybrid, object-space. Recommends image-space and hybrid for real-time work; precomputation methods ``make animation of the models inefficient''. Also fixes the edge vocabulary: the \emph{contour} is the subset of the silhouette separating object from background, \emph{internal silhouettes} lie inside it, and creases, borders and self-intersections ``together with the silhouette lines are often called feature lines''. Back-face expansion is documented as a two-pass hybrid technique. The word \emph{abstraction} appears once in the whole article, inside a reference title.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{wallraven2007}{Wallraven, Christian, B{\"u}lthoff, Heinrich H., Cunningham, Douglas W., Fischer, Jan, Bartz, Dirk. \emph{Evaluation of Real-World and Computer-Generated Stylized Facial Expressions}. ACM Transactions on Applied Perception. vol.~4, no.~3, art.~16, pp.~16:1--16:24. ACM. 2007.}
+{\path{https://doi.org/10.1145/1278387.1278390}}
+{\path{Wallraven_Stylization_TAP2007.pdf}}
+{Ch.1 Introduction → Problem Statement \quad Ch.4 Methodology → NPR Technique Design \hfill (2 citations)}
+{\textbf{What it is.} Three stylisation techniques (brush-stroke, cartoon, illustrative) applied at three abstraction levels, to both a CG avatar (Experiment 2) and real-world video of actors (Experiment 3). Measures: recognition, response time, intensity, sincerity, preference.
+
+\textbf{What it establishes.} The source for abstraction-versus-intensity: ``perceived intensity is dependent on the resolution level\ldots \textbf{higher abstraction levels result in less intensity}'' (PDF p.\,21). On recognition against real footage: ``both the original video sequences as well as the cartoon stylization were equally well recognized, whereas there was a significant drop in performance for the brush and illustrative methods'' (p.\,18). Cartoon stylisation of real video was statistically indistinguishable from the original on recognition, speed, intensity and sincerity.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{unityurp}{{Unity Technologies}. \emph{Inject a Render Pass with a Scriptable Renderer Feature in {URP}}. 2026.}
+{\textit{none recorded}}
+{\path{https://docs.unity3d.com/6000.0/Documentation/Manual/urp/renderer-features/scriptable-renderer-features/inject-a-pass-using-a-scriptable-renderer-feature.html}}
+{Ch.2 Background → Rendering Concepts \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{luebke2003}{Luebke, David, Reddy, Martin, Cohen, Jonathan D., Varshney, Amitabh, Watson, Benjamin, Huebner, Robert. \emph{Level of Detail for {3D} Graphics}. Morgan Kaufmann. 2003.}
+{ISBN~978-1-55860-838-2}
+{\path{04_graphics_foundations/Level of Detail for 3D Graphics-Luebke.pdf}}
+{Ch.2 Background → Rendering Concepts \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{lewis2014}{Lewis, John P., Anjyo, Ken, Rhee, Taehyun, Zhang, Mengjie, Pighin, Fr{\'e}d{\'e}ric H., Deng, Zhigang. \emph{Practice and Theory of Blendshape Facial Models}. In: Eurographics 2014 --- State of the Art Reports. pp.~199--218. 2014.}
+{\path{https://doi.org/10.2312/egst.20141042}}
+{\path{04_graphics_foundations/Lewis - 2014-EG-blendshape_STAR.pdf}}
+{Ch.2 Background → Rendering Concepts \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{nowak2005}{Nowak, Kristine L., Rauh, Christian. \emph{The Influence of the Avatar on Online Perceptions of Anthropomorphism, Androgyny, Credibility, Homophily, and Attraction}. Journal of Computer-Mediated Communication. vol.~11, no.~1, pp.~153--178. 2005.}
+{\path{https://doi.org/10.1111/j.1083-6101.2006.tb00308.x}}
+{\path{02_trust_and_avatar_perception/Nowak Rauh 2005.pdf}}
+{Ch.2 Background → Avatars, Trust and Eeriness \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \hfill (2 citations)}
+{\textbf{What it is.} 255 participants rate a series of static avatar images on credibility and related dimensions. Both anthropomorphism and gender expression predicted credibility ratings.
+
+\textbf{What it establishes.} The paper never ranks appearance against other cues. Its own framing is hedged and conditional on mediation: ``When people interact through computer-mediated channels, physical information about the other person may be unavailable\ldots people\ldots use avatars, \emph{or whatever information the interface provides}''. The appearance-transfer claim is itself attributed to Rauh, Polonsky \& Buck (2004).}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{mayer1995}{Mayer, Roger C., Davis, James H., Schoorman, F. David. \emph{An Integrative Model of Organizational Trust}. Academy of Management Review. vol.~20, no.~3, pp.~709--734. 1995.}
+{\path{https://doi.org/10.5465/amr.1995.9508080335}}
+{\path{02_trust_and_avatar_perception/Mayer-IntegrativeModelOrganizational-1995.pdf}}
+{Ch.2 Background → Avatars, Trust and Eeriness \quad Ch.3 Related Work → Research Gap \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.4 Methodology → User Study Design \hfill (4 citations)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{mcknight2001}{McKnight, D. Harrison, Chervany, Norman L.. \emph{What Trust Means in {E-Commerce} Customer Relationships: An Interdisciplinary Conceptual Typology}. International Journal of Electronic Commerce. vol.~6, no.~2, pp.~35--59. 2001.}
+{\path{https://doi.org/10.1080/10864415.2001.11044235}}
+{\path{02_trust_and_avatar_perception/What Trust Means in E-Commerce Customer Relationships.pdf}}
+{Ch.2 Background → Avatars, Trust and Eeriness \quad Ch.3 Related Work → Research Gap \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.4 Methodology → User Study Design \hfill (4 citations)}
+{\textbf{What it is.} Conceptual paper, not an experiment. Surveys roughly eighty works on trust, extracts 65 usable definitions and sorts them into an interdisciplinary typology so results can be compared across fields. Setting is e-commerce customer--vendor relationships.
+
+\textbf{What it establishes.} Four conceptual constructs: Disposition to Trust (psychology), Institution-based Trust (sociology), Trusting Beliefs and Trusting Intentions (social psychology). \textbf{Trusting Beliefs includes Competence, Benevolence, Integrity and Predictability.} Predictability enters from the economics literature and they position it \emph{against} Mayer: ``This differs from Mayer et al.\ [45], who excluded predictability from their trust typology.'' The trustee throughout is ``another person, institution, or people generally'' — never a machine. Across the 14 pages read: \texttt{human-computer} 0 hits, \texttt{HCI} 0 hits.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{bartneck2009}{Bartneck, Christoph, Kuli\'{c}, Dana, Croft, Elizabeth, Zoghbi, Sonja. \emph{Measurement Instruments for the Anthropomorphism, Animacy, Likeability, Perceived Intelligence, and Perceived Safety of Robots}. International Journal of Social Robotics. vol.~1, no.~1, pp.~71--81. 2009.}
+{\path{https://doi.org/10.1007/s12369-008-0001-3}}
+{\path{02_trust_and_avatar_perception/Measurement Instruments for the Anthropomorphism, Animacy, Likeability, Perceived Intelligence, and Perceived Safety of Robots.pdf}}
+{Ch.2 Background → Avatars, Trust and Eeriness \quad Ch.3 Related Work → Research Gap \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.4 Methodology → User Study Design \quad Ch.4 Methodology → User Study Overview \hfill (5 citations)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{ho2010}{Ho, Chin-Chang, MacDorman, Karl F.. \emph{Revisiting the Uncanny Valley Theory: Developing and Validating an Alternative to the {Godspeed} Indices}. Computers in Human Behavior. vol.~26, no.~6, pp.~1508--1518. 2010.}
+{\path{https://doi.org/10.1016/j.chb.2010.05.015}}
+{\path{02_trust_and_avatar_perception/Ho2010UncannyValleyIndices.pdf}}
+{Ch.2 Background → Avatars, Trust and Eeriness \quad Ch.3 Related Work → Research Gap \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.4 Methodology → User Study Design \quad Ch.4 Methodology → User Study Overview \hfill (5 citations)}
+{\textbf{What it is.} Develops and validates an alternative to the Godspeed indices for uncanny valley research, using video clips of animated characters and humanoid robots across two rounds of testing.
+
+\textbf{What it establishes.} The final validated set is \textbf{19 semantic differential items across three indices}: humanness (6 items), eeriness (8) and attractiveness (5). A warmth index was also constructed during development for decorrelation testing. The key result for avatar work: the eeriness index has ``no significant correlation with the humanness index ($r=.02$, $p=.514$)'', so a drop in eeriness can be read independently of a drop in perceived human likeness.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{gonzalez2018}{Gonzalez, Rafael C., Woods, Richard E.. \emph{Digital Image Processing}. Pearson. 2018.}
+{ISBN~9780133356724}
+{\path{05_image_processing/Gonzales,Woods-Digital.Image.Processing.4th.Edition.pdf}}
+{Ch.2 Background → Edge Detection \quad Ch.3 Related Work → NPR for Virtual Humans \quad Ch.4 Methodology → NPR Technique Design \hfill (3 citations)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{roberts1963}{Roberts, L. G.. \emph{Machine Perception of Three-Dimensional Solids}. 1963.}
+{\textit{none recorded}}
+{\path{05_image_processing/33959125-MIT.pdf}}
+{Ch.2 Background → Edge Detection \quad Ch.4 Methodology → NPR Technique Design \hfill (2 citations)}
+{\textbf{What it is.} MIT doctoral thesis, ``Machine Perception of Three-Dimensional Solids''. Source of the Roberts Cross operator.
+
+\textbf{What it establishes.} The operator as originally defined applies a square-root intensity transform first, then computes the two diagonal differences across a $2\times2$ neighbourhood. Read as an 82-page image scan; the operator definition is on p.\,26.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{itu709}{{International Telecommunication Union, Radiocommunication Sector}. \emph{Recommendation {ITU-R} {BT.709-6}: Parameter Values for the {HDTV} Standards for Production and International Programme Exchange}. 2015.}
+{\textit{none recorded}}
+{\textit{Online source, no PDF held.}}
+{Ch.2 Background → Edge Detection \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{marr1980}{Marr, David, Hildreth, Ellen. \emph{Theory of Edge Detection}. Proceedings of the Royal Society of London. Series~B, Biological Sciences. vol.~207, no.~1167, pp.~187--217. 1980.}
+{\path{https://doi.org/10.1098/rspb.1980.0020}}
+{\path{MarrHildreth (2).pdf}}
+{Ch.2 Background → Edge Detection \hfill (1 citation)}
+{\textbf{What it is.} Theory of edge detection built on detecting intensity changes at multiple scales, with edges located as zero-crossings of a Laplacian-of-Gaussian operator.
+
+\textbf{What it establishes.} The rationale for the Gaussian is \textbf{not noise} — the word barely appears in the argument. It is the uncertainty principle: ``these two localization requirements, the one in the spatial and the other in the frequency domain, are conflicting. They are, in fact, related by the uncertainty principle\ldots There is, moreover, only one distribution that optimizes this relation, namely the Gaussian'' (p.\,192). Their operator is $\nabla^2 G$ with zero-crossing detection, not a gradient operator.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{canny1986}{Canny, John. \emph{A Computational Approach to Edge Detection}. {IEEE} Transactions on Pattern Analysis and Machine Intelligence. vol.~PAMI-8, no.~6, pp.~679--698. 1986.}
+{\path{https://doi.org/10.1109/TPAMI.1986.4767851}}
+{\path{05_image_processing/A_Computational_Approach_to_Edge_Detection-sz4.pdf}}
+{Ch.2 Background → Edge Detection \hfill (1 citation)}
+{\textbf{What it is.} Derives an optimal step-edge operator from three criteria (good detection, good localisation, single response), shows its impulse response approximates the first derivative of a Gaussian, and builds a complete detector around it.
+
+\textbf{What it establishes.} The pipeline does not end at non-maximum suppression. ``In the current algorithm, no attempt is made to presegment contours. Instead the thresholding is done \textbf{with hysteresis}. If any part of a contour is above a high threshold, those points are immediately output, as is the entire connected segment of contour which contains the points and which lies above a low threshold.'' The full detector also combines multiple operator widths through feature synthesis.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{kyprianidis2009}{Kyprianidis, Jan Eric, Kang, Henry, D\"{o}llner, J\"{u}rgen. \emph{Image and Video Abstraction by Anisotropic {Kuwahara} Filtering}. Computer Graphics Forum. vol.~28, no.~7, pp.~1955--1963. 2009.}
+{\path{https://doi.org/10.1111/j.1467-8659.2009.01574.x}}
+{\path{03_npr_rendering/anisotropic_kuwahara.pdf}}
+{Ch.2 Background → Structure-Preserving Filtering \quad Ch.3 Related Work → NPR for Virtual Humans \quad Ch.4 Methodology → NPR Technique Design \quad Ch.5 Implementation → NPR Technique Implementation \hfill (4 citations)}
+{\textbf{What it is.} Generalises the Kuwahara filter by adapting its kernel to local feature shape derived from the smoothed structure tensor, giving painterly abstraction that flows along image structure. Real-time GPU implementation, temporally coherent for video.
+
+\textbf{What it establishes.} States the property that motivates using Kuwahara at all (p.\,2): ``the Kuwahara filter properly removes detail in \textbf{high-contrast} regions while also protecting shape boundaries in \textbf{low-contrast} regions. Therefore, it helps to maintain a roughly uniform level of abstraction across the image.'' This is the opposite of the bilateral filter, which ``smooth[s] low-contrast regions while preserving high-contrast edges''. Method: structure tensor gives orientation and anisotropy; the sampling window becomes an ellipse rotated to the local feature direction, $N=8$ sectors, eccentricity scaled by anisotropy.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{kuwahara1976}{Kuwahara, M., Hachimura, K., Eiho, S., Kinoshita, M.. \emph{Processing of {RI}-Angiocardiographic Images}. In: Digital Processing of Biomedical Images. pp.~187--203. Plenum Press. 1976.}
+{\path{https://doi.org/10.1007/978-1-4684-0769-3_13}}
+{\path{03_npr_rendering/anisotropic_kuwahara.pdf}}
+{Ch.2 Background → Structure-Preserving Filtering \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{kyprianidis2011}{Kyprianidis, J. E.. \emph{Image and Video Abstraction by Multi-Scale Anisotropic {Kuwahara} Filtering}. In: Proceedings of the 9th International Symposium on Non-Photorealistic Animation and Rendering. pp.~55--64. ACM. 2011.}
+{ISBN~978-1-4503-0907-3}
+{\path{03_npr_rendering/anisotropic_multicale_209.pdf}}
+{Ch.2 Background → Structure-Preserving Filtering \quad Ch.3 Related Work → NPR for Virtual Humans \hfill (2 citations)}
+{\textbf{What it is.} Extends the anisotropic Kuwahara filter to multiple scales using an image pyramid processed coarse-to-fine.
+
+\textbf{What it establishes.} Contains the precise description of the classical filter that the Background chapter relies on: ``The general idea behind this filter is to divide the filter kernel into \textbf{four rectangular subregions that overlap by one pixel}. The filter response is then defined by the mean of a subregion with minimum variance.'' It credits [Kuwahara et al.\ 1976] in the same sentence, which matters because no copy of that 1976 chapter is held.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{macdorman2006}{MacDorman, Karl F., Ishiguro, Hiroshi. \emph{The Uncanny Advantage of Using Androids in Cognitive and Social Science Research}. Interaction Studies. vol.~7, no.~3, pp.~297--337. John Benjamins. 2006.}
+{\textit{none recorded}}
+{\path{01_uncanny_valley/MacDorman2006AndroidScience.pdf}}
+{Ch.3 Related Work → Research Gap \quad Ch.3 Related Work → The Uncanny Valley and Avatar Realism \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \hfill (3 citations)}
+{\textbf{What it is.} Position paper proposing the field of ``android science'', with one experiment attached. Argues an android is an experimental apparatus ``controlled more precisely than any human actor'' (p.\,2), a perfect actor permitting scientists to vary parameters precisely, with the added advantage of physical presence.
+
+\textbf{What it establishes.} The experiment is the first empirical reproduction of Mori's curve. Because robots spanning the likeness range did not exist (p.\,8), they built the continuum photographically: two sequences of 11 morphed images (Qrio $\to$ Philip K.\ Dick android $\to$ the author; Eveliee $\to$ Repliee Q1Expo $\to$ its human model). 45 participants rated every image on nine-point human likeness and familiarity scales, then marked which felt eerie and rated those on a ten-point scale. Familiarity fell into a valley in both sequences with the trough between humanoid and android, human likeness rose monotonically, and eeriness peaked where familiarity troughed.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{mcdonnell2009}{McDonnell, R., J\"{o}rg, S., McHugh, J., Newell, F. N., O'Sullivan, C.. \emph{Investigating the Role of Body Shape on the Perception of Emotion}. {ACM} Transactions on Applied Perception. vol.~6, no.~3, art.~14. 2009.}
+{\path{https://doi.org/10.1145/1577755.1577757}}
+{\path{01_uncanny_valley/McDonnell09_HappyZombies.pdf}}
+{Ch.3 Related Work → The Uncanny Valley and Avatar Realism \hfill (1 citation)}
+{\textbf{What it is.} Real and virtual replicas of one actor performing six emotions, applied to five virtual bodies (low- and high-resolution counterpart, cartoon, wooden mannequin, zombie) plus the original video, and a point-light figure with no form.
+
+\textbf{What it establishes.} Headline finding, abstract p.\,1: emotional action perception is ``highly robust and to the most part independent of the character's body, \textbf{so long as form is present}.'' The point-light condition is the exception: main effects of body for happiness, disgust and surprise with lower rated intensity (p.\,8), and emotions ``recognized correctly more often on the real and virtual bodies than points''.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{dill2012}{Dill, V., Flach, L. M., Hocevar, R., Lykawka, C., Musse, S. R., Pinho, M. S.. \emph{Evaluation of the Uncanny Valley in {CG} Characters}. In: Intelligent Virtual Agents: 12th International Conference, {IVA} 2012. vol.~7502, pp.~511--513. Springer. 2012.}
+{\textit{none recorded}}
+{\path{01_uncanny_valley/Evaluation of the Uncanny Valley in CG Characters.pdf}}
+{Ch.3 Related Work → The Uncanny Valley and Avatar Realism \quad Ch.6 Evaluation → Discussion \hfill (2 citations)}
+{\textbf{What it is.} Validates the uncanny valley for CG characters drawn from contemporary commercial films and games. Familiarity ratings followed Mori's predicted curve with the strongest negative response in the near-human range.
+
+\textbf{What it establishes.} Motion deepened the valley most visibly for two of the ten characters tested, not for every stimulus. Participants named the eyes and the mouth as the facial regions producing the most discomfort.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{seymour2021}{Seymour, Mike, Yuan, Lingyao, Dennis, Alan R., Riemer, Kai. \emph{Have We Crossed the Uncanny Valley? {U}nderstanding Affinity, Trustworthiness, and Preference for Realistic Digital Humans in Immersive Environments}. Journal of the Association for Information Systems. vol.~22, no.~3, pp.~591--617. 2021.}
+{\path{https://doi.org/10.17705/1jais.00491}}
+{\path{01_uncanny_valley/Seymour, Yuan, Dennis & Riemer, "Have We Crossed the Uncanny Valley?" (2021).pdf}}
+{Ch.3 Related Work → The Uncanny Valley and Avatar Realism \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{kuffner2024}{Kuffner dos Anjos, R., Madeiras Pereira, J.. \emph{Effects of Realism and Representation on Self-Embodied Avatars in Immersive Virtual Environments}. 2024.}
+{\textit{none recorded}}
+{\path{02_trust_and_avatar_perception/Effects of Realism and Representation on Self-Embodied Avatars in Immersive Virtual Environments.pdf}}
+{Ch.3 Related Work → The Uncanny Valley and Avatar Realism \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{tao2025}{Tao, Z., Liu, Y., Qiu, J., Li, S.. \emph{Impact of Virtual Avatar Appearance Realism on Perceptual Interaction Experience: A Network Meta-Analysis}. Frontiers in Psychology. vol.~16, pp.~1624975. 2025.}
+{\path{https://doi.org/10.3389/fpsyg.2025.1624975}}
+{\path{Tao-Impact.pdf}}
+{Ch.3 Related Work → The Uncanny Valley and Avatar Realism \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{alipour2025}{Alipour, Ahdiyeh, Hartmann, Tilo, Alimardani, Maryam. \emph{Would You Rely on an Eerie Agent? {A} Systematic Review of the Impact of the Uncanny Valley Effect on Trust in Human--Agent Interaction}. 2025.}
+{\path{https://arxiv.org/abs/2505.05543}}
+{\path{02_trust_and_avatar_perception/Alipor_Would You Rely on an Eerie Agent?.pdf}}
+{Ch.3 Related Work → Research Gap \quad Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.4 Methodology → User Study Design \quad Ch.6 Evaluation → User Study Results \hfill (4 citations)}
+{\textbf{What it is.} PRISMA systematic review of 53 empirical studies asking whether the uncanny valley effect influences trust in agents.
+
+\textbf{What it establishes.} Codes studies along several independent dimensions, each with its own count. \textbf{Trust measurement: three groups} — direct measures ($n=24$), trust-related constructs such as competence and credibility ($n=11$), trust-related intentions such as advice adherence ($n=18$). \textbf{Modality: four types} — visual, auditory, tactile, textual. \textbf{Effect type: three} — of the 41 studies that tested it empirically, 17 reported a direct effect, 24 a conditional or indirect one (10 dual-coded), and 10 none. Only 7 of 53 used an objective behavioural measure alongside self-report.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{nowak2003}{Nowak, Kristine L., Biocca, Frank. \emph{The Effect of the Agency and Anthropomorphism on Users' Sense of Telepresence, Copresence, and Social Presence in Virtual Environments}. Presence: Teleoperators and Virtual Environments. vol.~12, no.~5, pp.~481--494. 2003.}
+{\path{https://doi.org/10.1162/105474603322761289}}
+{\path{02_trust_and_avatar_perception/Nowak2003.pdf}}
+{Ch.3 Related Work → Trust and Credibility in Virtual Agents \hfill (1 citation)}
+{\textbf{What it is.} $3\times2$ experiment. Anthropomorphism of a partner's image (high / low / none) crossed with perceived agency (told the partner was a human-driven avatar or a computer-driven agent). Four outcomes: perceived other's copresence, self-reported copresence, social presence, telepresence.
+
+\textbf{What it establishes.} \textbf{Agency was null on all four} ($p=.7$, $.57$, $.33$, $.46$); the discussion section is headed ``Agency Does Not Influence Presence''. Anthropomorphism ran \emph{opposite} to their own prediction: Hypotheses V and VI were ``not supported\ldots significant in the opposite direction'', with the less anthropomorphic image producing more copresence ($R=.22$, $p=.01$) and more social presence than the highly anthropomorphic one.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{alimardani2024}{Alimardani, M., de Roode, R., Vaitonyt\.{e}, J., Louwerse, M. M.. \emph{Effect of a Virtual Agent's Appearance and Voice on Uncanny Valley and Trust in Human-Agent Collaboration}. In: Proceedings of the 24th {ACM} International Conference on Intelligent Virtual Agents. art.~5. ACM. 2024.}
+{\path{https://doi.org/10.1145/3652988.3673970}}
+{\path{02_trust_and_avatar_perception/Mardani Effect of a Virtual Agent’s Appearance and Voice on UncannyValley .pdf}}
+{Ch.3 Related Work → Trust and Credibility in Virtual Agents \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{gao2025}{Gao, Yang, Dai, Yangbin, Zhang, Guangtao, Guo, Honglei, Mostajeran, Fariba, Zheng, Binge, Yu, Tao. \emph{Trust in Virtual Agents: Exploring the Role of Stylization and Voice}. {IEEE} Transactions on Visualization and Computer Graphics. vol.~31, no.~5, pp.~3623--3633. 2025.}
+{\path{https://doi.org/10.1109/TVCG.2025.3549566}}
+{\path{02_trust_and_avatar_perception/IEEE_VR25_TVCG.pdf}}
+{Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.4 Methodology → User Study Design \hfill (2 citations)}
+{\textbf{What it is.} 27 participants in VR watch a 40--60\,s TED-style talk. Style (Real / Stylization / No-Stylization) and Voice within-subjects, Identity between-subjects. \textbf{Real is the original recorded video of the speaker}, Stylization is an agent reconstructed from that speaker's own images, No-Stylization a stock MetaHuman.
+
+\textbf{What it establishes.} Real scored significantly higher on Ability ($p<0.001$), Benevolence ($p=0.007$) and Integrity ($p=0.015$). Only the single global trust item failed to separate Real from Stylization ($p=0.216$). The abstract's claim of ``comparable'' trust holds for that one item only. The discussion is explicit: ``This contrasts with previous studies\ldots Our results indicate that using a real-look agent can increase trust levels.'' Structurally this is the closest published analogue to the C1-versus-C3 comparison in this thesis.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{dubosc2025}{Dubosc, C., Gorisse, G., Lefrou, T., Richir, S., Christmann, O.. \emph{Effect of Avatar Stylization and Facial Expression Intensity in Virtual Interactions}. Virtual Reality. 2025.}
+{\path{https://doi.org/10.1007/s10055-025-01238-6}}
+{\path{02_trust_and_avatar_perception/Effect_of_avatar_stylization_and_facial_expression.pdf}}
+{Ch.3 Related Work → Trust and Credibility in Virtual Agents \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{cihodaru2025}{Cihodaru-{\c{S}}tefanache, {\c{S}}., Podina, I. R.. \emph{The Uncanny Valley Effect in Embodied Conversational Agents: A Critical Systematic Review of Attractiveness, Anthropomorphism, and Uncanniness}. Frontiers in Psychology. vol.~16, pp.~1625984. 2025.}
+{\path{https://doi.org/10.3389/fpsyg.2025.1625984}}
+{\path{01_uncanny_valley/The_uncanny_valley_effect_in_embodied_conversation.pdf}}
+{Ch.3 Related Work → Trust and Credibility in Virtual Agents \quad Ch.6 Evaluation → Discussion \hfill (2 citations)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{kumar2019}{{Pavan Kumar}, M. P., Poornima, B., Nagendraswamy, H. S., Manjunath, C.. \emph{A Comprehensive Survey on Non-Photorealistic Rendering and Benchmark Developments for Image Abstraction and Stylization}. Iran Journal of Computer Science. vol.~2, pp.~131--165. 2019.}
+{\path{https://doi.org/10.1007/s42044-019-00034-1}}
+{\path{03_npr_rendering/Kumar- A comprehensive survey on NPR.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \hfill (1 citation)}
+{\textbf{What it is.} Comprehensive survey of NPR and benchmark development for image abstraction and stylisation, covering significant papers from 1963 to 2017. \textbf{Four authors}, not two.
+
+\textbf{What it establishes.} Classifies NPR into four families: stroke-based rendering, colour image analogy, region-based rendering, and image filtering abstraction and stylisation. Coverage is image-space throughout, so geometry-based approaches such as inverted hull outlines fall outside it — a limitation the thesis notes explicitly.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{lake2000}{Lake, Adam, Marshall, Carl, Harris, Mark, Blackstein, Marc. \emph{Stylized Rendering Techniques for Scalable Real-Time {3D} Animation}. In: Proceedings of the 1st International Symposium on Non-Photorealistic Animation and Rendering (NPAR). pp.~13--20. 2000.}
+{\path{https://doi.org/10.1145/340916.340918}}
+{\path{03_npr_rendering/lake et al Stylized rendering.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \quad Ch.4 Methodology → NPR Technique Design \hfill (2 citations)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{barla2006}{Barla, Pascal, Thollot, Jo\"{e}lle, Markosian, Lee. \emph{{X-Toon}: An Extended Toon Shader}. In: Proceedings of the 4th International Symposium on Non-Photorealistic Animation and Rendering (NPAR). pp.~127--132. 2006.}
+{\path{https://doi.org/10.1145/1124728.1124749}}
+{\path{03_npr_rendering/x-toon.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \quad Ch.4 Methodology → NPR Technique Design \hfill (2 citations)}
+{\textbf{What it is.} Extends toon shading by replacing the 1D tone texture with a 2D texture whose second axis carries ``tone detail''. Second, independent extension: a modified normal field interpolating between original and abstracted-shape normals, governed by a global shape detail parameter.
+
+\textbf{What it establishes.} Coins the terminology the thesis uses: ``toon shading does not reflect the desired \textbf{level of abstraction (LOA)} of a surface\ldots We use the term LOA instead of LOD to emphasize that our goal is visual abstraction, not increased rendering speed.'' The first ramp axis remains the Lambertian $\mathbf{n}\cdot\mathbf{l}$ term; only the second is new. The attribute mapping mechanism is general — ``any attribute can be chosen'' — and they demonstrate two, both view-dependent: depth-based and orientation-based ($D=|\mathbf{n}\cdot\mathbf{v}|^r$).}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{raskar1999}{Raskar, Ramesh, Cohen, Michael. \emph{Image Precision Silhouette Edges}. In: Proceedings of the 1999 Symposium on Interactive 3D Graphics. pp.~135--140. ACM. 1999.}
+{\path{https://doi.org/10.1145/300523.300539}}
+{\path{03_npr_rendering/Raskar -Image Precision Silhouette Edges.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{roshaan2026}{{Lino Roshaan M.K.}. \emph{{AHEAD}: Adaptive Hierarchical Edge Detection for Real-Time Artistic Stylization}. 2026.}
+{\path{https://doi.org/10.21203/rs.3.rs-8849147/v1}}
+{\path{03_npr_rendering/Adaptive Hierarchical Edge Detection.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \quad Ch.4 Methodology → NPR Technique Design \quad Ch.5 Implementation → NPR Technique Implementation \hfill (3 citations)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{wisessing2016}{Wisessing, P., Dingliana, J., McDonnell, R.. \emph{Perception of Lighting and Shading for Animated Virtual Characters}. In: Proceedings of the {ACM} Symposium on Applied Perception. pp.~25--29. ACM. 2016.}
+{\path{https://doi.org/10.1145/2931002.2931015}}
+{\path{Wissesing- perception.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \hfill (1 citation)}
+{\textbf{What it is.} Two shading styles (CG smooth-shaded vs toon-shaded) crossed with five lighting conditions, on a single greyscale cartoon character (Mery). \textbf{No photorealistic condition exists in this study.}
+
+\textbf{What it establishes.} Main finding, p.\,4: ``the shading style used (CG vs.\ toon) does not change the recognition of emotion, but does change the perception of intensity of that emotion, with toon-shaded renders being rated as displaying emotions as less intense than CG-shaded across the board.'' Recognition accuracy was unaffected by shading style or lighting.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{wisessing2020}{Wisessing, P., Zibrek, K., Cunningham, D. W., Dingliana, J., McDonnell, R.. \emph{Enlighten Me: Importance of Brightness and Shadow for Character Emotion and Appeal}. {ACM} Transactions on Graphics. vol.~39, no.~3, art.~19, pp.~19:1--19:12. 2020.}
+{\path{https://doi.org/10.1145/3383195}}
+{\path{Wissessing-Enloghten me.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \hfill (1 citation)}
+{\textbf{What it is.} Extensive perceptual experiments on key-light brightness and key-to-fill ratio for emotional CG characters, including a follow-up set with realistic characters.
+
+\textbf{What it establishes.} Findings bullets: ``Higher brightness makes for more appealing characters, regardless of the emotion they portray''; brightness alters perceived intensity in opposite directions for happy and sad; ``Darker shadows are unappealing for cartoon characters but do not affect the appeal of realistic characters''. Darker key-to-fill ratios also raised eeriness ($16{:}1$ more eerie than $4{:}1$ or $1{:}1$).}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{zibrek2019tap}{Zibrek, Katja, Martin, Sean, McDonnell, Rachel. \emph{Is Photorealism Important for Perception of Expressive Virtual Humans in Virtual Reality?}. ACM Transactions on Applied Perception. vol.~16, no.~3, pp.~14:1--14:19. 2019.}
+{\path{https://doi.org/10.1145/3349609}}
+{\path{02_trust_and_avatar_perception/TAP_2019.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \hfill (1 citation)}
+{\textbf{What it is.} Large \textbf{between-group} VR study: $N=797$ recruited, 622 analysed, run in a public science gallery. Each participant saw \emph{one} of three render styles (Realistic, Simple, Sketch) in one of three scenarios (Friendly, Unfriendly, Sad) — a $3\times3$ design chosen deliberately ``to reduce learning and transfer across the experimental conditions''.
+
+\textbf{What it establishes.} Thirteen measured scales, none of which is emotion \emph{recognition}; the emotional items measure the participant's own affective state (``The girl I just observed made me feel concerned''). Social presence: ``we found no main effects or interactions between render style or scenario''. Affinity (appeal, familiarity, eeriness): ``We did not find any effects of render style''. The headline is that photorealism \emph{changed} emotional response rather than improving it, and the abstract reports ``a preference for realism in VR''.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{zibrek2019mig}{Zibrek, Katja, McDonnell, Rachel. \emph{Social Presence and Place Illusion are Affected by Photorealism in Embodied {VR}}. In: Proceedings of the 12th ACM SIGGRAPH Conference on Motion, Interaction and Games (MIG). pp.~1--7. ACM. 2019.}
+{\path{https://doi.org/10.1145/3359566.3360064}}
+{\path{02_trust_and_avatar_perception/3359566.3360064.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \quad Ch.6 Evaluation → Discussion \hfill (2 citations)}
+{\textbf{What it is.} Within-subjects VR study in which participants are embodied in a high-fidelity virtual body and observe an animated character rendered photorealistically or in a simplified style, with eye-gaze interaction.
+
+\textbf{What it establishes.} ``Our goal was to evaluate if photorealism alone is enough to increase self-reported and behavioural signs (interpersonal distance or proximity) of social presence, place illusion, and empathetic concern\ldots This was found to be the case for self-reported social presence and place illusion.'' The behavioural proximity measure was unaffected. The contrast with the TAP study is embodiment: social presence responds to render style only once the viewer inhabits the space.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{latoschik2017}{Latoschik, Marc Erich, Roth, Daniel, Gall, Dominik, Achenbach, Jascha, Waltemate, Thomas, Botsch, Mario. \emph{The Effect of Avatar Realism in Immersive Social Virtual Realities}. In: Proceedings of the 23rd {ACM} Symposium on Virtual Reality Software and Technology ({VRST}). ACM. 2017.}
+{\path{https://doi.org/10.1145/3139131.3139156}}
+{\path{02_trust_and_avatar_perception/2017-vrst-effect-of-avatar-realism.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \quad Ch.4 Methodology → User Study Design \hfill (2 citations)}
+{\textbf{What it is.} VRST study on avatar realism in immersive social VR, using a $2\times2$ within-subjects design crossing self-avatar with other-avatar realism.
+
+\textbf{What it establishes.} Design confirmed from the paper: ``a 2 x (self-avatar) x 2 (other-avatar) within-subjects design'', analysed with ``two factorial ANOVAs for repeated measures on all measures taken''. Cited in this thesis as precedent for the repeated-measures ANOVA on within-participant rendering-style comparisons.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{zell2015}{Zell, Eduard, Aliaga, Carlos, Jarabo, Adrian, Zibrek, Katja, Gutierrez, Diego, McDonnell, Rachel, Botsch, Mario. \emph{To Stylize or Not to Stylize? {The} Effect of Shape and Material Stylization on the Perception of Computer-Generated Faces}. ACM Transactions on Graphics. vol.~34, no.~6, pp.~184:1--184:12. ACM. 2015.}
+{\path{https://doi.org/10.1145/2816795.2818126}}
+{\path{01_uncanny_valley/To Stylize or not to Stylize?_Zell.pdf}}
+{Ch.3 Related Work → NPR for Virtual Humans \quad Ch.4 Methodology → User Study Design \quad Ch.6 Evaluation → Discussion \hfill (3 citations)}
+{\textbf{What it is.} Separates a character's shape from its material and varies each independently. First round used three stylisation levels, the extended round five, across two characters and five expressions.
+
+\textbf{What it establishes.} Shape governs perceived realism; material governs appeal and eeriness. Strong mismatches between the two levels produce very unappealing characters, with realistic material on realistic shape the least appealing combination and cartoon material on realistic shape similarly poor. On expressions: ``The perceived intensity of expressions \emph{decreases with realism of shape}'' — so cartoon shapes are rated \emph{more} intense — and all expressions except neutral were ``recognized well or outstandingly well independent of the shape''.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{mixamo}{{Adobe Inc.}. \emph{Mixamo: 3D Character Rigging and Animation Service}. 2024.}
+{\textit{none recorded}}
+{\path{https://www.mixamo.com/}}
+{Ch.4 Methodology → Avatar Platforms and Rendering Constraints \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{metasdk}{{Meta Platforms, Inc.}. \emph{Meta Avatars {SDK} Documentation}. 2024.}
+{\textit{none recorded}}
+{\path{https://developer.oculus.com/documentation/unity/meta-avatars-overview/}}
+{Ch.4 Methodology → Avatar Platforms and Rendering Constraints \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{avaturn}{{Avaturn}. \emph{What is {Avaturn}?}. 2024.}
+{\textit{none recorded}}
+{\path{https://docs.avaturn.me/docs/what-is-avaturn/}}
+{Ch.4 Methodology → Avatar Platforms and Rendering Constraints \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{gltf2}{{Khronos Group}. \emph{{glTF} 2.0 Specification}. 2017.}
+{\textit{none recorded}}
+{\textit{Online source, no PDF held.}}
+{Ch.4 Methodology → Avatar Platforms and Rendering Constraints \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{saitotakahashi1990}{Saito, Takafumi, Takahashi, Tokiichiro. \emph{Comprehensible Rendering of 3-{D} Shapes}. In: Proceedings of the 17th Annual Conference on Computer Graphics and Interactive Techniques ({SIGGRAPH}). pp.~197--206. ACM. 1990.}
+{\path{https://doi.org/10.1145/97880.97901}}
+{\path{03_npr_rendering/Comprehensible Rendering of 3-D Shapes Saito.pdf}}
+{Ch.4 Methodology → NPR Technique Design \hfill (1 citation)}
+{\textbf{What it is.} Introduces the \textbf{G-buffer}: instead of shading directly to colour, geometric properties are rendered into 2D buffers (normals $n_x,n_y,n_z$, depth $s_z$, surface parameters, object/patch identifiers), then ordinary 2D image-processing operators run over those buffers and the results are composited.
+
+\textbf{What it establishes.} Where the edges come from matters: ``Profiles and edges are the 0-th and first order discontinuities of the \textbf{depth image ($s_z$ image)}''. The alternative route is the object/patch identifier image. In their worked example ``The shaded image (sh) was calculated from the $n_x$, $n_y$ and $n_z$ images. The profile image (pr) was obtained from the $s_z$ image'' — so the normal channels drive \emph{shading}, and no differential operator is applied to them.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{nienhaus2003}{Nienhaus, Marc, D{\"o}llner, J{\"u}rgen. \emph{Edge-Enhancement: An Algorithm for Real-Time Non-Photorealistic Rendering}. Journal of {WSCG}. vol.~11, no.~1, pp.~346--353. 2003.}
+{\textit{none recorded}}
+{\path{03_npr_rendering/Edge Enhancement.pdf}}
+{Ch.4 Methodology → NPR Technique Design \hfill (1 citation)}
+{\textbf{What it is.} Builds an \emph{edge map}, a 2D texture encoding silhouette, border and crease edges, extracted from G-buffer-like data using texture hardware so it runs in real time, then applied to scene objects by projective texturing.
+
+\textbf{What it establishes.} Splits the cues explicitly (p.\,3): ``abrupt changes in the z-buffer occur at silhouette edges and border edges, i.e., 0th order discontinuities of the z-buffer indicate profiles\ldots \textbf{Abrupt changes in the normal-buffer occur typically at crease edges}\ldots 0th order discontinuities of the normal-buffer indicate crease edges.'' Credits Saito and Takahashi for the G-buffer.}
+{\vfound Read at primary-source depth during the 2026-08-21 audit.}
+
+\srcentry{winnemoller2012}{Winnem\"{o}ller, Holger, Kyprianidis, Jan Eric, Olsen, Sven C.. \emph{{XDoG}: An {eXtended} Difference-of-{Gaussians} Compendium Including Advanced Image Stylization}. Computers \& Graphics. vol.~36, no.~6, pp.~740--753. 2012.}
+{\path{https://doi.org/10.1016/j.cag.2012.03.004}}
+{\path{Winnemoeller12.pdf}}
+{Ch.4 Methodology → NPR Technique Design \quad Ch.5 Implementation → NPR Technique Implementation \hfill (2 citations)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{demsar2006}{Dem\v{s}ar, Janez. \emph{Statistical Comparisons of Classifiers over Multiple Data Sets}. Journal of Machine Learning Research. vol.~7, pp.~1--30. 2006.}
+{\path{https://www.jmlr.org/papers/v7/demsar06a.html}}
+{\path{06_statistics/demsar06a.pdf}}
+{Ch.4 Methodology → Parameter Adjustment Study \quad Ch.4 Methodology → User Study Design \hfill (2 citations)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{lakens2017}{Lakens, Dani{\"e}l. \emph{Equivalence Tests: A Practical Primer for $t$ Tests, Correlations, and Meta-Analyses}. Social Psychological and Personality Science. vol.~8, no.~4, pp.~355--362. 2017.}
+{\path{https://doi.org/10.1177/1948550617697177}}
+{\path{Lakens -equivalence Test.pdf}}
+{Ch.4 Methodology → User Study Design \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\srcentry{blinn1977}{Blinn, James F.. \emph{Models of Light Reflection for Computer Synthesized Pictures}. In: Proceedings of the 4th Annual Conference on Computer Graphics and Interactive Techniques (SIGGRAPH). pp.~192--198. 1977.}
+{\path{https://doi.org/10.1145/965141.563893}}
+{\path{Blinn.pdf}}
+{Ch.5 Implementation → NPR Technique Implementation \hfill (1 citation)}
+{\textit{Bibliographic record only. This source has not been re-read at primary-source depth, so no summary is asserted here. Its per-sentence verification lives in \texttt{citation\_check.pdf}.}}
+{\vpend Bibliographic fields verified; content summary not yet written.}
+
+\end{document}

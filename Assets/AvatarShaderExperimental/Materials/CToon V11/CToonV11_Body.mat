@@ -97,10 +97,10 @@ Material:
     - _GaussianCenterWeight: 0.571
     - _GaussianDiagonalWeight: 0.25
     - _Glossiness: 0.5
-    - _InnerLineBlur: 0.5
+    - _InnerLineBlur: 0.2
     - _InnerLineSmooth: 5
     - _InnerLineStrength: 1
-    - _InnerLineThreshold: 0.15
+    - _InnerLineThreshold: 0.1
     - _InnerLineWidth: 2
     - _LightSensitivity: 0.8
     - _LineMapStrength: 1

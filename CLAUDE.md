@@ -648,7 +648,7 @@ Each entry should include: the date, a short title, and a plain-English explanat
 
 ### The core problem
 
-Photorealistic Meta Avatars can trigger the uncanny valley. NPR abstraction can avoid this, but no prior work has applied fine-grained NPR stylisation to a closed production SDK (Meta Avatars SDK) and measured how it affects trust perception.
+Photorealistic avatars can trigger the uncanny valley. NPR abstraction can avoid this, but no prior work has built the same technique set across avatar platforms that differ in rendering architecture, nor measured how the resulting stylisation affects trust against both a photorealistic baseline and a real human speaker.
 
 ### Research questions
 
@@ -898,7 +898,7 @@ Advisor spoken recommendation (~22 s): *"I would take Option A. Yes, 350 euros i
 
 ### 11.7 Primary Hypothesis Summary
 
-**Updated 2026-08-04: exactly four confirmatory hypotheses (H1–H4), confirmed by Nidanur directly and cross-checked against `04_methodology.tex` §Objective and Hypotheses and `06_evaluation.tex` §Hypothesis Tests, where H4 is as fully developed as H2 (own subsection, own TOST equivalence test).** This supersedes the previous "exactly three hypotheses, C1 always exploratory" rule (confirmed 2026-07-31) — that rule is no longer correct. **Research questions: RQ1–RQ3, corrected 2026-08-18.** An earlier note here claimed four (RQ1–RQ4); that is wrong. The thesis has three, consistent across Introduction §1.3, Methodology §4.1, Related Work §3.4 and Conclusion §7.1. RQ2 is "Which NPR technique or combination of techniques best balances visual abstraction against facial and expressive legibility under production rendering constraints?" and RQ3 combines both perceptual questions: "How does NPR stylisation affect perceived eeriness and trustworthiness and can an NPR avatar reach the trustworthiness of a real human speaker?" The four hypotheses H1–H4 still hold; RQ3 is what H1 and H4 jointly answer.
+**Updated 2026-08-04: exactly four confirmatory hypotheses (H1–H4), confirmed by Nidanur directly and cross-checked against `04_methodology.tex` §Objective and Hypotheses and `06_evaluation.tex` §Hypothesis Tests, where H4 is as fully developed as H2 (own subsection, own TOST equivalence test).** This supersedes the previous "exactly three hypotheses, C1 always exploratory" rule (confirmed 2026-07-31) — that rule is no longer correct. **Research questions: RQ1–RQ3, corrected 2026-08-18.** An earlier note here claimed four (RQ1–RQ4); that is wrong. The thesis has three, consistent across Introduction §1.3, Methodology §4.1, Related Work §3.4 and Conclusion §7.1. RQ2 is "Which NPR technique or combination of techniques best balances visual abstraction against facial and expressive legibility under production rendering constraints?" and RQ3 combines both perceptual questions: "How does NPR stylisation affect perceived eeriness and trustworthiness and can an NPR avatar reach the trustworthiness of a photorealistic avatar and of a real human speaker?" The four hypotheses H1–H4 still hold; RQ3 is what H1 and H4 jointly answer.
 
 | Hypothesis | Prediction | Test |
 | --- | --- | --- |

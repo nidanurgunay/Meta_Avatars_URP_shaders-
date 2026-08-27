@@ -92,7 +92,7 @@ for version, fname in FILES.items():
                 for i, v in enumerate(eerie_items):
                     item_rows.append(dict(participant=pid, condition=ROUND_CONDITION[version][rnd], subscale="Eeriness", item=f"D{i+1}", value=v))
                 for i, v in enumerate(comp_items):
-                    item_rows.append(dict(participant=pid, condition=ROUND_CONDITION[version][rnd], subscale="Competence", item=f"E{i+1}", value=v))
+                    item_rows.append(dict(participant=pid, condition=ROUND_CONDITION[version][rnd], subscale="Ability", item=f"E{i+1}", value=v))
                 for i, v in enumerate(benev_items):
                     item_rows.append(dict(participant=pid, condition=ROUND_CONDITION[version][rnd], subscale="Benevolence", item=f"F{i+1}", value=v))
                 for i, v in enumerate(integ_items):
@@ -126,7 +126,7 @@ print("\n" + "=" * 70)
 print("STEP 2: Reliability (Cronbach's alpha)")
 print("=" * 70)
 
-for subscale in ["Likeability", "Eeriness", "Competence", "Benevolence", "Integrity"]:
+for subscale in ["Likeability", "Eeriness", "Ability", "Benevolence", "Integrity"]:
     sub = item_df[item_df["subscale"] == subscale]
     wide = sub.pivot_table(index=["participant", "condition"], columns="item", values="value")
     alpha_overall = pg.cronbach_alpha(data=wide)

@@ -186,7 +186,7 @@ save(fig, "fig_manipulation_check")
 SUBSCALES = [
     ("B_score", "Likeability", (1, 5), 4.55),
     ("D_score", "Eeriness (H1)", (1, 5), 4.55),
-    ("E_score", "Competence", (1, 7), 6.5),
+    ("E_score", "Ability", (1, 7), 6.5),
     ("F_score", "Benevolence", (1, 7), 6.5),
     ("G_score", "Integrity", (1, 7), 6.5),
 ]

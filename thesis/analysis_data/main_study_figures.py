@@ -160,7 +160,7 @@ save(fig, "fig_manipulation_check")
 SUBSCALES = [
     ("B_score", "Likeability", (1, 5), 4.55),
     ("D_score", "Eeriness (H1)", (1, 5), 4.55),
-    ("E_score", "Competence", (1, 7), 6.5),
+    ("E_score", "Ability", (1, 7), 6.5),
     ("F_score", "Benevolence", (1, 7), 6.5),
     ("G_score", "Integrity", (1, 7), 6.5),
 ]
@@ -195,7 +195,7 @@ for col in ["E_score", "F_score", "G_score"]:
 
 fig, axes = plt.subplots(1, 3, figsize=(11.5, 3.8), sharex=True, sharey=True)
 for ax, (col, label, b) in zip(axes, [
-    ("E_score", "Competence", h3_slopes["E_score"]),
+    ("E_score", "Ability", h3_slopes["E_score"]),
     ("F_score", "Benevolence", h3_slopes["F_score"]),
     ("G_score", "Integrity", h3_slopes["G_score"]),
 ]):

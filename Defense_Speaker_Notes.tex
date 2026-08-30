@@ -1,0 +1,404 @@
+%% ============================================================
+%% Master's Thesis Defense — Speaker notes
+%% Nidanur Günay — what to say, slide by slide
+%% Compile from the PROJECT ROOT:
+%%   pdflatex -interaction=nonstopmode Defense_Speaker_Notes.tex
+%% ============================================================
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=2.0cm,bottom=2.0cm,left=2.2cm,right=2.2cm]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{knblue}{HTML}{00539F}
+\definecolor{knlight}{HTML}{EAF1F8}
+\definecolor{kngrey}{HTML}{5A6570}
+\definecolor{knaccent}{HTML}{B45309}
+
+\setstretch{1.12}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize\color{kngrey}Defense speaker notes}
+\rhead{\footnotesize\color{kngrey}Nidanur Günay}
+\cfoot{\footnotesize\color{kngrey}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%% Slide header: number, title, time
+\newcommand{\slidehead}[3]{%
+  \needspace{5\baselineskip}
+  \vspace{0.9em}
+  \noindent\colorbox{knblue}{\parbox{0.978\textwidth}{\vspace{1pt}\color{white}\textbf{Slide #1 \quad #2}\hfill\textbf{#3}\vspace{1pt}}}
+  \vspace{0.35em}\par}
+
+%% "Say this" body is just normal text.
+%% Reminder box
+\newcommand{\remind}[1]{%
+  \vspace{0.15em}
+  \noindent\colorbox{knlight}{\parbox{0.972\textwidth}{\small\color{knblue}\textbf{Remember:} #1}}
+  \vspace{0.2em}\par}
+
+\newcommand{\pointto}[1]{{\color{knaccent}\textit{[#1]}}}
+
+\begin{document}
+
+%% ---------------- Cover ----------------
+\begin{center}
+  {\LARGE\bfseries\color{knblue} Defense — what to say}\\[0.4em]
+  {\large Abstraction Mechanisms for Virtual Avatars}\\[0.3em]
+  {\color{kngrey} Nidanur Günay \quad|\quad 20 minutes \quad|\quad 24 slides plus backup}
+\end{center}
+
+\vspace{0.6em}
+
+\noindent\colorbox{knlight}{\parbox{0.972\textwidth}{\small\color{knblue}
+\textbf{How to use this.} The text under each slide is written the way you would actually say it out loud. It is not meant to be read word for word, it is meant to keep you on track. Every slide has a time budget. If you are running late, the slides marked \textbf{CUT} can be shortened to one sentence without breaking the story.\\[0.4em]
+\textbf{Three habits that matter more than the words.} Pause after every result. Say the verdict out loud (\emph{supported}, \emph{not supported}, \emph{inconclusive}) before you explain it. Never apologise for a null result.}}
+
+\vspace{0.9em}
+
+\begin{center}
+\begin{tabular}{@{}llr@{}}
+\toprule
+\textbf{Part} & \textbf{Slides} & \textbf{Time} \\
+\midrule
+Setup: problem, questions, what was built & 1--6 & 4:00 \\
+Choosing the composite (parameter study) & 7 & 1:10 \\
+The user study: design and hypotheses & 8--9 & 2:00 \\
+\textbf{Results} & 10--17 & \textbf{5:30} \\
+\textbf{Discussion} & 18--20 & \textbf{2:30} \\
+Limitations & 21 & 0:45 \\
+Conclusion and future work & 22--24 & 2:00 \\
+\midrule
+& & \textbf{$\approx$ 19:00} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.5em}
+\noindent{\color{kngrey}\small Roughly one minute of buffer. Use it on Slide 13 (H2) if the committee looks interested, since that is the slide most likely to attract a question.}
+
+\clearpage
+
+%% ============================================================
+\section*{\color{knblue}Part 1 — Setup (slides 1 to 6, about 4 minutes)}
+
+\slidehead{1}{Title}{0:15}
+
+Good morning, and thank you for being here. My name is Nidanur Günay and this is my master's thesis, \emph{Abstraction Mechanisms for Virtual Avatars}. It is about drawing virtual humans in a non-realistic way, and about whether that changes how much people trust them.
+
+\slidehead{2}{The problem}{1:00}
+
+Virtual humans are everywhere now. They give advice, they teach, they sell things. So how they look is not just a design detail, it changes whether people believe them.
+
+You would expect that the more human an avatar looks, the more we trust it. That is true, but only up to a point. When a character gets very close to human but not quite there, people start to find it creepy instead. That dip is the uncanny valley. \pointto{point at the curve}
+
+So the idea in this thesis is to go the other way on purpose. Instead of pushing for more realism, we use non-photorealistic rendering, NPR, to pull the avatar back into a clearly drawn, stylised look.
+
+Two things were missing before this work. First, the platforms that actually give you avatars are very different from each other in what they let you change in the renderer. And second, nobody had really measured what this kind of abstraction does to trust.
+
+\slidehead{3}{Research questions}{0:40}
+
+That gave me three questions.
+
+The first one is technical. Can I build the same NPR techniques on platforms with completely different rendering architectures, and what does each platform let me do or not do.
+
+The second one is about selection. Out of all these techniques, which one, or which combination, gives you a clearly stylised avatar while the face stays readable.
+
+And the third one is the perception question. Does stylisation change how creepy and how trustworthy the avatar feels, and can it reach a photorealistic avatar, or even a real human.
+
+The first two are answered by the system I built. The third one is answered by a user study, and that is where most of this talk will be.
+
+\slidehead{4}{What was built}{0:50 \quad CUT}
+
+Very briefly, what I built. Eight techniques, on three platforms.
+
+They were not picked randomly. Each one is a reaction to something the previous one could not do. The outline gives you a shape but nothing inside it. Toon shading gives you readable lighting but still no lines inside. X-Toon adds control over how abstract it looks. Then three edge detectors, each catching something the one before missed. And finally Kuwahara, which is a painterly filter rather than an edge filter.
+
+On the platform side, Mixamo and Avaturn give me full access to the renderer. The Meta Avatars SDK gives me exactly one hook in the fragment shader and nothing else.
+
+\slidehead{5}{RQ1 answer}{0:45}
+
+So what did I learn from building the same thing three times.
+
+Every technique ran on all three platforms, so nothing was impossible. But the same parameter values gave visibly different results depending on the host, so everything had to be retuned per platform.
+
+The harder cases were on the Meta SDK. There I have no depth buffer, no normal buffer and no second pass. So the hierarchical technique had to read a camera distance derivative instead of a real depth texture, and the Kuwahara filter lost its smoothing step completely.
+
+The dividing line turned out not to be how complex a technique is. It is whether the technique needs \emph{new numbers} or a \emph{new input signal}. New numbers you can always find. A new signal you only get if the pipeline is open.
+
+\remind{Avaturn was chosen for the study because it is the only platform with all three of: open shader access, full face animation, and a face rebuilt from real photographs.}
+
+\slidehead{6}{The stimulus}{0:45}
+
+This is what participants actually saw.
+
+C1 is a video of a real person. C2 is a photorealistic avatar of that same person, reconstructed from photographs. And C3 is exactly the same avatar with my NPR composite on top.
+
+The important thing here is that C2 and C3 share everything. Same face, same body, same animation, same recorded voice. The only thing that changes is how it is drawn. So that pair is the comparison that actually tests my question.
+
+\vspace{0.6em}
+
+%% ============================================================
+\section*{\color{knblue}Part 2 — Choosing the composite (slide 7, about 1 minute)}
+
+\slidehead{7}{Parameter adjustment study}{1:10}
+
+Before the main study I had to decide what exactly C3 should look like. I did not want to just pick the settings I personally liked, so I ran a smaller study first.
+
+Forty-five people ranked rendered images of the avatar by how trustworthy the advisor looked. Five rounds, one group of parameters per round.
+
+Two results mattered. In the first three rounds nothing came out clearly on top, so those values were settled by the ranking plus a separate question about which one people simply liked looking at.
+
+But rounds four and five were different. There, people significantly preferred the version with \emph{no} extra filter at all. So the Kuwahara filter and the hierarchical layer were both thrown out, and that is a real result, not a convenience.
+
+What survived is a composite of three things: an outline, X-Toon shading, and Sobel edge detection. Plus one more piece: the head texture had to be cleaned up in Blender first, because the photographic texture has lighting baked into it and the edge detector reads that lighting as if it were structure.
+
+\remind{This is the answer to RQ2, and it is worth saying out loud: the answer is not a single technique, it is a composite plus texture preprocessing.}
+
+%% ============================================================
+\section*{\color{knblue}Part 3 — The user study (slides 8 to 9, about 2 minutes)}
+
+\slidehead{8}{Main user study}{1:10}
+
+Now the main study.
+
+Participants read a short scenario, for example choosing between two job offers. Then they watched an advisor recommend one of the options. Then they rated that advisor. They did this three times, once for each condition, and everyone saw all three.
+
+There were three scenarios: a career choice, a travel route, and a learning resource. Each one is built around a different side of trust. And the recommended option alternates, so participants cannot learn that the advisor always picks option A.
+
+The order was counterbalanced with a Latin square across three study versions.
+
+Fifty-two people started. Eleven were removed because they failed an attention check, so the analysis uses forty-one people with complete data.
+
+For the measures I used existing validated scales rather than inventing my own: Godspeed for likeability, Ho and MacDorman for eeriness, and Mayer's three trust dimensions, ability, benevolence and integrity. All of them came out reliable, with alpha between point eight seven and point nine six.
+
+And at the very end, after all three videos, participants had to actually pick: which advisor would you consult, who is most trustworthy, who is least unsettling.
+
+\slidehead{9}{Four hypotheses}{0:50}
+
+Four hypotheses.
+
+H1 says the stylised avatar should feel less creepy than the photorealistic one.
+
+H2 says stylisation should not cost any trust compared to that same photorealistic avatar.
+
+H3 says that within a person, feeling creeped out should lower trust, and liking should raise it.
+
+H4 says the stylised avatar should not lose trust compared to the real human.
+
+One thing worth flagging. H2 and H4 predict a \emph{null}. And a non-significant p-value on its own does not prove that two things are the same, it can just mean your study was too small to see the difference. So both of them also carry an equivalence test, a TOST, which was specified in advance.
+
+\vspace{0.6em}
+
+%% ============================================================
+\section*{\color{knblue}Part 4 — Results (slides 10 to 17, about 5 and a half minutes)}
+
+\slidehead{10}{Manipulation check}{0:40}
+
+First, a sanity check. Did people even notice the difference.
+
+I asked them to rate how stylised each advisor looked, from completely realistic to very stylised. And the ratings go up exactly as they should: real person lowest, photorealistic avatar in the middle, NPR highest. All three separate from each other significantly.
+
+So the manipulation worked. That matters, because everything that comes next is a null result, and now I can say those nulls are not just people failing to notice anything.
+
+\slidehead{11}{All five subscales at once}{0:45}
+
+This is the whole study on one slide, so let me give you the shape of it before the details.
+
+Five measures: likeability, eeriness, and the three trust dimensions. Three bars each, for the three conditions.
+
+Two things happen here. The real person separates from both avatars on every single one of the five. And the two avatars do not separate from each other on \emph{any} of them.
+
+That is basically the story of the entire study, and the next slides just go through it one hypothesis at a time.
+
+\slidehead{12}{H1 — eeriness}{0:55}
+
+H1 first. I expected the stylised avatar to be rated less creepy.
+
+It was not. In fact eeriness went slightly the other way, up from real to photorealistic to NPR. The real person differs from both avatars clearly, but the two avatars are statistically indistinguishable. The effect size between them is zero point zero seven, which is essentially nothing.
+
+So H1 is not supported.
+
+And the interesting part is \emph{why}. It is not that people did not see the stylisation, because the previous slide showed that they did, with a medium effect size. They saw it, they just did not find it any less creepy. So in this study, looking stylised and feeling eerie turned out to be two separate things.
+
+\slidehead{13}{H2 — trust against the photorealistic avatar}{1:10}
+
+H2 was about trust, again against the photorealistic avatar.
+
+Step one, the direct comparisons. Ability, benevolence, integrity. Nothing significant, and all three effect sizes are small, around zero point two.
+
+Step two is the honest part. As I said, that alone does not prove the two are equivalent. So I ran the equivalence test. And the equivalence test does not clear it either. The confidence interval is still wide enough to contain both a small drop and a moderate gain.
+
+So H2 is inconclusive. I did not find a difference, but I also cannot claim there is none.
+
+And I want to be clear that this is a sample size problem, not a surprise. With forty-one participants, the power for that equivalence test is about zero point two even if the true difference were exactly zero. To settle it properly you would need roughly three times as many people.
+
+\remind{If someone asks why you did not just collect more data, the answer is on the limitations slide: the submission deadline set the collection window and it fell in the semester break. Say that plainly.}
+
+\slidehead{14}{H3 — eeriness, likeability and trust}{1:00}
+
+H3 is the one that worked.
+
+Here I am not comparing conditions any more. I am looking inside each participant: when the same person felt more creeped out by one video than by their own average, did their trust go down.
+
+And it did, very clearly. One point more eeriness costs almost exactly one point of trust, and this holds for all three trust dimensions equally. Likeability does the same thing in the opposite direction.
+
+So H3 is confirmed in both directions.
+
+There is one honest caveat. Eeriness and likeability are strongly correlated with each other, minus point seven two. If I put both in the same model they compete, and likeability wins. So I cannot say with this sample which of the two is really doing the work.
+
+But the important conclusion is this: the road from appearance to trust is open and it is wide. My composite just never walked down it, because it never moved eeriness in the first place. That is why H1 and H2 both came out null. They fail for the same single reason.
+
+\slidehead{15}{H4 — against the real human}{0:45}
+
+H4 asked whether the stylised avatar can reach the real person.
+
+It cannot. Ability, benevolence and integrity are all significantly higher for the real speaker, with large effect sizes. And the equivalence test is nowhere close. The gap is about one point three points, which is nearly three times the equivalence bound. So this is not a near miss, it is a real gap.
+
+H4 is not supported.
+
+Two explanations stay open and my design cannot separate them. Either this is exactly what the uncanny valley predicts. Or some participants recognised the speaker, because the speaker is me, and knowing someone gives you a reason to trust them that no renderer can compete with.
+
+\slidehead{16}{The behavioural measure}{0:40 \quad CUT}
+
+I also had a behavioural measure, where participants had to actually choose one advisor rather than rate them.
+
+I included this because Canales and colleagues found that what people \emph{say} and what people \emph{choose} can come apart, and the stylised avatar won on choice even when the ratings were flat.
+
+In my data they did not come apart. The rankings just reproduce the ratings. The real person wins clearly, the two avatars tie, and the stylised one attracted no extra preference. So the forced choice did not reveal anything the scales had missed.
+
+\slidehead{17}{Robustness checks}{0:35 \quad CUT}
+
+Three quick checks that the null is not an artefact.
+
+Order: the position of a video in the sequence had no significant effect on any subscale.
+
+Suspicion: twenty-four of the forty-one guessed that the study was about realism or trust. So I re-ran H1 and H2 on only the seventeen who did not guess, and the pattern is the same. People were answering honestly, not performing.
+
+And the secondary measures: agreement with the actual recommendation did not differ by condition, which is what you want, because the arguments were identical across conditions.
+
+\clearpage
+
+%% ============================================================
+\section*{\color{knblue}Part 5 — Discussion (slides 18 to 20, about 2 and a half minutes)}
+
+\slidehead{18}{Discussion — two patterns}{0:35}
+
+So there are two patterns that need explaining.
+
+One: the real person sits far above both avatars, everywhere.
+
+Two: the two avatars looked different to participants but scored identically on everything that mattered.
+
+And there is one constraint on any explanation I can give. H3 showed that appearance really does drive trust. So the mechanism was available. My composite changed what people saw without using it.
+
+\slidehead{19}{Why eeriness did not fall}{1:00}
+
+I think there are two mismatches inside my own composite.
+
+The first is material versus shape. My techniques change the surface, the shading, the lines. They do not touch the geometry at all. Now Zell and colleagues found that material is what drives eeriness, so this should have worked in my favour. But the same paper also found that eeriness goes \emph{up} when material and shape are stylised to different degrees. And that is exactly what C3 is: a cartoon surface sitting on a face reconstructed from photographs. So I may have removed one source of eeriness and added another at the same time.
+
+The second mismatch is appearance versus performance. Both avatar conditions use the same recorded human voice and the same recorded human gaze and lip movement. So C3 is a fully human performance coming out of a visibly drawn face. Cihodaru-Ştefanache and Podina argue that uncanniness comes from features that are perceived at inconsistent levels of humanness. A shading filter can only change the appearance side, so it could only make that inconsistency larger, not smaller.
+
+\slidehead{20}{Three more explanations}{0:55}
+
+Three more possibilities that I cannot rule out.
+
+The comparison set. Every participant saw a real human in the same session. Once a real person is sitting at the top of your scale, the only question left is how far below it each avatar falls. And both of mine were obviously computer generated. So a difference in render style has to compete with a much bigger, categorical difference.
+
+Generative AI. After the study, one participant asked me which AI system I had used to generate the videos. Nothing in my materials ruled that out. And if people assume it is AI-generated, general scepticism towards machine-made media would push \emph{both} avatars down equally, which is exactly the pattern I see.
+
+And the setting. This was a flat screen, prerecorded, no interaction. Zibrek and colleagues found that render style has a significant effect on presence in VR. A difference that is too weak in a browser window might become visible once the avatar is standing in your room.
+
+%% ============================================================
+\section*{\color{knblue}Part 6 — Limitations and conclusion (slides 21 to 24, about 3 minutes)}
+
+\slidehead{21}{Limitations}{0:45}
+
+Four honest limitations.
+
+Session length. Both studies had to stay under about fifteen minutes, and every single measure was repeated three times. That capped how much I could ask.
+
+One configuration. One composite, one avatar, one platform, three scenarios. So this describes \emph{this} configuration, not NPR as a whole.
+
+Sample size, which I have already mentioned. Forty-one is enough to detect a difference, it is not enough to prove equivalence.
+
+And counterbalancing. A full design with three conditions needs six orders, and six orders needs about twice the participants. So I used three.
+
+\slidehead{22}{Conclusion}{1:05}
+
+So, back to the three questions.
+
+RQ1. All eight techniques ran on all three platforms. The thing that decides whether a technique transfers is not how complicated it is, it is whether it needs new parameter values, which you can always find, or a new input signal, which you only get if the pipeline is open.
+
+RQ2. On a photogrammetric avatar no technique got there by rendering alone. The answer is the three-part composite, outline plus X-Toon plus Sobel, together with preprocessing the head texture. And the settings were decided by ranking, not by my own eye.
+
+RQ3. H1 not supported, H2 inconclusive, H3 confirmed, H4 not supported. The composite did not make the avatar less eerie. But it also did not cost any measurable trust.
+
+And that last point is the practical one. If you are a developer choosing between a photorealistic avatar and a stylised one, nothing in my data says the stylised one puts you at a disadvantage.
+
+The real distance is not between two rendering styles. The real distance is to the actual human, and neither avatar closed any part of it.
+
+\slidehead{23}{Future work}{0:45}
+
+So what would I do next.
+
+The single clearest step is to repeat the C2 versus C3 comparison with about one hundred and twenty people, and finally settle H2 one way or the other.
+
+Then the competing explanations can each be tested. Extend the abstraction to the geometry, not just the material. Drop the real person and let the two avatars be compared on their own. And simply tell participants at the start that the videos are not AI-generated.
+
+Beyond that, instead of testing one level of abstraction against realism, sweep it continuously, and turn my single point into a curve. That is what would show whether there is an optimum somewhere in the middle.
+
+And finally, run it in VR with real interaction, and across more than one avatar identity.
+
+\slidehead{24}{Thank you}{0:10}
+
+That is the work. Eight techniques, three platforms, two studies, eighty-six participants in total. Thank you very much, and I am happy to take your questions.
+
+\clearpage
+
+%% ============================================================
+\section*{\color{knblue}Likely questions, and short answers}
+
+\remind{Answer in two or three sentences, then stop. If you do not know, say what your data can and cannot show. That is a strong answer, not a weak one.}
+
+\textbf{``Your main result is a null. Why should we believe it means anything?''}\\
+Because I tested it two ways. The direct comparison found nothing, and I also pre-specified an equivalence test rather than treating a non-significant p-value as proof. The equivalence test is inconclusive at this sample size, and I report that rather than claiming equivalence. And the manipulation check shows participants clearly saw the difference, so this is not a failed stimulus.
+
+\textbf{``Forty-one participants is small. Is the study underpowered?''}\\
+For detecting a difference it met the power analysis. For proving equivalence it does not, and I say so. Equivalence needs roughly three times as many people. The collection window was fixed by the submission deadline and it fell in the semester break, when the mailing list channel was mostly empty.
+
+\textbf{``You were the speaker in C1. Is that not a confound?''}\\
+Yes, and I flag it as one. Some participants may have recognised me, and that gives C1 a basis for trust that no rendering can match. It inflates the C1 baseline, so the H4 gap may be larger than it would be with a stranger. It does not affect the C2 versus C3 comparison, which is the critical one.
+
+\textbf{``Why not just use one platform, if the study only used Avaturn?''}\\
+Because RQ1 is a separate contribution. Building the same eight techniques three times is what exposed the difference between needing new parameter values and needing a new input signal. That is not visible from one platform. Avaturn was then selected for the study on three stated criteria, and it is the only one that meets all three.
+
+\textbf{``Why did you exclude Kuwahara and the hierarchical layer?''}\\
+Not by my own judgement. In the parameter study participants significantly preferred the version without them, in both cases. Since trustworthiness is the outcome I care about, that was the deciding evidence.
+
+\textbf{``Is the composite optimal?''}\\
+No, and I do not claim that. I tested the parameter groups with the largest expected visual impact and fixed the rest by inspection during development. It is a configuration judged suitable within the limits of the study, not a global optimum.
+
+\textbf{``Could a stronger or different stylisation have worked?''}\\
+Possibly. That is exactly why my main future work item is to sweep abstraction strength continuously instead of testing one setting. My data is a single point on a curve I never measured.
+
+\textbf{``What is the practical takeaway for a developer?''}\\
+Two things. Stylisation did not cost trust here, so choosing a stylised avatar is not an obvious disadvantage. And if you are working on a closed platform, plan around the input signals it exposes, not around the techniques you would like to use.
+
+\end{document}

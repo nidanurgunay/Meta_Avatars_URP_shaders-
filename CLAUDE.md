@@ -61,13 +61,17 @@ The Mixamo avatar (character name: **Jody**) and its related scenes live in a se
 | `06_evaluation.tex` | Placeholder |
 | `07_conclusion.tex` | Placeholder |
 
-Frontmatter: `titlepage.tex`, `abstract.tex`, `acknowledgements.tex` are DONE. `declaration.tex` needs real name and signature.
+Frontmatter: `titlepage.tex`, `abstract.tex`, `acknowledgements.tex`, `abbreviations.tex` are DONE.
+
+**No declaration of authorship in the thesis PDF — confirmed 2026-08-29.** There is deliberately no `declaration.tex` and `main.tex` does not include one. The Eigenständigkeitserklärung is submitted separately to the examination office, not bound into the document. Do not flag its absence as a missing section and do not add one.
 
 ---
 
 ### 3.2 Unity Project — Platform and Pipeline
 
-- **Engine:** Unity 6 (6000.0.60f1), Universal Render Pipeline (URP)
+- **Engine:** Unity 2022.3.62f3 LTS, Universal Render Pipeline (URP) 14.0.12
+
+  Corrected 2026-08-28. This entry previously read "Unity 6 (6000.0.60f1)", which was wrong, and the same error had propagated into Implementation §5.1. Verified from four independent sources: `ProjectSettings/ProjectVersion.txt`, the editor logs in `Logs/` (82 occurrences of 2022.3.62f3, and the editor binary path `/Applications/Unity/Hub/Editor/2022.3.62f3/`), and the resolved package set. URP and render-pipelines.core are 14.0.12, TextMeshPro is 3.0.7 and ugui is 1.0.0, which are 2022.3 packages. Unity 6 ships URP 17.x and TMP folded into ugui 2.0, so Unity 6 is not possible with this manifest.
 - **SDK:** Meta Avatars SDK v40.0.1
 - **Target device:** Meta Quest (VR)
 

@@ -40,11 +40,10 @@
 %% ---- Page Layout ----
 \usepackage[
   a4paper,
-  inner=3cm,
-  outer=2.2cm,
+  left=2.85cm,
+  right=2.85cm,
   top=2.5cm,
   bottom=2.2cm,
-  bindingoffset=5mm,
 ]{geometry}
 
 %% ---- KOMA heading fonts (sans-serif, matching Fink thesis) ----
@@ -66,9 +65,10 @@
 
 %% ---- Header / Footer ----
 \usepackage[automark, headsepline]{scrlayer-scrpage}
+\automark[chapter]{chapter}   % chapter on every page, not alternating section/chapter
 \clearpairofpagestyles
 \ohead{\headmark}
-\ofoot[\pagemark]{\pagemark}
+\cfoot[\pagemark]{\pagemark}
 
 %% ---- Math ----
 % Clear newtxmath conflicts before loading AMS packages
@@ -104,15 +104,18 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
-\definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{codeblue}{rgb}{0.13,0.29,0.53}
-\definecolor{codegreen}{rgb}{0.0,0.5,0.0}
-\definecolor{codepurple}{rgb}{0.58,0,0.82}
-\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+%% Greyscale listing palette. Defined in the `gray` model so the PDF stores them as
+%% DeviceGray, not RGB: print shops bill a page as colour whenever it carries any
+%% non-grey ink, and a neutral grey written as rgb(0.5,0.5,0.5) can still be counted.
+\definecolor{codegray}{gray}{0.55}
+\definecolor{codeblue}{gray}{0.00}
+\definecolor{codegreen}{gray}{0.45}
+\definecolor{codepurple}{gray}{0.30}
+\definecolor{backcolour}{gray}{0.96}
 
 \lstdefinestyle{mystyle}{
   backgroundcolor=\color{backcolour},
-  commentstyle=\color{codegreen},
+  commentstyle=\color{codegreen}\itshape,
   keywordstyle=\color{codeblue}\bfseries,
   morekeywords={float2,float3,float4,float2x2,float3x3,float4x4,half,half2,half3,half4},
   numberstyle=\tiny\color{codegray},
@@ -129,7 +132,7 @@
   showtabs=false,
   tabsize=2,
   frame=single,
-  rulecolor=\color{gray!30},
+  rulecolor=\color{codegray},
 }
 \lstset{style=mystyle}
 
@@ -156,10 +159,6 @@
   maxbibnames=10,
 ]{biblatex}
 \addbibresource{references.bib}
-
-%% ---- Acronyms & Glossary ----
-\usepackage[acronym, toc, nonumberlist]{glossaries}
-\makeglossaries
 
 %% ---- Theorem Environments ----
 \theoremstyle{plain}
@@ -197,10 +196,12 @@
 \KOMAoptions{open=any}
 \frontmatter
 \include{frontmatter/titlepage}
+%% Blank verso: the cover's reverse stays empty so the abstract falls on a
+%% front (right-hand) side and the contents on its back, as the binding requires.
+\thispagestyle{empty}\null\clearpage
 \include{frontmatter/abstract}
-\include{frontmatter/acknowledgements}
 
-\tableofcontents
+{\setstretch{1.0}\tableofcontents}
 \listoffigures
 \listoftables
 \include{frontmatter/abbreviations}
@@ -224,5 +225,8 @@
 \crefalias{chapter}{appendix}
 \include{appendix/appendix_a}
 \include{appendix/appendix_b}
+
+%% ---- Acknowledgements (placed at the end) ----
+\include{frontmatter/acknowledgements}
 
 \end{document}

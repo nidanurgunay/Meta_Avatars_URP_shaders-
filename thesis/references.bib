@@ -133,6 +133,10 @@
   number    = {3},
   pages     = {297--337},
   publisher = {John Benjamins},
+  doi       = {10.1075/is.7.3.10mac},
+  %% working note: volume 7, issue 3, pages 297-337 and publisher verified from the physical PDF
+  %% (MacDorman2006AndroidScience.pdf), which prints no DOI. DOI supplied by Nidanur from the
+  %% John Benjamins record 2026-08-29.
 }
 
 @inproceedings{barla2006,
@@ -281,10 +285,10 @@
 
 @misc{avaturn,
   author       = {{Avaturn}},
-  title        = {What is {Avaturn}?},
+  title        = {Avaturn: Realistic Avatars from a Photo},
   year         = {2024},
-  howpublished = {\url{https://docs.avaturn.me/docs/what-is-avaturn/}},
-  note         = {Developer documentation for the Avaturn avatar creation service},
+  howpublished = {\url{https://avaturn.me/}},
+  note         = {Product page for the Avaturn avatar creation service. Accessed 2026-08-29},
 }
 
 @techreport{gltf2,
@@ -292,7 +296,7 @@
   title        = {{glTF} 2.0 Specification},
   institution  = {The Khronos Group},
   year         = {2017},
-  note         = {Available at \url{https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html}},
+  note         = {Available at \url{https://github.com/KhronosGroup/glTF/blob/main/specification/2.0/Specification.adoc}},
 }
 
 @techreport{itu709,
@@ -406,14 +410,14 @@
   doi       = {10.1016/j.chb.2010.05.015},
 }
 
-@misc{alipour2025,
-  author        = {Alipour, Ahdiyeh and Hartmann, Tilo and Alimardani, Maryam},
-  title         = {Would You Rely on an Eerie Agent? {A} Systematic Review of the Impact of the Uncanny Valley Effect on Trust in Human--Agent Interaction},
-  year          = {2025},
-  eprint        = {2505.05543},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.HC},
-  url           = {https://arxiv.org/abs/2505.05543},
+@article{alipour2026,
+  author    = {Alipour, Ahdiyeh and Hartmann, Tilo and Alimardani, Maryam},
+  title     = {Would You Rely on an Eerie Agent? {A} Systematic Review of the Impact of the Uncanny Valley Effect on Trust in Human--Agent Interaction},
+  journal   = {Computers in Human Behavior Reports},
+  volume    = {23},
+  eid       = {101220},
+  year      = {2026},
+  doi       = {10.1016/j.chbr.2026.101220},
 }
 
 @inproceedings{natarajan2020,
@@ -574,9 +578,13 @@
   volume    = {7502},
   pages     = {511--513},
   publisher = {Springer},
-  address   = {Heidelberg},
+  address   = {Berlin, Heidelberg},
   year      = {2012},
-  note      = {Poster paper. Proceedings DOI: 10.1007/978-3-642-33197-8},
+  doi       = {10.1007/978-3-642-33197-8_62},
+  note      = {Poster paper},
+  %% working note: chapter DOI (chapter 62), from the publisher record 2026-08-29. Editors
+  %% (Nakano, Neff, Paiva, Walker) and print ISBN 978-3-642-33196-1 are on record but omitted
+  %% from the entry to stay consistent with the other proceedings entries.
 }
 
 %% Avatar realism and self-embodiment in VR (arXiv 2024)
@@ -703,16 +711,19 @@
 
 %% Multiscale anisotropic Kuwahara filtering (NPAR 2011)
 @inproceedings{kyprianidis2011,
-  author    = {Kyprianidis, J. E.},
+  author    = {Kyprianidis, Jan Eric},
   title     = {Image and Video Abstraction by Multi-Scale Anisotropic {Kuwahara} Filtering},
   booktitle = {Proceedings of the 9th International Symposium on Non-Photorealistic Animation and Rendering},
   series    = {{NPAR} '11},
   pages     = {55--64},
   publisher = {ACM},
   year      = {2011},
-  isbn      = {978-1-4503-0907-3},
-  %% working note: verified from physical PDF (anisotropic_multicale_209.pdf).
-  %% Article DOI not confirmed; cited by ISBN.
+  doi       = {10.1145/2024676.2024686},
+  %% working note: authors, pages, venue and ISBN 978-1-4503-0907-3 verified from the physical PDF
+  %% (anisotropic_multicale_209.pdf), which prints no DOI. DOI supplied by Nidanur from the ACM DL
+  %% record 2026-08-29. ISBN dropped from the entry now a DOI exists, matching the other
+  %% proceedings entries. ACM titles the volume "Proceedings of the ACM SIGGRAPH/Eurographics
+  %% Symposium on NPAR"; the "9th International Symposium" form is kept to match lake2000/barla2006.
 }
 
 @inproceedings{raskar1999,
@@ -782,10 +793,10 @@
 
 @misc{unityurp,
   author       = {{Unity Technologies}},
-  title        = {Inject a Render Pass with a Scriptable Renderer Feature in {URP}},
+  title        = {Inject a pass using a Scriptable Renderer Feature},
   year         = {2026},
-  howpublished = {\url{https://docs.unity3d.com/6000.0/Documentation/Manual/urp/renderer-features/scriptable-renderer-features/inject-a-pass-using-a-scriptable-renderer-feature.html}},
-  note         = {Unity 6 Universal Render Pipeline manual},
+  howpublished = {\url{https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@14.0/manual/renderer-features/scriptable-renderer-features/inject-a-pass-using-a-scriptable-renderer-feature.html}},
+  note         = {Universal Render Pipeline package documentation, version 14.0.12. Accessed: 2026-08-28},
 }
 
 @online{hlsl,
@@ -804,4 +815,19 @@
   address   = {Toyama, Japan},
   pages     = {269--276},
   year      = {2009},
+  doi       = {10.1109/ROMAN.2009.5326351},
+  %% working note: DOI, venue and pages read directly from the article's own header line
+  %% in Articles/bartneckKandaRoMan2009.pdf
+}
+
+@article{katsyri2015,
+  author    = {K{\"a}tsyri, Jari and F{\"o}rger, Klaus and M{\"a}k{\"a}r{\"a}inen, Meeri and Takala, Tapio},
+  title     = {A review of empirical evidence on different uncanny valley hypotheses: support for perceptual mismatch as one road to the valley of eeriness},
+  journal   = {Frontiers in Psychology},
+  volume    = {6},
+  pages     = {390},
+  year      = {2015},
+  doi       = {10.3389/fpsyg.2015.00390},
+  %% working note: authors, journal, volume, article number and DOI read directly from the
+  %% article header and running footer of Articles/fpsyg-06-00390.pdf
 }

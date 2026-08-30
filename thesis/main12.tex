@@ -1,0 +1,228 @@
+%% Master's Thesis — Nidanur Günay
+%% ===== 12pt VARIANT — generated for size comparison. Edit main.tex, not this file. =====
+%% Abstraction Mechanisms for Virtual Avatars
+%% University of Konstanz — Visual Computing
+%% ============================================
+
+\documentclass[
+  12pt,
+  a4paper,
+  twoside,
+  openany,
+  headings=optiontohead,
+  parskip=half,
+]{scrbook}
+
+%% ---- Encoding & Language ----
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+
+%% ---- Typography ----
+% Body: New TX Text (Times-like serif, matches Fink thesis); headings: Source Sans Pro
+\usepackage{newtxtext,newtxmath}     % Times-like body + matching math symbols
+\usepackage{sourcesanspro}           % Source Sans Pro for \sffamily headings (matches Fink)
+\usepackage{setspace}
+\setstretch{1.10}
+\usepackage{microtype}
+
+%% ---- Paragraph style handled by parskip=half in \documentclass ----
+\raggedbottom   % prevent vertical stretch on short pages (avoids big inter-paragraph gaps)
+\clubpenalty=10000   % forbid a paragraph's opening 1-2 lines from being stranded at a page bottom
+\widowpenalty=10000  % forbid a paragraph's closing 1-2 lines from being stranded at a page top
+
+%% ---- Float placement parameters (allow large figures alongside short text blocks) ----
+\renewcommand{\topfraction}{0.95}       % up to 95% of page may be top floats
+\renewcommand{\bottomfraction}{0.80}    % up to 80% of page may be bottom floats
+\renewcommand{\textfraction}{0.05}      % at least 5% of page must be text
+\renewcommand{\floatpagefraction}{0.85} % float-only pages must be at least 85% full
+
+%% ---- Page Layout ----
+\usepackage[
+  a4paper,
+  inner=3cm,
+  outer=2.2cm,
+  top=2.5cm,
+  bottom=2.2cm,
+  bindingoffset=5mm,
+]{geometry}
+
+%% ---- KOMA heading fonts (sans-serif, matching Fink thesis) ----
+\setkomafont{chapter}{\normalfont\huge\sffamily}
+\setkomafont{section}{\normalfont\large\sffamily}
+\setkomafont{subsection}{\normalfont\normalsize\sffamily}
+\setkomafont{subsubsection}{\normalfont\normalsize\sffamily\itshape}
+\setkomafont{pagehead}{\normalfont\small\sffamily}
+\setkomafont{pagenumber}{\normalfont\small\sffamily}
+
+%% ---- Heading spacing (tighter, matching Fink thesis) ----
+% Reduce the large default drop above/below chapter titles
+\renewcommand*{\chapterheadstartvskip}{\vspace*{20pt}}
+\renewcommand*{\chapterheadendvskip}{\vspace{8pt}}
+% Tighten space before/after section-level headings
+\RedeclareSectionCommand[beforeskip=0.75\baselineskip, afterskip=0.4\baselineskip]{section}
+\RedeclareSectionCommand[beforeskip=0.6\baselineskip,  afterskip=0.4\baselineskip]{subsection}
+\RedeclareSectionCommand[beforeskip=0.5\baselineskip,  afterskip=0.25\baselineskip]{subsubsection}
+
+%% ---- Header / Footer ----
+\usepackage[automark, headsepline]{scrlayer-scrpage}
+\clearpairofpagestyles
+\ohead{\headmark}
+\ofoot[\pagemark]{\pagemark}
+
+%% ---- Math ----
+% Clear newtxmath conflicts before loading AMS packages
+\let\Bbbk\relax
+\let\openbox\relax
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+
+%% ---- Graphics & Figures ----
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{needspace}
+\captionsetup{labelfont=bf, font=small, labelsep=colon, format=hang}
+\usepackage{wrapfig}
+\usepackage[section]{placeins} % auto FloatBarrier before every \section
+\usepackage{mdframed}
+\usepackage{pdfpages}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%% ---- Tables ----
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{array}
+
+%% ---- Algorithms & Code ----
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{xcolor}
+
+%% Greyscale listing palette. Defined in the `gray` model so the PDF stores them as
+%% DeviceGray, not RGB: print shops bill a page as colour whenever it carries any
+%% non-grey ink, and a neutral grey written as rgb(0.5,0.5,0.5) can still be counted.
+\definecolor{codegray}{gray}{0.55}
+\definecolor{codeblue}{gray}{0.00}
+\definecolor{codegreen}{gray}{0.45}
+\definecolor{codepurple}{gray}{0.30}
+\definecolor{backcolour}{gray}{0.96}
+
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen}\itshape,
+  keywordstyle=\color{codeblue}\bfseries,
+  morekeywords={float2,float3,float4,float2x2,float3x3,float4x4,half,half2,half3,half4},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\small,
+  breakatwhitespace=false,
+  breaklines=true,
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=2,
+  frame=single,
+  rulecolor=\color{codegray},
+}
+\lstset{style=mystyle}
+
+%% ---- Hyperlinks & PDF Metadata ----
+\usepackage[
+  pdftitle={Abstraction Mechanisms for Virtual Avatars},
+  pdfauthor={Nidanur Günay},
+  pdfsubject={Master's Thesis, University of Konstanz},
+  pdfkeywords={non-photorealistic rendering, VR avatars, abstraction, trust, Meta Avatar SDK},
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue,
+  bookmarks=true,
+  bookmarksopen=true,
+]{hyperref}
+\usepackage{bookmark}
+
+%% ---- Bibliography ----
+\usepackage[
+  backend=biber,
+  style=ieee,
+  sorting=none,
+  maxbibnames=10,
+]{biblatex}
+\addbibresource{references.bib}
+
+%% ---- Theorem Environments ----
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+%% ---- Utilities ----
+\usepackage{todonotes}
+\usepackage{cleveref}
+\crefname{appendix}{appendix}{appendices}
+\Crefname{appendix}{Appendix}{Appendices}
+
+%% Table of contents lists chapters and sections only (matches the reference thesis;
+%% subsections and subsubsections still appear in the document body).
+\setcounter{tocdepth}{1}
+
+%% KOMA's \frontmatter/\mainmatter always call \cleardoubleoddpage in twoside
+%% mode, ignoring the openany option (which only gates \backmatter and \chapter).
+%% Redefine it to \clearpage so these transitions don't force blank pages.
+\renewcommand*{\cleardoubleoddpage}{\clearpage}
+
+%% ========================================================
+\begin{document}
+
+%% ---- Front Matter ----
+\KOMAoptions{open=any}
+\frontmatter
+\include{frontmatter/titlepage}
+\include{frontmatter/abstract}
+\include{frontmatter/acknowledgements}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\include{frontmatter/abbreviations}
+\KOMAoptions{open=any}
+
+%% ---- Main Matter ----
+\mainmatter
+\include{chapters/01_introduction}
+\include{chapters/03_background}
+\include{chapters/02_related_work}
+\include{chapters/04_methodology}
+\include{chapters/05_implementation}
+\include{chapters/06_evaluation}
+\include{chapters/07_conclusion}
+
+%% ---- Back Matter ----
+\printbibliography[heading=bibnumbered, title=Literature]
+
+%% ---- Appendix ----
+\appendix
+\crefalias{chapter}{appendix}
+\include{appendix/appendix_a}
+\include{appendix/appendix_b}
+
+\end{document}

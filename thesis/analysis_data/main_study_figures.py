@@ -125,7 +125,7 @@ def get_pairwise(df, dv):
     sub = df.dropna(subset=[dv])[["participant", "condition", dv]]
     n_complete = sub.groupby("participant").size()
     sub = sub[sub["participant"].isin(n_complete[n_complete == 3].index)]
-    pw = pg.pairwise_tests(data=sub, dv=dv, within="condition", subject="participant", padjust="bonf")
+    pw = pg.pairwise_tests(data=sub, dv=dv, within="condition", subject="participant", padjust="holm")
     out = {}
     for _, row in pw.iterrows():
         key = (row["A"], row["B"]) if (row["A"], row["B"]) in [

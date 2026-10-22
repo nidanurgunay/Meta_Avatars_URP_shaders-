@@ -1,0 +1,242 @@
+%% ============================================================
+%% Measures — defence preparation paper
+%% Nidanur Günay. Everything in here is grounded in the thesis
+%% (04_methodology.tex §4.10.4, 06_evaluation.tex §6.2) and in the
+%% live questionnaire export (Perception of Virtual Avatar Advisors-*.csv).
+%% Compile from the PROJECT ROOT:
+%%   pdflatex -interaction=nonstopmode Defense_Measures_StudyPaper.tex
+%% ============================================================
+
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[a4paper,top=1.8cm,bottom=1.8cm,left=1.9cm,right=1.9cm]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{needspace}
+\usepackage{fancyhdr}
+\usepackage{colortbl}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{knblue}{HTML}{00539F}
+\definecolor{knlight}{HTML}{EAF1F8}
+\definecolor{kngrey}{HTML}{5A6570}
+\definecolor{knred}{HTML}{B00020}
+\definecolor{kngreen}{HTML}{1B7A43}
+
+\setstretch{1.08}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.45em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize\color{kngrey}Measures — defence preparation}
+\rhead{\footnotesize\color{kngrey}Nidanur Günay}
+\cfoot{\footnotesize\color{kngrey}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newcommand{\sect}[1]{%
+  \needspace{4\baselineskip}\vspace{0.7em}
+  \noindent\colorbox{knblue}{\parbox{0.978\textwidth}{\vspace{1pt}\color{white}\textbf{#1}\vspace{1pt}}}
+  \vspace{0.3em}\par}
+
+\newcommand{\q}[1]{\needspace{3\baselineskip}\vspace{0.35em}\noindent{\color{knblue}\textbf{Q.\ #1}}\par\nopagebreak}
+\newcommand{\key}[1]{{\color{knblue}\textbf{#1}}}
+\newcommand{\no}[1]{{\color{knred}\textbf{#1}}}
+\newcommand{\yes}[1]{{\color{kngreen}\textbf{#1}}}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries\color{knblue} Measures}\\[0.3em]
+  {\large What was measured, why, and how it was analysed}\\[0.25em]
+  {\color{kngrey} Defence preparation \quad|\quad Abstraction Mechanisms for Virtual Avatars}
+\end{center}
+
+\vspace{0.4em}
+
+\noindent\colorbox{knlight}{\parbox{0.972\textwidth}{\small\color{knblue}
+\textbf{How to use this.} Section 1 to 7 are the facts, in the order an examiner would walk them. Section 8 is the drill: the questions most likely to be asked, each with the shortest answer that is still correct. Everything here is taken from Methodology §4.10.4, Evaluation §6.2 and the live questionnaire export, not from memory.}}
+
+%% ============================================================
+\sect{1 \quad The measurement model, and why it is three instruments rather than one}
+
+The study measures three constructs that the literature treats as distinct, using three separate validated instruments. No composite shares an item with another composite.
+
+\begin{itemize}[leftmargin=1.2em,itemsep=0.15em]
+  \item \key{Likeability} — Godspeed likeability subscale, Bartneck et al.
+  \item \key{Eeriness} — the eeriness instrument of Ho and MacDorman.
+  \item \key{Trust} — Ability, Benevolence and Integrity from Mayer et al., inside the trusting-beliefs framework of McKnight and Chervany. Item wording adapted from the trust battery of Canales et al., who base theirs on Mayer and Davis.
+\end{itemize}
+
+That separation is not cosmetic. H3 asks whether eeriness and likeability \emph{predict} trust. If the eeriness items and the trust items came from one pooled scale, the predictor and the outcome would share variance by construction and the test would be circular. Keeping three instruments is what makes H3 interpretable.
+
+The three trust dimensions are kept separate rather than averaged into one trust score, because a rendering change could plausibly move one dimension and leave the others untouched. Every trust result in the thesis is reported per dimension for that reason.
+
+%% ============================================================
+\sect{2 \quad The per-block questionnaire (administered after each of the three videos)}
+
+{\small
+\setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.035\textwidth}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.07\textwidth}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.34\textwidth}@{}}
+\toprule
+& \textbf{Part} & \textbf{Items} & \textbf{Scale} & \textbf{Source and role} \\
+\midrule
+A & Comprehension check & 2 (+1) & Multiple choice & Gating. ``I have watched the full video'' and ``Which option did the advisor recommend?'' An extra attention-check item appeared in blocks 1 and 3, with a different target response in each. \\
+B & Likeability & 5 & 5-point semantic differential & Godspeed, Bartneck et al. \\
+C & Eeriness & 8 & 5-point semantic differential & Ho and MacDorman. Each polar pair was preceded by a short definition (\emph{eerie, freaky, supernatural, uncanny, hair-raising, spine-tingling, shocking, thrilling}). \\
+D & Trust: Ability & 3 & 7-point Likert & Mayer et al., wording after Canales et al. \\
+E & Trust: Benevolence & 3 & 7-point Likert & Mayer et al., wording after Canales et al. \\
+F & Trust: Integrity & 3 & 7-point Likert & Mayer et al., wording after Canales et al. \\
+G & Response to recommendation & 2 & 7-point Likert + choice & Agreement with the recommendation, plus the post-video option choice. Compared against the pre-video baseline to compute preference shift. Secondary, exploratory. \\
+\bottomrule
+\end{tabular}}
+
+\vspace{0.5em}
+\textbf{Rated items per block: 22 across B to F} (5 + 8 + 3 + 3 + 3), plus the agreement item in G. Each participant completed the block three times, once per condition, so the full design yields 66 rated responses per person across B to F.
+
+\vspace{0.3em}
+\textbf{The nine trust items, verbatim.} Ability: \emph{capable and competent} / \emph{seems knowledgeable} / \emph{has the expertise needed to give sound advice on this kind of decision}. Benevolence: \emph{will act in a benevolent (well meaning) manner} / \emph{would act in my best interest} / \emph{appears to have good intentions}. Integrity: \emph{adheres to a set of principles that I find acceptable} / \emph{appears to be honest} / \emph{seems sincere}.
+
+%% ============================================================
+\sect{3 \quad The post-study section (once, after all three blocks)}
+
+\textbf{Three forced rankings.} Each asked the participant to order all three advisors, assigning each a different rank. No ties, no opting out.
+
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
+  \item \key{Consultation preference} — ``Imagine each of these advisors could give you advice on any type of decision. Please rank them from the one you would most want to consult to the one you would least want to consult.'' \textbf{This is the primary behavioural measure}, adapted from the post-study advisor selection paradigm of Canales et al.
+  \item \key{Trustworthiness} — ``Please rank the three advisors from most to least trustworthy overall.''
+  \item \key{Unsettlingness} — ``Please rank the three advisors from most to least unsettling overall.'' With the definition: \emph{``Unsettling'' means the advisor's appearance or manner produced a feeling of unease or discomfort, not the scenario or the advice given.}
+\end{enumerate}
+
+A rank order was used rather than a forced binary choice. Both avatars were expected to score below the real person, and a two-way choice would have concentrated responses on C1 and left too little variance to separate C2 from C3.
+
+\textbf{Why a ranking adds something the trust battery does not.} Parts D to F record a trusting \emph{belief}: what the participant holds to be true of the advisor. A ranking by consultation preference records a trusting \emph{intention}: a willingness to act on that belief. The two need not agree, and Canales et al.\ found that they did not. Measuring both is what addresses the methodological gap Alipour et al.\ identify.
+
+\vspace{0.35em}
+\textbf{Part H — visual style manipulation check.} Participants rated the perceived visual stylisation of all three advisors on a single screen (1 = completely realistic, 7 = very stylised). Placed after all video blocks so that awareness of rendering differences could not prime the trust ratings during collection.
+
+\textbf{Part I — reflection.} One open question: the most important factor in deciding which advisor they trusted most.
+
+\textbf{Suspicion check.} A final open question asked what they believed the study was investigating. 24 of the 41 named avatar realism, stylisation or trust.
+
+%% ============================================================
+\sect{4 \quad Demographics and the covariate}
+
+Collected before the first video block: gender, age, frequency of interaction with virtual avatars or CG characters, and one dispositional trust item — \emph{``In general, I tend to trust people I meet for the first time''} (7-point Likert). Mayer et al.\ describe that disposition as a trait stable across situations, which is why it enters as an individual-level covariate rather than as an outcome.
+
+Realised sample: \key{$n = 41$} with valid data in all three conditions, from 52 enrolled, age $M = 27.6$ ($SD = 5.4$), 23 women, 17 men, 1 non-binary. Recruited through personal networks, a university mailing list and social media.
+
+%% ============================================================
+\sect{5 \quad Scale formats and presentation order, and why}
+
+\begin{itemize}[leftmargin=1.2em,itemsep=0.15em]
+  \item Parts B and C use a \key{5-point semantic differential}; Parts D to G use a \key{7-point Likert}. The switch is marked with a separator so participants notice the change of format.
+  \item \key{B precedes C} — likeability before eeriness. A general social impression should form before attention is directed at uncanny affect. The reverse order would prime observers towards negative perceptions and risk inflating eeriness before the trust battery is reached.
+  \item The eeriness items carry short definitions because several of the polar terms (\emph{uncanny}, \emph{spine-tingling}) are not everyday vocabulary for participants answering in a second language.
+  \item Video slots are named \emph{Video 1, 2, 3} throughout the questionnaire so that participants cannot infer the rendering style from a label. The condition mapping lives in the study-version assignment and is applied at analysis time.
+\end{itemize}
+
+%% ============================================================
+\sect{6 \quad Reliability}
+
+Each multi-item subscale was averaged into one composite. That is only valid if the items measure one construct, so internal consistency was checked first.
+
+{\small
+\setlength{\tabcolsep}{8pt}\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}lccl@{}}
+\toprule
+\textbf{Subscale} & \textbf{$k$} & \textbf{$\alpha$ (overall)} & \\
+\midrule
+Likeability & 5 & $.94$ & \\
+Eeriness    & 8 & $.87$ & \\
+Ability     & 3 & $.96$ & \\
+Benevolence & 3 & $.95$ & \\
+Integrity   & 3 & $.92$ & \\
+\bottomrule
+\end{tabular}}
+
+\vspace{0.4em}
+All five exceed the conventional $.70$ threshold \key{both overall and within each condition separately} ($n = 41$ contributing 123 blocks). No subscale required item removal. Checking per condition matters: a scale can look internally consistent when pooled across conditions simply because between-condition differences inflate the covariance.
+
+%% ============================================================
+\sect{7 \quad Analysis plan, specified before data collection}
+
+{\small
+\setlength{\tabcolsep}{6pt}\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}>{\raggedright\arraybackslash}p{0.44\textwidth}@{}}
+\toprule
+\textbf{Target} & \textbf{Test} & \textbf{Why that test} \\
+\midrule
+H1 & Repeated-measures ANOVA across the subscale composites, Holm-corrected pairwise & Within-subjects, three conditions, interval composites. Holm is uniformly more powerful than Bonferroni at the same family-wise error rate. \\
+H2, H4 & The same pairwise comparison \textbf{plus} a TOST equivalence test at a $d = 0.3$ bound & Both predict a null. A non-significant $p$ is absence of evidence, not evidence of absence, so a non-significant pairwise result alone cannot confirm them. \\
+H3 & Person-centred multilevel regression, random intercept per participant & Centres each predictor on that participant's own mean, so the slope is a within-person effect. A pooled correlation across conditions would confound within- and between-person variance. \\
+Rankings & Friedman omnibus, then Holm-corrected pairwise Wilcoxon signed-rank & Rank responses carry ordinal information only. Friedman tests whether the ordering differs from chance, Wilcoxon compares a specific pair. \\
+\bottomrule
+\end{tabular}}
+
+\vspace{0.5em}
+\textbf{Power and sample size.} The power analysis targeted a medium effect, $\eta^2_p = 0.06$, at $\alpha = .05$ and power $= 0.90$, for a three-condition within-subjects ANOVA. Minimum required \key{$n = 38$}; recruitment target 48 (16 per study version). A \emph{paired equivalence} test at the same $d = 0.3$ bound requires close to \no{$n = 120$}. The design was therefore adequately powered for the difference tests and underpowered for the equivalence tests, and this was known before collection rather than discovered after.
+
+%% ============================================================
+\sect{8 \quad The drill: likely questions, and the shortest correct answers}
+
+\q{Why three separate instruments instead of one overall trust score?}
+Because H3 uses eeriness and likeability to predict trust. If they shared items with the trust battery the test would be circular. Separation is what makes the prediction meaningful.
+
+\q{Why are Ability, Benevolence and Integrity reported separately rather than averaged?}
+A rendering change could move one dimension and not the others. Averaging would hide that. It also matches how Mayer et al.\ define the construct.
+
+\q{You use the Mayer model, which has four trusting beliefs. Where is predictability?}
+Deliberately excluded. Judging predictability requires observing an advisor's behaviour repeatedly, and each participant saw a given advisor deliver one scripted recommendation. The construct was not measurable in this design.
+
+\q{Why does likeability come before eeriness?}
+So a general social impression forms before attention is directed at uncanny affect. Asking about eeriness first primes negative perception and would inflate eeriness before the trust battery.
+
+\q{Why 5-point for B and C but 7-point for D to G?}
+Each instrument is used at the granularity its authors validated. Godspeed and Ho and MacDorman are 5-point semantic differentials; the Mayer trust items are 7-point Likert. Changing either would break comparability with the source literature.
+
+\q{Why exclude a whole participant for one failed check rather than just that block?}
+The gating and attention items were not identical across all three blocks. Excluding block by block would leave a participant contributing a mixture of validated and unvalidated data to a within-subjects comparison. 11 of 52 were removed under that rule.
+
+\q{Is 41 enough?}
+For the difference tests, yes: the power analysis required 38. For the equivalence tests, no: those need close to 120. That is stated in the thesis as a limitation and it is why H2 and H4 are reported as \emph{indistinguishable} rather than \emph{equivalent}.
+
+\q{Why TOST, and why a bound of $d = 0.3$?}
+Because H2 and H4 predict a null and a non-significant $p$ cannot establish one. TOST asks the opposite question: is the true difference small enough to be practically irrelevant? $d = 0.3$ is a conventional small-effect bound and it was fixed in advance, not chosen after seeing the data.
+
+\q{Why Holm and not Bonferroni?}
+Holm controls the same family-wise error rate but is uniformly more powerful. There is no reason to prefer Bonferroni once Holm is available.
+
+\q{Why a multilevel model for H3 instead of a correlation?}
+A pooled correlation across conditions mixes two things: whether people who rate one advisor as eerier also trust it less, and whether people who are generally more unsettled are generally less trusting. Person-centring isolates the first, which is what H3 claims.
+
+\q{H3 found $r = -.72$ between eeriness and likeability. Does that invalidate it?}
+It does not invalidate the prediction, which held in both directions. It limits the interpretation: with that much shared variance, likeability absorbs most of the eeriness effect when both enter one model. The honest claim is that appearance predicts trust, not which of the two components does the work.
+
+\q{Why was the manipulation check at the very end?}
+So that asking participants to attend to rendering style could not prime the trust ratings while those ratings were being collected. It was placed after all three blocks for exactly that reason.
+
+\q{How do you know participants actually saw the stylisation?}
+The final stylisation question. Ratings rose monotonically from Real to Photorealistic to NPR, the omnibus was $F(2,80) = 15.45$, $p < .001$, $\eta^2_p = .28$, and C2 versus C3 separated at $p = .004$, $g = 0.55$. No null result can be attributed to the manipulation going unnoticed.
+
+\q{The unsettlingness ranking: which direction does rank 1 run?}
+The question read \emph{most to least unsettling} while the form's answer columns were headed 1 (Best) to 3 (Worst). The means show participants used the Best-to-Worst reading: the real speaker sits lowest at 1.74, against 2.16 for C2 and 2.10 for C3. The comparison was null either way, $\chi^2_F(2) = 1.02$, $p = .60$, so no conclusion depends on it. \no{Volunteer this before it is asked.}
+
+\q{What does the dispositional trust item do?}
+It is a covariate, not an outcome. It tests whether a participant's general trusting disposition explains their trust ratings. It did not: $r(39) = -.10$, $p = .52$. Canales et al.\ report the same null in their comparable manipulation.
+
+\q{Why only three scenarios, and why those three?}
+Session length. Each measure is repeated three times and the whole study had to stay inside roughly 10 to 15 minutes. The three scenarios draw on \emph{different everyday domains} rather than repeating one situation three times, because rating the same decision three times over invites fatigue and carryover between blocks. \no{They are not each aimed at a particular trust dimension} --- all three dimensions are measured after every video by Parts D to F, so the ratings do not depend on any scenario foregrounding one of them. What \emph{is} controlled across scenarios is the recommended option (alternating A, B, A), the position at which it is discussed, and a fixed five-step script structure. Any difference in ratings therefore reflects rendering style rather than scenario content.
+
+\q{Could the per-block repetition have fatigued participants?}
+It is a real cost of the within-subjects design and it is why the measure set was kept to the minimum that answers the hypotheses. The reliability figures argue against serious fatigue: every subscale held above $.70$ within each condition separately, including the third block.
+
+\end{document}

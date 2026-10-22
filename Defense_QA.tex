@@ -1,0 +1,1295 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{needspace}
+\usepackage{soul}
+\usepackage[hidelinks]{hyperref}
+\definecolor{knblue}{HTML}{00539F}
+\definecolor{knlight}{HTML}{EAF2FA}
+\definecolor{kngrey}{HTML}{6B7280}
+\definecolor{knred}{HTML}{B91C1C}
+\definecolor{hlyellow}{HTML}{FFEB80}
+\sethlcolor{hlyellow}
+\newcommand{\key}[1]{\hl{#1}}
+\newcommand{\hook}[1]{{\setlength{\fboxsep}{1.5pt}\colorbox{hlyellow}{\color{black}#1}}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+\setlist{itemsep=0.15em,topsep=0.2em}
+
+\newcounter{qn}
+\newcommand{\Q}[2]{\needspace{9\baselineskip}\stepcounter{qn}\vspace{0.9em}{\large\bfseries\color{knblue}Q\arabic{qn}. #1}\hfill{\small\color{kngrey}Backup: #2}\par\vspace{0.2em}}
+\newcommand{\say}[1]{\begin{tcolorbox}[colback=knlight,colframe=knblue,boxrule=0.5pt,left=6pt,right=6pt,top=4pt,bottom=4pt]\textbf{Say:} #1\end{tcolorbox}}
+\newcommand{\tech}[5]{\needspace{10\baselineskip}\vspace{0.6em}{\bfseries #1}\par\vspace{0.1em}\begin{itemize}[leftmargin=1.2em,itemsep=0.05em,topsep=0.1em]\small\item\textbf{Paper:} #2 \item\textbf{Built:} #3 \item\textbf{Platforms:} #4 \item\textbf{Verdict:} #5\end{itemize}}
+\newcommand{\careful}[1]{{\color{knred}\textbf{Careful:} #1}\par}
+\newcommand{\qpart}[1]{\needspace{12\baselineskip}\vspace{1.4em}\noindent\colorbox{knblue}{\parbox{0.978\textwidth}{\vspace{2pt}\color{white}\large\bfseries #1\vspace{2pt}}}\par\vspace{0.3em}}
+
+\begin{document}
+
+{\LARGE\bfseries Defense — Answers to Likely Questions}\par
+\vspace{0.2em}
+{\color{kngrey}Each question: what to say first (blue box), then details if they push. Red lines are traps: things that are easy to overclaim. Backup slide numbers refer to \texttt{Defense\_Slides\_Thesis.pdf} (main slides 1--34, backups 38--79).}
+
+\vspace{0.6em}
+\noindent\colorbox{knlight}{\parbox{0.972\textwidth}{\small\color{knblue}
+\textbf{Five sentences that protect every answer.}\\[0.2em]
+1. \emph{No penalty was detected}, never \emph{there is no penalty}.\quad
+2. \emph{Indistinguishable}, never \emph{equivalent}.\quad
+3. \emph{The data provide insufficient evidence}, never \emph{X has no effect}.\quad
+4. \emph{This configuration}, never \emph{NPR in general}.\quad
+5. If you do not know: \emph{``The thesis does not test that. My expectation would be \ldots, and the way to test it would be \ldots''}}}
+
+\vspace{0.4em}
+{\small\color{kngrey}\textbf{Contents.}
+A~Big picture (Q1--Q3) \quad
+B~Related work (Q4--Q8) \quad
+C~Platforms and techniques (Q9--Q25) \quad
+D~Parameter study (Q26--Q30) \quad
+E~Main study design (Q31--Q41) \quad
+F~Statistics (Q42--Q48) \quad
+G~Results and interpretation (Q49--Q59) \quad
+H~Limitations and future work (Q60--Q63)}
+
+%% ============================================================
+\qpart{A \quad Big picture}
+
+\Q{What is new in this thesis?}{slide 7}
+
+\say{\key{I use NPR as deliberate abstraction}: moving the avatar away from photorealism on purpose, to see if that avoids the uncanny valley. Three things are new:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Platforms.}} The same NPR techniques on three production avatar platforms, including a closed SDK with only one shader hook.
+  \item \key{\textbf{Face.}} Techniques chosen by balancing abstraction against a readable face.
+  \item \key{\textbf{Comparison.}} A real speaker, a photorealistic avatar of the same person, and an NPR version of that same avatar, in one study.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Platforms, Face, Comparison} = RQ1, RQ2, RQ3.}}
+
+\begin{itemize}
+  \item \textbf{1. Platforms:} prior NPR and trust work assumed open pipelines and custom assets (Research Gap, §3.4).
+  \item \textbf{2. Face:} Wisessing, Zibrek and Zell varied coarse style levels, not specific operators. Wallraven compared named techniques, but as a filter over the video frames. Here the abstraction is in the avatar's own shading and texture.
+  \item \textbf{3. Comparison:} Canales came closest, but compared style categories and did not measure eeriness separately.
+\end{itemize}
+
+\Q{Why trust, and not just appeal?}{slide 5}
+
+\say{\key{Trust decides whether someone acts on what the avatar says.} Mayer defines it as a willingness to be vulnerable to another party without being able to control them. For an advisor, that is the outcome that matters. Appeal and eeriness are measured too, as the perceptual side.}
+
+\Q{What would you tell a developer based on your results?}{slide 32}
+
+\say{You do not have to assume the stylised version costs trust: \key{I detected no penalty}. But stylising the shading alone did not make the avatar less eerie, and \key{neither avatar came close to the real person}. Closing that gap is a harder problem than picking a render style.}
+
+\careful{do not say \emph{stylisation is safe} or \emph{equivalent}. Equivalence was not established.}
+
+%% ============================================================
+\qpart{B \quad Related work}
+
+\Q{Is the uncanny valley actually established?}{slide 38}
+
+\say{Partly. \key{The dip itself has been measured.} But it does not come from realism alone:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Measured.}} MacDorman and Ishiguro measured the dip, and Dill found it for CG characters too.
+  \item \key{\textbf{Not realism alone.}} Kätsyri reviewed the studies. ``More human-like means a dip'' held in only 1 of 8.
+  \item \key{\textbf{Mismatch.}} What held best, 4 of 4, is mismatch: parts of a character at different realism levels, like realistic skin on a cartoon face.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{The valley is real, but mismatch causes it, not realism.}}}
+
+\textbf{If they push, other studies:}
+\begin{itemize}
+  \item \textbf{Mori 1970:} the original curve, from observation, not data. Moving figures dip deeper.
+  \item \textbf{Tao 2025}, 13 studies combined: high realism was trusted more than low. Medium was not different from either. No eeriness difference was significant.
+  \item \textbf{Seymour 2021:} a very high quality photoreal avatar. None of the 18 people reacted badly to it.
+\end{itemize}
+\careful{mismatch is also your best explanation for H1 (Q50). Your NPR avatar has a stylised surface on a realistic shape, with a real human voice. That is a mismatch. Link the two if you have time.}
+
+\Q{Canales et al.: what did they find, what did you take, and how do you compare?}{slides 26, 57, 64, 65}
+
+\say{\key{Canales is the closest study to mine.}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Found.}} Trust ratings were flat across three styles. But when people had to choose a doctor, 48\% picked the semi-realistic one.
+  \item \key{\textbf{Took.}} Their trust model (ability, benevolence, integrity), their 7-point scale, trust rated after each advisor, and a final behavioural choice.
+  \item \key{\textbf{Changed.}} Video instead of VR, one speaker instead of three doctors, three everyday decisions instead of one medical one, and a ranking instead of a single choice.
+  \item \key{\textbf{Compared.}} In my study the ratings and the ranking agreed: real speaker first, the two avatars tied.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Found, Took, Changed, Compared.}}}
+
+\textbf{If they push:}
+\begin{itemize}
+  \item \textbf{Their study:} interactive VR interview on Quest 2, three doctors, identity crossed with style, $n=66$. Their choice result was narrow, $p=.044$, and they say so themselves.
+  \item \textbf{Their behaviour task:} pick one doctor for a second opinion, plus the least preferred.
+  \item \textbf{Why I used a ranking:} the real speaker was expected to win. A single choice would pile onto C1 and leave nothing to separate C2 from C3. So participants ranked all three: most want to consult, most trustworthy, most unsettling.
+  \item \textbf{Wording:} three items per dimension instead of five or six, to keep the session short. \emph{Doctor} became \emph{advisor}. Their four overall trust items were dropped.
+  \item \textbf{My ranking results:} C2 vs.\ C3 not significant, $p=.21$ for consulting and $p=.07$ for trust.
+\end{itemize}
+
+\needspace{20\baselineskip}
+\textbf{How each trust item was adapted} (backup slides 64, 65)\par
+\vspace{0.2em}
+{\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.31\textwidth}>{\raggedright\arraybackslash}p{0.37\textwidth}>{\raggedright\arraybackslash}p{0.26\textwidth}@{}}
+\toprule
+\textbf{This study} & \textbf{Closest Canales item} & \textbf{What changed} \\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{\color{knblue}Ability}} \\
+This advisor is capable and competent. & A1: The doctor is very capable of performing his/her job. & doctor $\to$ advisor, no job reference, \emph{competent} added \\
+This advisor seems knowledgeable. & A2: The doctor has much knowledge about the work that needs done. & shortened, no task reference \\
+This advisor seems to have the expertise needed to give sound advice on this kind of decision. & A4: The doctor has specialized capabilities that can increase performance. A5: The doctor is well qualified. & tied to the advice decision, not medical performance \\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{\color{knblue}Benevolence}} \\
+This advisor will act in a benevolent (well meaning) manner. & Pretest prompt: This person will behave in a benevolent (well meaning) manner. & \emph{behave} $\to$ \emph{act} \\
+This advisor would act in my best interest. & B4: The doctor really looks out for what is important to me. & rephrased after the benevolence definition, \emph{best interest of the trustor} \\
+This advisor appears to have good intentions. & B1: The doctor is very concerned about my welfare. & \textcolor{knred}{no direct counterpart}, closest item shown \\
+\midrule
+\multicolumn{3}{@{}l}{\textbf{\color{knblue}Integrity}} \\
+This advisor adheres to a set of principles that I find acceptable. & Pretest prompt: The person adheres to a set of principles that I find acceptable. I6: Sound principles seem to guide the doctor's behavior. & subject only \\
+This advisor appears to be honest. & \textcolor{knred}{no direct counterpart} & --- \\
+This advisor seems sincere. & \textcolor{knred}{no direct counterpart} & --- \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+{\small\color{kngrey}Canales items from their Supplement 11.1 (post-doctor surveys). Pretest prompts from their Section 3.2, used to rate the doctors' dialogue.\par}
+
+\vspace{0.4em}
+\begin{minipage}[t]{0.48\textwidth}
+\textbf{Not carried over}
+\begin{itemize}
+  \item A3: I feel very confident about the doctor's skills
+  \item B2, B3, B5: needs and desires, not hurt me, go out of his/her way
+  \item I2 to I5: sense of justice, stick to word, fair dealings, values
+  \item All four overall trust items, two of them reverse scored
+  \item I1 is blank in the published supplement
+\end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\textbf{Kept the same}
+\begin{itemize}
+  \item Mayer et al.\ 1995: ability, benevolence, integrity
+  \item 7-point Likert scale
+  \item Rated once per advisor, after each advisor
+  \item Three dimensions analysed separately
+\end{itemize}
+\end{minipage}
+\par\vspace{0.9em}
+
+\needspace{14\baselineskip}
+{\bfseries\color{knblue}Follow-up: Why did you change the sentences, and not just replace \emph{doctor} with \emph{advisor}?}\par\vspace{0.2em}
+
+\say{Because many Canales items describe a doctor's job, not just a doctor. With only the subject swapped, they would ask about things my participants never saw. My rule was: \key{\textbf{keep what the item measures, change what it is about}}, so that each item can be judged from one 23-second recommendation.
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{No job to judge.}} \emph{Performing his/her job} and \emph{the work that needs done} have no meaning for an advisor seen once.
+  \item \key{\textbf{Ability is domain specific.}} Mayer defines ability within a domain, so I tied it to \emph{this kind of decision}, not to medical performance.
+\end{enumerate}
+B4 is the one exception, where a subject swap would have worked. See the next follow-up.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Same construct, new context.}}}
+
+\begin{itemize}
+  \item \textbf{A1 example:} \emph{The advisor is very capable of performing his/her job} would ask about a job the participant knows nothing about. \emph{Capable and competent} asks about the same ability without that context.
+  \item \textbf{Shorter:} the items were answered three times, once per video, in a 10 to 15 minute session. Short items lower the load, especially for people answering in a second language.
+  \item \textbf{Where the wording was already general,} only the subject changed: the two pretest prompts (\emph{benevolent manner}, \emph{acceptable principles}).
+  \item \textbf{Check that it worked:} the three trust subscales held $\alpha=.92$ to $.96$ overall and at least $.81$ in every condition, so the reworded items measured one thing each.
+\end{itemize}
+\careful{rewording means these are \emph{adapted} items, not the validated Canales scale. Say \emph{adapted from Canales, grounded in Mayer's definitions}. High reliability supports them but is not a full re-validation (no factor analysis was done). Do not call them \emph{validated}.}
+\vspace{0.4em}
+
+\needspace{16\baselineskip}
+{\bfseries\color{knblue}Follow-up: But B4 works with just the subject changed. Why reword it?}\par\vspace{0.2em}
+
+{\small\emph{The advisor really looks out for what is important to me} would be general and would keep the meaning. So the job argument does not apply here.}
+
+\say{\key{Agree first: yes, a subject swap would have worked for B4.} I reworded it because of what my advisor does. The advisor recommends one option, and both options were real trade-offs.
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Agreement risk.}} \emph{What is important to me} can be read as \emph{my own preference}. Someone who preferred the other option might then rate benevolence low only because they disagreed.
+  \item \key{\textbf{Best interest is different.}} An advisor can act in my best interest and still recommend what I did not want. That is closer to benevolence: wanting good for me, not agreeing with me.
+  \item \key{\textbf{Agreement is measured elsewhere.}} Part G asked about agreement with the recommendation separately, so I wanted the benevolence item to stay apart from it.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Benevolence is wanting good for me, not agreeing with me.}}}
+
+\begin{itemize}
+  \item Why it matters in this study: most participants already had a preference before the video, and only 1 to 5 of 41 per condition moved toward the recommendation after it (Q59).
+  \item Mayer: benevolence is the extent to which the trustee wants to do good for the trustor. Background §2.3 phrases it as caring about the observer's wellbeing.
+\end{itemize}
+
+\careful{this reason is not written in the thesis. The backup slide says only \emph{rephrased after the benevolence definition}. Only use the agreement argument if it matches why you actually changed it. If it was simply a wording choice, the honest fallback is: \emph{``A subject swap would have been the stricter adaptation. I chose wording closer to Mayer's definition, and the benevolence subscale stayed reliable ($\alpha=.95$, at least $.94$ in every condition), so I do not think it changed what the scale measures.''}}
+\vspace{0.4em}
+\careful{three items have no Canales counterpart: \emph{good intentions}, \emph{honest}, \emph{sincere}. Nothing in the thesis or the slides gives their source. Know where they come from before the defense. If you wrote them yourself, say so: they paraphrase Mayer's definitions of benevolence and integrity. Reliability was high ($\alpha=.95$, $.92$), which supports them.}
+\careful{the trust ranking at $p=.07$: report it as not significant. Do not call it a trend toward either avatar.}
+
+\Q{What did Zell et al.\ show, and why is it central to your discussion?}{slide 29}
+
+\say{
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Study.}} One face, split into \emph{shape} (geometry) and \emph{material} (shader and texture), each stylised on five levels, from cartoon to realistic, and varied separately.
+  \item \key{\textbf{Found.}} Shape decides how realistic a face looks. Material decides how appealing or eerie it is.
+  \item \key{\textbf{Mismatch.}} When shape and material are at different levels, faces are rated least appealing and most eerie.
+  \item \key{\textbf{Link to me.}} My composite stylises only the material and keeps the realistic shape. That is exactly this mismatch, and it may explain why H1 failed.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Shape = realism, material = eeriness, mismatch = worst.}}}
+
+\begin{itemize}
+  \item Shape axis: s0 cartoon head to s4 scanned likeness, material fixed. Material axis: m0 to m4, geometry fixed.
+  \item Their words: \emph{``very realistic material on a stylized shape''} gives \emph{``unappealing and eerie characters''}. Mine is the reverse, a stylised material on a realistic shape.
+\end{itemize}
+\careful{Zell's example is the reverse direction of yours. Say \emph{a mismatch between shape and material}, not \emph{the same case as Zell}.}
+
+\Q{Why Ho and MacDorman for eeriness, and not Godspeed?}{slide 20}
+
+\say{\key{Godspeed has no eeriness subscale.} Ho and MacDorman found its subscales too intercorrelated, apart from safety, and none of them captured eeriness. Their instrument measures eeriness separately from humanness, and the two indices were nearly uncorrelated in validation.}
+
+\begin{itemize}
+  \item Ho and MacDorman: $r\approx.02$ between eeriness and humanness.
+\end{itemize}
+
+\textbf{Why likeability still came from Godspeed (Mori's vertical axis):}
+\begin{itemize}
+  \item Mori's vertical axis is the Japanese word \emph{shinwakan}, roughly the comfort or affinity a figure gives you.
+  \item It has no exact English word. Earlier studies, such as MacDorman and Ishiguro, measured it as \emph{familiarity}.
+  \item Bartneck and colleagues suggest \emph{likeability} as a translation of that term. So Godspeed likeability is a candidate measure of the curve's vertical axis.
+  \item That gives the study both sides of the curve: \textbf{likeability} for the height of the curve, and \textbf{eeriness} for the dip.
+\end{itemize}
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{shinwakan $\to$ familiarity $\to$ likeability.}}}
+
+\careful{Bartneck and colleagues themselves warn that likeability and anthropomorphism may not map onto Mori's simple 2D curve. Say \emph{a candidate measure} of the vertical axis, not \emph{the} measure.}
+
+\needspace{16\baselineskip}
+{\bfseries\color{knblue}Follow-up: What is the difference between human likeness and likeability?}\par\vspace{0.2em}
+
+\say{\key{Human likeness is how human something looks. Likeability is how much people like it.} On Mori's curve, human likeness is the horizontal axis, and likeability is a candidate for the vertical one. \key{I measured only likeability}, with Godspeed. Human likeness is a concept in my thesis, not a measured variable.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Likeness = looks human. Likeability = is liked.}}}
+
+{\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}@{}}
+\toprule
+& \textbf{Human likeness} & \textbf{Likeability} \\
+\midrule
+What & Resemblance to a real person, a perception of appearance & Warm or cold impression, a feeling \\
+Mori's curve & Horizontal axis & Candidate for the vertical axis (\emph{shinwakan}) \\
+In my study & Not measured (anthropomorphism subscale dropped) & Part B, Godspeed, 5 items \\
+On the slides & 2, 4, 5, 29, backup \emph{Why no human-likeness scale} & 19, 20, 24, 27, 30, and the H3 backups \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+
+\needspace{10\baselineskip}
+\textbf{Godspeed and Bartneck: the same thing?} Yes. \key{Godspeed is the questionnaire, Bartneck et al.\ (2009) is the paper that introduced it} (\emph{Int.\ J.\ Social Robotics} 1(1), 71--81, slide reference [14]). It has five subscales and 24 items. I used only likeability, 5 items.
+
+{\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.37\textwidth}>{\raggedright\arraybackslash}p{0.39\textwidth}@{}}
+\toprule
+& \textbf{Bartneck et al.\ 2009, IJSR} & \textbf{Bartneck, Kanda et al.\ 2009, RO-MAN} \\
+\midrule
+What & The Godspeed questionnaire & \emph{My Robotic Doppelgänger}, a critique of the valley \\
+Used for & Likeability items, $\alpha\geq.70$ & Likeability as a translation of \emph{shinwakan}, the 2D caution \\
+On slides & yes, [14] & no \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+
+\careful{never say \emph{human likeability}, which mixes the two. Do not claim you measured human likeness: the final stylisation question measures style (realistic to stylised), not human likeness. Ho and MacDorman separated eeriness from \emph{humanness}, not from likeability (Q55). Nowak and Rauh used \emph{perceived} anthropomorphism, so say \emph{avatars perceived as more human-like}. On slide 4, \emph{likeness} means human likeness, not likeability.}
+
+\Q{Mayer versus McKnight and Chervany: which did you use?}{slide 5}
+
+\say{\key{Both, for different things.}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Mayer gave the three dimensions.}} Ability, benevolence and integrity: what makes someone trustworthy.
+  \item \key{\textbf{McKnight and Chervany gave the split}} between what I \emph{believe} about the advisor and what I am \emph{willing to do}.
+  \item \key{\textbf{So I measured both.}} The ratings measure the belief. The ranking measures the intention.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Mayer = what I measure. McKnight = belief versus action.}}}
+
+\textbf{The two levels, in plain words:}\par
+\vspace{0.2em}
+{\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}>{\raggedright\arraybackslash}p{0.38\textwidth}@{}}
+\toprule
+& \textbf{Trusting belief} & \textbf{Trusting intention} \\
+\midrule
+Meaning & What I think is true of the advisor & Whether I would act on it, relying on the advisor \\
+Example & \emph{``This advisor is competent.''} & \emph{``I would go to this advisor for advice.''} \\
+In my study & Parts D, E, F: the nine trust ratings & Post-study ranking: who would you most want to consult \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.4em}
+
+\begin{itemize}
+  \item \textbf{Why both matter:} the two need not agree. Canales found exactly that: flat ratings, but a choice that favoured the semi-realistic doctor. Alipour's review lists both as ways to measure trust, and they are rarely measured together.
+  \item \textbf{Mayer's own split:} \emph{trustworthiness} is a property of the advisor (the three dimensions). \emph{Trust} is the attitude of the person judging. McKnight carried that idea into technology settings.
+  \item \textbf{What McKnight adds:} a fourth belief, \emph{predictability}. I left it out on purpose: judging whether someone is predictable needs repeated observation, and each advisor gave only one recommendation.
+\end{itemize}
+
+%% ============================================================
+\qpart{C \quad Platforms and techniques (RQ1, RQ2)}
+
+\Q{Why these three platforms?}{slide 9}
+
+\say{\key{They span the range of rendering access.} Mixamo is fully open and was the prototyping target. The Meta SDK is closed, with one shader hook. Avaturn is open and has a realistic face with full blendshape animation, so it carried the study.}
+
+\begin{itemize}
+  \item Mixamo: no facial rig, face stays static. Unsuitable for the study.
+  \item Meta: built-in body tracking, live tracked avatar. Face animation needs Quest Pro.
+  \item Avaturn: the only one meeting all three study requirements: open URP access, blendshapes, photorealistic face.
+\end{itemize}
+
+\Q{Why is the Meta SDK like that? Why hook injection?}{slides 39, 40}
+
+\say{The SDK owns the rendering. It generates its own shader from templates and skins the avatar on the GPU, so I cannot replace its shader. \key{The only way in is one hook function that runs per pixel after all its lighting.}}
+
+\begin{itemize}
+  \item Hook: \texttt{AppSpecificPostManipulation}. Gets the lit colour, returns a new colour.
+  \item It does not break the SDK's skinning or material handling. That is why I used it.
+  \item \textbf{Cannot:} second pass, depth or normal buffer, avatar mask (an extra pass would draw the bind pose, not the animated pose).
+  \item \textbf{So:} V5 used a camera-distance derivative instead of depth. V6 had no blur pass, so an unblurred structure tensor. V4 ran on lit colour and needed seam rejection.
+  \item \textbf{Why use it at all:} built-in body tracking, the avatar moves with the wearer, no motion capture needed.
+\end{itemize}
+\careful{if asked about LOD: the SDK swaps materials back when it changes level of detail, so the project re-applies the NPR material periodically. This is in the code, not in the thesis text.}
+
+\needspace{14\baselineskip}
+{\bfseries\color{knblue}Follow-up: Why can you not just add a post-processing pass on the Meta SDK?}\par\vspace{0.2em}
+
+\say{I could run a full-screen effect over the whole frame. But it would not know anything about the avatar. A post-process needs three things from the avatar, and the SDK gives none of them:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{No depth or normals.}} The SDK's shader has no depth-normals pass, so the avatar is missing from URP's screen-space normal and depth buffers. V5 had no geometry to read.
+  \item \key{\textbf{No mask.}} To apply the effect only to the avatar, I need a mask. But a mask pass would draw the \emph{bind pose}, the unposed mesh, not the animated avatar.
+  \item \key{\textbf{Why the bind pose.}} The SDK skins the avatar on the GPU and keeps the animated mesh in its own buffers, not in Unity's mesh. Anything outside its shader only sees the unposed mesh.
+\end{enumerate}
+\key{So the only place that sees the correctly posed avatar is the SDK's own shader, which means the hook.}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{No buffers, no mask, no pose: only the hook sees the avatar.}}}
+
+\begin{itemize}
+  \item \textbf{Mixamo and Avaturn:} normal skinned meshes in Unity. URP draws them into the depth and normal buffers, and a mask pass on a dedicated rendering layer sees the posed mesh. So V5 and V6 ran there as post-processing.
+  \item \textbf{Consequence on Meta:} everything had to happen per pixel in one pass. V5 depth became the camera-distance derivative. V6 lost the tensor blur pass.
+\end{itemize}
+
+\needspace{10\baselineskip}
+{\bfseries\color{knblue}Follow-up: Why is face animation a problem on the Meta SDK?}\par\vspace{0.2em}
+
+\say{The Meta avatar's face is driven by the headset itself, not by a separate tool. Facial expressions come from face tracking in the headset, \key{and that needs a Quest Pro}. My development headset was a Quest 3, which has body tracking but no face tracking.}
+
+\begin{itemize}
+  \item This is one reason Avaturn carried the study: its blendshapes could be driven by Live Link Face on an iPhone, 52 ARKit coefficients.
+  \item Table 4.1 lists it as \emph{Facial animation: requires Quest Pro hardware}.
+\end{itemize}
+\careful{the thesis only says \emph{requires Quest Pro hardware}. That the Quest Pro has inward-facing face-tracking cameras and the Quest 3 does not is general hardware knowledge, not stated in the thesis. Fine to say, but do not go further into SDK details you have not checked.}
+
+\Q{What is your answer to RQ1, in one line?}{slide 16}
+
+\say{Every technique ran on all three platforms, and the dividing line is \key{whether an operator needs only new parameter values, or a new input signal}. Missing buffers forced substitutes on the Meta SDK, and texture differences forced retuning everywhere.}
+
+\begin{itemize}
+  \item New values: Sobel thresholds differ per platform ($t=0.2$ clean on Mixamo, artefacts on Avaturn, lower on Meta).
+  \item New signal: V5 depth from camera distance, V5 colour from XDoG instead of Roberts Cross, V6 tensor without smoothing.
+  \item This predicts how a technique would behave on a fourth platform.
+\end{itemize}
+
+\Q{Why did you choose these techniques?}{slide 41}
+
+\say{Each technique answers a limitation of the one before. I went from shape, to shading, to edges, to post-processing, and \key{kept the ones that left the face readable: outline, X-Toon and Sobel}.}
+
+\begin{itemize}
+  \item \textbf{V1 Geometric Silhouette Outline:} silhouette from geometry. Misses everything inside the outline. \textbf{Kept} as the base.
+  \item \textbf{V2 Toon Shading:} flat shading bands. No control over how abstract. \textbf{Replaced} by V2.2.
+  \item \textbf{V2.2 X-Toon Shading:} 2D ramp, lighting on one axis, abstraction on the other. \textbf{Kept}, manual mode, because depth and curvature barely change at 1\,m.
+  \item \textbf{V3 Screen-Space Normal Edge Detection:} catches creases, misses colour boundaries (eyebrows, lips). \textbf{Excluded}: facial readability. Sobel also covers what V3 finds.
+  \item \textbf{V4 Sobel Edge Detection:} catches colour edges, noisy on photo texture. \textbf{Kept}, after texture preprocessing.
+  \item \textbf{V4.2 Gaussian Prefiltered Sobel:} smoothing first. No gain once the texture was preprocessed, up to 72 samples. \textbf{Excluded}.
+  \item \textbf{V5 Hierarchical Edge Detection with Multiple Cues:} depth + normal + colour. Facial segments unclear, nose bridge artefact. \textbf{Excluded} by the parameter study ($p<.001$).
+  \item \textbf{V6 Kuwahara Painterly Filter:} painterly. Features disappear at a painterly radius. \textbf{Excluded} by the parameter study ($p=.003$).
+\end{itemize}
+
+\needspace{22\baselineskip}
+\vspace{0.5em}
+\noindent\colorbox{hlyellow}{\parbox{\dimexpr\textwidth-2\fboxsep\relax}{\vspace{2pt}\large\bfseries\color{knblue}Technique cards: if they ask about one technique in detail\vspace{2pt}}}\par\vspace{0.2em}
+{\small\color{kngrey}\textbf{Memory hook:} every card answers in the same order: \hook{\emph{Paper $\to$ Built $\to$ Platforms $\to$ Verdict}}. Mixamo and Avaturn usually share code (open URP). The Meta SDK differs because it only has the hook and only sees the lit colour.}
+
+\tech{V1 — Geometric Silhouette Outline}
+{Raskar and Cohen: draw the back faces pushed towards the camera, and the rim that sticks out behind the front faces is the outline. It comes from geometry alone, with no edge detection and no adjacency information.}
+{Two passes. Outline pass: front-face culling, every vertex pushed out along its normal by width $w$ ($\mathbf{P}'=\mathbf{P}+\mathbf{N}w$), flat outline colour. Then the normal lit pass draws the front faces over the inside, so only the rim is left. A small depth bias against z-fighting, and an alpha cutout of $0.1$ so hair cards and eyelashes do not get rectangular outlines.}
+{Mixamo and Avaturn write depth with a standard depth test and clip alpha in both passes. Meta: no depth write and a looser depth test, to avoid clashing with the SDK's own depth handling. Alpha is already handled by the SDK.}
+{\key{Kept as the base of every combination.} Stable because it runs in the vertex stage, nothing is read from the screen. Limit: only the outer contour, nothing inside it.}
+
+\tech{V2 — Toon Shading}
+{Lake et al.: quantise the diffuse lighting term into a few flat bands, which gives the cartoon look in real time.}
+{Lambert term $\mathbf{N}\cdot\mathbf{L}$ quantised as $\lfloor s\cdot n\rfloor/n$, with 4 bands. Each band edge gets a narrow smoothstep, otherwise small normal changes during animation flip a whole patch to the next band. Then a shadow strength remap, an ambient term and a rim highlight. No cast shadows, to keep the effect isolated.}
+{Meta has no lighting term inside the hook, only the finished lit colour. So it posterises the RGB colour per channel, rounding to the nearest band (plain floor darkens the image), then adjusts saturation.}
+{\key{Replaced by X-Toon.} The bands follow the lighting, so there is no separate control over how abstract it looks, and there are still no interior lines.}
+
+\tech{V2.2 — X-Toon Shading}
+{Barla et al.: replace the 1D toon ramp with a 2D ramp. One axis is lighting ($\mathbf{N}\cdot\mathbf{L}$), the other is an abstraction value driven by an attribute such as depth or orientation. Their normal field abstraction blends the normals with those of a smoothed shape.}
+{U coordinate = remapped $\mathbf{N}\cdot\mathbf{L}$. V coordinate from one of three modes: depth (camera distance), curvature (screen-space normal derivative) or manual (a constant). An abstraction step flattens the bands as V rises. Then a blend to a shadow colour and a Blinn-Phong highlight. Normal abstraction via a blurred normal map.}
+{Meta: the hook does not own the vertex stage, so the world position is passed in as an extra argument to compute the light and shadow. No blurred normal map is used there, only geometric smoothing towards a sphere.}
+{\key{Kept, in manual mode with detail bias $0.5$.} At the 1\,m study framing, depth and curvature hardly vary, so they gave no signal.}
+
+\tech{V3 — Screen-Space Normal Edge Detection}
+{Image-space feature lines: Saito and Takahashi read edges from a buffer of normals and depth, and Nienhaus and Döllner found creases from jumps in the normals. Where the surface direction changes sharply, there is a crease.}
+{\texttt{ddx}/\texttt{ddy} of the world normal give how much it turns between neighbouring pixels. This comes for free, since the GPU shades in $2\times2$ quads. Magnitude $M_N$, then a smoothstep around a threshold, then blended to the line colour.}
+{Normal source differs. Mixamo decodes the normal map with Unity's \texttt{UnpackNormalScale}. Avaturn uses \texttt{rgb*2-1}, because GLTFast skips Unity's importer. Meta uses the SDK's own normal, which only has geometric detail, so its lines are much sparser.}
+{\key{Excluded. It misses colour boundaries} (eyebrows, lips, eyelids), and line width grows with distance because the derivative is per pixel. Sobel covers its clothing lines anyway.}
+
+\tech{V4 — Sobel Edge Detection}
+{Sobel (Gonzalez and Woods): two $3\times3$ kernels estimate the horizontal and vertical gradient. The $\pm2$ centre weights smooth slightly while differentiating, so it is less noisy than Roberts Cross. Logic: facial features are colour boundaries in the texture, not geometry.}
+{Eight neighbours of the albedo sampled at small UV offsets, converted to BT.709 luminance, $G_x$ and $G_y$ applied, magnitude compared to a threshold, then blended to the line colour. Because it samples in texture space, the lines stay attached to the surface.}
+{Meta only sees the lit colour, so UV seams show up as false lines. Two extra gates fix that: a seam check (reject if the luminance range is too large) and a band gate (keep only magnitudes between a minimum and a maximum). Thresholds differ per platform: Mixamo clean, Avaturn noisy, Meta needs lower values.}
+{\key{Kept, after the Avaturn head texture was preprocessed.} Final threshold $0.05$ from the parameter study.}
+
+\tech{V4.2 — Gaussian Prefiltered Sobel}
+{Marr and Hildreth: smooth before you differentiate, since differentiation amplifies noise. Canny is built on the same idea.}
+{Each of Sobel's 8 samples becomes a 9-tap weighted blur (centre, 4 sides, 4 corners, weights normalised), so up to 72 samples. Then a min/max band gate, four smoothsteps and a power curve to sharpen the result, with three presets: Light, Moderate, Aggressive.}
+{Same logic everywhere, only the texture it reads differs. Meta drives the four sharpening steps from one tightness value. Why 72: a Gaussian is cheap when split into two passes, but that needs a stored intermediate image, and one pass has none.}
+{\key{Excluded. Smoothing removed real edges together with noise}, and the sharpening made the baked lighting at the nose and eyes stronger. After preprocessing, plain Sobel was already clean.}
+
+\tech{V5 — Hierarchical Edge Detection with Multiple Cues}
+{AHEAD (Roshaan): split edges into three layers. Depth gives the silhouette, a gradient operator gives structure, XDoG gives texture. They are merged by max-pooling, and a luminance-based gain raises sensitivity in dark areas. It is a post-process that needs colour and depth buffers.}
+{Mixamo and Avaturn: a URP renderer feature, a full-screen post-process. Roberts Cross on the scene depth, on the scene normals, and on colour luminance plus a chromatic term for equal-brightness colour edges. Each layer thresholded and weighted, merged by max. A separate mask pass on the avatar's rendering layer limits it to the avatar. \key{My change to AHEAD:} normals instead of a gradient operator for structure, because baked lighting would look like geometry.}
+{Meta, all inside the hook: depth replaced by the derivative of each pixel's distance to the camera, which cannot see the background and so misses the outer silhouette. Normal layer as in V3 plus the AHEAD dark-area gain. Colour layer uses XDoG instead of Roberts Cross, because subtracting two blurs cancels broad baked lighting.}
+{\key{Excluded by the parameter study ($p<.001$).} Facial segments stayed unclear and the nose bridge gave false lines.}
+
+\tech{V6 — Kuwahara Painterly Filter}
+{Kuwahara: split the neighbourhood into regions and output the mean of the most uniform one, so areas flatten and edges stay sharp. Kyprianidis made it anisotropic: a smoothed structure tensor gives the local direction, and an elliptical kernel with 8 sectors follows it, so the brush marks follow the shape.}
+{Mixamo and Avaturn, three passes: (1) structure tensor from a Sobel gradient, (2) a separable Gaussian blur of the tensor, (3) the filter, collecting every pixel in the radius into 8 sectors, each weighted by $1/(1+\sigma^q)$ (the 2009 form). Composited through the avatar mask.}
+{Meta: no extra passes, so the tensor comes from \texttt{ddx}/\texttt{ddy} of the lit luminance with no blur, which is noisy. A fixed 3 samples per sector, and the thresholded weight $\max(\tau,\sigma)^{-q}$ from the 2011 paper. Result: no oriented brush marks, only boosted colour patches.}
+{\key{Excluded by the parameter study ($p=.003$).} The painterly look only shows at a large radius, and then eyebrows, lips and irises disappear.}
+
+\careful{V5 on Mixamo and Avaturn is \texttt{HierarchicalEdgeDetection.shader}, the renderer feature. In the current project that feature is switched off and its C\# script is missing, and the live V5 materials point to a different shader. If anyone asks to see V5 running, explain that the thesis results came from the post-process version.}
+
+\Q{What are the four criteria, and why these?}{slide 42}
+
+\say{\key{Facial readability, temporal stability, artefact suppression and expressive abstraction.} Two come straight from RQ2, abstraction against legibility. The other two come from the stimulus: it is animated video, so it must not flicker or show rendering errors.}
+
+\begin{itemize}
+  \item \textbf{Facial readability:} eyes, mouth, nose bridge, jaw line stay legible. This one separated the techniques most.
+  \item \textbf{Temporal stability:} no flicker while the avatar moves. Screen-space methods flicker because the pixel neighbourhood shifts.
+  \item \textbf{Artefact suppression:} no seam lines, hair card outlines, z-fighting, false skin edges.
+  \item \textbf{Expressive abstraction:} the style looks deliberate, not like noise or an error.
+  \item \textbf{How:} judged in the Unity editor and on Quest 3, idle animation, several distances including 1\,m.
+\end{itemize}
+\careful{the thesis defines the four criteria but does not spell out why these four. The link to RQ2 and to the video stimulus is your reasoning. Say it as your reasoning. Also: the assessment was qualitative and done by you. If asked, that is exactly why the parameter study exists: to move the final choice from your eye to participants.}
+
+\Q{Why the inverted hull for the outline, not a screen-space outline?}{slide 43}
+
+\say{\key{It needs no edge detection pass and works in the vertex stage}, so it runs on all three platforms, including inside the Meta SDK. Nothing is resampled from the screen, so it does not flicker.}
+
+\begin{itemize}
+  \item Back faces pushed out along the normal, front-face culling, then the normal pass covers the inside (Raskar and Cohen).
+  \item Fixes needed: depth bias against z-fighting, alpha cutout ($0.1$) so hair cards do not get rectangular outlines.
+  \item Limits: flat planes with identical normals give no outline, and nothing inside the silhouette is marked.
+\end{itemize}
+
+\Q{If X-Toon runs in manual mode, is it not just toon shading?}{slide 45}
+
+\say{At the close study framing, depth and curvature hardly vary, so the second axis became a fixed setting, the detail bias. What X-Toon still adds over V2 is that \key{the abstraction level is a control of its own, independent of the lighting}. The parameter study then set it at 0.5.}
+
+\careful{do not claim the view-dependent behaviour of X-Toon was used in the study. It was not. Manual mode is a constant.}
+
+\Q{Why did edge detection fail on the Avaturn face?}{slide 11}
+
+\say{Avaturn reconstructs the head from photographs, so \key{the lighting is baked into the albedo} and the skin carries photographic noise. A gradient operator reads all of that as structure, for example at the nose bridge. And raising the threshold or smoothing removes the real edges, eyebrows and lips, together with the noise.}
+
+\Q{Why Sobel, and not Roberts Cross or Canny?}{slides 47, 49}
+
+\say{Sobel's $\pm2$ weights smooth slightly while differentiating, so it is \key{less sensitive to noise than Roberts Cross}, which reads only four pixels. Canny adds two steps after the gradient. The second one, hysteresis, has to follow an edge across the image, and \key{a single fragment pass cannot follow anything}: each pixel only sees its own small neighbourhood.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Sobel is local. Canny's hysteresis is not.}}}
+
+\textbf{Sobel against Roberts Cross, pixel count:}
+\begin{itemize}
+  \item \textbf{Sobel:} a $3\times3$ window, \key{9 pixels}. The centre weight is 0 in both kernels, so the shader only samples the \key{8 neighbours}.
+  \item \textbf{Roberts Cross:} a $2\times2$ window, \key{4 pixels}, no centre pixel, compares only along the two diagonals.
+  \item \textbf{Trade-off:} Sobel's larger window and $\pm2$ weights smooth while differentiating, so it is less noisy. Roberts is more local and cheaper, but more sensitive to noise (Background §2.4.1). Roberts appears only inside V5's post-process.
+\end{itemize}
+
+\textbf{Canny's four steps, in plain words} (Background §2.4.3):
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \textbf{Smooth} the image with a Gaussian.
+  \item \textbf{Gradient}, like Sobel: how strong the edge is, and its direction.
+  \item \textbf{Non-maximum suppression (thinning).} An edge is usually several pixels wide. Keep a pixel only if it is stronger than its two neighbours across the edge, so the line becomes one pixel thin.
+  \item \textbf{Hysteresis (linking).} Use two thresholds, a high one and a low one:
+  \begin{itemize}[itemsep=0em,topsep=0.1em]
+    \item above high: a \emph{strong} edge, always kept;
+    \item below low: noise, always dropped;
+    \item in between: a \emph{weak} edge, kept \emph{only if it connects to a strong edge}, directly or through other weak edges.
+  \end{itemize}
+\end{enumerate}
+
+\textbf{Why hysteresis is the real problem:}
+\begin{itemize}
+  \item \textbf{Example:} an eyebrow line that is strong in the middle and faint at the ends. Hysteresis keeps the faint ends, because they connect to the strong middle. A single threshold would cut them off or let noise in.
+  \item To decide one weak pixel, you must know whether a chain of pixels leads to a strong edge. That chain can be any length, so the answer can depend on pixels far away.
+  \item A fragment shader computes each pixel once and on its own. It cannot wait for its neighbours' results or pass a decision along a line. Hysteresis therefore needs several passes, or a whole-image step like a flood fill.
+  \item \textbf{Non-maximum suppression} is less of a problem. One pass can do it by recomputing the neighbours' gradients, but that multiplies the samples, as with V4.2's 72.
+\end{itemize}
+
+\careful{the Canny point is your reasoning from the single-pass constraint. Background §2.4.3 describes Canny's steps, but the thesis does not say Canny was tried or rejected. Say \emph{``I did not use Canny because its hysteresis step needs more than one pass''}, not \emph{``Canny was tested and failed''}. And do not claim non-maximum suppression is impossible in one pass. It is possible, just costly.}
+
+\Q{Why run Sobel on luminance, and what does it miss?}{slide 47}
+
+\say{
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{The operator needs one value.}} Sobel is defined on an intensity image $I(x,y)$, one number per pixel. A colour pixel has three, so I first reduce RGB to one brightness value.
+  \item \key{\textbf{It matches what people see.}} The BT.709 weights, $L=0.2126R+0.7152G+0.0722B$, follow how sensitive the eye is to each colour. Green counts most, blue least. So a strong gradient means a strong \emph{visible} brightness contrast, not just a big number in one channel.
+  \item \key{\textbf{The cost.}} \key{Two neighbouring colours with the same brightness give no gradient}, even though people see an edge, for example a red and a green of equal brightness. The post-process V5 added a chromatic term for exactly that case.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{One value, as the eye sees it. Misses equal-brightness colours.}}}
+
+\textbf{If they push:}
+\begin{itemize}
+  \item \textbf{Why not run Sobel on R, G and B separately?} Background §2.4.1: per channel, a change in hue with no change in brightness would also count as an edge. On a photographic skin texture, small colour variations would then add even more false lines.
+  \item \textbf{Cheaper as well:} one luminance value per tap means one gradient, not three. This is my reasoning, the thesis does not argue cost here.
+  \item \textbf{Does the cost matter for the face?} Eyebrows and lips differ from skin in brightness, so luminance catches them. The miss matters more for clothing prints and painted detail, which Background §2.4.1 names.
+  \item \textbf{Why BT.709?} It is the standard luma weighting for HD video (ITU-R BT.709), and the same weights appear in every luminance step in the shaders.
+\end{itemize}
+\careful{the eyebrow and lip point is an argument, not a measurement. After preprocessing the lip contrast was partly \emph{added} by raising the saturation and drawing a lip line. If asked, say that the preprocessing strengthened the lip cue for exactly this reason.}
+
+\Q{Is your Sobel temporally stable? It is a screen-space effect.}{slide 47}
+
+\say{On Mixamo and Avaturn it samples the albedo at offsets in texture space, so \key{the lines are attached to the surface, not to the screen}. That is also why its line width does not grow with distance the way V3's does. What remains is the hard threshold, which can switch a pixel on and off. That was tuned with the threshold.}
+
+\careful{this is a property of the code (\texttt{uv + offset}), stated in Methodology §4.4.6 as \emph{avoids the thickness growth of V3}. On the Meta SDK the input is the lit colour, so lighting changes can move the lines.}
+
+\Q{Why did Gaussian prefiltering not help?}{slide 48}
+
+\say{\key{A Gaussian attenuates noise and real edges together}, so any reduction in false lines also cost real contours. On the photographic albedo the baked lighting gradients were too strong to be removed. Once the texture was preprocessed, plain Sobel was already clean, so the extra cost was not repaid.}
+
+\begin{itemize}
+  \item Up to 72 texture samples per fragment: 8 Sobel taps, each a 9-tap blur.
+  \item A Gaussian is separable, but that saving needs a stored intermediate result. One fragment pass has nowhere to store it, so every fragment recomputes the full neighbourhood.
+  \item The presets sharpen more than they blur, which amplified the nose and eye socket responses.
+\end{itemize}
+
+\Q{Why does anisotropic Kuwahara need an extra pass?}{slides 50, 55}
+
+\say{The structure tensor has to be smoothed with a Gaussian before its orientation is meaningful, and \key{that smoothing is a convolution over the image, so it needs its own pass}. On Mixamo and Avaturn I had that pass. On the Meta SDK I did not, so the tensor was unblurred and noisy, and the result lost the oriented brush marks.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Calmest region $\to$ along the shape $\to$ blurred tensor $\to$ extra pass.}}}
+
+\textbf{Kuwahara, step by step} (Background §2.5):
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Classic Kuwahara: pick the calmest region.}} Around each pixel, look at 4 overlapping square regions. Compute each region's average colour and how much the colour varies in it. Output the average of the region that varies least.
+  \item \key{\textbf{Why that looks painted.}} Inside a flat area, every region is calm, so the area becomes one smooth fill. At an edge, the regions that cross the edge vary a lot and lose, so the edge stays sharp. Detail disappears, edges stay: like brush strokes.
+  \item \key{\textbf{The problem with squares.}} The squares are fixed, so the strokes ignore the direction of the surface. The result looks blotchy, more like a uniform blur than painting.
+  \item \key{\textbf{Anisotropic Kuwahara (Kyprianidis).}} First find the local direction of the image, then stretch the window into an \emph{ellipse} along that direction, split into 8 sectors. Now the strokes follow eyebrows, lips and clothing folds.
+  \item \key{\textbf{The structure tensor finds the direction.}} At each pixel, take the colour gradient and store three numbers: $f_x^2$, $f_xf_y$, $f_y^2$. From this $2\times2$ matrix, the eigenvectors give the direction, and the eigenvalues say how strong it is.
+\end{enumerate}
+
+\needspace{8\baselineskip}
+\textbf{Why the tensor needs a blur, and the blur needs a pass:}
+\begin{itemize}
+  \item \textbf{One pixel's gradient is noise.} A single pixel's gradient jumps around. Only the average over a neighbourhood shows the real direction, so the tensor is blurred with a Gaussian $G_\rho$.
+  \item \textbf{The blur needs the neighbours' tensors.} To blur pixel A's tensor, you need the tensors of the pixels around A. Each of those comes from \emph{their} neighbours' colours. So the tensors must be computed for the whole image and stored first. That stored image is the extra pass.
+  \item \textbf{Mixamo and Avaturn, three passes:} (1) compute the tensor everywhere, (2) blur it, (3) run the filter, which reads the blurred tensor.
+\end{itemize}
+
+\needspace{7\baselineskip}
+\textbf{What happened on the Meta SDK:}
+\begin{itemize}
+  \item The hook runs while the avatar is being drawn, so the neighbours' lit colours do not exist yet as an image. The only neighbour information is \texttt{ddx}/\texttt{ddy}, the difference to the pixel next door in the same $2\times2$ quad.
+  \item So the tensor came from those derivatives of the lit luminance, with no blur at all. It is noisy, and it also carries lighting changes, not only material.
+  \item Result: the ellipse pointed in random directions, the strongest-weighted sector was simply the most uniform colour patch, and the image showed boosted colour patches instead of oriented strokes.
+\end{itemize}
+
+\careful{\emph{neighbours' lit colours do not exist yet as an image} is the reason in plain words. The thesis puts it as \emph{a blur pass cannot run inside the hook} and \emph{no smoothing pass} (Implementation §5.4.8, Methodology §4.4.9). Keep to that if pushed on SDK internals.}
+
+\Q{Did you measure performance or frame rate?}{---}
+
+\say{No. \key{The study stimuli were rendered offline to video}, so no reported result depends on frame rate. All techniques ran interactively on the Quest 3 during development, but I did not measure their cost.}
+
+\careful{do not quote frame rates or millisecond numbers. The only cost figure in the thesis is the sample count (V3 one extra sample, V4.2 up to 72).}
+
+\Q{Why did you edit the texture? Is that not cheating, or a confound?}{slide 12}
+
+\say{The edge detectors could not work on the raw photographic albedo, so \key{I fixed the input instead of the operator}. \key{The preprocessing is part of the NPR treatment.} C2 kept the original texture, because applying the edit there would have removed the photorealistic baseline.}
+
+\begin{itemize}
+  \item Edits in Blender: blur and skin tone unification against baked lighting, more saturation and an added lip line for the missing lip cue.
+  \item The thesis names it as the one material-level exception to \emph{only the shader changes} (§4.8.2).
+\end{itemize}
+\careful{concede it plainly: C3 differs from C2 in texture \emph{and} shader. The tested manipulation is the whole NPR treatment as a package, not the shader alone.}
+
+\Q{Why not stroke-based rendering, hatching or stippling?}{---}
+
+\say{Those families need something a single shading pass cannot provide. Stroke-based rendering needs an analysis pass to place and orient strokes, region-based methods need a segmentation of the whole image, and image analogy needs an exemplar. \key{Image filtering is the family that works on a small neighbourhood}, so it is the one that transfers to the most restrictive platform.}
+
+\careful{this follows the Kumar classification in Related Work §3.3. A halftone hatching shader exists in the project folder, but it is not in the thesis. Do not present it as an evaluated technique.}
+
+\Q{The Meta avatar is already cartoon-like. Why stylise it further?}{slide 9}
+
+\say{For RQ1 \key{the Meta SDK is the test of the most restrictive pipeline, not the target look}. It shows which operators survive a single hook with no extra passes. The perceptual study used Avaturn.}
+
+%% ============================================================
+\qpart{D \quad Parameter adjustment study}
+
+\Q{Why rank by trustworthiness in the parameter study, not by appeal?}{slide 14}
+
+\say{Trust is the main outcome of the user study, so \key{I calibrated the composite on the same judgement}. That gives the composite its best chance on the main outcome. If it then shows no advantage, the null is not because I tuned it for the wrong thing.}
+
+\careful{they rated static images, not video. Mention this if they ask how well the calibration transfers to the animated stimulus.}
+
+\Q{Round 1: the Borda winner was 0.03, but you used 0.05. Why?}{slide 15}
+
+\say{The top two were not statistically different, $p=.31$. Threshold 0.05 had the most first-place votes, 20 of 43, and 0.03 the higher Borda total, 160 to 149. \key{Because the round was a tie, the final appeal question decided it}, and R1\,E, threshold 0.05, received the most nominations there.}
+
+\careful{the appeal question had 36 valid answers, and R1\,E led with 7 votes, R3\,B second with 6. That is a tiebreak among options participants could not separate, not a strong preference. Say \emph{tiebreaker}, not \emph{participants preferred}.}
+
+\Q{The rounds were in one questionnaire. How could each round fix values for the next?}{slide 14}
+
+\say{\key{The values carried between rounds were set when I built the images}, with R1\,E as the shared base. That is why R4\,A and R5\,A are the same image as R1\,E. The votes then decided each parameter afterwards, and the final configuration combines those decisions.}
+
+\careful{the thesis wording \emph{held at the level fixed by the preceding test} reads as if each round's result fed the next. It could not, since everyone answered all rounds in one form. Volunteer the correct reading if this comes up, before they find it.}
+
+\Q{Why Borda, Friedman and Wilcoxon?}{slide 56}
+
+\say{\key{Borda turns a full ranking into one score per variant}, so it uses the whole ballot, not just first place. Friedman asks whether a round was ranked at random. Wilcoxon then compares the winner with the runner-up. Friedman and Wilcoxon are what Demšar recommends for more than two conditions and for one pair.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Borda scores. Friedman: random? Wilcoxon: top two different?}}}
+
+\needspace{8\baselineskip}
+\textbf{The simple version, in one sentence:} \key{``People ranked the pictures, so I used tests for rankings: Borda to score them, Friedman to check the ranking was not random, and Wilcoxon to check whether the winner really beat the runner-up.''} Rankings give only the order, not how much better, so averages and an ANOVA do not fit. Backup slide 56 shows the result of every test per round.
+
+\textbf{First, what R1 to R5 mean.} The parameter study had five rounds. Each round showed renders of the avatar that differ in one setting, and participants ranked them by trustworthiness. \emph{R} means round, and the letter is the image, so \emph{R1\,E} is Round 1, image E.
+
+\vspace{0.2em}
+{\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.06\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.32\textwidth}>{\raggedright\arraybackslash}p{0.22\textwidth}@{}}
+\toprule
+\textbf{Round} & \textbf{What changed} & \textbf{Options} & \textbf{Outcome} \\
+\midrule
+R1 & Sobel inner line threshold & 0.01, 0.02, 0.03, 0.04, 0.05 & tie, 0.05 by appeal \\
+R2 & Outline width, depth offset & 0.003 / 0.005 / 0.007, offset on or off & 0.003, on \\
+R3 & X-Toon shadow strength, detail bias & 5 pairs & no preference, (0.0, 0.5) by appeal \\
+\key{R4} & \key{Kuwahara} hardness and sharpness & none (= R1\,E), (1, 18), (9, 9), (18, 1) & none wins, $p=.003$ \\
+\key{R5} & \key{Hierarchical} depth threshold & none (= R1\,E), 0.01 to 0.05 & none wins, $p<.001$ \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+{\small R4 and R5 asked a different question from R1 to R3: not \emph{which value?} but \emph{add this post-process at all?} Option A, \emph{none}, is the composite without it, the same image as R1\,E.}
+
+\vspace{0.5em}
+\textbf{The three steps, with Round 1 as the example} (5 thresholds, 43 valid ballots):
+
+\needspace{6\baselineskip}
+\textbf{1. Borda count: turns rankings into points.}
+\begin{itemize}
+  \item With 5 options, rank 1 earns 5 points, rank 2 earns 4, down to rank 5 earning 1. Add up the points over all participants.
+  \item \key{Why not just count first places?} R1 shows the difference. Threshold 0.05 had the most first places, 20 of 43. But 0.03 had more points, 160 against 149, because almost everyone put it near the top. Borda rewards being \emph{consistently} good, not only loved by some.
+  \item Borda is a score, not a test. It says who leads, not whether the lead is real.
+\end{itemize}
+
+\needspace{7\baselineskip}
+\textbf{2. Friedman test: is the ranking different from random?}
+\begin{itemize}
+  \item For each option, take its average rank across participants. If people ranked at random, every option would average the middle rank, 3 out of 5.
+  \item Friedman checks how far the average ranks spread from that middle. Large spread means people agreed on an order.
+  \item R1: $\chi^2_F(4)=36.48$, $p<.001$, so the round was \key{not ranked at random}. R3 was the exception: $p=.53$, no real preference.
+  \item It is the rank-based version of a repeated-measures ANOVA: same people, several options.
+\end{itemize}
+
+\needspace{7\baselineskip}
+\textbf{3. Wilcoxon signed-rank test: is the winner really ahead of the runner-up?}
+\begin{itemize}
+  \item For each participant, take the difference between the ranks they gave the two options. Then check whether those differences lean one way: does most of the crowd put A above B, and by a clear margin?
+  \item It looks at both the direction and the size of each person's difference, but only as ranks, never as raw numbers.
+  \item R1, 0.03 against 0.05: $p=.31$, \key{not distinguishable}. That is why the appeal question broke the tie.
+  \item R4 and R5 are where it mattered: the version without the post-process was ranked above the best Kuwahara variant ($p=.003$) and the best hierarchical setting ($p<.001$).
+\end{itemize}
+
+\needspace{6\baselineskip}
+\textbf{Why non-parametric tests at all?}
+\begin{itemize}
+  \item A ranking is ordinal. It tells the order, not the distance. The gap between rank 1 and 2 may be huge for one person and tiny for another.
+  \item Tests like the ANOVA or the $t$-test assume equal distances and roughly normal data. Ranks give neither.
+  \item Demšar recommends exactly this pair: Friedman for more than two related conditions, Wilcoxon for one pair.
+\end{itemize}
+
+\begin{itemize}
+  \item \textbf{No correction needed:} only one Wilcoxon per round, so there is no family of tests to correct.
+  \item \textbf{Why only winner against runner-up:} the question per round is \emph{can the top choice be separated from the next best?} If not, the top two are treated as tied.
+  \item Ballots with a missing or tied rank were dropped from that round only: 40 to 44 valid per round.
+\end{itemize}
+\careful{in R4 and R5 the Wilcoxon compared the baseline \emph{without} the post-process to the best variant \emph{with} it. Say \emph{the version without Kuwahara was ranked significantly higher}, not \emph{Kuwahara lowers trust} (see Q30).}
+
+\needspace{16\baselineskip}
+{\bfseries\color{knblue}Follow-up: Which tests in which study? Did the parameter study use an ANOVA or Holm?}\par\vspace{0.2em}
+
+\say{No. \key{The parameter study used only non-parametric tests}: Borda as a score, Friedman per round, and one Wilcoxon per round. \key{RM-ANOVA with Holm belongs to the main study ratings.} The main study rankings used Friedman and Wilcoxon again, with Holm added because there were three pairs.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Ratings: ANOVA. Ranks: Friedman, Wilcoxon. Holm only for several pairs.}}}
+
+{\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.15\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}@{}}
+\toprule
+& \textbf{Parameter study} & \textbf{Main study, ratings} & \textbf{Main study, rankings} \\
+\midrule
+Data & Rankings of images, 4 to 6 per round & Ratings, 1--5 and 1--7, per subscale & Ranking of the 3 advisors \\
+Score & Borda count & Composite (item mean) & Mean rank \\
+Omnibus & Friedman & \key{RM-ANOVA} & Friedman \\
+Pairwise & Wilcoxon, winner vs.\ runner-up only & Pairwise tests, all 3 pairs & Wilcoxon, all 3 pairs \\
+Correction & none, one test per round & \key{Holm} & \key{Holm} \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.4em}
+
+\needspace{10\baselineskip}
+\textbf{Why Demšar is cited} (thesis §4.7, and on backup slide 56 as [24]):
+\begin{itemize}
+  \item \key{He is the source for choosing Friedman and Wilcoxon}, not their inventor. Methodology §4.7: his review \emph{``recommends the Friedman test with post-hoc comparison for more than two conditions and the Wilcoxon signed-rank test for a single pair''}.
+  \item His own conclusion (p.~27): \emph{``the non-parametric tests, namely the Wilcoxon and Friedman test are suitable \ldots\ They are safer than parametric tests since they do not assume normal distributions or homogeneity of variance.''}
+  \item He also supports Holm (p.~13): \emph{``Holm's procedure is more powerful than the Bonferroni-Dunn's and makes no additional assumptions.''}
+\end{itemize}
+
+\needspace{6\baselineskip}
+\textbf{``It is a machine learning paper. Why use it for a user study?''}
+\begin{itemize}
+  \item \key{Same structure:} several options compared on the same units. His units are data sets, mine are participants. In both, the scores need not be normal and are best compared by rank.
+  \item The tests themselves are general statistics (Friedman 1937, Wilcoxon 1945). Demšar is cited for \emph{which} test fits this situation.
+\end{itemize}
+
+\careful{Demšar is cited only on backup slide 56 (\emph{Tests after Demšar [24]}), not on slide 15. Slide 15 now says only \emph{``Ranks are ordinal, so the tests are non-parametric''}, which is your reasoning. If asked where the choice comes from, say \emph{``Methodology §4.7 follows Demšar, who recommends these tests because they do not need normal data''}. Quotes from \texttt{Articles/06\_statistics/demsar06a.pdf}, PDF pages 13 and 27. The thesis does not cite Demšar for Holm, so present that only as extra support.}
+
+\Q{Does R4 show that painterly styles reduce trust?}{slide 15}
+
+\say{\key{Only for what was tested}: this avatar, static images, and three hardness and sharpness settings. The kernel size was fixed by inspection. So the result says these Kuwahara variants were ranked below no Kuwahara, not that painterly rendering lowers trust.}
+
+%% ============================================================
+\qpart{E \quad Main study design (RQ3)}
+
+\Q{Why video and not VR?}{slide 18}
+
+\say{\key{The real speaker has no VR equivalent}, and video fixes one recorded performance for all three conditions. That control comes at a cost: no depth, no shared space, no interaction. Zibrek found render style does move presence in VR, so VR might separate the avatars where video did not.}
+
+\Q{What did Zibrek actually do, and how is it similar to your study?}{slides 30, 76}
+
+\say{Zibrek and McDonnell showed one recorded actor in VR, rendered either realistic or simple, with shape, animation and voice held the same. \key{That is my C2 against C3 manipulation.} Realism raised social presence and place illusion, but their behavioural measure did not change. \key{The difference is the medium}: they used a headset, a tracked body and a shared room, and I used a flat video.}
+
+\begin{itemize}
+  \item \textbf{Same:} render style is the only change; one captured performance with face capture and recorded voice; the viewer only listens; self-report plus a behavioural measure; within subjects.
+  \item \textbf{Different:} HTC Vive with full-body embodiment against flat video; they stylised the character \emph{and} the room, I stylised the avatar only; their simple style removed lighting, shadows and textures, mine is an NPR composite; they measured presence and concern, not trust or eeriness; $n=19$ against $n=41$.
+  \item Numbers: social presence $t(18)=2.45$, $p=.025$, $d=0.56$; place illusion $p=.04$; passing distance, body ownership: no effect.
+\end{itemize}
+\careful{They measured presence, not trust. Say VR \emph{might} separate C2 and C3, never that it would change the trust result. Their behavioural measure was also null, which matches your ranking result.}
+
+\Q{Why within-subjects?}{slide 18}
+
+\say{\key{Each person is their own control}, which removes differences in how trusting people are and gives more power at the same sample size. The cost is that people compare the conditions directly, and the real speaker becomes a reference point. I discuss that as the comparison set effect.}
+
+\Q{How were the avatars animated, and is it the same performance?}{slide 18}
+
+\say{One recording session per scenario. A camera filmed me while Live Link Face on an iPhone recorded the 52 ARKit blendshapes. The camera footage became C1, and the blendshape recording was replayed twice through the avatar, once photorealistic for C2 and once NPR for C3. \key{So C2 and C3 have identical animation and voice.}}
+
+\begin{itemize}
+  \item A custom component mapped each ARKit coefficient to the matching Avaturn blendshape.
+  \item Camera field of view $20^\circ$ instead of $60^\circ$, to avoid perspective distortion of the nose at close range.
+\end{itemize}
+\careful{C1 and the avatars are not the same \emph{animation}: the avatar reproduces the performance through blendshapes, which is less natural than the real face. That is one reason H4 is not a pure rendering comparison.}
+
+\Q{Why are you the speaker? Is that not a confound?}{slide 30}
+
+\say{\key{It was an ethics decision.} A third party would have had to consent to a persistent reconstruction of their face, animated and shown to every participant. Using my own face removed that burden. The cost is that some participants may have known me, which would lift C1. \key{I did not ask, so I cannot say how many.}}
+
+\careful{say \emph{I did not ask}, never \emph{nobody recognised me}. Familiarity affects C1 against the avatars (H4), not C2 against C3.}
+
+\Q{How did you make sure the scenario content did not drive the results?}{slide 58}
+
+\say{\key{Every condition appeared with every scenario across the three versions.} The recommended option alternated A, B, A, the position where it was discussed alternated, both options had equal detail, and every script followed the same five steps. So a trust difference cannot come from one scenario being more convincing.}
+
+\needspace{16\baselineskip}
+{\bfseries\color{knblue}Follow-up: How did you decide on the three scenarios? Is there an article behind them?}\par\vspace{0.2em}
+
+\say{\key{The paradigm follows Canales et al.}: a scripted advisor, trust rated after each advisor, and a behavioural choice at the end. \key{The three scenarios themselves are my own design.} I chose everyday decisions for a student-age sample, with balanced trade-offs, alternating recommendations and a fixed script structure, so that rendering style is the only thing that changes.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Paradigm from Canales, scenarios by design rules.}}}
+
+\textbf{The design rules} (Methodology §4.8.3):
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.05em,topsep=0.2em]
+  \item \textbf{Ecological validity:} decisions a 20 to 35 year old student meets: a job offer, a route in a new city, a course for the CV.
+  \item \textbf{Different domains:} three situations, not one repeated, against fatigue and carryover.
+  \item \textbf{Equal trade-offs:} equal detail, one clear cost per option, no obviously right answer.
+  \item \textbf{Fixed vignette:} role and decision, constraints, option A with its cost, option B with the trade-off reversed.
+  \item \textbf{Recommendation alternates A, B, A}, and the recommended option is not always presented last.
+  \item \textbf{Fixed five-step script:} (1) the recommendation, (2) its drawback, (3) its key advantage after a contrastive \emph{but}, (4) the weakness of the alternative, (5) a short restatement.
+\end{enumerate}
+\begin{itemize}
+  \item \textbf{Evidence it worked:} preference shift was rare, 2 to 12\% per condition, and recommendation agreement did not differ between conditions ($p=.13$).
+  \item \textbf{Canales differs:} one medical scenario, a doctor answering three questions.
+\end{itemize}
+\careful{there is no citation behind the scenarios themselves. Do not name one. Do not claim the scenarios were pretested, since the thesis reports no pilot. The fixed scenario order means each scenario always sat in the same video slot, but the conditions rotated across it.}
+
+\Q{Did each scenario target one trust dimension?}{slides 58--61}
+
+\say{Each scenario was written with one dimension in mind: career for ability, travel for benevolence, learning for integrity. But \key{all three dimensions were measured after every video}, so no result depends on that targeting.}
+
+\careful{the thesis is inconsistent here. Conclusion §7.1 says each scenario \emph{targeted a different trust dimension}, while Methodology §4.8.3 says the ratings \emph{do not depend on any scenario foregrounding a particular dimension}. The answer above reconciles both. Do not claim a per-scenario dimension analysis was done. It was not.}
+
+\Q{Why was the scenario order fixed?}{slide 77}
+
+\say{Fixing scenario order meant \key{only the conditions rotated}, which kept it to three versions. Each condition still appeared once in each position and with each scenario. Rotating scenarios too would need 36 versions.}
+
+\Q{Why only three study versions?}{slide 77}
+
+\say{Full counterbalancing of conditions and scenario order needs 36 versions. Even conditions alone need 6. \key{With 41 people, 3 was what the sample allowed.}}
+
+\begin{itemize}
+  \item \textbf{3 (used):} Latin square, each condition once in each position. About 14 people per version.
+  \item \textbf{6:} all condition orders. Also balances which condition follows which. About 7 per version.
+  \item \textbf{36:} every condition order with every scenario order, $3!\times3!$. About 1 per version.
+  \item \textbf{Cost of 3:} carryover between specific pairs (e.g.\ C1 $\to$ C3) cannot be estimated, and version groups mix people with order.
+\end{itemize}
+
+\Q{How were participants assigned to versions? Was it random?}{---}
+
+\say{Not by procedure. Three links were offered with nothing to tell them apart, and participants picked one. \key{That approximates random allocation.} Later in collection I steered the links so the versions filled evenly: 15, 12 and 14.}
+
+\careful{say \emph{approximately random}, never \emph{randomised}.}
+
+\Q{You excluded 11 of 52. Is that not a lot?}{slide 20}
+
+\say{The rule was strict on purpose. The attention checks were not identical in every block, so \key{a person who failed any check was removed completely}. Otherwise someone could contribute a mix of checked and unchecked data to a within-subjects comparison. 41 remained, above the 38 the power analysis required.}
+
+%% ============================================================
+\qpart{F \quad Statistics}
+
+\Q{Which statistical tests, and why?}{slides 56, 67, 68}
+
+\say{\key{Ranks are ordinal, so the rankings used Friedman and Wilcoxon}, following Demšar. The ratings used a repeated-measures ANOVA per subscale, a TOST where I predicted no difference, and a multilevel model for H3.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Check, compare, locate, prove equal, relate, rank.}}}
+
+\textbf{The analysis in six steps, in plain words:}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em,topsep=0.2em]
+  \item \key{\textbf{Check the scales.}} Cronbach's $\alpha$: do the items of one subscale measure the same thing? All were $.87$ to $.96$, above the usual $.70$, so the items of each subscale were averaged into one score, a \emph{composite}.
+  \item \key{\textbf{Compare all three conditions.}} A repeated-measures ANOVA per subscale asks: is there \emph{any} difference between C1, C2 and C3? \emph{Repeated measures} because the same people rated all three. One subscale at a time, because each hypothesis is about one subscale.
+  \item \key{\textbf{Locate the difference.}} If the ANOVA says yes, pairwise tests show \emph{which} pairs differ (C1--C2, C1--C3, C2--C3), corrected with Holm because there are three of them.
+  \item \key{\textbf{Prove ``no difference''.}} Where I predicted equality (H2, H4), a TOST equivalence test, because a non-significant result alone cannot show that two things are equal. See Q44.
+  \item \key{\textbf{Relate eeriness and trust.}} For H3, a multilevel regression: does a person trust an advisor less when \emph{they} find it eerier?
+  \item \key{\textbf{Rank.}} The three rankings are ordinal, so Friedman and Wilcoxon, the same tests as the parameter study (Q29).
+\end{enumerate}
+
+\needspace{8\baselineskip}
+\textbf{Quick definitions, if they ask about one term:}
+\begin{itemize}
+  \item \textbf{Mauchly and Greenhouse-Geisser:} the ANOVA assumes the differences between each pair of conditions vary about equally (\emph{sphericity}). Mauchly tests that. If it fails, Greenhouse-Geisser lowers the degrees of freedom, so the test does not give false positives. It failed for the stylisation question ($W=.53$).
+  \item \textbf{Holm:} sort the three pairwise $p$-values from smallest to largest. Compare the smallest with $.05/3$, the next with $.05/2$, the last with $.05$, and stop at the first that fails. Same protection as Bonferroni, but less strict.
+  \item \textbf{Hedges' $g$:} the size of a difference in standard deviations. Roughly $0.2$ small, $0.5$ medium, $0.8$ large. Example: C2 vs.\ C3 eeriness $g=0.07$, essentially zero. C1 vs.\ C3 trust $g\approx0.8$, large.
+  \item \textbf{Partial $\eta^2$:} how much of the variation the condition explains. Roughly $.01$ small, $.06$ medium, $.14$ large. Eeriness $.34$, so the condition, mostly the real speaker, explained a lot.
+  \item \textbf{Multilevel, person-centred:} each rating is taken relative to that person's own average, and every person gets their own baseline (\emph{random intercept}). This separates \emph{``I trust this advisor less than my other two''} from \emph{``I am a less trusting person''}.
+  \item \textbf{Friedman and Wilcoxon:} rank-based versions of the ANOVA and the paired $t$-test, for data that only has an order.
+\end{itemize}
+\careful{the rule-of-thumb sizes for $g$ and $\eta^2_p$ are Cohen's general conventions, not values stated in the thesis. Use them to interpret, not as thesis claims.}
+
+\needspace{20\baselineskip}
+{\bfseries\color{knblue}Follow-up: Which test comes from which article?}\par\vspace{0.2em}
+
+{\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.21\textwidth}>{\raggedright\arraybackslash}p{0.27\textwidth}>{\raggedright\arraybackslash}p{0.44\textwidth}@{}}
+\toprule
+\textbf{Test} & \textbf{Cited in the thesis} & \textbf{What the article supplies} \\
+\midrule
+Friedman, Wilcoxon & \key{Demšar 2006} & Friedman for more than two conditions, Wilcoxon for one pair (§4.7) \\
+Cronbach's $\alpha\geq.70$ & \key{Bartneck 2009, Ho \& MacDorman 2010} & Both report $\alpha$ per subscale, .70 as the minimum \\
+RM-ANOVA, per subscale & \key{Zell 2015, McDonnell 2012, Latoschik 2017} & Precedent in comparable avatar rating studies \\
+TOST, $d=0.3$ & \key{Lakens 2017} & The TOST procedure, $d=.3$ as his example bound \\
+Trust propensity correlation & Mayer 1995, Canales 2024 & Propensity as a stable trait; same null in Canales \\
+Multilevel model (H3) & none, result compared with Alipour & Direct eeriness--trust link in 11 of 24 studies \\
+Borda, Mauchly/GG, Holm, $\eta^2_p$, $g$, order checks, power analysis & none & Standard methods \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+\say{\key{``I cited sources where a choice needed justifying: Demšar for the rank tests, Lakens for the equivalence test, and comparable avatar studies for analysing each subscale separately. The rest are standard methods.''}}
+\careful{Demšar is cited on backup slide 56 as [24] and in thesis §4.7. The number [24] is out of strict first-citation order on purpose, to avoid renumbering. Holm is not cited to Demšar in the thesis. G*Power comes from the planning document only.}
+
+\needspace{16\baselineskip}
+{\bfseries\color{knblue}Follow-up: What does Cronbach's $\alpha$ check, and what if it had been below .70?}\par\vspace{0.2em}
+
+\say{Cronbach's $\alpha$ checks whether the items of one subscale are answered consistently. For integrity, someone who rates \emph{honest} high should also rate \emph{sincere} high. If so, the items measure one thing and can be averaged. If $\alpha$ had been below .70, I would have done this, in order:
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Find the item that does not fit.}} Check which item, if removed, raises $\alpha$ the most (\emph{alpha if item deleted}).
+  \item \key{\textbf{Remove it only with a reason}}, for example if it was misunderstood or measures something else, and report that.
+  \item \key{\textbf{If it stays low, do not average.}} Report the items separately, or treat that subscale with caution.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Consistent items, one score. Low alpha, noisy score.}}}
+
+{\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Subscale} & \textbf{Items} & \textbf{Overall} & \textbf{C1} & \textbf{C2} & \textbf{C3} & \textbf{Scale} \\
+\midrule
+Likeability & 5 & .94 & .90 & .94 & .93 & 5-point \\
+Eeriness    & 8 & .87 & .87 & .80 & .86 & 5-point \\
+Ability     & 3 & .96 & .96 & .96 & .94 & 7-point \\
+Benevolence & 3 & .95 & .95 & .95 & .94 & 7-point \\
+Integrity   & 3 & .92 & .81 & .93 & .94 & 7-point \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+
+\begin{itemize}
+  \item \textbf{Why a low $\alpha$ matters:} the items do not measure one thing, so their average is noisy. Noise hides real differences, which would make my null results (H1, H2) less convincing.
+  \item \textbf{Why per condition too:} a scale can look consistent when pooled only because the conditions differ a lot. Checking inside C1, C2 and C3 separately rules that out. The lowest was .80.
+  \item \textbf{Thesis wording:} the threshold .70 is the one Bartneck et al.\ and Ho and MacDorman use, and \emph{no subscale required item removal} (Evaluation §6.2.3).
+\end{itemize}
+
+\needspace{6\baselineskip}
+\textbf{If they push:}
+\begin{itemize}
+  \item \textbf{``Three items is very few.''} $\alpha$ tends to be lower with fewer items, so $.92$ to $.96$ with only three items is a strong result.
+  \item \textbf{``Is .96 too high? Are the items redundant?''} Very high values can mean the items say nearly the same thing. For ability, \emph{capable and competent}, \emph{knowledgeable} and \emph{expertise for this decision} are close in meaning. That makes the score reliable but narrow. It does not bias the comparison between conditions.
+\end{itemize}
+\careful{the three-step plan for a low $\alpha$ is standard practice, and the thesis only implies it (\emph{no subscale required item removal}). The redundancy point is your own interpretation. The thesis does not discuss it. The per-condition reason is also in the measures paper.}
+
+\needspace{16\baselineskip}
+{\bfseries\color{knblue}Follow-up: What is a repeated-measures ANOVA, and what did you do to apply it?}\par\vspace{0.2em}
+
+\say{An \key{ANOVA compares the averages of three or more conditions}. It asks whether the differences \emph{between} conditions are bigger than the normal scatter \emph{within} them: $F$ = difference between conditions divided by noise. \key{Repeated measures means the same people rated all three}, so each person's general rating level is removed first. Personal differences then no longer count as noise, and the test sees smaller effects with fewer people.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Same people, three conditions: bigger than the noise?}}}
+
+\textbf{What I did to apply it:}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \textbf{One score per person per condition.} For each subscale, every participant had three numbers, C1, C2 and C3: a $41\times3$ table.
+  \item \textbf{Checked sphericity.} The test assumes the differences between each pair of conditions vary about equally. Mauchly's test checks this, and Greenhouse-Geisser makes the test stricter if it fails. It failed only for the stylisation question.
+  \item \textbf{Ran the test, one subscale at a time.} Eeriness: $F(2,80)=20.39$, $p<.001$, $\eta^2_p=.34$.
+  \begin{itemize}[itemsep=0em,topsep=0.1em]
+    \item $2$ = conditions $-1$, \quad $80$ = (conditions $-1$) $\times$ (people $-1$) $=2\times40$.
+    \item $\eta^2_p=.34$: the condition explains a large share of the variation.
+  \end{itemize}
+  \item \textbf{Read the result.} $p<.05$ only says \emph{some} pair differs, not which. The Holm pairwise tests come next.
+\end{enumerate}
+\careful{the thesis reports the sphericity check, not a normality check. If asked about normality, say the tests ran on averaged multi-item scores from 41 people, which the ANOVA usually handles well. Do not claim a normality test was run.}
+
+\Q{Why these hypotheses, and why these tests?}{slide 62}
+
+\say{Each hypothesis follows a prior result, and \key{each test matches what the hypothesis claims: a difference, an equality, or a relationship within a person}.}
+
+\begin{itemize}
+  \item \textbf{H1} (C3 less eerie than C2): Dubosc found stylised avatars less eerie. Test: RM-ANOVA, Holm pairwise.
+  \item \textbf{H2} (C3 no lower trust than C2): Canales found style did not lower self-reported trust. Test: pairwise + TOST.
+  \item \textbf{H3} (eeriness lowers, likeability raises trust): Ho and MacDorman, eeriness is distinct from dislike; Alipour, the link is not uniform. Test: multilevel regression.
+  \item \textbf{H4} (C3 no lower trust than C1): Gao found the real speaker above a stylised agent. Test: pairwise + TOST.
+\end{itemize}
+
+\Q{Why TOST with $d=0.3$?}{slides 62, 70}
+
+\say{I needed a test that can support \emph{no difference}, and that is TOST, after Lakens. The bound has to be fixed in advance. I set it at $d=0.3$, \key{the smallest difference in trust I treated as practically meaningful}.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Not ``different?'' but ``closer than 0.51?'' The whole interval must fit.}}}
+
+\needspace{10\baselineskip}
+\textbf{1. Why a normal test is not enough.}
+\begin{itemize}
+  \item A normal test asks \emph{``is there a difference?''}. If $p$ is not significant, there are two possible reasons: there really is no difference, or the test was too weak to see it. It cannot tell them apart.
+  \item TOST turns the question around: \key{is the difference smaller than a bound I set in advance?} Only then can I claim two conditions are practically equal.
+\end{itemize}
+
+\needspace{10\baselineskip}
+\textbf{2. How TOST works: two one-sided tests.}
+\begin{itemize}
+  \item Test 1: is the difference \emph{above} $-0.51$? Test 2: is it \emph{below} $+0.51$? Both must be significant. The reported TOST $p$ is the larger of the two.
+  \item The same thing in a picture: the \key{90\% confidence interval must lie completely inside $\pm$ the bound}. That is what the shaded band on the H2 slide shows.
+\end{itemize}
+
+\needspace{10\baselineskip}
+\textbf{3. My results} (trust composite, the mean of ability, benevolence and integrity, 1 to 7):
+
+\vspace{0.2em}
+{\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+& \textbf{Means} & \textbf{Difference} & \textbf{Bound} & \textbf{90\% CI} & \textbf{TOST $p$} \\
+\midrule
+H2: C2 vs.\ C3 & 4.30 vs.\ 3.96 & 0.33 & $\pm0.51$ & $[-0.08,\ +0.75]$ & .240 \\
+H4: C1 vs.\ C3 & 5.27 vs.\ 3.96 & 1.31 & $\pm0.47$ & $[+0.85,\ +1.77]$ & .998 \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+\begin{itemize}
+  \item \textbf{H2:} the interval reaches $+0.75$, past the $+0.51$ edge. So equivalence is \key{not shown}, but no difference was detected either. It is inconclusive, not a failure.
+  \item \textbf{H4:} the whole interval lies above the bound. The real speaker is clearly more trusted, nowhere near equal.
+\end{itemize}
+
+\needspace{12\baselineskip}
+\textbf{4. How the bound was set.}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \textbf{Before the data.} The bound was fixed in the analysis plan in advance, as Lakens recommends. Choosing it after seeing the data would make the test meaningless.
+  \item \textbf{As a standardised size, $d=0.3$.} This is a difference of 0.3 standard deviations.
+  \item \textbf{Converted to scale points.} $0.3\times$ the average SD of the two conditions being compared:
+  \begin{itemize}[itemsep=0em,topsep=0.1em]
+    \item C2 vs.\ C3: SDs $1.67$ and $1.74$, average $1.70$, so $0.3\times1.70=\mathbf{0.51}$ points.
+    \item C1 vs.\ C3: SDs $1.39$ and $1.74$, average $1.57$, so $0.3\times1.57=\mathbf{0.47}$ points.
+  \end{itemize}
+\end{enumerate}
+
+\needspace{10\baselineskip}
+\textbf{5. Why 0.3, and where it comes from.}
+\begin{itemize}
+  \item \key{Where it comes from: Lakens (2017).} His primer uses exactly $d=.3$ as the example of a \emph{smallest effect size of interest}: \emph{``SESOI; e.g., a positive or negative difference of d = .3''} (p.~355). I followed that, and fixed it in advance.
+  \item \key{The thesis reason:} $0.3$ is \emph{the smallest difference in trust treated as practically meaningful}. Anything smaller counts as \emph{no practical difference}.
+  \item \textbf{What it means in practice:} about half a point on the 7-point trust scale. That is a small step on a 7-point scale, which makes the bound easy to picture.
+  \item \textbf{Not too generous:} a medium effect, $0.5$, would call a noticeable gap of about 0.85 points \emph{equivalent}. That would make equivalence too easy to claim.
+  \item \textbf{Not impossible to test:} the needed sample grows with $1/\text{bound}^2$. Going from $0.3$ to $0.2$ multiplies it by about $2.25$, from roughly 120 to well over 250 people.
+  \item It lies between Cohen's small ($0.2$) and medium ($0.5$) conventions.
+\end{itemize}
+
+\needspace{10\baselineskip}
+\textbf{If they ask: ``Why not Lakens's own rule for setting the bound?''}
+\begin{itemize}
+  \item Lakens (p.~356): when there is no theoretical or practical boundary, \emph{``set the bounds to the smallest effect size they have sufficient power to detect''}, given the resources.
+  \item With 41 people that rule would allow a bound of about $d\approx0.45$ to $0.5$, roughly 0.8 points of trust.
+  \item \key{Say:} \emph{``That would call almost a whole scale point of trust equivalent, which is not meaningful for an advisor. I chose the stricter, meaningful bound and accepted that the result might be inconclusive, and I report it that way.''}
+\end{itemize}
+
+\textbf{If they ask: ``Lakens uses $d_z$ for paired data. You did not.''}
+\begin{itemize}
+  \item True: the script uses the average SD of the two conditions. But in these data the bound of 0.51 points equals $d_z\approx0.32$ (SD of the differences 1.59). \key{Either way the bound is about 0.3.}
+\end{itemize}
+
+\needspace{6\baselineskip}
+\textbf{6. Why the test came out inconclusive.} With 41 people, the TOST had only about 20\% power, even if the true difference were exactly zero. The interval is simply too wide. About 120 people would give 90\% power. This was known from the power analysis before the study, so it is a stated limitation, not a surprise.
+
+\careful{the thesis cites Lakens for the procedure and justifies $0.3$ as \emph{the smallest difference treated as practically meaningful}. It does not say in words that the value is Lakens's example. Say \emph{``following Lakens''}. Lakens quotes: \texttt{Articles/Lakens -equivalence Test.pdf}, PDF pages 1 and 2. The $d\approx0.45$ to $0.5$ figure and $d_z\approx0.32$ are your own calculations, not in the thesis. The other points in step 5 (half a scale point, too generous, the sample-size arithmetic, Cohen's conventions) are your own supporting reasoning. Say them as your reasoning. The 90\% intervals and SDs were recomputed from \texttt{long\_format\_scores\_clean.csv} and match the thesis values (0.33, $\pm0.51$, $p=.240$; 1.31, $\pm0.47$, $p=.998$). The thesis itself only describes the H2 interval in words. The code comment says \emph{paired-diff SD}, but the code uses the average SD of the two conditions. If asked which SD: the average of the two condition SDs.}
+
+\Q{Why TOST on the combined trust composite, not per dimension?}{slide 23}
+
+\say{The three dimensions behaved the same way in the pairwise tests, all small and non-significant. \key{One test on the composite answers the question once instead of three times}, which avoids adding three more tests.}
+
+\careful{the thesis states \emph{that} it was the composite, not \emph{why}. The reason above is yours. Say it as your reasoning.}
+
+\Q{Is an ANOVA allowed on Likert data?}{slide 68}
+
+\say{\key{The tests run on composites}, the mean of three to eight items, not on single Likert items. Composites with this reliability are usually treated as approximately interval, and comparable avatar rating studies such as Zell, McDonnell and Latoschik analyse them the same way. The rankings are truly ordinal, and those got non-parametric tests.}
+
+\Q{Was the study preregistered?}{---}
+
+\say{\key{The analysis plan was fixed before the data were analysed} and is written in the Methodology chapter, including the TOST bound.}
+
+\careful{the thesis says \emph{pre-specified}, nothing about OSF or formal preregistration. Only say \emph{preregistered} if that is true. If it was not, say so directly: \emph{It was not formally preregistered. The plan was fixed in advance in the methodology.}}
+
+\Q{Why the power analysis at $\eta^2_p=.06$?}{slides 20, 69}
+
+\say{$.06$ is the conventional medium effect for partial eta squared. At $\alpha=.05$ and power $.90$ \key{that needs 38 people} for a three-condition within-subjects ANOVA. I aimed for 48 to allow for exclusions. I knew in advance that equivalence would need about 120.}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{38 to find a medium difference, 120 to prove equality, 41 recruited.}}}
+
+\textbf{What a power analysis is:} power is the chance that the study \emph{detects} an effect, if it really exists. You fix four inputs and get the sample size.
+
+\vspace{0.2em}
+{\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.45\textwidth}@{}}
+\toprule
+\textbf{Input} & \textbf{Value} & \textbf{Meaning} \\
+\midrule
+Test & RM-ANOVA, 3 conditions & the test that will be run \\
+Effect size & $\eta^2_p=0.06$, medium & the size of effect to be able to find \\
+$\alpha$ & $.05$ & 5\% risk of a false positive \\
+Power & $0.90$ & 90\% chance of finding the effect, if real \\
+\textbf{Result} & $\mathbf{n=38}$ & minimum sample \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+
+\begin{itemize}
+  \item \textbf{Then:} target 48, 16 per version, for exclusions and balance. 52 took part, 11 excluded, \key{41 valid}: above 38.
+  \item \textbf{Equivalence is harder:} a paired TOST at $d=0.3$ reaches power $0.90$ only near $n=120$. At $n=41$ its power was about $0.20$. The sample was planned for the difference tests, so the equivalence parts of H2 and H4 were known to be underpowered.
+  \item \textbf{``Was the study too small for C2 vs C3?''} \key{Yes, for a small difference.} It was powered for a medium one, and C2 vs C3 came out at $g\approx0.07$ to $0.2$. So say \emph{no difference detected}, not \emph{no difference}.
+  \item \textbf{Why medium:} the conventional middle value (Cohen: $.01$, $.06$, $.14$). The planning document notes Canales found about $\eta^2_p=.10$ for their condition effect on trust.
+\end{itemize}
+\careful{the thesis states only the inputs and $n=38$, the target 48, and the TOST figures (120, 0.20). That the calculation used G*Power, with $f=0.25$ and an assumed correlation of $r=.50$ between the repeated measures, comes from your planning document (\texttt{UserStudy\_Complete\_Report.tex}), not the thesis. Cohen's conventions and the Canales $\eta^2_p=.10$ are also not in the thesis. Never compute \emph{observed power} from the results.}
+
+%% ============================================================
+\qpart{G \quad Results and interpretation}
+
+\Q{How did all three conditions separate?}{main slide 20}
+
+\say{At the end, people rated how stylised each advisor looked. The ratings rose from real, to photorealistic, to NPR, and \key{every pair differed significantly}.}
+
+\begin{itemize}
+  \item Omnibus: $F(2,80)=15.45$, $p<.001$, $\eta^2_p=.28$.
+  \item C1 vs.\ C2: $p=.001$, $g=0.87$. \quad C1 vs.\ C3: $p<.001$, $g=1.23$. \quad C2 vs.\ C3: $p=.004$, $g=0.55$.
+  \item Meaning: the null on eeriness is \emph{not} because people missed the stylisation.
+\end{itemize}
+
+\Q{H1 failed. Why was the NPR avatar not less eerie?}{slides 22, 29}
+
+\say{\key{Two mismatches inside the composite.} It stylises the material but not the shape, and Zell found that mismatch raises eeriness. And it puts a human voice and human lip movement on an abstracted face, and Kätsyri reports mismatched face and voice as eerier. \key{The abstraction may remove one source of eeriness and add another.}}
+
+\begin{itemize}
+  \item Eeriness C2 vs.\ C3: $p=.66$, $g=0.07$. C3 was slightly higher, not significantly.
+  \item The comparison set also compresses the range: next to a real person, both avatars read as CG.
+\end{itemize}
+\careful{these are explanations the data are consistent with, not tested causes. Say \emph{may} and \emph{one possible reason}.}
+
+\Q{Why was H2 supported?}{slide 23}
+
+\say{H2 predicted that stylisation would not \emph{lower} trust. None of the three trust dimensions was significantly lower for C3 than C2, \key{so H2 holds as stated}. \key{What I cannot claim is that the two are equal.}}
+
+\begin{itemize}
+  \item Pairwise, C2 vs.\ C3: ability $p=.21$, benevolence $p=.18$, integrity $p=.27$, all small effects ($g\approx0.2$).
+  \item TOST: difference $0.33$, bound $\pm0.51$, $p=.240$. Equivalence \emph{not} established.
+  \item Power for the TOST was about $0.20$ at $n=41$. Settling it needs about 120 people.
+\end{itemize}
+\careful{say \emph{no penalty was detected}, never \emph{there is no penalty} or \emph{they are equivalent}.}
+
+\Q{Is H2 not trivially supported? A small sample makes non-significance easy.}{slide 23}
+
+\say{Yes, that is exactly the weakness of a null hypothesis like H2, and \key{it is why I added the TOST}. The TOST did not confirm equivalence. So the honest result is: \key{no penalty detected, equivalence open}. I report it that way, and the power for the TOST was known in advance.}
+
+\careful{this is probably the hardest question. Agree with the premise, then point to the TOST. Do not defend H2 as strong evidence.}
+
+\Q{What does H3 show, and what does $r=-.72$ do to it?}{slides 24, 71, 72}
+
+\say{Within a person, one point more eeriness goes with about one point less trust on every dimension, and likeability does the reverse. But eeriness and likeability correlate at $-.72$. With both in one model, likeability holds on all three dimensions and eeriness only on ability. \key{So appearance predicts trust, but I cannot say which of the two does the work.}}
+
+\begin{itemize}
+  \item Slopes: eeriness $-1.02$ to $-1.17$, likeability $+1.08$ to $+1.10$, all $p<.001$.
+  \item Intraclass correlation $.48$ to $.63$: half or more of the trust variance is between people.
+  \item Joint model, eeriness: ability $b=-0.50$, $p=.024$; benevolence $p=.075$; integrity $p=.273$.
+\end{itemize}
+\careful{H3 is an association, not a cause. Also: within-person variation comes largely from the real speaker against the two avatars, since C2 and C3 hardly differed. If pushed, concede that the slope is driven mostly by the C1 contrast.}
+
+\Q{H3 says eeriness lowers trust, but H1 found no eeriness change. Is that a contradiction?}{slide 24}
+
+\say{\key{No, it explains the null.} The path from eeriness to trust is open, but the composite did not move eeriness between C2 and C3, so there was nothing for trust to respond to. Eeriness stayed flat and trust stayed flat, which is what H2 predicted.}
+
+\Q{Ho and MacDorman built eeriness to be independent. Does your $r=-.72$ contradict them?}{slides 20, 24}
+
+\say{No. They separated eeriness from humanness, warmth and attractiveness, across many characters. \key{I measured none of those three.} My $-.72$ is eeriness against Godspeed likeability, within each person across three advisors. So it does not contradict their separation. In my data the two simply behaved like one measure, and I cannot say which of them drives trust.}
+
+\begin{itemize}
+  \item Ho and MacDorman, Phase 2 (Table 7, Figs.~9--10): eeriness against humanness $r=.02$, warmth $r=.05$, attractiveness $r=.03$.
+  \item They criticised Godspeed likeability itself, which correlated $.71$ to $.74$ with the other Godspeed indices. A strong link between eeriness and that scale fits their critique rather than breaking their design.
+  \item How $r$ was computed: each participant's scores centred on their own mean, then Pearson across all 123 ratings, with $df = 123-41-1 = 81$ (repeated-measures correlation). Shared variance $52\%$.
+\end{itemize}
+\careful{Do not say the result goes \emph{against} Ho and MacDorman. The thesis does not claim it, and their correlations compare characters while yours compares one person's ratings of three advisors.}
+
+\Q{Why was H4 not supported?}{slide 25}
+
+\say{The real speaker was rated significantly higher on all three trust dimensions, with large effects. The trust gap was 1.31 points against a bound of 0.47, nearly three times the bound. \key{That is not a near miss.}}
+
+\begin{itemize}
+  \item C1 vs.\ C3: ability $g=0.75$, benevolence $g=0.79$, integrity $g=0.80$, all $p<.001$.
+  \item TOST $p=.998$.
+  \item C1 differs from the avatars in more than rendering: animation naturalness, reconstruction fidelity, and possibly familiarity.
+\end{itemize}
+
+\Q{Why did the unsettlingness ranking show nothing, when eeriness ratings did?}{slide 26}
+
+\say{The question read \emph{most to least unsettling}, \key{but the answer columns were labelled 1 (Best) to 3 (Worst)}. The means show people used the Best-to-Worst reading, with the real speaker at 1.74. Since the wording was ambiguous, I do not draw conclusions from it. It was null either way, $p=.60$.}
+
+\careful{volunteer the labelling problem yourself. It is a questionnaire flaw, and admitting it is better than having it found.}
+
+\Q{Could demand characteristics explain the results?}{slide 26}
+
+\say{24 of 41 guessed the study was about avatar realism or trust. I re-ran H1 and H2 without them, on the 17 who did not guess, and \key{the pattern stayed the same}. Seventeen people cannot rule out a small effect, though.}
+
+\Q{What about the secondary measures?}{slide 74}
+
+\say{Agreement with the recommendation did not differ between conditions, $p=.13$, so \key{people judged the advice largely independently of the rendering}. Preference shift was rare, 2 to 12 percent, which suggests both options stayed plausible, as intended. Trust propensity did not predict trust, $r=-.10$, as in Canales.}
+
+%% ============================================================
+\qpart{H \quad Limitations and future work}
+
+\Q{What is your most serious limitation?}{slides 31, 78, 79}
+
+\say{The three version groups differed on eeriness and likeability, and each version fixes both who the people were and the order they saw. So \key{I cannot tell whether people or order caused it}, and that qualifies H1. Comparisons between conditions are still protected, because everyone saw all three.}
+
+\begin{itemize}
+  \item Position alone had no significant effect on any subscale.
+  \item Version effect: likeability $F(2,38)=7.07$, $p=.002$; eeriness $F(2,38)=5.57$, $p=.008$; no trust subscale.
+  \item C3 followed C1 directly in two of three versions, C2 never did. Any contrast from the real speaker falls on C3.
+\end{itemize}
+
+\needspace{14\baselineskip}
+{\bfseries\color{knblue}Follow-up: In which way did the versioning affect the results?}\par\vspace{0.2em}
+
+\say{In three ways. The first two weaken the eeriness result, the third shows trust was not touched.
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em,topsep=0.2em]
+  \item \key{\textbf{Group differences: H1 is weaker.}} The three groups differed on eeriness and likeability. Since each version is one group \emph{and} one order, I cannot tell if the people differed or the order did. Eeriness is exactly what H1 tests, so the H1 null is less certain.
+  \item \key{\textbf{Carryover: could work against C3.}} C3 came right after the real speaker in two versions, C2 never did. If seeing the real person first makes the next avatar look worse, that would hit C3 only, and could hide a real reduction in eeriness.
+  \item \key{\textbf{Trust: not affected.}} The groups did not differ on any trust subscale, and position had no effect on trust. So H2 and H4 rest on firmer ground than H1.
+\end{enumerate}}
+
+{\small\color{kngrey}\textbf{Memory hook:} \hook{\emph{Who or when? Hits eeriness, maybe C3, not trust.}}}
+
+\textbf{The order each version saw}, and why point 2 happens:\par
+\vspace{0.2em}
+{\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}lccc>{\raggedright\arraybackslash}p{0.38\textwidth}@{}}
+\toprule
+\textbf{Version} & \textbf{Video 1} & \textbf{Video 2} & \textbf{Video 3} & \textbf{What comes before C3} \\
+\midrule
+A & C2 & C1 & C3 & the real speaker \\
+B & C3 & C2 & C1 & nothing, C3 is first \\
+C & C1 & C3 & C2 & the real speaker \\
+\bottomrule
+\end{tabular}\par}
+\vspace{0.3em}
+C2 is never shown right after C1. With six orders, every condition would follow every other one equally often, and this imbalance would disappear.
+
+\textbf{What stays protected:}
+\begin{itemize}
+  \item Everyone saw all three conditions, and each condition sat in each video slot once across the versions. So a \emph{general} group difference, for example one group finding all avatars eerier, cancels out inside each person's comparison.
+  \item What does not cancel is an order effect on \emph{one specific} condition, such as C3 after C1. Three orders cannot rule that out.
+  \item The versions were not equal in size (15, 12, 14), so the balance across slots is close but not exact.
+\end{itemize}
+
+\careful{the direction in point 2 is a possibility, not a finding. The thesis says only that any contrast from the real speaker \emph{falls on C3 alone} and that the design \emph{cannot establish whether it did} (Discussion §6.3.2). Say \emph{could}, never \emph{did}. The unequal group sizes point is your own reasoning, not stated in the thesis.}
+
+\Q{How far do your results generalise?}{slide 31}
+
+\say{\key{To this configuration}: one composite, one avatar identity, one platform, three scenarios, video on a flat screen. Other techniques, abstraction levels, identities or an interactive setting may behave differently.}
+
+\Q{What would you do differently?}{slide 33}
+
+\say{\key{Around 120 participants to settle equivalence}, and a statement at the start that the videos are not AI-generated. Then the two design changes that test my explanations: stylise the shape as well, and run C2 against C3 without the real speaker.}
+
+\begin{itemize}
+  \item \textbf{From the limitations, not the future work section:} six condition orders instead of three (Limitations §6.4), and a question asking whether participants recognised the speaker (Discussion §6.3.3).
+\end{itemize}
+\careful{if you mention six orders or the recognition question, present them as fixes for the limitations. Thesis §7.2 does not list them as future work.}
+
+\Q{What is the next study?}{slide 33}
+
+\say{\key{Vary abstraction continuously} instead of testing one setting, so the result is a curve of eeriness and trust against abstraction, not a single point. Bring back interaction and shared space in VR, where a rendering difference may matter more. And \key{repeat it across several avatar identities and platforms}, to see whether the result is general or specific to this one avatar.}
+
+\textbf{The seven future work items in thesis §7.2, in order:}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.05em,topsep=0.2em]
+  \item Larger replication, about 120 participants, to settle equivalence.
+  \item Stylise the geometry too, to test the shape and material mismatch.
+  \item Drop the real speaker, to remove the human anchor.
+  \item State at the outset that the videos are not AI-generated.
+  \item Vary abstraction continuously: a curve, and possibly an optimum between realism and abstraction.
+  \item Restore interaction and shared space, as in VR.
+  \item Repeat across several identities and platforms, for example a character who appears male, elderly or non-human.
+\end{enumerate}
+\needspace{8\baselineskip}
+{\bfseries\color{knblue}Follow-up: You stylise the geometry next. Why not the voice and movement too?}\par\vspace{0.2em}
+
+\say{Good point, and it follows from my own discussion. The second mismatch I found is a human voice and human motion on an abstracted face, and a shading operator cannot reach that. So matching the voice and animation to the stylised face is a \key{natural next step beyond what the thesis lists}. I named geometry because it tests the first mismatch, material against shape, which is the one Zell measured.}
+
+\careful{thesis §7.2 does \emph{not} list stylising the voice or movement. Discussion §6.3.1 only says the performance mismatch \emph{was beyond the composite's reach}. Present it as your own extension, not as thesis future work.}
+
+\end{document}

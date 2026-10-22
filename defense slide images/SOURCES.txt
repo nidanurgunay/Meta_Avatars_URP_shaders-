@@ -1,0 +1,184 @@
+IMAGE SOURCES
+==============================================================================
+Every file in this folder, and exactly where it was cropped from.
+
+04-1_mori_1970_uncanny_valley_curve.png
+    source : /Users/nidanurgunay/ThesisMetaAvatar/thesis/figures/uncanny_valley_mori.png
+    crop   : whole image  (fractions of the page, then whitespace trimmed)
+
+04-2_macdorman_2006_android_and_robot.png
+    source : /Users/nidanurgunay/ThesisMetaAvatar/thesis/figures/general/McDormanAndroidHumanoid.png
+    crop   : whole image  (fractions of the page, then whitespace trimmed)
+
+04-3_ho_macdorman_2010_stimuli.png
+    source : /Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/02_trust_and_avatar_perception/Ho2010UncannyValleyIndices.pdf
+    page   : PDF page 3
+    crop   : x0,y0,x1,y1 = 0.05, 0.305, 0.94, 0.478  (fractions of the page, then whitespace trimmed)
+
+04-4_dill_2012_cg_character_curve.png
+    source : /Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/01_uncanny_valley/Evaluation of the Uncanny Valley in CG Characters.pdf
+    page   : PDF page 527
+    crop   : x0,y0,x1,y1 = 0.05, 0.055, 0.88, 0.385  (fractions of the page, then whitespace trimmed)
+
+05-1_nowak_rauh_2005_avatar_set.png
+    source : /Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/02_trust_and_avatar_perception/Nowak Rauh 2005.pdf
+    page   : PDF page 8
+    crop   : x0,y0,x1,y1 = 0.015, 0.045, 0.87, 0.73  (fractions of the page, then whitespace trimmed)
+
+05-2_mcdonnell_2012_render_styles.png
+    source : /Users/nidanurgunay/ThesisMetaAvatar/thesis/figures/general/McDonel Rennder me real2.png
+    crop   : whole image  (fractions of the page, then whitespace trimmed)
+
+05-3_zell_2015_material_axis.png
+    source : /Users/nidanurgunay/ThesisMetaAvatar/thesis/figures/general/zell_material.png
+    crop   : whole image  (fractions of the page, then whitespace trimmed)
+
+05-4_katsyri_2015_valley_turning_points.png
+    source : /Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/fpsyg-06-00390.pdf
+    page   : PDF page 2
+    crop   : x0,y0,x1,y1 = 0.02, 0.058, 0.50, 0.32  (fractions of the page, then whitespace trimmed)
+
+06-2_canales_2024_stylisation_levels.png
+    source : /Users/nidanurgunay/ThesisMetaAvatar/thesis/figures/general/Caanles.png
+    crop   : whole image  (fractions of the page, then whitespace trimmed)
+
+06-3_gao_2025_real_vs_stylised.png
+    source : /Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/02_trust_and_avatar_perception/IEEE_VR25_TVCG.pdf
+    page   : PDF page 1
+    crop   : x0,y0,x1,y1 = 0.315, 0.10, 0.97, 0.30  (fractions of the page, then whitespace trimmed)
+
+06-4_dubosc_2025_stylisation_levels.png
+    source : /Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/02_trust_and_avatar_perception/Effect_of_avatar_stylization_and_facial_expression.pdf
+    page   : PDF page 6
+    crop   : x0,y0,x1,y1 = 0.17, 0.70, 0.93, 0.96  (fractions of the page, then whitespace trimmed)
+
+06-5_tao_2025_trustworthiness_ranking.png
+    source : /Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles/Tao-Impact.pdf
+    page   : PDF page 5
+    crop   : x0,y0,x1,y1 = 0.02, 0.325, 0.99, 0.645  (fractions of the page, then whitespace trimmed)
+
+09-1_C2_photorealistic.png
+    source : /Users/nidanurgunay/ThesisMetaAvatar/thesis/figures/avaturn_best_1.png
+    crop   : x0,y0,x1,y1 = 0.0, 0.0, 0.5, 0.5  (fractions of the page, then whitespace trimmed)
+
+09-2_C3_npr.png
+    source : /Users/nidanurgunay/ThesisMetaAvatar/thesis/figures/avaturn_best_1.png
+    crop   : x0,y0,x1,y1 = 0.5, 0.5, 1.0, 1.0  (fractions of the page, then whitespace trimmed)
+
+Base folders:
+  thesis figures : /Users/nidanurgunay/ThesisMetaAvatar/thesis/figures
+  source papers  : /Users/nidanurgunay/Desktop/Uni/VR Avatar Project/Articles
+
+
+TECHNIQUE AND PLATFORM RENDERS
+------------------------------
+In the 'technique figures' subfolder.
+Added for the methodology slides and the per-technique backup slides.
+All of these are own work, rendered from the Unity project. No credit line needed.
+
+  platform_1_mixamo / _2_meta_sdk / _3_avaturn
+      The three baseline avatars, no NPR applied.
+
+  technique_V1_silhouette_*     inverted hull outline
+  technique_V2_toon_*           quantised diffuse bands
+  technique_V2-2_xtoon_*        2D ramp, plus two ramp sweeps
+  technique_V3_normal_edges_*   screen-space normal derivatives
+  technique_V4_sobel_*          colour-buffer gradient, plus a raised-threshold version
+  technique_V4-2_gaussian_*     Gaussian prefiltered Sobel
+  technique_V5_hierarchical_*   depth, normal and colour layers merged
+  technique_V6_kuwahara_*       anisotropic painterly filter
+
+The suffix is the platform: mixamo_jody, meta_sdk or avaturn.
+
+'mixamo_jody' is one platform, not two. Mixamo is the platform and Jody is the
+character on it, and the thesis uses both words, so both are in the filename.
+There is no separate '_jody' file to look for.
+
+ALL THREE PLATFORMS ARE PRESENT FOR ALL EIGHT TECHNIQUES (24 files). The set is
+the same one the thesis uses in Chapter 4, copied file for file, so a backup
+slide and the corresponding thesis figure always show the identical render.
+The Meta SDK figures live in thesis/figures/mataAvatars/, not thesis/figures/Meta/,
+which is why an earlier version of the deck was missing several of them.
+
+Two exceptions worth knowing:
+  - V2.2 X-Toon, V3, V4, V4.2 and V5 take the Mixamo column from the Jade/
+    folder, since Jody is the Mixamo character. V1, V2 and V6 take it from
+    Mixamo/. Either way the file here is named _mixamo_jody.
+  - technique_V5_hierarchical_sweep_mixamo_jody is the 4-panel threshold sweep.
+    It is NOT the same image as technique_V5_hierarchical_mixamo_jody, which is
+    the square 3-platform comparison. Both are kept.
+  - technique_V2-2_xtoon_ramp_* are the ramp sweeps, separate from the
+    _xtoon_* platform comparisons.
+  - technique_V4_sobel_raised_threshold_avaturn is the higher-threshold variant.
+
+Showing one technique across platforms is the RQ1 evidence: same operator,
+different pipeline, visibly different output.
+
+Source folder for all of them: thesis/figures/{Mixamo,Meta,Avaturn,Jade}/
+
+
+TEXTURE PREPROCESSING
+---------------------
+In the 'technique figures' subfolder. Own work, no credit line needed.
+
+  texture_0_default_vs_preprocessed
+      Slide 11. The same crop as Figure fig:avaturn_best in the thesis
+      (04_methodology.tex, viewport 0 300 712.5 600 of avaturn_best_1).
+      Left: the default Avaturn avatar, no preprocessing and no shader.
+      Right: the preprocessed head texture, also with no shader.
+      Source: thesis/figures/avaturn_best_1.png, top half, full width.
+
+  texture_1_npr_on_raw_albedo
+  texture_2_npr_on_preprocessed
+      The NPR composite running on the raw photographic albedo and on the
+      cleaned one. Currently unused in the deck, kept as backup material for
+      the question "what did it look like before you fixed the texture".
+
+
+STUDY FIGURES
+-------------
+In the 'study figures' subfolder. Own work, generated from the study data.
+
+  prestudy_summary                Slide 12. Borda score per round, five panels.
+  prestudy_overall_appeal         Portrait version of the closing appeal question.
+  prestudy_overall_appeal_wide    Slide 13. Same data, drawn as vertical bars.
+                                  Generated by thesis/analysis_data/prestudy_appeal_figure.py
+  prestudy_R1_threshold_sweep     Slide 13. The five R1 inner-line thresholds,
+                                  0.01 to 0.05, cropped from prestudy_all_versions.
+  prestudy_all_versions           Backup. Every variant shown in the pre-study.
+  fig_manipulation_check, fig_subscales_grid, fig_rankings,
+  fig_tost_equivalence, fig_h3_eeriness_trust, fig_h3_likeability
+                                  The main study result figures.
+
+
+SUBSCALE PANELS, ONE PER MEASURE
+--------------------------------
+In the 'study figures' subfolder. Own work. Cut from fig_subscales_grid at full
+resolution by thesis/analysis_data/subscale_panels.py, so each panel is identical
+to the one in the thesis figure. Roughly 1110 x 1110 px each.
+
+  subscale_1_likeability      Likeability, 1-5
+  subscale_2_eeriness         Eeriness, 1-5   -> the H1 slide
+  subscale_3_ability          Ability, 1-7    -> H2 and H4
+  subscale_4_benevolence      Benevolence, 1-7 -> H2 and H4
+  subscale_5_integrity        Integrity, 1-7  -> H2 and H4
+
+Each panel already carries its own significance brackets (***, ns) and the
+Holm-corrected pairwise result, so it stands alone on a slide.
+
+  trust_subscales_3panel      The three trust panels joined into ONE image with a
+                              caption, for the H2 and H4 slides. Paste this rather
+                              than placing three separate panels by hand.
+                              Built by thesis/analysis_data/trust_subscale_composite.py
+
+  tost_H2_row                 H2's equivalence row with its own x-axis.
+  tost_H4_row                 H4's equivalence row with its own x-axis.
+                              Split from fig_tost_equivalence so neither slide
+                              reveals the other hypothesis's result.
+
+STUDY STIMULI
+-------------
+  stimulus_C1_real            The real speaker
+  stimulus_C2_photorealistic  The unmodified Avaturn avatar
+  stimulus_C3_npr             The same avatar under the NPR composite
+      Cut from thesis/figures/general/study_stimuli.png. Own work.

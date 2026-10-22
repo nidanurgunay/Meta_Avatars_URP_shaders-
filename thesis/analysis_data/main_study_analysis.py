@@ -201,7 +201,7 @@ def report_rm_anova(long_data, dv, label):
         p_gg = aov.loc[0, "p_GG_corr"]
         p_str = f"p_GG={p_gg:.4f} (sphericity violated, W={aov.loc[0,'W_spher']:.3f}, p_spher={aov.loc[0,'p_spher']:.2e})"
     print(f"\n{label}: F({df_eff:.0f},{df_err:.0f})={F:.2f}, {p_str}, partial eta^2={partial_eta2:.3f}")
-    pw = pg.pairwise_tests(data=long_data, dv=dv, within="condition", subject="participant", padjust="bonf")
+    pw = pg.pairwise_tests(data=long_data, dv=dv, within="condition", subject="participant", padjust="holm")
     print(pw[["A", "B", "T", "p_unc", "p_corr", "hedges"]].to_string(index=False))
     return aov, pw
 
@@ -289,9 +289,24 @@ for dv in ["E_score", "F_score", "G_score"]:
 #    flags (drops participants with a duplicate/missing rank for that question).
 # ---------------------------------------------------------------------------
 print("\n" + "=" * 70)
-print("STEP 7: Post-study rankings -- Friedman + Wilcoxon (Bonferroni)")
+print("STEP 7: Post-study rankings -- Friedman + Wilcoxon (Holm)")
 print("=" * 70)
 from scipy.stats import friedmanchisquare, wilcoxon
+
+def holm(pvals):
+    """Holm (1979) step-down correction. Sorts p ascending, compares p_i against
+    alpha/(k-i), and enforces monotonicity so no adjusted p falls below an earlier one.
+    The analysis plan specifies Holm rather than Bonferroni: it controls the same
+    family-wise error rate but is uniformly more powerful."""
+    pvals = np.asarray(pvals, dtype=float)
+    order = np.argsort(pvals)
+    adjusted = np.empty(len(pvals))
+    running = 0.0
+    for rank, idx in enumerate(order):
+        running = max(running, pvals[idx] * (len(pvals) - rank))
+        adjusted[idx] = min(running, 1.0)
+    return adjusted
+
 
 def run_ranking(qname, valid_col):
     cols = [f"{qname}_C1_Real", f"{qname}_C3_NPR", f"{qname}_C2_Realistic"]
@@ -301,11 +316,14 @@ def run_ranking(qname, valid_col):
     chi2, p = friedmanchisquare(sub[cols[0]], sub[cols[1]], sub[cols[2]])
     print(f"Friedman chi2={chi2:.2f}, df=2, p={p:.4f}")
     pairs = [("C1_Real", "C2_Realistic"), ("C1_Real", "C3_NPR"), ("C2_Realistic", "C3_NPR")]
+    stats_raw = []
     for a, b in pairs:
         ca, cb = f"{qname}_{a}", f"{qname}_{b}"
         stat, pw = wilcoxon(sub[ca], sub[cb])
-        p_corr = min(pw * 3, 1.0)
-        print(f"  {a} vs {b}: W={stat:.1f}, p_unc={pw:.4f}, p_corr(bonf)={p_corr:.4f}")
+        stats_raw.append((a, b, stat, pw))
+    p_adj = holm([s[3] for s in stats_raw])
+    for (a, b, stat, pw), pc in zip(stats_raw, p_adj):
+        print(f"  {a} vs {b}: W={stat:.1f}, p_unc={pw:.4f}, p_corr(holm)={pc:.4f}")
     return sub
 
 run_ranking("P1_rank", "P1_rank_valid")

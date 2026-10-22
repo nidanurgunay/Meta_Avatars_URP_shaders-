@@ -17,52 +17,72 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{array}
+\usepackage{colortbl}
 \usepackage{xcolor}
 \usepackage{tikz}
-\usetikzlibrary{positioning, arrows.meta, shapes.geometric}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, calc, decorations.pathreplacing}
 
-\graphicspath{{thesis/figures/}{thesis/figures/user_study/}{thesis/}}
+\graphicspath{{thesis/figures/}{thesis/figures/user_study/}{thesis/}{defense slide images/}{defense slide images/paper figures/}{defense slide images/technique figures/}{defense slide images/study figures/}}
 
-%% ---- Colours ----
-\definecolor{knblue}{HTML}{00539F}
-\definecolor{knlight}{HTML}{E8F0F8}
+%% ---- Colours (matched to the Google Slides template) ----
+\definecolor{knblue}{HTML}{2E75B6}   % bold key phrases in body text
+\definecolor{knpale}{HTML}{B4DEEA}   % pale band behind the main title
+\definecolor{kncyan}{HTML}{4EBADE}   % strong band, section dividers
+\definecolor{knrule}{HTML}{5CC0DC}   % footer rule and bullet dashes
+\definecolor{knlight}{HTML}{EAF6FA}  % panel fill
 \definecolor{knaccent}{HTML}{D97706}
 \definecolor{knred}{HTML}{B3261E}
 \definecolor{kngreen}{HTML}{1B7A43}
-\definecolor{kngrey}{HTML}{5A6570}
+\definecolor{kngrey}{HTML}{909090}
 
 %% ---- Beamer look ----
 \setbeamercolor{structure}{fg=knblue}
-\setbeamercolor{frametitle}{fg=knblue}
+\setbeamercolor{frametitle}{fg=black}
 \setbeamercolor{title}{fg=knblue}
-\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamerfont{frametitle}{size=\LARGE,series=\bfseries}
 \setbeamerfont{title}{size=\LARGE,series=\bfseries}
 \setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{itemize items}[circle]
-\setbeamercolor{itemize item}{fg=knblue}
-\setbeamercolor{itemize subitem}{fg=kngrey}
+\setbeamertemplate{itemize item}{\color{knrule}\textendash}
+\setbeamertemplate{itemize subitem}{\color{knrule}\textendash}
+\setbeamercolor{itemize item}{fg=knrule}
+\setbeamercolor{itemize subitem}{fg=knrule}
+\setlength{\fboxsep}{4pt}
 \setbeamerfont{itemize/enumerate subbody}{size=\small}
 
 \makeatletter
 \setbeamertemplate{frametitle}{%
-  \vspace{0.35em}%
-  \hspace{0.3em}\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle%
-  \ifx\insertframesubtitle\@empty\else
-    \\[0.15em]\hspace{0.3em}{\small\normalfont\color{kngrey}\insertframesubtitle}%
-  \fi
-  \\[0.25em]\hspace{0.3em}{\color{knblue}\rule{0.965\paperwidth}{1pt}}%
+  \vspace{0.5em}%
+  \hspace*{0.045\paperwidth}%
+  \begin{minipage}{0.90\paperwidth}%
+    \raggedright
+    \usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle\par
+    \ifx\insertframesubtitle\@empty\else
+      \vspace{0.15em}{\small\normalfont\color{kngrey}\insertframesubtitle}\par
+    \fi
+  \end{minipage}%
+  \vspace{0.25em}%
 }
 \makeatother
 
 \setbeamertemplate{footline}{%
-  \hspace{0.9em}{\tiny\color{kngrey}Nidanur Günay\quad|\quad Abstraction Mechanisms for Virtual Avatars}%
-  \hfill{\tiny\color{kngrey}\insertframenumber}\hspace{0.9em}\vspace{0.5em}%
+  \hbox{\color{knrule}\rule{\paperwidth}{0.9pt}}%
+  \vspace{0.12em}%
+  \hbox to \paperwidth{\hspace{0.03\paperwidth}\hfill
+    {\tiny\color{kngrey}Abstraction Mechanisms for Virtual Avatars}\hfill
+    {\tiny\color{kngrey}\insertframenumber}\hspace{0.03\paperwidth}}%
+  \vspace{0.22em}%
 }
 
 %% ---- Small helpers ----
 \newcommand{\hl}[1]{{\color{knblue}\textbf{#1}}}
 \newcommand{\good}[1]{{\color{kngreen}\textbf{#1}}}
 \newcommand{\bad}[1]{{\color{knred}\textbf{#1}}}
+\newcommand{\panelhead}[1]{\noindent\colorbox{kncyan}{\parbox{0.96\textwidth}{\centering\vspace{1pt}\color{white}\scriptsize\bfseries #1\vspace{1pt}}}\\[0.25em]}
+\newcommand{\panelheadsm}[1]{\noindent\colorbox{kncyan}{\parbox{0.96\textwidth}{\centering\vspace{1pt}\color{white}\tiny\bfseries #1\vspace{1pt}}}\\[0.2em]}
+\newcommand{\panel}[1]{\noindent\colorbox{knlight}{\parbox{0.96\textwidth}{\vspace{2pt}\scriptsize
+\begin{itemize}\setlength{\itemsep}{0.2em}\setlength{\leftmargini}{1.1em}#1\end{itemize}\vspace{2pt}}}}
+\newcommand{\rowrule}{\noalign{\vskip1pt}\arrayrulecolor{black!12}\hline\arrayrulecolor{black}\noalign{\vskip1pt}}
 \newcommand{\sn}[1]{{\color{kngrey}\small #1}}
 
 % Verdict badge
@@ -76,7 +96,7 @@
   \vspace{0.2em}}
 
 \title{Abstraction Mechanisms for Virtual Avatars}
-\subtitle{Non-Photorealistic Rendering across Avatar Platforms and its Effect on Perceived Trust}
+\subtitle{NPR across Avatar Platforms and its Effect on Perceived Trust}
 \author{Nidanur Günay}
 \institute{Department of Computer and Information Science\\University of Konstanz}
 \date{Master's Thesis Defense \quad|\quad 2026}
@@ -87,282 +107,1414 @@
 %% 1 — Title
 %% ============================================================
 \begin{frame}[plain]
-  \vspace{0.5em}
-  \begin{center}
-    \includegraphics[width=0.24\textwidth]{UniKonstanz_Logo_Minimum_sRGB}\\[1.2em]
-    {\LARGE\bfseries\color{knblue} Abstraction Mechanisms for Virtual Avatars}\\[0.5em]
-    {\small\color{kngrey} Non-Photorealistic Rendering across Avatar Platforms\\ and its Effect on Perceived Trust}\\[1.6em]
-    {\large Nidanur Günay}\\[0.4em]
-    {\footnotesize\color{kngrey} Master's Thesis Defense}\\[1.2em]
-    {\footnotesize First reviewer: Prof.\ Dr.\ Oliver Deussen}\\
-    {\footnotesize Second reviewer: Prof.\ Dr.\ Tiare Feuchtner}\\[0.8em]
-    {\footnotesize\color{kngrey} University of Konstanz, 2026}
-  \end{center}
+  \vspace{0.6em}
+  \hbox to \textwidth{\hfill\includegraphics[width=0.24\textwidth]{UniKonstanz_Logo_Minimum_sRGB}}
+  \vspace{1.6em}
+
+  \colorbox{knpale}{\fontsize{17}{20}\selectfont\bfseries Abstraction Mechanisms for Virtual Avatars}\\[0.35em]
+  \colorbox{kncyan}{\fontsize{17}{20}\selectfont\bfseries Master's Thesis Defense}\\[1.4em]
+
+  {\large\bfseries Nidanur Günay}\\[1.0em]
+  {\small First reviewer: Prof.\ Dr.\ Oliver Deussen}\\
+  {\small Second reviewer: Prof.\ Dr.\ Tiare Feuchtner}\\[1.0em]
+  {\footnotesize University of Konstanz, 2026}
+  \vfill
+  \hbox{\color{knrule}\rule{\paperwidth}{0.9pt}}
+  \vspace{0.6em}
 \end{frame}
 
 %% ============================================================
 %% PART 0 — SKELETON: problem, questions, what was built
 %% ============================================================
 
-\begin{frame}{The problem}{Realism does not buy trust}
+%% ============================================================
+%% 2 — Motivation (13 s video)
+%% ============================================================
+\begin{frame}{Motivation}
+  \vspace{0.2em}
+  \begin{center}
+    \begin{tikzpicture}
+      \node[draw=knrule, line width=1.2pt, fill=knlight, rounded corners=4pt,
+            minimum width=0.70\paperwidth, minimum height=0.50\paperheight] (v) {};
+      \node[fill=kncyan, circle, minimum size=1.2cm] at (v.center) (pb) {};
+      \fill[white] ($(pb.center)+(-0.16,0.26)$) -- ($(pb.center)+(-0.16,-0.26)$) -- ($(pb.center)+(0.29,0)$) -- cycle;
+      \node[below=0.45cm of pb, align=center] {%
+        {\bfseries Virtual avatars in everyday use}\\[0.3em]
+        {\small\color{kngrey} 13 seconds}};
+    \end{tikzpicture}
+  \end{center}
+  \vspace{0.15em}
+  \begin{center}
+    {\small\textbf{They present, they teach, they advise and they sell.}\quad
+     How they are drawn decides how much we believe them.}\\[0.4em]
+    {\tiny\color{kngrey} Clips: Lex Fridman Podcast \#398 \textperiodcentered\ Avaturn
+     \textperiodcentered\ Apple Vision Pro Spatial Persona (YouTube). Full credits at the end.}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Problem Statement}
+  \vspace{0.6em}
   \begin{columns}[T]
-    \begin{column}{0.56\textwidth}
-      \begin{itemize}
-        \item Virtual humans now advise, teach and sell. How they look changes how much people believe them.
-        \item Human likeness raises trust, \hl{but not linearly}. Almost-human characters fall into the \hl{uncanny valley}.
-        \item \hl{Non-Photorealistic Rendering (NPR)} moves an avatar back down the realism axis on purpose.
+    \begin{column}{0.43\textwidth}
+      \vspace{1.2em}
+      \large
+      \begin{itemize}\setlength{\itemsep}{1.4em}
+        \item Comfort rises with \hl{human likeness}, but only up to a point
+        \item That dip: \hl{the uncanny valley}, proposed by Mori for humanoid robots~[1]
+        \item Later confirmed for \hl{CG characters}
       \end{itemize}
-      \vspace{0.5em}
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\small\color{knblue}
-      \textbf{1.} Avatar platforms expose very unequal rendering access.\\[0.25em]
-      \textbf{2.} Nobody has measured what the abstraction does to trust.}}
     \end{column}
-    \begin{column}{0.42\textwidth}
-      \vspace{0.4em}
+    \begin{column}{0.55\textwidth}
       \centering
-      \includegraphics[width=\textwidth]{uncanny_valley_mori}\\[0.3em]
-      \sn{The uncanny valley (Mori, 1970)}
+      \includegraphics[width=\textwidth]{uncanny_valley_mori}
     \end{column}
   \end{columns}
+\end{frame}
+
+\begin{frame}[plain]
+  \vspace{2.4em}
+  \begin{center}
+    \colorbox{kncyan}{\parbox{0.66\textwidth}{\centering\vspace{7pt}\fontsize{26}{30}\selectfont\bfseries\color{black} Related Work\vspace{7pt}}}
+  \end{center}
+  \vfill
+  \hbox{\color{knrule}\rule{\paperwidth}{0.9pt}}
+  \vspace{0.6em}
+\end{frame}
+
+\begin{frame}{1. Measuring the valley}{From a drawn curve, to data, to a validated instrument, to CG characters}
+  \vspace{0.6em}
+  \begin{columns}[c]
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=2.1cm,width=0.95\textwidth,keepaspectratio]{04-1_mori_1970_uncanny_valley_curve}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=2.1cm,width=0.95\textwidth,keepaspectratio]{04-2_macdorman_2006_android_and_robot}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=2.1cm,width=0.95\textwidth,keepaspectratio]{04-3_ho_macdorman_2010_stimuli}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=2.1cm,width=0.95\textwidth,keepaspectratio]{04-4_dill_2012_cg_character_curve}\end{column}
+  \end{columns}
+  \vspace{0.5em}
+  \begin{center}
+  \begin{tikzpicture}
+    \draw[knrule, line width=1.1pt] (0,0) -- (0.93\textwidth,0);
+    \foreach \i/\n in {0.115/01, 0.375/02, 0.635/03, 0.895/04}
+      \node[circle, fill=kncyan, text=white, font=\tiny\bfseries, inner sep=2.2pt]
+        at (\i*0.93\textwidth,0) {\n};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 1970, Mori}\\[0.25em]
+      {\tiny\color{knblue}\itshape The Uncanny Valley~[1]}\\[0.4em]
+      {\scriptsize \hl{Proposed it.} Comfort drops just short of human, and \hl{motion deepens the dip}.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2006, MacDorman \& Ishiguro}\\[0.25em]
+      {\tiny\color{knblue}\itshape The Uncanny Advantage of Using Androids~[2]}\\[0.4em]
+      {\scriptsize \hl{Measured it.} Eeriness peaks where \hl{comfort is lowest}.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2010, Ho \& MacDorman}\\[0.25em]
+      {\tiny\color{knblue}\itshape Revisiting the Uncanny Valley Theory~[3]}\\[0.4em]
+      {\scriptsize \hl{Instrumented it.} Eeriness becomes \hl{separable from likeness}.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2012, Dill et al.}\\[0.25em]
+      {\tiny\color{knblue}\itshape Evaluation of the Uncanny Valley in CG Characters~[4]}\\[0.4em]
+      {\scriptsize \hl{Extended it.} The same curve appears for \hl{CG characters}.}
+    \end{column}
+  \end{columns}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{What this gives the thesis:} a valley that is real, measurable and known to reach CG avatars. \textbf{What it does not give:} any evidence about whether a viewer would \emph{rely} on the character.}}
+\end{frame}
+
+\begin{frame}{2. Trust follows the same curve}{How far the valley reaches, and how trust is measured}
+  \vspace{0.15em}
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{Why trust and not comfort:} an advisor people do not believe is useless, however comfortable it is to look at. The question is whether the valley reaches that far.}}
+  \vspace{0.25em}
+  \begin{columns}[c]
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=1.4cm,width=0.95\textwidth,keepaspectratio]{05-1_nowak_rauh_2005_avatar_set}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=1.4cm,width=0.95\textwidth,keepaspectratio]{05-2_mcdonnell_2012_render_styles}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=1.4cm,width=0.95\textwidth,keepaspectratio]{05-6_natarajan_2020_robot_range}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=1.4cm,width=0.95\textwidth,keepaspectratio]{05-5_mayer_1995_model_of_trust}\end{column}
+  \end{columns}
+  \vspace{0.25em}
+  \begin{center}
+  \begin{tikzpicture}
+    \draw[knrule, line width=1.1pt] (0,0) -- (0.70\textwidth,0);
+    \foreach \i/\n in {0.115/01, 0.375/02, 0.635/03}
+      \node[circle, fill=kncyan, text=white, font=\tiny\bfseries, inner sep=2.2pt]
+        at (\i*0.93\textwidth,0) {\n};
+    \node[circle, fill=knblue, text=white, font=\tiny\bfseries, inner sep=2.2pt]
+      at (0.895*0.93\textwidth,0) {04};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.1em}
+  \begin{columns}[T]
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2005, Nowak \& Rauh}\\[0.25em]
+      {\tiny\color{knblue}\itshape The Influence of the Avatar on Online Perceptions~[5]}\\[0.3em]
+      {\scriptsize \hl{Tested it on avatars.} More human-like avatars were rated more credible, and chosen more often.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2012, McDonnell et al.}\\[0.25em]
+      {\tiny\color{knblue}\itshape Render Me Real?~[6]}\\[0.3em]
+      {\scriptsize \hl{Measured trust directly.} Across eleven render styles it comes out valley-shaped.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2020, Natarajan \& Gombolay}\\[0.25em]
+      {\tiny\color{knblue}\itshape Effects of Anthropomorphism and Accountability~[7]}\\[0.3em]
+      {\scriptsize \hl{Beyond avatars too.} Anthropomorphic agents were trusted more.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries\color{knblue} So how is trust measured?}\\[0.25em]
+      {\tiny\color{knblue}\itshape Mayer et al., An Integrative Model of Organizational Trust, 1995~[8]}\\[0.3em]
+      {\scriptsize \hl{Ability, benevolence, integrity.} Three separable dimensions. This study measures all three.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Measuring Trust}{Trustworthiness is a property of the trustee, and it has three parts}
+  \vspace{0.45em}
+  \begin{center}
+  \begin{tikzpicture}[
+    callout/.style={draw=knrule, line width=1pt, rounded corners=8pt, fill=white,
+                    text width=5.2cm, inner sep=6pt, anchor=north west, align=left},
+    arr/.style={-{Stealth[length=3.4mm,width=2.8mm]}, kncyan, line width=1.8pt}]
+
+    \node[anchor=north west] (fig) at (6.55,0)
+      {\includegraphics[width=7.3cm]{05-5_mayer_1995_model_of_trust}};
+
+    \node[callout] (a) at (0,-0.05)
+      {{\normalsize\color{knblue}\bfseries Ability}\\[0.2em]
+       {\small Competence inside one domain, not in general.}};
+    \node[callout] (b) at (0,-1.72)
+      {{\normalsize\color{knblue}\bfseries Benevolence}\\[0.2em]
+       {\small The belief that the other party cares about my wellbeing.}};
+    \node[callout] (c) at (0,-3.39)
+      {{\normalsize\color{knblue}\bfseries Integrity}\\[0.2em]
+       {\small Sticking to principles I accept, and saying what they mean.}};
+
+    \draw[arr] (a.east) -- (6.45,-1.40);
+    \draw[arr] (b.east) -- (6.45,-2.25);
+    \draw[arr] (c.east) -- (6.45,-3.10);
+  \end{tikzpicture}
+  \end{center}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{Why three and not one:} they move independently. Someone can be entirely competent and still not act in your interest, and one score would hide which part moved~[8].}}
+\end{frame}
+
+\begin{frame}{3. Is abstraction the exit?}{Four studies, pointing in three directions}
+  \vspace{0.35em}
+  \begin{columns}[c]
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=1.25cm,width=0.95\textwidth,keepaspectratio]{06-2_canales_2024_stylisation_levels}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=1.25cm,width=0.95\textwidth,keepaspectratio]{06-4_dubosc_2025_stylisation_levels}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=1.25cm,width=0.95\textwidth,keepaspectratio]{06-3_gao_2025_real_vs_stylised}\end{column}
+    \begin{column}{0.235\textwidth}\centering\includegraphics[height=1.25cm,width=0.95\textwidth,keepaspectratio]{06-5_tao_2025_trustworthiness_ranking}\end{column}
+  \end{columns}
+  \vspace{0.2em}
+  \begin{center}
+  \begin{tikzpicture}
+    \draw[knrule, line width=1.1pt] (0,0) -- (0.93\textwidth,0);
+    \foreach \i/\n in {0.115/01, 0.375/02, 0.635/03, 0.895/04}
+      \node[circle, fill=kncyan, text=white, font=\tiny\bfseries, inner sep=2.2pt]
+        at (\i*0.93\textwidth,0) {\n};
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.1em}
+  \begin{columns}[T]
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2024, Canales et al.}\\[0.25em]
+      {\tiny\color{knblue}\itshape The Impact of Avatar Stylization on Trust~[9]}\\[0.3em]
+      {\scriptsize \hl{Measured all three dimensions} plus a forced choice. Self-report flat, \hl{behaviour not}. Identity beat style.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2025, Dubosc et al.}\\[0.25em]
+      {\tiny\color{knblue}\itshape Effect of Avatar Stylization and Facial Expression Intensity~[10]}\\[0.3em]
+      {\scriptsize \hl{Interacted face to face in VR.} Stylised avatars were rated \hl{significantly less eerie}.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2025, Gao et al.}\\[0.25em]
+      {\tiny\color{knblue}\itshape Trust in Virtual Agents~[11]}\\[0.3em]
+      {\scriptsize \hl{Set an agent against the real speaker.} The \bad{real speaker} scored higher on all three dimensions.}
+    \end{column}
+    \begin{column}{0.235\textwidth}\centering
+      {\scriptsize\bfseries 2025, Tao et al.}\\[0.25em]
+      {\tiny\color{knblue}\itshape Impact of Virtual Avatar Appearance Realism~[12]}\\[0.3em]
+      {\scriptsize \hl{Pooled thirteen studies.} High realism was rated \bad{more trustworthy} than low.}
+    \end{column}
+  \end{columns}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{And the verdict:} Alipour et al.\ reviewed 53 studies and found the link \textbf{inconsistent}~[13].
+  Nobody has tested one avatar under both treatments against the real person it was built from.}}
 \end{frame}
 
 \begin{frame}{Research questions}
-  \vspace{0.8em}
-  \begin{block}{\textbf{RQ1} \quad Technical transfer}
-    How can NPR techniques be adapted to avatar platforms with different rendering architectures, and what does each platform allow or forbid?
-  \end{block}
-  \vspace{0.3em}
-  \begin{block}{\textbf{RQ2} \quad Technique selection}
-    Which technique or combination best balances visual abstraction against facial legibility?
-  \end{block}
-  \vspace{0.3em}
-  \begin{block}{\textbf{RQ3} \quad Perception}
-    How does NPR stylisation affect perceived eeriness and trustworthiness, and can a stylised avatar reach a photorealistic avatar and a real human speaker?
-  \end{block}
-  \vspace{0.5em}
-  \sn{RQ1 and RQ2 are answered by the system. RQ3 is answered by the user study, which is where this talk spends most of its time.}
+  \vspace{0.35em}
+  \begin{center}
+  \begin{tikzpicture}[
+    rq/.style={text width=10.2cm, anchor=north west, inner sep=7pt,
+               fill=knlight, rounded corners=4pt, align=left},
+    tag/.style={anchor=west, rounded corners=3pt, inner sep=5pt,
+                font=\small\bfseries, text=white},
+    brc/.style={decorate, decoration={brace, amplitude=6pt}, knrule, line width=1.1pt}]
+
+    \node[rq] (r1) at (0,0)
+      {{\color{knblue}\bfseries RQ1}\quad{\color{kngrey}Technical transfer}\\[0.25em]
+       {\footnotesize How can NPR stylisation techniques be adapted to avatar platforms with different rendering architectures, and what capabilities and limitations does each platform impose?}};
+    \node[rq] (r2) at (0,-2.08)
+      {{\color{knblue}\bfseries RQ2}\quad{\color{kngrey}Technique selection}\\[0.25em]
+       {\footnotesize Which NPR technique or combination of techniques best balances visual abstraction against facial and expressive legibility under production rendering constraints?}};
+    \node[rq] (r3) at (0,-4.16)
+      {{\color{knblue}\bfseries RQ3}\quad{\color{kngrey}Perception}\\[0.25em]
+       {\footnotesize How does NPR stylisation affect perceived eeriness and trustworthiness, and can an NPR avatar reach the trustworthiness of a photorealistic avatar and of a real human speaker?}};
+
+    \draw[brc] (10.6,0.05) -- (10.6,-3.86);
+    \node[tag, fill=kncyan] at (11.0,-1.90) {The system};
+
+    \draw[brc] (10.6,-4.26) -- (10.6,-6.10);
+    \node[tag, fill=knblue] at (11.0,-5.18) {The user study};
+  \end{tikzpicture}
+  \end{center}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  The first two are answered by what was built. The third by a study with 41 participants, where this talk spends most of its time.}}
 \end{frame}
 
-\begin{frame}{What was built}{Eight techniques, three platforms, one shader system}
+\begin{frame}[plain]
+  \vspace{2.4em}
+  \begin{center}
+    \colorbox{kncyan}{\parbox{0.66\textwidth}{\centering\vspace{7pt}\fontsize{26}{30}\selectfont\bfseries\color{black} Methodology \& Evaluation\vspace{7pt}}}
+  \end{center}
+  \vfill
+  \hbox{\color{knrule}\rule{\paperwidth}{0.9pt}}
+  \vspace{0.6em}
+\end{frame}
+
+\begin{frame}{Three avatar platforms}{Chosen to span the range from open pipeline to closed interface}
+  \vspace{0.25em}
+  \begin{columns}[c]
+    \begin{column}{0.315\textwidth}\centering
+      \includegraphics[height=2.0cm,width=0.85\textwidth,keepaspectratio]{Mixamo/Mixamo_default}\\[0.2em]
+      {\scriptsize\bfseries Mixamo}\end{column}
+    \begin{column}{0.315\textwidth}\centering
+      \includegraphics[height=2.0cm,width=0.85\textwidth,keepaspectratio]{Meta/Meta_default}\\[0.2em]
+      {\scriptsize\bfseries Meta Avatars SDK}\end{column}
+    \begin{column}{0.315\textwidth}\centering
+      \includegraphics[height=2.0cm,width=0.85\textwidth,keepaspectratio]{Avaturn/Avaturn_default}\\[0.2em]
+      {\scriptsize\bfseries Avaturn}\end{column}
+  \end{columns}
+  \vspace{0.35em}
+  \begin{center}
+  \scriptsize
+  \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.155\textwidth}>{\raggedright\arraybackslash}p{0.245\textwidth}>{\raggedright\arraybackslash}p{0.265\textwidth}>{\raggedright\arraybackslash}p{0.245\textwidth}@{}}
+    \toprule
+     & \textbf{Mixamo} & \textbf{Meta SDK} & \textbf{Avaturn} \\
+    \midrule
+    Shader access    & Full URP, unrestricted & \bad{Hook injection only}, after SDK lighting & Full URP, unrestricted \\
+    Facial animation & \bad{None} & Requires Quest Pro hardware & \hl{Blendshape animation} \\
+    Key challenge    & No facial rigging & Shader manipulation & Initial Unity import \\
+    Strength         & Full shader freedom & Native Quest 3 integration & \hl{High fidelity facial quality} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{The plan:} build the same set on all three and see what survives the move. Mixamo for prototyping, the Meta SDK for live tracked animation in VR, and Avaturn for the study, the only one combining open shader access with a face rebuilt from photographs.}}
+\end{frame}
+
+\begin{frame}{Eight techniques}{Assessed against four criteria on the Avaturn avatar}
+  \vspace{0.6em}
+  \begin{center}
+  \tiny
+  \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.45}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}m{0.155\textwidth}>{\raggedright\arraybackslash}m{0.19\textwidth}>{\centering\arraybackslash}m{0.075\textwidth}>{\raggedright\arraybackslash}m{0.19\textwidth}>{\raggedright\arraybackslash}m{0.19\textwidth}>{\centering\arraybackslash}m{0.06\textwidth}@{}}
+    \toprule
+    \textbf{Technique} & \textbf{Facial readability} & \textbf{Temporal} & \textbf{Artefact suppression} & \textbf{Expressive abstraction} & \textbf{Cand.} \\
+    \midrule
+    V1 Outline~[14]      & {\color{kngreen}\checkmark}                       & {\color{kngreen}\checkmark}  & {\color{kngrey}(\checkmark)} alpha cutout   & {\color{knred}$\times$} not in isolation & {\color{kngreen}\checkmark} \\
+    V2 Toon~[15]         & {\color{kngreen}\checkmark}                       & {\color{kngreen}\checkmark}  & {\color{kngreen}\checkmark}                 & {\color{kngrey}(\checkmark)} no interior lines & --- \\
+    V2.2 X-Toon~[16]     & {\color{kngreen}\checkmark}                       & {\color{kngreen}\checkmark}  & {\color{kngreen}\checkmark}                 & {\color{kngrey}(\checkmark)} manual mode & {\color{kngreen}\checkmark} \\
+    V3 Normal~[17]       & {\color{knred}$\times$} landmarks missed      & {\color{kngreen}\checkmark}  & {\color{kngreen}\checkmark}                 & {\color{kngreen}\checkmark} & --- \\
+    V4 Sobel~[18]        & {\color{kngrey}(\checkmark)} threshold            & {\color{kngrey}(\checkmark)} & {\color{kngrey}(\checkmark)} preprocessing  & {\color{kngreen}\checkmark} & {\color{kngreen}\checkmark} \\
+    V4.2 Gauss~[19]      & {\color{knred}$\times$} no gain over V4       & {\color{kngrey}(\checkmark)} & {\color{kngreen}\checkmark}                 & {\color{kngreen}\checkmark} & --- \\
+    V5 Hierarchical~[20] & {\color{knred}$\times$} segments unclear      & {\color{kngreen}\checkmark}  & {\color{knred}$\times$} nose bridge     & {\color{kngreen}\checkmark} & {\color{kngreen}\checkmark} \\
+    V6 Kuwahara~[21]     & {\color{knred}$\times$} at large radius       & {\color{kngreen}\checkmark}  & {\color{kngreen}\checkmark}                 & {\color{kngreen}\checkmark} & {\color{kngreen}\checkmark} \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \vspace{0.25em}
+  {\centering\tiny\color{kngrey}{\color{kngreen}\checkmark} satisfactory without tuning \quad {\color{kngrey}(\checkmark)} satisfactory after tuning \quad {\color{knred}$\times$} limitation observed\par}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{Five of the eight became candidates} for the composite. None satisfied every criterion alone, and \textbf{facial readability} is the column that separated them.}}
+\end{frame}
+
+\begin{frame}{Applying the Techniques}{The same texture flaw defeats both detectors}
+  \vspace{0.4em}
+  \begin{columns}[T]
+    \begin{column}{0.64\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{technique_V4-2_gaussian_sobel_avaturn}\\[0.25em]
+      {\scriptsize\color{knblue}\textbf{V4.2} Gaussian prefiltered Sobel}
+      \vspace{0.8em}
+
+      \includegraphics[width=\textwidth]{technique_V5_hierarchical_sweep_avaturn}\\[0.25em]
+      {\scriptsize\color{knblue}\textbf{V5} Hierarchical multi-cue}
+    \end{column}
+    \begin{column}{0.33\textwidth}
+      \scriptsize
+      \textbf{\color{knred}What the detectors produced}
+      \begin{itemize}\setlength{\itemsep}{0.28em}
+        \item Lines where there is no feature
+        \item \hl{Eyebrows and lip line barely register}
+        \item V4.2: smoother, features still missing
+        \item V5: brow and nose shadow become hard edges
+      \end{itemize}
+      \vspace{0.8em}
+      \textbf{\color{knblue}Why}
+      \begin{itemize}\setlength{\itemsep}{0.28em}
+        \item Head rebuilt from photographs
+        \item \hl{Baked illumination} read as structure
+        \item No threshold separates the two
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Avatar Texture Manipulation}{Fixing the input instead of the operator}
+  \vspace{0.25em}
+  \begin{columns}[T]
+    \begin{column}{0.36\textwidth}
+      \panelhead{Three Edits in Blender}
+      \panel{%
+        \item Baked illumination blurred out
+        \item Skin tone unified
+        \item Mouth saturation raised, lip line added}
+      \vspace{0.35em}
+      \panelhead{What It Recovered}
+      \panel{%
+        \item \hl{Lip line and eyebrows} now detectable
+        \item Gaussian prefilter no longer needed}
+      \vspace{0.35em}
+      \panelhead{Scope}
+      \panel{%
+        \item Applied to the \hl{NPR avatar} only
+        \item Photorealistic version unchanged}
+    \end{column}
+    \begin{column}{0.61\textwidth}
+      \centering
+      \vspace{0.6em}
+      \includegraphics[width=\textwidth]{texture_0_default_vs_preprocessed}\\[0.45em]
+      \makebox[0.48\textwidth]{\scriptsize\color{kngrey}Default Avaturn}\hfill
+      \makebox[0.48\textwidth]{\scriptsize\color{kngrey}Preprocessed head texture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Parameter adjustment study}{What participants ranked, and the closing appeal question}
+  \vspace{0.3em}
+  {\scriptsize
+  \begin{itemize}\setlength{\itemsep}{0.2em}
+    \item \hl{45 participants}, ranked by perceived trustworthiness
+    \item One parameter group per round, then frozen for the rest
+    \item Closing question: \hl{which avatar looked most appealing overall}
+  \end{itemize}}
+  \vspace{0.3em}
+  {\centering\includegraphics[width=0.66\textwidth]{prestudy_R1_threshold_sweep}\par}
+  \vspace{0.05em}
+  {\centering\tiny\color{kngrey} One round as an example. R1 inner line threshold, 0.01 to 0.05.\par}
+  \vspace{0.3em}
+  {\centering\includegraphics[width=0.74\textwidth]{prestudy_overall_appeal_wide}\par}
+  \vspace{0.1em}
+  {\centering\tiny\color{kngrey} One vote per participant. \textbf{R1\,E} first with seven, \textbf{R3\,B} second with six.\par}
+\end{frame}
+
+\begin{frame}{Parameter adjustment study}{Five rounds, and what each one settled}
+  \vspace{0.35em}
+  \begin{columns}[T]
+    \begin{column}{0.575\textwidth}
+      \scriptsize
+      \begin{itemize}\setlength{\itemsep}{0.25em}
+        \item Borda count, Friedman omnibus, Wilcoxon on the top pair~[22]
+        \item Three rounds found no separation, two did
+        \item Ties broken by the \hl{appeal vote}
+      \end{itemize}
+      \vspace{0.8em}
+      \tiny
+      \setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.9}
+      \begin{tabular}{@{}>{\raggedright\arraybackslash}m{0.05\textwidth}>{\raggedright\arraybackslash}m{0.325\textwidth}>{\raggedright\arraybackslash}m{0.15\textwidth}>{\raggedright\arraybackslash}m{0.185\textwidth}>{\raggedright\arraybackslash}m{0.235\textwidth}@{}}
+        \toprule
+        & \textbf{Parameter group} & \textbf{Winner} & \textbf{Significant?} & \textbf{Set to} \\
+        \midrule
+        R1 & Inner line threshold          & 0.03       & no, $p = .31$          & \hl{0.05} appeal \\
+        \rowrule
+        R2 & Outline width, depth offset   & 0.003, on  & no, $p = .82$          & \textbf{0.003, on} Borda \\
+        \rowrule
+        R3 & Shadow strength, detail bias  & 0.5 / 1.0  & no, $p = .53$          & \hl{0.0 / 0.5} appeal \\
+        \rowrule
+        R4 & Kuwahara hardness, sharpness  & \bad{none} & \good{yes, $p = .003$} & \bad{off} baseline won \\
+        \rowrule
+        R5 & Hierarchical depth threshold  & \bad{none} & \good{yes, $p < .001$} & \bad{off} baseline won \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \centering
+      \vspace{-0.3em}
+      \includegraphics[height=0.36\textheight,width=\textwidth,keepaspectratio]{prestudy_summary}
+
+      {\tiny\color{kngrey} Borda score per round. \textcolor{kngreen}{Green} = significantly preferred, \textcolor{knblue}{blue} = top choice, not clearly ahead.\par}
+      \vspace{0.9em}
+
+      \scriptsize
+      \begin{itemize}\setlength{\itemsep}{0.25em}
+        \item \bad{Kuwahara} and the \bad{hierarchical layer} dropped
+        \item Composite: \hl{outline, X-Toon, Sobel}
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{RQ1 answer}{How the techniques adapted across architectures, and what each platform imposed}
+  \vspace{0.45em}
+  \begin{columns}[T]
+    \begin{column}{0.315\textwidth}
+      \panelhead{Transfers with Retuning}
+      \panel{%
+        \item All eight techniques, all three platforms
+        \item Same values, \hl{visibly different} output per host
+        \item Retuning needed everywhere}
+    \end{column}
+    \begin{column}{0.335\textwidth}
+      \panelhead{Needs a Substitute Signal}
+      \panel{%
+        \item Meta SDK: one fragment hook, no second pass
+        \item No depth buffer, no normal buffer
+        \item Hierarchical: camera-distance derivative, \hl{not depth}
+        \item Kuwahara: no Gaussian smoothing}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{The Dividing Line}
+      \panel{%
+        \item Not the technique's complexity
+        \item New \hl{parameter values}: always possible
+        \item New \hl{input signal}: only where the pipeline is open}
+      \vspace{0.5em}
+      {\tiny\color{kngrey}Avaturn was chosen for the study: the only platform with open shader access, full blendshape animation and a photographic face.\par}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{RQ2 answer}{Which combination balances abstraction against facial and expressive legibility}
+  \vspace{0.45em}
+  \begin{columns}[T]
+    \begin{column}{0.315\textwidth}
+      \panelhead{On the Raw Texture}
+      \panel{%
+        \item \bad{None succeeded}
+        \item \textbf{V3} normal edges: nothing on smooth skin
+        \item \textbf{V4} Sobel: baked lighting read as structure
+        \item \textbf{V5} hierarchical: brow and nose shadow become edges}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{After Preprocessing}
+      \panel{%
+        \item \textbf{V4} Sobel finds the \hl{eyebrows and lip line}
+        \item \textbf{V4.2} Gaussian no longer repays its 72 samples
+        \item \good{Five of the eight} went forward as candidates}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{After the Parameter Study}
+      \panel{%
+        \item \bad{V6} Kuwahara and \bad{V5} hierarchical excluded by the ranking
+        \item Composite: \hl{V1 outline}, \hl{V2.2 X-Toon}, \hl{V4 Sobel}
+        \item Plus the preprocessed head texture}
+    \end{column}
+  \end{columns}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{The answer is a composite, not a technique.} And it is not a technique alone either: without the texture preprocessing, none of the edge operators reached a readable face.}}
+\end{frame}
+
+\begin{frame}{Main User Study}{Within-subjects, video based, three conditions, one advisor task}
+  \vspace{0.15em}
+  \begin{columns}[T]
+    \begin{column}{0.455\textwidth}
+      \panelhead{Design}
+      \panel{%
+        \item 3 conditions $\times$ 3 scenarios: career, travel, learning
+        \item $3\times3$ Latin square, \hl{three versions}
+        \item Scenario order fixed, conditions rotate}
+      \vspace{0.15em}
+      {\tiny\color{kngrey}Paradigm after Canales et al.~[9].\par}
+      \vspace{0.25em}
+      \panelhead{Measures per Block}
+      \noindent\colorbox{knlight}{\parbox{0.96\textwidth}{\vspace{2pt}\tiny
+      \setlength{\tabcolsep}{2.5pt}\renewcommand{\arraystretch}{1.2}
+      \begin{tabular}{@{}>{\raggedright\arraybackslash}m{0.30\textwidth}>{\raggedright\arraybackslash}m{0.50\textwidth}>{\raggedleft\arraybackslash}m{0.11\textwidth}@{}}
+        Likeability & Godspeed~[23] & .94 \\
+        Eeriness    & Ho \& MacDorman~[3] & .87 \\
+        Ability     & Mayer~[8], wording~[9] & .96 \\
+        Benevolence & Mayer~[8], wording~[9] & .95 \\
+        Integrity   & Mayer~[8], wording~[9] & .92 \\
+      \end{tabular}\vspace{2pt}}}
+      \vspace{0.35em}
+      \panelheadsm{Sample}
+      \noindent\colorbox{knlight}{\parbox{0.96\textwidth}{\vspace{2pt}\tiny\color{kngrey}
+      \textbf{\color{knblue}$n=41$} of 52, 11 excluded \ $\cdot$ \ $M_{\text{age}} = 27.6$ ($SD = 5.4$) \ $\cdot$ \ 23 W, 17 M, 1 NB\vspace{2pt}}}
+    \end{column}
+    \begin{column}{0.525\textwidth}
+      \begin{columns}[T]
+        \begin{column}{0.315\textwidth}\centering
+          \panelheadsm{C1 — Real}
+          \includegraphics[height=2.35cm,width=\textwidth,keepaspectratio]{stimulus_C1_real}
+        \end{column}
+        \begin{column}{0.315\textwidth}\centering
+          \panelheadsm{C2 — Photorealistic}
+          \includegraphics[height=2.35cm,width=\textwidth,keepaspectratio]{stimulus_C2_photorealistic}
+        \end{column}
+        \begin{column}{0.315\textwidth}\centering
+          \panelheadsm{C3 — NPR}
+          \includegraphics[height=2.35cm,width=\textwidth,keepaspectratio]{stimulus_C3_npr}
+        \end{column}
+      \end{columns}
+      \vspace{0.2em}
+
+      {\centering\tiny\color{kngrey}Same person, same animation, same voice. \textbf{C2 vs C3} is the critical pair.\par}
+      \vspace{0.7em}
+
+      \panelhead{Study Procedure}
+      \centering
+      \begin{tikzpicture}[x=1cm, y=1cm,
+          stepbox/.style={draw=knrule, line width=0.6pt, fill=white, rounded corners=2pt,
+                          align=center, font=\tiny, text=knblue, inner sep=2.5pt, minimum height=0.48cm},
+          arr/.style={-{Latex[length=1.3mm]}, knrule, line width=0.6pt},
+          lbl/.style={font=\tiny, text=kngrey}]
+        \node[stepbox, minimum width=1.10cm] (s1) at (0.72,0) {Decision\\vignette};
+        \node[stepbox, minimum width=1.05cm] (s2) at (2.12,0) {Baseline\\choice};
+        \node[stepbox, minimum width=1.22cm] (s3) at (3.62,0) {Advisor video\\$\sim$22\,s};
+        \node[stepbox, minimum width=1.45cm] (s4) at (5.35,0) {Questionnaire\\five subscales};
+        \foreach \a/\b in {s1/s2, s2/s3, s3/s4} \draw[arr] (\a) -- (\b);
+        \draw[decorate, decoration={brace, amplitude=3pt, mirror}, knrule, line width=0.6pt]
+          (0.17,-0.38) -- (6.08,-0.38)
+          node[midway, below=1pt, lbl] {one block, repeated \textbf{$\times$\,3}, once per condition};
+        \node[stepbox, fill=knpale, minimum width=4.0cm] (r) at (3.12,-1.42)
+          {\textbf{Three forced rankings} \ consult \ $\cdot$ \ trust \ $\cdot$ \ unsettle};
+        \draw[arr] (3.12,-0.92) -- (r);
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Four Hypotheses, and All Five Subscales}{What was predicted, and what the ratings did}
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \begin{column}{0.40\textwidth}
+      \panelhead{4 Hypotheses \& Statistical Tests}
+      \noindent\colorbox{knlight}{\parbox{0.96\textwidth}{\vspace{3pt}\scriptsize
+      \textbf{H1} \ NPR (C3) is rated \emph{less eerie} than the photorealistic avatar (C2).\newline
+      {\color{knblue}\textbf{Test:}} RM-ANOVA, Holm pairwise\\[0.5em]
+      \textbf{H2} \ NPR (C3) does \emph{not} cost trust relative to C2.\newline
+      {\color{knblue}\textbf{Test:}} Pairwise plus TOST equivalence, $d = 0.3$ bound\\[0.5em]
+      \textbf{H3} \ Eeriness lowers trust, likeability raises it, within participant.\newline
+      {\color{knblue}\textbf{Test:}} Person-centred multilevel regression\\[0.5em]
+      \textbf{H4} \ NPR (C3) does \emph{not} cost trust relative to the real speaker (C1).\newline
+      {\color{knblue}\textbf{Test:}} Same as H2, against C1\vspace{3pt}}}
+      \vspace{0.5em}
+
+      {\scriptsize\color{knblue} H2 and H4 predict a \textbf{null}. A non-significant $p$ is not evidence of equivalence, hence the \textbf{TOST} bound.\par}
+    \end{column}
+    \begin{column}{0.575\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{fig_subscales_grid}\\[0.3em]
+      {\scriptsize\color{knblue}\textbf{The real speaker separates from both avatars on every subscale. The two avatars separate from each other on \emph{none} of them.}\par}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{H1 — Does NPR reduce eeriness?}
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \begin{column}{0.30\textwidth}
+      \centering
+      \vspace{0.3em}
+      \includegraphics[width=\textwidth]{subscale_2_eeriness}
+    \end{column}
+    \begin{column}{0.66\textwidth}
+      \vspace{0.3em}
+      \begin{center}\verdict{knred}{\ H1 NOT SUPPORTED\ }\end{center}
+      \vspace{0.5em}
+
+      \scriptsize
+      \begin{tabular}{@{}lccc@{}}
+        \toprule
+        \textbf{Eeriness} & \textbf{C1 vs C2} & \textbf{C1 vs C3} & \textbf{C2 vs C3} \\
+        \midrule
+        $p$ & $<.001$ & $<.001$ & \bad{$.66$} \\
+        $g$ & $0.98$ & $0.98$ & \bad{$0.07$} \\
+        \bottomrule
+      \end{tabular}
+      \vspace{0.25em}
+
+      {\color{kngrey}\scriptsize Omnibus: $F(2,80)=20.39$, $p<.001$, $\eta^2_p=.34$\par}
+      \vspace{0.7em}
+
+      \scriptsize
+      \begin{itemize}\setlength{\itemsep}{0.35em}
+        \item Eeriness rose from C1 to C2 to C3, the \hl{opposite} of the prediction
+        \item Real speaker differs from both avatars
+        \item The two avatars \hl{statistically indistinguishable}, $g=0.07$
+        \item Stylisation was seen, confirmed by the \hl{final stylisation question}
+        \item Seen, but not \hl{less eerie}: two separate effects here
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{H2 — Does NPR cost trust against the photorealistic avatar?}
+  \vspace{0.25em}
+  \begin{columns}[T]
+    \begin{column}{0.615\textwidth}
+      \centering
+      \begin{columns}[T]
+        \begin{column}{0.32\textwidth}\centering\includegraphics[width=\textwidth]{subscale_3_ability}\end{column}
+        \begin{column}{0.32\textwidth}\centering\includegraphics[width=\textwidth]{subscale_4_benevolence}\end{column}
+        \begin{column}{0.32\textwidth}\centering\includegraphics[width=\textwidth]{subscale_5_integrity}\end{column}
+      \end{columns}
+      \vspace{0.1em}
+
+      {\tiny\color{kngrey}\textbf{ns} between the two avatars on all three trust dimensions.\par}
+    \end{column}
+    \begin{column}{0.355\textwidth}
+      \begin{center}\verdict{kngreen}{\ H2 SUPPORTED\ }\end{center}
+      \vspace{0.3em}
+      \noindent\colorbox{knlight}{\parbox{0.96\textwidth}{\vspace{2pt}\tiny
+      \begin{itemize}\setlength{\itemsep}{0.22em}\setlength{\leftmargini}{1.0em}
+        \item \good{H2 holds as stated}: no trust dimension lower for C3
+        \item \bad{Equivalence unestablished}, the bound could not be ruled out
+        \item Power near $0.20$ at $n=41$. Roughly \hl{three times} the sample would settle it
+      \end{itemize}\vspace{2pt}}}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+
+  \begin{columns}[c]
+    \begin{column}{0.26\textwidth}
+      \scriptsize
+      \textbf{Step 1. Pairwise, C2 vs C3}
+      \vspace{0.2em}
+
+      \begin{tabular}{@{}lcc@{}}
+        \toprule
+        & $p$ & $g$ \\
+        \midrule
+        Ability      & $.21$ & $0.20$ \\
+        Benevolence  & $.18$ & $0.19$ \\
+        Integrity    & $.27$ & $0.16$ \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \scriptsize
+      \textbf{Step 2. TOST, trust composite}
+      \vspace{0.2em}
+
+      \begin{tabular}{@{}lccc@{}}
+        \toprule
+        & Diff. & Bound & TOST $p$ \\
+        \midrule
+        C2 vs C3 & $0.33$ & $\pm0.51$ & \bad{$.240$} \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{tost_H2_row}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{H3 — Eeriness, likeability and trust}
   \vspace{0.2em}
   \begin{columns}[T]
     \begin{column}{0.60\textwidth}
-      \small
-      \begin{tabular}{@{}ll@{}}
-        \toprule
-        \textbf{Version} & \textbf{Limitation it answers} \\
-        \midrule
-        V1 \enspace Silhouette outline   & no shape cue at all \\
-        V2 \enspace Toon shading          & continuous, unreadable lighting \\
-        V2.2 X-Toon                       & no control over abstraction level \\
-        V3 \enspace Normal edges          & no interior structure \\
-        V4 \enspace Sobel                 & misses colour boundaries \\
-        V4.2 Gaussian Sobel               & Sobel is noisy on photo texture \\
-        V5 \enspace Hierarchical          & one cue is not enough \\
-        V6 \enspace Kuwahara              & edges only, no painterly surface \\
-        \bottomrule
-      \end{tabular}
-      \vspace{0.8em}
-
-      \sn{Each version was motivated by a concrete failure of the one before it. All are switchable at runtime, without recompiling.}
+      \centering
+      \includegraphics[height=0.50\textheight]{fig_h3_eeriness_trust}
     \end{column}
     \begin{column}{0.38\textwidth}
-      \centering
-      \footnotesize
-      \begin{tabular}{@{}ll@{}}
+      \vspace{0.2em}
+      \begin{center}\verdict{kngreen}{\ H3 CONFIRMED\ }\end{center}
+      \vspace{0.4em}
+
+      \noindent\colorbox{knlight}{\parbox{0.96\textwidth}{\vspace{2pt}\scriptsize
+      \begin{itemize}\setlength{\itemsep}{0.18em}\setlength{\leftmargini}{1.0em}
+        \item \hl{Within} participants, not across conditions
+        \item Eeriness \bad{lowers} trust, likeability \good{raises} it
+        \item \hl{One point for one point}, every dimension
+        \item Confirmed in \hl{both} directions
+        \item Eeriness and likeability \hl{move together}, $r=-.72$, hard to separate as independent variables
+      \end{itemize}\vspace{2pt}}}
+      \vspace{0.3em}
+
+      \scriptsize
+      \begin{tabular}{@{}lcc@{}}
         \toprule
-        \textbf{Platform} & \textbf{Access} \\
+        \textbf{Predictor} & \textbf{Eeriness} & \textbf{Likeability} \\
         \midrule
-        Mixamo   & full \\
-        Avaturn  & full, photo texture \\
-        Meta SDK & \bad{one fragment hook} \\
+        Ability      & $-1.17$ & $+1.10$ \\
+        Benevolence  & $-1.10$ & $+1.10$ \\
+        Integrity    & $-1.02$ & $+1.08$ \\
+        \bottomrule
+      \end{tabular}\\[0.2em]
+      {\color{kngrey}\scriptsize Fixed-effect slopes, all $p<.001$}
+    \end{column}
+  \end{columns}
+  \vspace{-0.2em}
+  \takeaway{The route from appearance to trust is open. The composite never travelled it.}
+\end{frame}
+
+\begin{frame}{H4 — Does NPR cost trust against the real speaker?}
+  \vspace{0.25em}
+  \begin{columns}[T]
+    \begin{column}{0.615\textwidth}
+      \centering
+      \begin{columns}[T]
+        \begin{column}{0.32\textwidth}\centering\includegraphics[width=\textwidth]{subscale_3_ability}\end{column}
+        \begin{column}{0.32\textwidth}\centering\includegraphics[width=\textwidth]{subscale_4_benevolence}\end{column}
+        \begin{column}{0.32\textwidth}\centering\includegraphics[width=\textwidth]{subscale_5_integrity}\end{column}
+      \end{columns}
+      \vspace{0.1em}
+
+      {\tiny\color{kngrey}The real speaker is \textbf{significantly above} the NPR avatar on all three.\par}
+    \end{column}
+    \begin{column}{0.355\textwidth}
+      \begin{center}\verdict{knred}{\ H4 NOT SUPPORTED\ }\end{center}
+      \vspace{0.3em}
+      \noindent\colorbox{knlight}{\parbox{0.96\textwidth}{\vspace{2pt}\tiny
+      \begin{itemize}\setlength{\itemsep}{0.22em}\setlength{\leftmargini}{1.0em}
+        \item All three subscales \hl{significantly higher} for the real speaker
+        \item Nearly \hl{three times} the equivalence bound
+        \item Not a marginal shortfall
+        \item Two explanations stay open: the uncanny valley, or participants recognising the speaker
+      \end{itemize}\vspace{2pt}}}
+    \end{column}
+  \end{columns}
+  \vspace{0.5em}
+
+  \begin{columns}[c]
+    \begin{column}{0.26\textwidth}
+      \scriptsize
+      \textbf{Step 1. Pairwise, C1 vs C3}
+      \vspace{0.2em}
+
+      \begin{tabular}{@{}lcc@{}}
+        \toprule
+        & $p$ & $g$ \\
+        \midrule
+        Ability      & \good{$<.001$} & $0.75$ \\
+        Benevolence  & \good{$<.001$} & $0.79$ \\
+        Integrity    & \good{$<.001$} & $0.80$ \\
         \bottomrule
       \end{tabular}
-      \vspace{1.0em}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \scriptsize
+      \textbf{Step 2. TOST, trust composite}
+      \vspace{0.2em}
 
-      \colorbox{knlight}{\parbox{0.93\textwidth}{\small
-      Unity 2022.3 LTS, URP.\\
-      Meta Quest 3 target.\\
-      No extra render passes on the SDK.}}
+      \begin{tabular}{@{}lccc@{}}
+        \toprule
+        & Diff. & Bound & TOST $p$ \\
+        \midrule
+        C1 vs C3 & \bad{$1.31$} & $\pm0.47$ & $.998$ \\
+        \bottomrule
+      \end{tabular}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{tost_H4_row}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{RQ1 answer}{What transfers between pipelines, and what does not}
-  \vspace{0.4em}
+\begin{frame}{The behavioural measure}{Forced ranking after all three videos, plus the checks on the null}
+  \vspace{0.25em}
   \begin{columns}[T]
-    \begin{column}{0.49\textwidth}
-      \textbf{\color{kngreen}Transfers with retuning}
-      \begin{itemize}
-        \item Every technique ran on all three platforms.
-        \item Identical parameter values produced \hl{visibly different} output per host.
-      \end{itemize}
-      \vspace{0.9em}
-      \textbf{\color{knred}Needs a substitute signal}
-      \begin{itemize}
-        \item Meta SDK gives one fragment hook, no depth or normal buffer, no second pass.
-        \item Hierarchical layer: camera-distance derivative \hl{instead of} a depth texture.
-        \item Kuwahara: loses its Gaussian smoothing entirely.
-      \end{itemize}
+    \begin{column}{0.615\textwidth}
+      \centering
+      \includegraphics[height=0.40\textheight]{fig_rankings}
+      \vspace{0.35em}
+
+      {\tiny
+      \setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.2}
+      \begin{tabular}{@{}llll@{}}
+        \toprule
+        \textbf{Question} & \textbf{Friedman} & \textbf{C1 vs C2/C3} & \textbf{C2 vs C3} \\
+        \midrule
+        Most want to consult & $\chi^2_F(2)=49.40$, $p<.001$ & $p<.001$ & $p=.21$ \\
+        Most trustworthy     & $\chi^2_F(2)=44.05$, $p<.001$ & $p<.001$ & $p=.07$ \\
+        Least unsettling     & $\chi^2_F(2)=1.02$, $p=.60$   & $p=.97$  & $p=.97$ \\
+        \bottomrule
+      \end{tabular}\par}
+      \vspace{0.3em}
+
+      {\scriptsize Canales et al.~[9] found ratings and behaviour \emph{diverge}. Here they \hl{converged}. C3 attracted no more behavioural endorsement than C2.\par}
     \end{column}
-    \begin{column}{0.49\textwidth}
+    \begin{column}{0.36\textwidth}
+      \panelhead{Robustness of the Null}
+      \panel{%
+        \item \textbf{Order}: video position affected no subscale, closest $p=.054$
+        \item \textbf{Suspicion}: 24 of 41 guessed the topic, and rerunning H1 and H2 on the other 17 changed nothing
+        \item \textbf{Secondary}: agreement with the recommendation did not differ, $p=.13$
+        \item \textbf{Disposition}: general trustingness did not predict the composite, $p=.52$}
       \vspace{0.4em}
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\small\color{knblue}
-      \textbf{The dividing line}\\[0.35em]
-      Not the technique's complexity, but whether it needs \textbf{new parameter values} or a \textbf{new input signal}.\\[0.5em]
-      New values: always possible.\\
-      New signal: only where the pipeline is open.}}
-      \vspace{0.9em}
 
-      \sn{Avaturn was chosen for the user study because it is the only platform with all three of: open URP shader access, full blendshape animation, and a photorealistic face rebuilt from photos of the real speaker.}
+      {\tiny\color{kngrey}Study version groups differed on likeability and eeriness but on no trust subscale, and that comparison is between subjects.\par}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{The stimulus}{Same person, same animation, same voice}
+\begin{frame}{RQ3 answer}{What stylisation did to eeriness and trustworthiness, and how far it reached}
+  \vspace{0.45em}
+  \begin{columns}[T]
+    \begin{column}{0.315\textwidth}
+      \panelhead{What Did Not Happen}
+      \panel{%
+        \item Eeriness \bad{did not fall}, it rose slightly
+        \item The two avatars \hl{indistinguishable} on all five subscales
+        \item No behavioural advantage either}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{What Did Happen}
+      \panel{%
+        \item \good{No trust penalty} detected for stylisation
+        \item Within a person, eeriness \bad{lowers} trust and likeability \good{raises} it
+        \item About \hl{one point for one point}, on all three trust dimensions
+        \item The route from appearance to trust is real, the composite just never used it}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{The Dividing Line}
+      \panel{%
+        \item The gap is \hl{not between render styles}
+        \item C2 vs C3: $0.33$ points, inside the noise
+        \item C1 vs C3: \bad{$1.31$ points}, nearly three times the bound}
+    \end{column}
+  \end{columns}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{Stated carefully:} H2 is \emph{supported}, but the two avatars are \textbf{indistinguishable rather than demonstrably equivalent}. Realised power near $0.20$ at $n=41$, so the honest claim is that no penalty was detected, not that none exists.}}
+\end{frame}
+
+\begin{frame}[plain]
+  \vspace{2.4em}
+  \begin{center}
+    \colorbox{kncyan}{\parbox{0.66\textwidth}{\centering\vspace{7pt}\fontsize{26}{30}\selectfont\bfseries\color{black} Discussion\vspace{7pt}}}
+  \end{center}
+  \vfill
+  \hbox{\color{knrule}\rule{\paperwidth}{0.9pt}}
+  \vspace{0.6em}
+\end{frame}
+
+\begin{frame}{Why the two avatars scored the same}{Two mismatches inside the composite}
+  \vspace{0.3em}
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  The real speaker sits far above both avatars, and the two avatars looked different to participants yet scored identically. H3 showed the route from appearance to trust was \textbf{open}. The composite changed what people saw \textbf{without travelling it}.}}
+  \vspace{0.7em}
+
+  \begin{columns}[T]
+    \begin{column}{0.485\textwidth}
+      \panelhead{1. Material versus Shape}
+      \panel{%
+        \item The composite stylises the \hl{material}, leaving the \hl{shape} untouched
+        \item Zell et al.: material is what drives eeriness~[24]
+        \item But eeriness \bad{rises} when material and shape disagree in stylisation level
+        \item C3 is exactly that case: a stylised surface on a photogrammetric face
+        \item Stronger stylisation would only \bad{deepen} the disagreement}
+    \end{column}
+    \begin{column}{0.485\textwidth}
+      \panelhead{2. Appearance versus Performance}
+      \panel{%
+        \item Both avatars carry the \hl{same} recorded voice, gaze and lip animation
+        \item C3 sets a \hl{human performance} against a visibly abstracted face
+        \item Cihodaru-\c{S}tefanache \& Podina: uncanniness arises from \hl{inconsistent} levels of anthropomorphism~[25]
+        \item K\"atsyri et al.: face and voice realism varied independently, and \bad{mismatched pairs were rated eerier}~[26]
+        \item Beyond the composite's reach: a shading operator changes appearance alone}
+    \end{column}
+  \end{columns}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  Both point the same way. The abstraction may have \textbf{removed one source of eeriness and introduced another}, and both widen as the abstraction is pushed further.}}
+\end{frame}
+
+\begin{frame}{What this design could not show}{Two reasons the effect may exist and still not appear here}
+  \vspace{0.6em}
+  \begin{columns}[T]
+    \begin{column}{0.485\textwidth}
+      \panelhead{The Comparison Set}
+      \panel{%
+        \item A real person anchors the top of the scale
+        \item The only judgement left is \hl{how far below}
+        \item Both avatars recognisably CG, so a \hl{rendering} difference competes with a \hl{categorical} one
+        \item C3 followed C1 directly in two versions of three, C2 never did}
+    \end{column}
+    \begin{column}{0.485\textwidth}
+      \panelhead{The Video Setting}
+      \panel{%
+        \item Flat screen, prerecorded, no interaction, no shared space
+        \item Zibrek et al.: render style significantly moved \hl{presence} in VR~[27]
+        \item Too weak in a browser window may register once the avatar \hl{shares your room}}
+    \end{column}
+  \end{columns}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  Neither is a defect in the analysis. Both say the same thing: this design tests stylisation \textbf{under conditions that work against it}.}}
+\end{frame}
+
+\begin{frame}{Limitations}{Six, and each one bounds a different claim}
   \vspace{0.2em}
   \begin{columns}[T]
-    \begin{column}{0.32\textwidth}
-      \centering
-      \colorbox{knlight}{\parbox{0.9\textwidth}{\centering\small\color{knblue}\textbf{C1 — Real}}}\\[0.4em]
-      \raisebox{0.5em}{\parbox{\textwidth}{\centering\footnotesize\color{kngrey}
-      Video of the human speaker.\\[0.8em]
-      Ground-truth reference.\\[0.8em]
-      The Avaturn avatar was reconstructed from photographs of this same person.}}
+    \begin{column}{0.315\textwidth}
+      \panelhead{Session Length}
+      \panel{%
+        \item 10 to 15 minutes per study
+        \item Every measure completed \hl{three times}
+        \item Capped the measures and the breadth of the design}
     \end{column}
-    \begin{column}{0.32\textwidth}
-      \centering
-      \colorbox{knlight}{\parbox{0.9\textwidth}{\centering\small\color{knblue}\textbf{C2 — Photorealistic}}}\\[0.4em]
-      \includegraphics[width=0.86\textwidth, viewport=0 300 356.25 600, clip]{avaturn_best_1}\\[0.2em]
-      \sn{Standard PBR, unmodified texture}
+    \begin{column}{0.315\textwidth}
+      \panelhead{One Configuration}
+      \panel{%
+        \item One composite, one avatar, one platform, three scenarios
+        \item Characterises \hl{this configuration}, not NPR as a category}
     \end{column}
-    \begin{column}{0.32\textwidth}
-      \centering
-      \colorbox{knlight}{\parbox{0.9\textwidth}{\centering\small\color{knblue}\textbf{C3 — NPR}}}\\[0.4em]
-      \includegraphics[width=0.86\textwidth, viewport=356.25 0 712.5 300, clip]{avaturn_best_1}\\[0.2em]
-      \sn{Outline + X-Toon + Sobel,\\ preprocessed head texture}
+    \begin{column}{0.315\textwidth}
+      \panelhead{Parameter Study Scope}
+      \panel{%
+        \item Only the \hl{highest-impact} parameter groups tested
+        \item The rest fixed by inspection in development
+        \item Highest \bad{among those tested}, not necessarily the best available}
     \end{column}
   \end{columns}
-  \takeaway{C2 and C3 share identity, geometry, animation and voice. Only the rendering changes. That is the critical comparison.}
+  \vspace{0.35em}
+
+  \begin{columns}[T]
+    \begin{column}{0.315\textwidth}
+      \panelhead{Sample Size}
+      \panel{%
+        \item Deadline set the collection window, in the semester break
+        \item $n=41$ \good{detects} a difference
+        \item \bad{Not} the far larger sample equivalence demands}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{Counterbalancing}
+      \panel{%
+        \item Three conditions need \hl{six} orders
+        \item Six orders need twice the sample
+        \item Three were used instead}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{Version Group Differences}
+      \panel{%
+        \item Version groups differed on \bad{eeriness and likeability}, which is what \hl{H1 rests on}
+        \item Version sets both \emph{who} and \emph{what order}, and the two cannot be separated
+        \item This \bad{qualifies the H1 null}}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Conclusion}{What was built, what it showed, and what it means}
+  \vspace{0.5em}
+  \begin{columns}[T]
+    \begin{column}{0.315\textwidth}
+      \panelhead{What This Thesis Built}
+      \panel{%
+        \item NPR stylisation for \hl{Mixamo, the Meta SDK and Avaturn}
+        \item Eight techniques in sequence, each answering a limitation of the one before
+        \item Narrowed to \hl{three} by visual assessment and a parameter adjustment study}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{What the Study Showed}
+      \panel{%
+        \item The composite \bad{did not reduce eeriness} against the photorealistic baseline
+        \item It produced \good{no observed trust penalty} either
+        \item The evidence does not indicate stylisation reduced trust
+        \item It is \bad{not sufficient} to establish that the two are equivalent}
+    \end{column}
+    \begin{column}{0.315\textwidth}
+      \panelhead{What It Means}
+      \panel{%
+        \item A developer choosing between the two styles need not assume \good{an inherent disadvantage}
+        \item The gap that matters is \bad{not between render styles}
+        \item It is the distance to the \hl{real human}, and neither avatar closed any part of it}
+    \end{column}
+  \end{columns}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\centering\color{knblue}\scriptsize
+  \textbf{Reaching the credibility of an actual human is a harder challenge than selecting a rendering style.}\\
+  It is also the problem that decides whether virtual advisors become genuinely trusted participants rather than a passing novelty.}}
+\end{frame}
+
+\begin{frame}{Future work}{Five steps, in the order the thesis sets them out}
+  \vspace{0.6em}
+  \begin{columns}[T]
+    \begin{column}{0.19\textwidth}
+      \panelhead{1. Larger Replication}
+      \panel{%
+        \item Repeat C2 versus C3 with roughly \hl{120 participants}
+        \item Settles the equivalence question either way}
+    \end{column}
+    \begin{column}{0.19\textwidth}
+      \panelhead{2. Stylise the Geometry}
+      \panel{%
+        \item Shift proportion and feature scale \hl{alongside the shading}
+        \item Tests the material-versus-shape mismatch}
+    \end{column}
+    \begin{column}{0.19\textwidth}
+      \panelhead{3. Drop the Real Speaker}
+      \panel{%
+        \item Removes the human \hl{anchor}
+        \item Shows whether the two avatars separate with no human in view}
+    \end{column}
+    \begin{column}{0.19\textwidth}
+      \panelhead{4. Sweep Abstraction}
+      \panel{%
+        \item Replace the single point with a \hl{curve}
+        \item Can reveal an optimum between full realism and full abstraction}
+    \end{column}
+    \begin{column}{0.19\textwidth}
+      \panelhead{5. Restore Interaction}
+      \panel{%
+        \item Reciprocal behaviour and shared space, in \hl{VR}
+        \item Across multiple avatar identities and platforms}
+    \end{column}
+  \end{columns}
+  \vfill
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  One smaller fix: \textbf{state at the outset that the videos were not generated by AI}. Nothing in the present materials ruled out that belief, and it may have lowered trust for both avatar conditions.}}
+\end{frame}
+
+\begin{frame}[plain]
+  \vspace{2.2em}
+  \begin{center}
+    {\LARGE\bfseries\color{knblue} Thank you}\\[1.2em]
+    {\large\color{kngrey} Questions}\\[2.0em]
+    \colorbox{knlight}{\parbox{0.78\textwidth}{\centering\color{knblue}\small
+    Eight NPR techniques, three avatar platforms, two studies, 86 participants.\\[0.6em]
+    Stylisation was clearly seen, cost no measurable trust,\\ and did not close the gap to a real human.}}\\[1.6em]
+    {\footnotesize\color{kngrey} Nidanur Günay \quad|\quad nidanur.guenay@uni-konstanz.de}
+  \end{center}
 \end{frame}
 
 %% ============================================================
-%% PART 1 — PARAMETER ADJUSTMENT STUDY (RQ2)
+%% 27 — References
 %% ============================================================
-
-\begin{frame}{Parameter adjustment study}{The composite was chosen by people, not by eye}
+\begin{frame}{References}
   \vspace{0.2em}
+  \tiny
+  \begin{columns}[T]
+    \begin{column}{0.325\textwidth}
+      [1] Mori, M. The Uncanny Valley. \textit{Energy} 7(4), 33--35, 1970.\\[0.3em]
+      [2] MacDorman, K.\,F., Ishiguro, H. The Uncanny Advantage of Using Androids in Cognitive and Social Science Research. \textit{Interaction Studies} 7(3), 297--337, 2006.\\[0.3em]
+      [3] Ho, C.-C., MacDorman, K.\,F. Revisiting the Uncanny Valley Theory. \textit{Computers in Human Behavior} 26(6), 1508--1518, 2010.\\[0.3em]
+      [4] Dill, V.\ et al. Evaluation of the Uncanny Valley in CG Characters. \textit{IVA 2012}, 511--513.\\[0.3em]
+      [5] Nowak, K.\,L., Rauh, C. The Influence of the Avatar on Online Perceptions of Anthropomorphism, Androgyny, Credibility, Homophily, and Attraction. \textit{JCMC} 11(1), 153--178, 2005.\\[0.3em]
+      [6] McDonnell, R., Breidt, M., B\"ulthoff, H.\,H. Render Me Real? \textit{ACM TOG} 31(4), 91:1--91:11, 2012.\\[0.3em]
+      [7] Natarajan, M., Gombolay, M. Effects of Anthropomorphism and Accountability on Trust in Human Robot Interaction. \textit{ACM/IEEE HRI}, 33--42, 2020.\\[0.3em]
+      [8] Mayer, R.\,C., Davis, J.\,H., Schoorman, F.\,D. An Integrative Model of Organizational Trust. \textit{AMR} 20(3), 709--734, 1995.\\[0.3em]
+      [9] Canales, R., Roble, D., Neff, M. The Impact of Avatar Stylization on Trust. \textit{IEEE VR}, 418--428, 2024.\\[0.3em]
+      [10] Dubosc, C.\ et al. Effect of Avatar Stylization and Facial Expression Intensity in Virtual Interactions. \textit{Virtual Reality} 29(4), 2025.\\[0.3em]
+    \end{column}
+    \begin{column}{0.325\textwidth}
+      [11] Gao, Y.\ et al. Trust in Virtual Agents: Exploring the Role of Stylization and Voice. \textit{IEEE TVCG} 31(5), 3623--3633, 2025.\\[0.3em]
+      [12] Tao, Z.\ et al. Impact of Virtual Avatar Appearance Realism. \textit{Frontiers in Psychology} 16, 2025.\\[0.3em]
+      [13] Alipour, A., Hartmann, T., Alimardani, M. Would You Rely on an Eerie Agent? \textit{Computers in Human Behavior Reports} 23, 2026.\\[0.3em]
+      [14] Raskar, R., Cohen, M. Image Precision Silhouette Edges. \textit{I3D}, 135--140, 1999.\\[0.3em]
+      [15] Lake, A.\ et al. Stylized Rendering Techniques for Scalable Real-Time 3D Animation. \textit{NPAR}, 13--20, 2000.\\[0.3em]
+      [16] Barla, P., Thollot, J., Markosian, L. X-Toon: An Extended Toon Shader. \textit{NPAR}, 127--132, 2006.\\[0.3em]
+      [17] Isenberg, T.\ et al. A Developer's Guide to Silhouette Algorithms for Polygonal Models. \textit{IEEE CG\&A} 23(4), 28--37, 2003.\\[0.3em]
+      [18] Gonzalez, R.\,C., Woods, R.\,E. \textit{Digital Image Processing}. Pearson, 2018.\\[0.3em]
+      [19] Marr, D., Hildreth, E. Theory of Edge Detection. \textit{Proc.\ R.\ Soc.\ B} 207(1167), 187--217, 1980.\\[0.3em]
+    \end{column}
+    \begin{column}{0.325\textwidth}
+      [20] Lino Roshaan, M.\,K. AHEAD: Adaptive Hierarchical Edge Detection for Real-Time Artistic Stylization. Research Square preprint, 2026.\\[0.3em]
+      [21] Kyprianidis, J.\,E., Kang, H., D\"ollner, J. Image and Video Abstraction by Anisotropic Kuwahara Filtering. \textit{CGF} 28(7), 1955--1963, 2009.\\[0.3em]
+      [22] Dem\v{s}ar, J. Statistical Comparisons of Classifiers over Multiple Data Sets. \textit{JMLR} 7, 1--30, 2006.\\[0.3em]
+      [23] Bartneck, C.\ et al. Measurement Instruments for Anthropomorphism, Animacy, Likeability\ldots \textit{Int.\ J.\ Social Robotics} 1(1), 71--81, 2009.\\[0.3em]
+      [24] Zell, E.\ et al. To Stylize or Not to Stylize? \textit{ACM TOG} 34(6), 184:1--184:12, 2015.\\[0.3em]
+      [25] Cihodaru-\c{S}tefanache, \c{S}., Podina, I.\,R. The Uncanny Valley Effect in Embodied Conversational Agents. \textit{Frontiers in Psychology} 16, 2025.\\[0.3em]
+      [26] K\"atsyri, J.\ et al. A Review of Empirical Evidence on Different Uncanny Valley Hypotheses. \textit{Frontiers in Psychology} 6, 390, 2015.\\[0.3em]
+      [27] Zibrek, K., McDonnell, R. Social Presence and Place Illusion are Affected by Photorealism in Embodied VR. \textit{ACM MIG}, 1--7, 2019.\\[0.3em]
+      [28] Seymour, M.\ et al. Have We Crossed the Uncanny Valley? \textit{JAIS} 22(3), 591--617, 2021.\\[0.3em]
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%% ============================================================
+%% 28 — Media credits
+%% ============================================================
+\begin{frame}{Media credits}
+  \vspace{0.4em}
+  \footnotesize
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
-      \small
-      \textbf{Design.} 45 participants ranked rendered variants by \hl{perceived trustworthiness}. Five rounds, one parameter group each. Borda count, Friedman omnibus, Wilcoxon on the top pair.
-      \vspace{0.5em}
-
-      \begin{tabular}{@{}llc@{}}
-        \toprule
-        \textbf{Round} & \textbf{Winner} & \textbf{Significant?} \\
-        \midrule
-        R1 inner threshold & 0.03 & no ($p=.31$) \\
-        R2 outline width   & 0.003 & no ($p=.82$) \\
-        R3 shadow / bias   & 0.5 / 1.0 & no ($p=.53$) \\
-        R4 Kuwahara        & \bad{none} & \good{yes ($p=.003$)} \\
-        R5 Hierarchical    & \bad{none} & \good{yes ($p<.001$)} \\
-        \bottomrule
-      \end{tabular}
-      \vspace{0.6em}
-
-      \sn{R1 and R3 were settled by a separate visual appeal question.}
+      \colorbox{knlight}{\parbox{0.95\textwidth}{\color{knblue}\textbf{Video, slide 2}}}\\[0.6em]
+      \scriptsize
+      \textit{Mark Zuckerberg: First Interview in the Metaverse}, Lex Fridman Podcast \#398. YouTube.\\
+      {\color{kngrey}youtube.com/watch?v=MVYrJJNdrEg}\\[0.6em]
+      \textit{Avaturn: Realistic 3D Avatars for Gaming from Photo}. YouTube.\\
+      {\color{kngrey}youtube.com/watch?v=rSb0Io92\_R8}\\[0.6em]
+      \textit{How Apple Vision Pro's New Spatial Persona Changes Everything}. YouTube, 11 April 2024.\\
+      {\color{kngrey}youtube.com/watch?v=H3PB2zA6Q-c}\\[0.9em]
+      {\scriptsize Excerpts shown for scholarly illustration under the German right of quotation, \S\,51 UrhG.}
     \end{column}
-    \begin{column}{0.46\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{prestudy_summary}\\[0.1em]
-      \sn{Borda score per round, \% of maximum}
-    \end{column}
-  \end{columns}
-  \takeaway{Participants significantly \emph{preferred no post-processing}. Kuwahara and the hierarchical layer were both removed. RQ2's answer is a three-part composite plus head texture preprocessing.}
-\end{frame}
-
-%% ============================================================
-%% PART 2 — MAIN USER STUDY: DESIGN
-%% ============================================================
-
-\begin{frame}{Main user study}{Within-subjects, video based}
-  \vspace{0.2em}
-  \begin{columns}[T]
-    \begin{column}{0.50\textwidth}
-      \small
-      \textbf{Task.} Read a decision vignette, watch an advisor recommend one option, then rate the advisor. Three times, once per condition.
-      \vspace{0.5em}
-
-      \textbf{Scenarios.} Career choice, travel route, learning resource. Each targets a different trust dimension. Recommended option and discussion order alternate.
-      \vspace{0.5em}
-
-      \textbf{Counterbalancing.} $3\times3$ Latin square, three study versions.
-      \vspace{0.5em}
-
-      \textbf{Sample.} 52 enrolled, 11 excluded on gating checks, \hl{$n=41$} complete.\\
-      Age $M=27.6$ ($SD=5.4$); 23 women, 17 men, 1 non-binary.
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \small
-      \textbf{Measures per video block}
-      \vspace{0.3em}
-      \begin{tabular}{@{}llc@{}}
-        \toprule
-        \textbf{Subscale} & \textbf{Source} & \textbf{$\alpha$} \\
-        \midrule
-        Likeability & Godspeed & .94 \\
-        Eeriness    & Ho \& MacDorman & .87 \\
-        Ability     & Mayer et al. & .96 \\
-        Benevolence & Mayer et al. & .95 \\
-        Integrity   & Mayer et al. & .92 \\
-        \bottomrule
-      \end{tabular}
-      \vspace{0.6em}
-
-      \textbf{After all three blocks}
-      \begin{itemize}
-        \item[] \small Forced ranking: who would you consult, who is most trustworthy, who is least unsettling.
-      \end{itemize}
-      \vspace{0.3em}
-      \sn{All subscales exceeded $\alpha=.70$ overall and within every condition.}
+    \begin{column}{0.44\textwidth}
+      \colorbox{knlight}{\parbox{0.95\textwidth}{\color{knblue}\textbf{Figures}}}\\[0.6em]
+      \scriptsize
+      \textbf{Slide 3}, uncanny valley curve: Mori, reference [1].\\[0.6em]
+      \textbf{Slide 4}, android photograph: reference [2].\\[0.6em]
+      \textbf{Slide 5}, render styles: reference [3].\\[0.6em]
+      \textbf{Slides 4 to 6}: every figure is reproduced from the study cited in the same panel. The number on the title line covers the figure as well as the claim, references [1] to [13].\\[0.6em]
+      \textbf{Slides 10, 11, 14, 15, 17, 18 and 20}, and all backup slides: own work. Renders from the Unity project, plots from the study data.\\[0.6em]
+      \textbf{Avatars}: Avaturn, Meta Avatars SDK and Mixamo, used under their respective terms.\\[0.6em]
+      \textbf{Logo}: University of Konstanz.
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Four hypotheses}
-  \vspace{0.6em}
-  \small
-  \begin{tabular}{@{}p{0.055\textwidth}p{0.60\textwidth}p{0.29\textwidth}@{}}
+%% ============================================================
+%% BACKUP SLIDES
+%% ============================================================
+
+\begin{frame}[plain]
+  \vspace{3.0em}
+  \begin{center}
+    {\Large\color{kngrey} Backup slides}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Backup — How the evidence developed}{Fifty years of it, and it still points both ways}
+  \vspace{0.3em}
+  \begin{center}
+  \scriptsize
+  \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.12}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.085\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.46\textwidth}>{\raggedright\arraybackslash}p{0.165\textwidth}@{}}
     \toprule
-    & \textbf{Prediction} & \textbf{Test} \\
+    \textbf{Period} & \textbf{What changed} & \textbf{The evidence} & \textbf{Points towards} \\
     \midrule
-    \textbf{H1} & NPR (C3) is rated \emph{less eerie} than the photorealistic avatar (C2). & RM-ANOVA, Holm pairwise \\
-    \addlinespace
-    \textbf{H2} & NPR (C3) does \emph{not} cost trust relative to C2. & Pairwise \textbf{plus} TOST equivalence, $d=0.3$ bound \\
-    \addlinespace
-    \textbf{H3} & Eeriness lowers trust and likeability raises it, within each participant. & Person-centred multilevel regression \\
-    \addlinespace
-    \textbf{H4} & NPR (C3) does \emph{not} cost trust relative to the real speaker (C1). & Same as H2, against C1 \\
+    1970\newline to 2012 & The valley is real, and it reaches avatars
+      & Mori proposes it~[1], MacDorman \& Ishiguro measure it~[2], Dill et al.\ confirm it for CG film and game characters~[4]
+      & {\color{kngrey}valley confirmed} \\
+    2012 & Render style moves \emph{trust}, in the same shape
+      & McDonnell et al.: eleven styles on two actors. Appeal, reassurance and trustworthiness all valley-shaped, and the cartoon styles sat in the top trust group~[6]
+      & \hl{abstraction} \\
+    2015 & What drives it is the material, and consistency
+      & Zell et al.: material governs eeriness, and a mismatch between material and shape makes it worse~[24]
+      & {\color{kngrey}depends on the pairing} \\
+    2024\newline to 2025 & Abstraction looks promising
+      & Canales et al.: self-report equal, semi-realistic won the behavioural choice~[9]. Dubosc et al.: stylised significantly less eerie~[10]
+      & \hl{abstraction} \\
+    2021\newline to 2026 & But realism keeps winning too
+      & Seymour et al.: photorealistic beat a caricature on trust~[28]. Gao et al.: real speaker higher on all three dimensions~[11]. Tao et al.: high realism more trustworthy~[12]. Alipour et al.: inconsistent across 53 studies~[13]
+      & \bad{realism} \\
     \bottomrule
   \end{tabular}
-  \vspace{1.0em}
-
-  \colorbox{knlight}{\parbox{0.97\textwidth}{\small\color{knblue}
-  H2 and H4 predict a \textbf{null}. A non-significant $p$ is not evidence of equivalence, so both also carry a pre-specified TOST equivalence test.}}
+  \end{center}
+  \vspace{-0.1em}
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\scriptsize\color{knblue}
+  \textbf{The last two rows are the reason this thesis exists.} The evidence has not converged, and nobody has tested one avatar under both treatments against the real person it was built from.}}
 \end{frame}
 
-%% ============================================================
-%% PART 3 — RESULTS
-%% ============================================================
+\begin{frame}{Backup — V1 — Silhouette outline}{Inverted hull, drawn from geometry alone}
+  \vspace{0.5em}
+  \begin{columns}[c]
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=4.70cm,width=0.95\textwidth,keepaspectratio]{Mixamo/Mixamo_vhull.png}\\[0.15em]{\color{kngrey}\tiny Mixamo (Jody)}\end{column}
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=4.70cm,width=0.95\textwidth,keepaspectratio]{Meta/Meta_vhull.png}\\[0.15em]{\color{kngrey}\tiny Meta SDK}\end{column}
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=4.70cm,width=0.95\textwidth,keepaspectratio]{Avaturn/Avaturn_vhull.png}\\[0.15em]{\color{kngrey}\tiny Avaturn}\end{column}
+  \end{columns}
+\end{frame}
 
-\begin{frame}{Manipulation check}{Did participants actually see a difference?}
+\begin{frame}{Backup — V2 — Toon shading}{The diffuse term quantised into bands}
+  \vspace{0.5em}
+  \begin{columns}[c]
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=4.70cm,width=0.95\textwidth,keepaspectratio]{Mixamo/Mixamo_v1_toon.png}\\[0.15em]{\color{kngrey}\tiny Mixamo (Jody)}\end{column}
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=4.70cm,width=0.95\textwidth,keepaspectratio]{Meta/Meta_v1_toon_2.png}\\[0.15em]{\color{kngrey}\tiny Meta SDK}\end{column}
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=4.70cm,width=0.95\textwidth,keepaspectratio]{Avaturn/Avaturn_v1_toon.png}\\[0.15em]{\color{kngrey}\tiny Avaturn}\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup — V2.2 — X-Toon}{A 2D ramp: lighting on one axis, abstraction on the other}
+  \vspace{0.5em}
+  \begin{columns}[c]
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=3.30cm,width=0.95\textwidth,keepaspectratio]{Jade/Jody_Xtoon_Comparison.png.png}\\[0.15em]{\color{kngrey}\tiny Mixamo (Jody)}\end{column}
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=3.30cm,width=0.95\textwidth,keepaspectratio]{mataAvatars/Metavatar_Xtoon_Comparison.png}\\[0.15em]{\color{kngrey}\tiny Meta SDK}\end{column}
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=3.30cm,width=0.95\textwidth,keepaspectratio]{Avaturn/Avaturn_Xtoon_Comparison.png.png}\\[0.15em]{\color{kngrey}\tiny Avaturn}\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup — V3 — Screen-space normal edges}{Normal derivatives. Creases yes, colour boundaries no}
+  \vspace{0.35em}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.76\textwidth]{Jade/Jody_normal.png}\\[0.15em]{\color{kngrey}\tiny Mixamo (Jody)}\end{column}
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.76\textwidth]{mataAvatars/metavatar_normal.png}\\[0.15em]{\color{kngrey}\tiny Meta SDK}\end{column}
+  \end{columns}
+  \vspace{0.4em}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\end{column}
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.76\textwidth]{Avaturn/Avaturn Normal.png}\\[0.15em]{\color{kngrey}\tiny Avaturn}\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup — V4 — Sobel}{Gradient on the colour buffer, at rising thresholds}
+  \vspace{0.35em}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.96\textwidth]{Jade/jody_sobel.png}\\[0.15em]{\color{kngrey}\tiny Mixamo (Jody)}\end{column}
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.96\textwidth]{mataAvatars/metaavatar_sobel.png}\\[0.15em]{\color{kngrey}\tiny Meta SDK}\end{column}
+  \end{columns}
+  \vspace{0.6em}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\end{column}
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.96\textwidth]{Avaturn/Avaturn Sobel.png}\\[0.15em]{\color{kngrey}\tiny Avaturn}\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup — V4.2 — Gaussian prefiltered Sobel}{Smoothing before differentiation}
+  \vspace{0.35em}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.96\textwidth]{Jade/Jody_GAussian.png}\\[0.15em]{\color{kngrey}\tiny Mixamo (Jody)}\end{column}
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.96\textwidth]{mataAvatars/metavatar_gaussian.png}\\[0.15em]{\color{kngrey}\tiny Meta SDK}\end{column}
+  \end{columns}
+  \vspace{0.6em}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\end{column}
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.96\textwidth]{Avaturn/avaturn_Gaussian.png}\\[0.15em]{\color{kngrey}\tiny Avaturn}\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup — V5 — Hierarchical multi-cue}{Depth, normal and colour layers merged}
+  \vspace{0.5em}
+  \begin{columns}[c]
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=3.60cm,width=0.95\textwidth,keepaspectratio]{Jade/jody_hier_sqr.png}\\[0.15em]{\color{kngrey}\tiny Mixamo (Jody)}\end{column}
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=3.60cm,width=0.95\textwidth,keepaspectratio]{mataAvatars/Matavatar_hier_sqr.png}\\[0.15em]{\color{kngrey}\tiny Meta SDK}\end{column}
+    \begin{column}{0.313\textwidth}\centering\includegraphics[height=3.60cm,width=0.95\textwidth,keepaspectratio]{Avaturn/avaturn_hier_sqr.png}\\[0.15em]{\color{kngrey}\tiny Avaturn}\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup — V6 — Kuwahara}{Anisotropic painterly filtering of the surface}
+  \vspace{0.35em}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.90\textwidth]{Mixamo/kuw_mixamo_2.png}\\[0.15em]{\color{kngrey}\tiny Mixamo (Jody)}\end{column}
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.90\textwidth]{Meta/Meta_Kuwahara.png}\\[0.15em]{\color{kngrey}\tiny Meta SDK}\end{column}
+  \end{columns}
+  \vspace{0.6em}
+  \begin{columns}[c]
+    \begin{column}{0.48\textwidth}\end{column}
+    \begin{column}{0.48\textwidth}\centering\includegraphics[width=0.90\textwidth]{Avaturn/kuw_avaturn_2.png}\\[0.15em]{\color{kngrey}\tiny Avaturn}\end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup — All variants shown in the parameter adjustment study}
+  \vspace{0.2em}
+  \begin{center}
+    \includegraphics[height=0.72\textheight]{prestudy_all_versions}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Backup — Borda score by round}{Preference score as a percentage of the maximum possible}
+  \vspace{0.35em}
+  \begin{center}\includegraphics[height=0.62\textheight]{prestudy_summary}\end{center}
+  \vspace{0.15em}
+  {\centering\scriptsize\color{kngrey} Green marks the baseline kept after a significant preference in R4 and R5. Blue marks the Borda winner in R1 to R3, where the top choice was not significantly ahead of its runner-up.\par}
+\end{frame}
+
+\begin{frame}{Backup — The three scenarios}{Order held constant, conditions rotated by version}
+  \vspace{0.3em}
+  {\centering\scriptsize
+  \setlength{\tabcolsep}{5pt}\renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{@{}>{\raggedright\arraybackslash}m{0.10\textwidth}>{\raggedright\arraybackslash}m{0.20\textwidth}>{\raggedright\arraybackslash}m{0.26\textwidth}>{\raggedright\arraybackslash}m{0.16\textwidth}>{\raggedright\arraybackslash}m{0.20\textwidth}@{}}
+    \toprule
+    & \textbf{Scenario} & \textbf{The two options} & \textbf{Advisor picks} & \textbf{Primary trust dimension} \\
+    \midrule
+    Video 1 & Career choice    & Job A generalist, lower pay \newline Job B specialist, higher pay      & \hl{Job A}    & Ability \\
+    \rowrule
+    Video 2 & Travel route     & Route A direct, 10 min spare \newline Route B one transfer, 40 min spare & \hl{Route B}  & Benevolence, Ability \\
+    \rowrule
+    Video 3 & Learning resource & Option A course, EUR 350, certificate \newline Option B free videos, no certificate & \hl{Option A} & Integrity \\
+    \bottomrule
+  \end{tabular}\par}
+  \vspace{0.35em}
+
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \panelhead{Counterbalancing}
+      \noindent\colorbox{knlight}{\parbox{0.96\textwidth}{\vspace{2pt}\scriptsize
+      \setlength{\tabcolsep}{4pt}\renewcommand{\arraystretch}{1.25}
+      \begin{tabular}{@{}llll@{}}
+        \textbf{Version} & \textbf{Video 1} & \textbf{Video 2} & \textbf{Video 3} \\
+        A & C2 & C1 & C3 \\
+        B & C3 & C2 & C1 \\
+        C & C1 & C3 & C2 \\
+      \end{tabular}\vspace{2pt}}}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \panelhead{Design Rules}
+      \panel{%
+        \item Recommended option alternates \hl{A, B, A}
+        \item Both options given equal detail
+        \item Advisor states only its recommendation and reasoning
+        \item Baseline recorded \hl{before} the advisor speaks}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Backup — Vignette 1, Career choice}{Shown on screen before the video}
+  \vspace{0.4em}
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\vspace{3pt}\scriptsize
+  You recently completed your master's degree and have received two job offers. Both start in one month. You have five days to decide.\\[0.5em]
+  \textbf{Job A} is a generalist role at a smaller company. You would define your own work area, your contributions would be directly visible to the team, and the skills you build would transfer across industries. The starting salary is below the industry average for your field.\\[0.5em]
+  \textbf{Job B} is a specialist role at a large, well-known company. The employer name carries weight on a CV and the role is in a high-demand field. However, the position involves deep specialisation within a large team, with limited individual visibility. The starting salary is above the industry average for your field.\vspace{3pt}}}
+  \vspace{0.8em}
+
+  \panelhead{Advisor, spoken in the video}
+  \noindent\colorbox{knpale}{\parbox{0.975\textwidth}{\vspace{3pt}\scriptsize\itshape
+  ``I'd go with Job A. Yes, the salary is lower right now, but the generalist role gives you a range of experience that is genuinely hard to get later. Salary gaps can be closed in the future. But once you specialise, switching back is costly. Take the pivot while you can.''\vspace{3pt}}}
+\end{frame}
+
+\begin{frame}{Backup — Vignette 2, Travel route}{Shown on screen before the video}
+  \vspace{0.4em}
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\vspace{3pt}\scriptsize
+  You have just arrived by train in a city you have never visited. You need to reach your hotel, where colleagues are expecting you in one hour.\\[0.5em]
+  \textbf{Route A} is a direct route on a single line with no transfers. It is straightforward to navigate in an unfamiliar city. If the journey runs on time, you would arrive approximately 10 minutes before your meeting begins.\\[0.5em]
+  \textbf{Route B} involves one transfer at a mid-size station you have not used before. If the connection runs on time, you would arrive approximately 40 minutes before your meeting begins. However, the transfer station is unfamiliar and a missed connection could leave you with very little time.\vspace{3pt}}}
+  \vspace{0.8em}
+
+  \panelhead{Advisor, spoken in the video}
+  \noindent\colorbox{knpale}{\parbox{0.975\textwidth}{\vspace{3pt}\scriptsize\itshape
+  ``I'd take Route B. Yes, it has a transfer at a station you have never used. But it gets you there forty minutes early. If something goes wrong, you still have enough time to recover. Route A is direct but leaves only ten minutes. That may not be enough. Take the buffer.''\vspace{3pt}}}
+\end{frame}
+
+\begin{frame}{Backup — Vignette 3, Learning resource}{Shown on screen before the video}
+  \vspace{0.4em}
+  \noindent\colorbox{knlight}{\parbox{0.975\textwidth}{\vspace{3pt}\scriptsize
+  You want to develop a professional skill that would strengthen your CV and improve your career prospects. You have a few weeks available and you are a student with a limited budget.\\[0.5em]
+  \textbf{Option A} is a structured online course from a well-known learning platform. It follows a clear curriculum and awards a recognised certificate you can add to your CV. It costs EUR 350.\\[0.5em]
+  \textbf{Option B} is a video tutorial series by a practitioner with a strong reputation. It covers the same material at no cost and you set your own pace. However, there is no certificate and no structured curriculum.\vspace{3pt}}}
+  \vspace{0.8em}
+
+  \panelhead{Advisor, spoken in the video}
+  \noindent\colorbox{knpale}{\parbox{0.975\textwidth}{\vspace{3pt}\scriptsize\itshape
+  ``I would take Option A. Yes, 350 euros is a real cost. But the certificate is what matters here. It is not just about what you learn, it is about what you can show. A recruiter cannot verify a free tutorial series. That is worth it.''\vspace{3pt}}}
+\end{frame}
+
+\begin{frame}{Backup — Manipulation check}{Did participants actually see a difference?}
   \vspace{0.2em}
   \begin{columns}[T]
     \begin{column}{0.44\textwidth}
       \vspace{0.4em}
       \centering
-      \includegraphics[height=0.62\textheight]{fig_manipulation_check}
+      \includegraphics[height=0.55\textheight]{fig_manipulation_check}
     \end{column}
     \begin{column}{0.54\textwidth}
       \vspace{0.8em}
@@ -386,492 +1538,6 @@
   \end{columns}
   \vspace{-0.4em}
   \takeaway{The manipulation worked. No null result below can be blamed on participants not noticing the rendering.}
-\end{frame}
-
-\begin{frame}{All five subscales at once}
-  \vspace{0.3em}
-  \begin{center}
-    \includegraphics[height=0.635\textheight]{fig_subscales_grid}
-  \end{center}
-  \vspace{-0.3em}
-  \begin{columns}[T]
-    \begin{column}{0.49\textwidth}
-      \footnotesize \textbf{\color{knblue}The real speaker separates from both avatars on every subscale.}
-    \end{column}
-    \begin{column}{0.49\textwidth}
-      \footnotesize \textbf{\color{knblue}The two avatars separate from each other on \emph{none} of them.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{H1 — Does NPR reduce eeriness?}
-  \vspace{0.3em}
-  \begin{columns}[T]
-    \begin{column}{0.55\textwidth}
-      \small
-      \begin{tabular}{@{}lccc@{}}
-        \toprule
-        \textbf{Eeriness} & \textbf{C1 vs C2} & \textbf{C1 vs C3} & \textbf{C2 vs C3} \\
-        \midrule
-        $p$ & $<.001$ & $<.001$ & \bad{$.66$} \\
-        $g$ & $0.98$ & $0.98$ & \bad{$0.07$} \\
-        \bottomrule
-      \end{tabular}
-      \vspace{0.4em}
-
-      \sn{Omnibus: $F(2,80)=20.39$, $p<.001$, $\eta^2_p=.34$}
-      \vspace{1.0em}
-
-      \begin{itemize}
-        \item Eeriness rose from C1 to C2 to C3, the \hl{opposite} of the prediction.
-        \item The real speaker differed from both avatars.
-        \item The two avatars were \hl{statistically indistinguishable}. Effect size $g=0.07$ is essentially zero.
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.43\textwidth}
-      \vspace{1.2em}
-      \begin{center}
-        \verdict{knred}{\ H1 NOT SUPPORTED\ }
-      \end{center}
-      \vspace{0.8em}
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\small\color{knblue}
-      Participants \emph{saw} the stylisation, as the manipulation check confirmed. They just did not find it \emph{less eerie}.\\[0.5em]
-      Stylisation and eeriness turn out to be separate effects here.}}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{H2 — Does NPR cost trust against the photorealistic avatar?}
-  \vspace{0.2em}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \small
-      \textbf{Step 1. Pairwise comparisons, C2 vs C3}
-      \vspace{0.3em}
-
-      \begin{tabular}{@{}lcc@{}}
-        \toprule
-        & $p$ & $g$ \\
-        \midrule
-        Ability      & $.21$ & $0.20$ \\
-        Benevolence  & $.18$ & $0.19$ \\
-        Integrity    & $.27$ & $0.16$ \\
-        \bottomrule
-      \end{tabular}
-      \vspace{0.7em}
-
-      \textbf{Step 2. TOST equivalence, trust composite}
-      \vspace{0.3em}
-
-      \begin{tabular}{@{}lccc@{}}
-        \toprule
-        & Diff. & Bound & TOST $p$ \\
-        \midrule
-        C2 vs C3 & $0.33$ & $\pm0.51$ & \bad{$.240$} \\
-        \bottomrule
-      \end{tabular}
-      \vspace{0.6em}
-
-      \sn{Realised power near $0.20$ at $n=41$.}
-    \end{column}
-    \begin{column}{0.46\textwidth}
-      \centering
-      \includegraphics[width=0.95\textwidth]{fig_tost_equivalence}
-    \end{column}
-  \end{columns}
-  \vspace{-0.4em}
-  \begin{center}
-    \verdict{knaccent}{\ H2 INCONCLUSIVE\ }\enspace
-    {\footnotesize No difference detected, but equivalence not established either.\\ Roughly \hl{three times} the sample is needed to separate the two.}
-  \end{center}
-\end{frame}
-
-\begin{frame}{H3 — Eeriness, likeability and trust}
-  \vspace{0.2em}
-  \begin{columns}[T]
-    \begin{column}{0.60\textwidth}
-      \centering
-      \includegraphics[height=0.60\textheight]{fig_h3_eeriness_trust}
-    \end{column}
-    \begin{column}{0.38\textwidth}
-      \vspace{0.3em}
-      \footnotesize
-      \begin{tabular}{@{}lcc@{}}
-        \toprule
-        & \textbf{Eeriness} & \textbf{Likeability} \\
-        \midrule
-        Ability      & $-1.17$ & $+1.10$ \\
-        Benevolence  & $-1.10$ & $+1.10$ \\
-        Integrity    & $-1.02$ & $+1.08$ \\
-        \bottomrule
-      \end{tabular}\\[0.2em]
-      {\color{kngrey}\scriptsize Fixed-effect slopes, all $p<.001$}
-      \vspace{0.6em}
-
-      \begin{center}\verdict{kngreen}{\ H3 CONFIRMED\ }\end{center}
-      \vspace{0.4em}
-
-      One point more eeriness costs about one point of trust, on every dimension. Likeability lifts it by the same amount.
-      \vspace{0.3em}
-
-      {\color{kngrey}\scriptsize Caveat: the two correlate at $r=-.72$ within participants and cannot be separated cleanly here.}
-    \end{column}
-  \end{columns}
-  \vspace{-0.6em}
-  \takeaway{The route from appearance to trust is open. The composite never travelled it.}
-\end{frame}
-
-\begin{frame}{H4 — Does NPR reach the real human speaker?}
-  \vspace{0.4em}
-  \begin{columns}[T]
-    \begin{column}{0.53\textwidth}
-      \small
-      \textbf{Pairwise, C1 vs C3.} Ability, benevolence and integrity were \hl{all significantly higher} for the real speaker ($p<.001$, $g=0.75$ to $0.80$).
-      \vspace{0.8em}
-
-      \textbf{TOST equivalence, trust composite}
-      \vspace{0.3em}
-
-      \begin{tabular}{@{}lccc@{}}
-        \toprule
-        & Diff. & Bound & TOST $p$ \\
-        \midrule
-        C1 vs C3 & \bad{$1.31$} & $\pm0.47$ & $.998$ \\
-        \bottomrule
-      \end{tabular}
-      \vspace{0.8em}
-
-      The difference is nearly \hl{three times} the equivalence bound. This is not a marginal shortfall.
-    \end{column}
-    \begin{column}{0.45\textwidth}
-      \vspace{1.0em}
-      \begin{center}
-        \verdict{knred}{\ H4 NOT SUPPORTED\ }
-      \end{center}
-      \vspace{0.9em}
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\small\color{knblue}
-      Two explanations stay open and this design cannot separate them:\\[0.5em]
-      1.\ The uncanny valley predicts exactly this gap.\\[0.3em]
-      2.\ Some participants may have recognised the speaker, who is the researcher.}}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{The behavioural measure}{Forced ranking after all three videos}
-  \vspace{0.2em}
-  \begin{center}
-    \includegraphics[height=0.485\textheight]{fig_rankings}
-  \end{center}
-  \vspace{-0.2em}
-  \begin{columns}[T]
-    \begin{column}{0.62\textwidth}
-      \scriptsize
-      \begin{tabular}{@{}llll@{}}
-        \toprule
-        \textbf{Question} & \textbf{Friedman} & \textbf{C1 vs C2/C3} & \textbf{C2 vs C3} \\
-        \midrule
-        Most want to consult & $\chi^2_F(2)=49.40$, $p<.001$ & $p<.001$ & $p=.21$ \\
-        Most trustworthy     & $\chi^2_F(2)=44.05$, $p<.001$ & $p<.001$ & $p=.07$ \\
-        Least unsettling     & $\chi^2_F(2)=1.02$, $p=.60$   & $p=.97$  & $p=.97$ \\
-        \bottomrule
-      \end{tabular}
-    \end{column}
-    \begin{column}{0.36\textwidth}
-      \scriptsize
-      Canales et al.\ found ratings and behaviour \emph{diverge}. Here they \hl{converged}. C3 attracted no more behavioural endorsement than C2.
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Robustness checks}{Three ways the null could have been an artefact, and was not}
-  \vspace{0.6em}
-  \begin{columns}[T]
-    \begin{column}{0.315\textwidth}
-      \colorbox{knlight}{\parbox{0.93\textwidth}{\small\color{knblue}\textbf{Order effects}}}\\[0.5em]
-      \small Video position had no significant effect on any subscale. Likeability came closest at $p=.054$.
-      \vspace{0.4em}
-
-      \sn{Study version groups differed on likeability and eeriness, but on no trust subscale. That comparison is between subjects.}
-    \end{column}
-    \begin{column}{0.315\textwidth}
-      \colorbox{knlight}{\parbox{0.93\textwidth}{\small\color{knblue}\textbf{Suspicion}}}\\[0.5em]
-      \small 24 of 41 named realism, stylisation or trust when asked what the study was about.
-      \vspace{0.4em}
-
-      Re-running H1 and H2 on the remaining 17 did not change the pattern.
-      \vspace{0.4em}
-
-      \sn{Participants answered on their own impressions, not on a guessed hypothesis.}
-    \end{column}
-    \begin{column}{0.315\textwidth}
-      \colorbox{knlight}{\parbox{0.93\textwidth}{\small\color{knblue}\textbf{Secondary measures}}}\\[0.5em]
-      \small Agreement with the recommendation did not differ by condition, $F(2,80)=2.10$, $p=.13$.
-      \vspace{0.4em}
-
-      Dispositional trust did not predict the trust composite, $r(39)=-.10$, $p=.52$.
-      \vspace{0.4em}
-
-      \sn{Preference shift was rare everywhere: 4, 5 and 1 of 41.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-%% ============================================================
-%% PART 4 — DISCUSSION
-%% ============================================================
-
-\begin{frame}{Discussion}{Two patterns that need explaining}
-  \vspace{1.0em}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\small\color{knblue}\textbf{Pattern 1}\\[0.4em]
-      The real speaker sits far above both avatars, on every subscale and both significant rankings.}}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\small\color{knblue}\textbf{Pattern 2}\\[0.4em]
-      The two avatars looked different to participants, yet scored identically on everything that mattered.}}
-    \end{column}
-  \end{columns}
-  \vspace{1.4em}
-  \begin{center}
-    \small And one constraint on any explanation:\\[0.5em]
-    {\color{knblue}\textbf{Eeriness and likeability \emph{did} predict trust (H3). The road was open.}}\\[0.4em]
-    {\color{knblue}\textbf{The composite changed what people saw without travelling it.}}
-  \end{center}
-\end{frame}
-
-\begin{frame}{Why eeriness did not fall}{Two mismatches inside the composite}
-  \vspace{0.4em}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{\color{knblue}1. Material versus shape}
-      \vspace{0.4em}
-      \small
-      \begin{itemize}
-        \item The composite stylises the \hl{material} and leaves the \hl{shape} untouched.
-        \item Zell et al.: material drives eeriness, so this should have helped.
-        \item But the same work reports eeriness \hl{rises} when material and shape disagree in stylisation level.
-        \item C3 is exactly that case: a stylised surface on a photogrammetric face.
-      \end{itemize}
-      \vspace{0.3em}
-      \sn{The abstraction may have removed one source of eeriness while adding another.}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \textbf{\color{knblue}2. Appearance versus performance}
-      \vspace{0.4em}
-      \small
-      \begin{itemize}
-        \item Both avatars inherit the \hl{same} recorded human voice, gaze and lip animation.
-        \item C3 therefore pairs a fully human performance with a visibly abstracted face.
-        \item Cihodaru-Ştefanache \& Podina: uncanniness arises from features perceived at \hl{inconsistent} levels of anthropomorphism.
-        \item A shading operator changes appearance only. It could only widen that gap.
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Three more explanations on the table}
-  \vspace{0.5em}
-  \small
-  \begin{columns}[T]
-    \begin{column}{0.315\textwidth}
-      \textbf{\color{knblue}The comparison set}
-      \vspace{0.4em}
-      \begin{itemize}
-        \item[] Once a real person anchors the top of the scale, the only judgement left is \emph{how far below}.
-        \item[] Both avatars were recognisably CG. A rendering difference competes against a categorical one.
-        \item[] C3 followed C1 directly in two versions of three. C2 never did.
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.315\textwidth}
-      \textbf{\color{knblue}Generative AI expectations}
-      \vspace{0.4em}
-      \begin{itemize}
-        \item[] One participant asked afterwards \emph{which AI system generated the videos}.
-        \item[] Nothing in the materials ruled that reading out.
-        \item[] Scepticism towards machine-made media depresses \emph{both} avatars equally.
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.315\textwidth}
-      \textbf{\color{knblue}The video setting}
-      \vspace{0.4em}
-      \begin{itemize}
-        \item[] Flat screen, prerecorded, no interaction, no shared space.
-        \item[] Zibrek et al.\ found render style significantly moved presence in VR.
-        \item[] What is too weak in a browser window may register once the avatar shares your room.
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-%% ============================================================
-%% PART 5 — LIMITATIONS
-%% ============================================================
-
-\begin{frame}{Limitations}
-  \vspace{0.5em}
-  \small
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\color{knblue}\textbf{Session length}}}\\[0.5em]
-      Both studies had to fit 10 to 15 minutes, and every measure was repeated three times. That capped how many measures and conditions were affordable.
-      \vspace{0.9em}
-
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\color{knblue}\textbf{One configuration only}}}\\[0.5em]
-      One composite, one avatar identity, one platform, three scenarios. The findings describe \hl{this configuration}, not NPR as a category.
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\color{knblue}\textbf{Sample size}}}\\[0.5em]
-      The submission deadline set the collection window, which fell in the semester break. $n=41$ met the power requirement for \emph{detecting} a difference, not the far larger one \emph{equivalence} demands.
-      \vspace{0.9em}
-
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\color{knblue}\textbf{Counterbalancing}}}\\[0.5em]
-      Three conditions need six orders for a full design. That needs roughly twice the sample, so three orders were used.
-      \vspace{0.4em}
-
-      \sn{The parameter study also tested only the highest-impact groups, so the composite is suitable rather than globally optimal.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-%% ============================================================
-%% PART 6 — CONCLUSION
-%% ============================================================
-
-\begin{frame}{Conclusion}{What the three questions ended up answering}
-  \vspace{0.4em}
-  \small
-  \begin{block}{\textbf{RQ1} \enspace Adaptation across platforms}
-    All eight techniques ran on all three platforms. The dividing line is whether an operator needs \hl{new parameter values}, which is always possible, or a \hl{new input signal}, which only an open pipeline provides.
-  \end{block}
-  \begin{block}{\textbf{RQ2} \enspace Best balance of abstraction and legibility}
-    No technique reached it by rendering alone on a photogrammetric avatar. The answer is a \hl{three-part composite}, outline plus X-Toon plus Sobel, \hl{paired with head texture preprocessing}.
-  \end{block}
-  \begin{block}{\textbf{RQ3} \enspace Effect on eeriness and trust}
-    H1 not supported, H2 inconclusive, \good{H3 confirmed}, H4 not supported. The composite did not lower eeriness, and it also carried \hl{no observed trust penalty}.
-  \end{block}
-  \vspace{0.2em}
-  \begin{center}
-    \colorbox{knlight}{\parbox{0.95\textwidth}{\centering\color{knblue}\footnotesize\textbf{A developer choosing the stylised version need not assume a disadvantage.\\ The real distance is not between two render styles. It is to the actual human.}}}
-  \end{center}
-\end{frame}
-
-\begin{frame}{Future work}
-  \vspace{0.6em}
-  \small
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{\color{knblue}Settle the open question}
-      \begin{itemize}
-        \item Repeat C2 versus C3 with roughly \hl{120 participants}. Inside the bound confirms no trust cost, outside exposes one too small to see here.
-      \end{itemize}
-      \vspace{0.8em}
-
-      \textbf{\color{knblue}Test the competing explanations}
-      \begin{itemize}
-        \item Extend abstraction to the \hl{geometry}, not just the material.
-        \item Drop the real speaker and let the two avatars be compared alone.
-        \item State up front that the videos are \hl{not AI-generated}.
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \textbf{\color{knblue}Replace the point with a curve}
-      \begin{itemize}
-        \item Sweep abstraction strength continuously instead of testing one setting. That traces how eeriness and trust move together and can reveal an optimum between the extremes.
-      \end{itemize}
-      \vspace{0.8em}
-
-      \textbf{\color{knblue}Restore what video removed}
-      \begin{itemize}
-        \item Interaction and shared space, in VR.
-      \end{itemize}
-      \vspace{0.6em}
-
-      \textbf{\color{knblue}Widen the sample of avatars}
-      \begin{itemize}
-        \item Multiple identities and platforms, to separate a general effect from one specific to this face.
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}[plain]
-  \vspace{2.2em}
-  \begin{center}
-    {\LARGE\bfseries\color{knblue} Thank you}\\[1.2em]
-    {\large\color{kngrey} Questions}\\[2.0em]
-    \colorbox{knlight}{\parbox{0.78\textwidth}{\centering\color{knblue}\small
-    Eight NPR techniques, three avatar platforms, two studies, 86 participants.\\[0.6em]
-    Stylisation was clearly seen, cost no measurable trust,\\ and did not close the gap to a real human.}}\\[1.6em]
-    {\footnotesize\color{kngrey} Nidanur Günay \quad|\quad nidanur.guenay@uni-konstanz.de}
-  \end{center}
-\end{frame}
-
-%% ============================================================
-%% BACKUP SLIDES
-%% ============================================================
-
-\begin{frame}[plain]
-  \vspace{3.0em}
-  \begin{center}
-    {\Large\color{kngrey} Backup slides}
-  \end{center}
-\end{frame}
-
-\begin{frame}{Backup — Visual quality assessment of all eight techniques}
-  \vspace{0.3em}
-  \scriptsize
-  \begin{tabular}{@{}lllllc@{}}
-    \toprule
-    \textbf{Technique} & \textbf{Facial} & \textbf{Temporal} & \textbf{Artefacts} & \textbf{Abstraction} & \textbf{Candidate} \\
-    \midrule
-    V1 Outline        & yes & yes & after tuning & \bad{not alone} & yes \\
-    V2 Toon           & yes & yes & yes & \bad{no interior lines} & --- \\
-    V2.2 X-Toon       & yes & yes & yes & manual mode chosen & yes \\
-    V3 Normal edge    & \bad{landmarks missed} & yes & yes & yes & --- \\
-    V4 Sobel          & after tuning & after tuning & after preprocessing & yes & yes \\
-    V4.2 Gauss Sobel  & \bad{no gain over V4} & after tuning & yes & yes & --- \\
-    V5 Hierarchical   & \bad{segments unclear} & yes & \bad{nose bridge artefact} & yes & yes \\
-    V6 Kuwahara       & \bad{fails at large radius} & yes & yes & yes & yes \\
-    \bottomrule
-  \end{tabular}
-  \vspace{0.8em}
-
-  \sn{Five of the eight became candidates for the composite. The parameter adjustment study then removed V5 and V6, leaving V1, V2.2 and V4.}
-\end{frame}
-
-\begin{frame}{Backup — All variants shown in the parameter adjustment study}
-  \vspace{0.2em}
-  \begin{center}
-    \includegraphics[height=0.78\textheight]{prestudy_all_versions}
-  \end{center}
-\end{frame}
-
-\begin{frame}{Backup — Final composite parameters}
-  \vspace{0.8em}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \small
-      \begin{tabular}{@{}lll@{}}
-        \toprule
-        \textbf{Parameter} & \textbf{Value} & \textbf{Source} \\
-        \midrule
-        Outline width            & 0.003 & R2 Borda winner \\
-        Depth offset             & On    & R2 Borda winner \\
-        Inner line threshold     & 0.05  & R1 appeal tiebreaker \\
-        Shadow strength          & 0.0   & R3 appeal tiebreaker \\
-        Detail bias              & 0.5   & R3 appeal tiebreaker \\
-        Kuwahara filter          & \bad{Off} & R4 excluded ($p=.003$) \\
-        Hierarchical layer       & \bad{Off} & R5 excluded ($p<.001$) \\
-        \bottomrule
-      \end{tabular}
-    \end{column}
-    \begin{column}{0.44\textwidth}
-      \small
-      \colorbox{knlight}{\parbox{0.95\textwidth}{\color{knblue}
-      Three of the seven values came from a separate visual appeal question, since no configuration in those rounds was statistically ahead of its runner-up.}}
-    \end{column}
-  \end{columns}
 \end{frame}
 
 \begin{frame}{Backup — Eeriness against likeability}
@@ -926,5 +1592,6 @@
     \end{column}
   \end{columns}
 \end{frame}
+
 
 \end{document}

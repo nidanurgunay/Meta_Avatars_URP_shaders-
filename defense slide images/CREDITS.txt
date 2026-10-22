@@ -1,0 +1,39 @@
+DEFENSE SLIDE IMAGES
+Cropped reference figures, ready to drop into the Google Slides deck.
+They live in the 'paper figures' subfolder.
+
+Each file is named <slide>-<node>_<author>_<year>_<what>. Put the matching
+credit line underneath it on the slide. Under the German right of quotation
+(section 51 UrhG) the attribution has to be visible on screen.
+
+04-1  Mori's uncanny valley curve
+      Credit:  Mori, M. The Uncanny Valley. Energy 7(4), 33-35, 1970.  [1]
+
+04-2  An android beside a mechanical humanoid robot
+      Credit:  MacDorman, K. F. & Ishiguro, H. The Uncanny Advantage of Using
+               Androids in Cognitive and Social Science Research.
+               Interaction Studies 7(3), 297-337, 2006.  [2]
+
+04-3  The ten stimuli: five CG film characters, five robots
+      Credit:  Ho, C.-C. & MacDorman, K. F. Revisiting the Uncanny Valley
+               Theory. Computers in Human Behavior 26(6), 1508-1518, 2010.  [10]
+
+04-4  The valley reproduced with CG film and game characters, stills vs video
+      Credit:  Dill, V. et al. Evaluation of the Uncanny Valley in CG
+               Characters. IVA 2012, 511-513.  [4]
+
+07-1  The render styles compared by McDonnell et al.
+      Credit:  McDonnell, R., Breidt, M. & Bulthoff, H. H. Render Me Real?
+               ACM TOG 31(4), 2012.  [3]
+
+07-2  Zell et al.'s material stylisation axis, shape held fixed
+      Credit:  Zell, E. et al. To Stylize or Not to Stylize? ACM TOG 34(6),
+               2015.  [5]
+
+08-1  The three avatar stylisation levels used by Canales et al.
+      Credit:  Canales, R., Roble, D. & Neff, M. The Impact of Avatar
+               Stylization on Trust. IEEE VR, 418-428, 2024.  [11]
+
+09-1  C2, the photorealistic Avaturn avatar
+09-2  C3, the same avatar under the NPR composite
+      Credit:  own work.

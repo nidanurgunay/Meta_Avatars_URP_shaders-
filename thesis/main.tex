@@ -67,7 +67,7 @@
 \usepackage[automark, headsepline]{scrlayer-scrpage}
 \automark[chapter]{chapter}   % chapter on every page, not alternating section/chapter
 \clearpairofpagestyles
-\ohead{\headmark}
+\chead{\headmark}
 \cfoot[\pagemark]{\pagemark}
 
 %% ---- Math ----
@@ -145,7 +145,7 @@
   colorlinks=true,
   linkcolor=black,
   citecolor=black,
-  urlcolor=blue,
+  urlcolor=black,   %% black so bibliography/URL pages print as B&W; links stay clickable
   bookmarks=true,
   bookmarksopen=true,
 ]{hyperref}
@@ -184,30 +184,25 @@
 %% subsections and subsubsections still appear in the document body).
 \setcounter{tocdepth}{1}
 
-%% KOMA's \frontmatter/\mainmatter always call \cleardoubleoddpage in twoside
-%% mode, ignoring the openany option (which only gates \backmatter and \chapter).
-%% Redefine it to \clearpage so these transitions don't force blank pages.
-\renewcommand*{\cleardoubleoddpage}{\clearpage}
+%% openright: each chapter starts on a right-hand (recto) page, so the document
+%% binds correctly as a book. KOMA inserts an empty verso where one is needed.
 
 %% ========================================================
 \begin{document}
 
 %% ---- Front Matter ----
-\KOMAoptions{open=any}
+\KOMAoptions{open=any}   %% front matter flows continuously; no blanks between its parts
 \frontmatter
 \include{frontmatter/titlepage}
-%% Blank verso: the cover's reverse stays empty so the abstract falls on a
-%% front (right-hand) side and the contents on its back, as the binding requires.
-\thispagestyle{empty}\null\clearpage
 \include{frontmatter/abstract}
 
 {\setstretch{1.0}\tableofcontents}
 \listoffigures
 \listoftables
 \include{frontmatter/abbreviations}
-\KOMAoptions{open=any}
 
 %% ---- Main Matter ----
+\KOMAoptions{open=any}   %% chapters open on the next available page, no blank versos
 \mainmatter
 \include{chapters/01_introduction}
 \include{chapters/03_background}
@@ -226,7 +221,7 @@
 \include{appendix/appendix_a}
 \include{appendix/appendix_b}
 
-%% ---- Acknowledgements (placed at the end) ----
+%% ---- Acknowledgements (final page of the document) ----
 \include{frontmatter/acknowledgements}
 
 \end{document}

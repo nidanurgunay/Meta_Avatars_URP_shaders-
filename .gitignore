@@ -111,3 +111,6 @@ UNITY_STUDY_NOTES.pdf
 *.run.xml
 *.synctex.gz
 *.toc
+
+# Screen recordings (too large for GitHub)
+Assets/Recordings/*.mp4
